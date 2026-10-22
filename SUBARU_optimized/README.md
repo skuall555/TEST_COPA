@@ -1,0 +1,27 @@
+# SUBARU 3トピック改修パック
+
+添付の既存3分岐を維持したフェーズ1改修。3トピックとも実変更あり。全文YAMLはこのディレクトリ直下にあります。
+
+**静的検証済み／Copilot Studioへの読込・実機回帰・性能・Word逐語全文照合は未検証です。試験導入用で、本番適合を保証する版ではありません。**
+
+| ファイル | 内容 |
+|---|---|
+| 01_現状分析.md | 旧実行経路・依存・問題点 |
+| 02_最適化方針と変更点.md | 全変更ノード・期待効果・リスク |
+| 03_変更前後の機能対照表.md | 互換性と保留事項 |
+| 04_性能計測と回帰テスト.md | 静的検証結果・35ケース・計測方法 |
+| 05_導入手順_ロールバック.md | 本番を上書きしない導入と戻し方 |
+| 06_制約事項と原文全文取得の限界.md | 未検証範囲・原文取得限界 |
+| 追加提案_原文全文取得.md | 別フェーズ案。実装していない |
+| originals/ | 添付4ファイル＋依頼MDの無改変保存 |
+| diffs/ | 各ファイルのunified diff（改行コードのみ正規化して比較） |
+| validation/ | 静的検証コード・結果・回帰ケース・実機計測用CSV |
+
+```bash
+cd /workspace/TEST_COPA
+python SUBARU_optimized/validation/validate.py
+cd SUBARU_optimized/validation
+python -m unittest -v test_contracts
+```
+
+検証用依存：Python 3.12、PyYAML 6.0.3（`validation/requirements.txt`）。Copilot本体の追加フロー・新規API・新規ナレッジは不要です。

@@ -1,0 +1,134 @@
+{
+  "main": [],
+  "setVariable_debugMode": [
+    "setVariable_prompt1"
+  ],
+  "setVariable_prompt1": [
+    "setVariable_prompt2"
+  ],
+  "setVariable_prompt2": [
+    "setVariable_attachmentName"
+  ],
+  "setVariable_attachmentName": [
+    "setVariable_turnText"
+  ],
+  "setVariable_turnText": [
+    "setVariable_attachmentContentType"
+  ],
+  "setVariable_attachmentContentType": [
+    "setVariable_attachmentSupported"
+  ],
+  "setVariable_attachmentSupported": [
+    "conditionGroup_debugAttachment"
+  ],
+  "conditionGroup_debugAttachment": [
+    "conditionGroup_unsupportedImageType",
+    "sendActivity_debugAttachment"
+  ],
+  "sendActivity_debugAttachment": [
+    "conditionGroup_unsupportedImageType"
+  ],
+  "conditionGroup_unsupportedImageType": [
+    "invokeAIBuilderModelAction_imageFacts",
+    "sendActivity_unsupportedImageType"
+  ],
+  "sendActivity_unsupportedImageType": [
+    "endDialog_unsupportedImageType"
+  ],
+  "endDialog_unsupportedImageType": [],
+  "invokeAIBuilderModelAction_imageFacts": [
+    "conditionGroup_imagePromptConnected"
+  ],
+  "conditionGroup_imagePromptConnected": [
+    "sendActivity_promptNotConnected",
+    "setVariable_imageFacts"
+  ],
+  "setVariable_imageFacts": [
+    "setVariable_imageFactsLength"
+  ],
+  "setVariable_imageFactsLength": [
+    "conditionGroup_debugStage1"
+  ],
+  "conditionGroup_debugStage1": [
+    "conditionGroup_stage1Empty",
+    "sendActivity_debugStage1"
+  ],
+  "sendActivity_debugStage1": [
+    "conditionGroup_stage1Empty"
+  ],
+  "conditionGroup_stage1Empty": [
+    "search_photoGuidelineRetrieve",
+    "sendActivity_stage1Empty"
+  ],
+  "sendActivity_stage1Empty": [
+    "search_photoGuidelineRetrieve"
+  ],
+  "search_photoGuidelineRetrieve": [
+    "conditionGroup_photoGuideUnavailable"
+  ],
+  "conditionGroup_photoGuideUnavailable": [
+    "answer_photoGuidelineJudge",
+    "setVariable_photoGuideUnavailableResult"
+  ],
+  "setVariable_photoGuideUnavailableResult": [
+    "goto_photoGuideUnavailableSections"
+  ],
+  "goto_photoGuideUnavailableSections": [
+    "setVariable_sectionExtra"
+  ],
+  "answer_photoGuidelineJudge": [
+    "conditionGroup_debugStage2"
+  ],
+  "conditionGroup_debugStage2": [
+    "sendActivity_debugStage2",
+    "setVariable_sectionExtra"
+  ],
+  "sendActivity_debugStage2": [
+    "setVariable_sectionExtra"
+  ],
+  "setVariable_sectionExtra": [
+    "setVariable_sectionDone"
+  ],
+  "setVariable_sectionDone": [
+    "setVariable_sectionCheck"
+  ],
+  "setVariable_sectionCheck": [
+    "setVariable_sectionUnknown"
+  ],
+  "setVariable_sectionUnknown": [
+    "conditionGroup_sectionsMissing"
+  ],
+  "conditionGroup_sectionsMissing": [
+    "setVariable_fallbackExtra",
+    "setVariable_globalDone"
+  ],
+  "setVariable_fallbackExtra": [
+    "setVariable_clearUnvalidatedPhotoDone"
+  ],
+  "setVariable_clearUnvalidatedPhotoDone": [
+    "setVariable_fallbackCheck"
+  ],
+  "setVariable_fallbackCheck": [
+    "setVariable_globalDone"
+  ],
+  "setVariable_globalDone": [
+    "setVariable_globalCheck"
+  ],
+  "setVariable_globalCheck": [
+    "setVariable_appendImageResultToGlobalHistory"
+  ],
+  "setVariable_appendImageResultToGlobalHistory": [
+    "setVariable_imageReceptionOnForNextPhoto"
+  ],
+  "setVariable_imageReceptionOnForNextPhoto": [
+    "sendActivity_analysisResult"
+  ],
+  "sendActivity_analysisResult": [
+    "endDialog_afterRestartEmergency"
+  ],
+  "endDialog_afterRestartEmergency": [],
+  "sendActivity_promptNotConnected": [
+    "setVariable_imageReceptionBackOn"
+  ],
+  "setVariable_imageReceptionBackOn": []
+}

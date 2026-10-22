@@ -1,0 +1,1614 @@
+kind: AdaptiveDialog
+modelDescription: |-
+  巡回トピックから「現場対応アドバイス」かつ「09_緊急保安_共通」の場合に引き継がれる専門トピック。
+  固定化した初動措置AI優先度判断ルールを根拠に、初動措置の優先度（高中低）を判定し、
+  高優先度の措置が全て対応済みになるまで状況確認を繰り返す。
+  その後、ガス漏れ調査の指示、必要であれば02_作業要領を根拠にした修理方法の提示まで行う。
+  一般知識による補完はせず、不足情報は必ず質問で確認する。
+  追加テキストは履歴に累積して再判定する。
+  初動措置の追加情報待ち中に画像が送信された場合は、本トピックの中で画像分析（第1段：事実抽出／第2段：撮影要領との照合）を行い、
+  結果を履歴へ追記して再判定へ戻る。別トピックへ割り込ませて戻す作りにはしない（2枚目以降が動かなくなるため）。
+  撮影要領に沿った写真がある措置は「対応済み」として扱う。
+beginDialog:
+  kind: OnRedirect
+  id: main
+  actions:
+    - kind: SetVariable
+      id: setVariable_priorityRetryCount
+      variable: Topic.優先度確認再試行回数
+      value: =0
+
+    - kind: SetVariable
+      id: setVariable_repairModeInit
+      variable: Topic.修理方法モード
+      value: =false
+
+    - kind: ConditionGroup
+      id: conditionGroup_repairRequestedAtStart
+      conditions:
+        - id: conditionItem_repairRequestedAtStart
+          condition: =Or("修理方法" in Topic.初回入力, "修理の方法" in Topic.初回入力, "修理手順" in Topic.初回入力, "どう直す" in Topic.初回入力, "どうやって直す" in Topic.初回入力, "復旧方法" in Topic.初回入力)
+          actions:
+            - kind: SetVariable
+              id: setVariable_repairModeOnAtStart
+              variable: Topic.修理方法モード
+              value: =true
+
+            - kind: GotoAction
+              id: goto_repairSelectAtStart
+              actionId: setVariable_repairSelectInit
+
+    - kind: SetVariable
+      id: setVariable_syncEmergencyInitialToGlobal
+      variable: Global.緊急保安初回入力
+      value: =Topic.初回入力
+
+    - kind: SetVariable
+      id: setVariable_syncEmergencyHistoryToGlobal
+      variable: Global.緊急保安追加情報履歴
+      value: =Topic.追加情報履歴
+
+    - kind: SetVariable
+      id: setVariable_imageReceptionOffAtStart
+      variable: Global.緊急保安画像受付中
+      value: =false
+
+    - kind: SetVariable
+      id: setVariable_priorityGuideRetrievePrompt
+      variable: Topic.優先度ガイド取得プロンプト
+      value: |-
+        ="# 役割
+        初動措置_AI優先度判断ガイド.docxの内容を、要約・解釈・自分の意見を加えず、できるだけ原文に近い形でそのまま提示してください。
+        これは判定作業ではなく、後工程で使うための資料取得です。ここでは優先度の判定は行わないでください。
+
+        # 必ず含めること（漏れなく、原文相当で）
+        ・初動措置の各項目と、その優先度（高・中・低）を分ける判断基準
+        ・各優先度に対応する具体的な措置の一覧・条件
+
+        # 出力フォーマット
+        （上記項目の内容を原文相当のままここに記載）"
+
+    - kind: SetVariable
+      id: setVariable_priorityGuideFixed
+      variable: Topic.優先度ガイド取得結果
+      value: |-
+        ="# 役割
+
+        あなたは「緊急保安業務の初動措置優先度判定エージェント」です。
+
+        入力された現場事実だけを基に、
+        各初動措置について「高・中・低」の優先度を判定してください。
+
+        以下に記載する【初動措置AI優先度判断ルール】だけを判断根拠として使用してください。
+
+        一般知識、外部知識、推測、常識による補完は禁止します。
+        入力されていない事実を「ある」「ない」と勝手に確定してはいけません。
+
+        現場事実が不足する場合は「低」と断定せず、
+        原則として「中（条件確認が必要）」として不足情報を明示してください。
+
+
+        # 優先度の意味
+
+        【高】
+        現在判明している事実から、実施・確認の必要性が強い。
+        未実施なら最優先で注意喚起する。
+
+        【中】
+        条件次第で必要。
+        設備有無、漏えい場所、使用状況などの確認が必要。
+        「不要」と断定せず、必要な追加確認を示す。
+
+        【低】
+        現在得られている事実だけでは通常は優先しない。
+        ただし危険条件が追加された場合は中または高へ昇格する。
+
+
+        # 最初に抽出する現場事実
+
+        入力内容から、以下を「入力された事実だけ」で整理する。
+
+        ・場所
+        室内／屋内共用部／屋外・敷地／道路／マンホール・地下埋設物／地下室・地下街
+
+        ・臭気
+        なし／あり／強い／広範囲／作業者自身が臭気確認
+
+        ・検知
+        検知器反応の有無
+        ポケット警報器鳴動
+        都市ガス警報器の継続鳴動
+
+        ・濃度
+        LEL値
+        特に10％以上、30％以上
+
+        ・事故兆候
+        着火／爆発／火災／人身被害／ガス噴出／多量漏えい／道路陥没等
+
+        ・漏えい源
+        室内側／共用部／屋外／不明
+        漏えい箇所特定済みか
+
+        ・遮断可否
+        メーターガス栓
+        分岐バルブ
+        引込管ガス遮断装置等
+        設備有無
+        操作可否
+        ガス使用中か
+
+        ・換気、排出
+        窓等の開放可否
+        滞留ガスが低下しているか
+
+        ・周辺影響
+        近隣建物への流入可能性
+        調査対象住戸数
+        交通規制
+        避難の必要性
+
+        ・施設属性
+        集合住宅／テナント／地下／重要建物等
+
+
+        # 全現場共通で基本的に「高」
+
+        ガス漏えい、臭気、検知を扱う現場では次を基本的に「高」とする。
+
+        1. 火気使用禁止の徹底
+        2. 電気スイッチ等の操作禁止
+        3. 火気厳禁表示シート
+        4. ポケット警報器等の設置
+        5. 流入ガス・滞留ガスの検知器調査
+
+        【火気使用禁止】
+        ガス漏えい箇所付近では火気使用を禁止する。
+
+        【電気スイッチ等の操作禁止】
+        着火源となる操作を避ける。
+        地下等では換気扇のON/OFF等も避ける。
+
+        【火気厳禁表示シート】
+        臭気場所、検知場所、火気使用場所、
+        お客さまの目につきやすい場所への設置を確認する。
+
+        【ポケット警報器】
+        臭気・検知場所、天井付近、収納、排水口、PS、床下等、
+        滞留・流入しやすい場所を優先する。
+
+        【ガス検知調査】
+        全現場で高。
+        場所別に室内、共用部、屋外、周辺住戸等へ展開する。
+
+
+        # ガス濃度測定
+
+        検知器反応あり、
+        ポケット警報器鳴動、
+        地下埋設物、
+        隠蔽部等では「高」。
+
+        LEL10％以上の場合は、
+        供給遮断・滞留ガス排出を高として扱う。
+
+        密閉空間でLEL30％以上の場合は、
+        進入禁止を高とする。
+
+
+        # 窓等の開放・換気
+
+        室内・屋内のガス漏えい・臭気：
+        高
+
+        屋外漏えいが主で、
+        室内へのガス流入を避ける必要がある場合：
+        窓開放は低
+
+        屋外漏えいが疑われる場合は、
+        臭気側に面する窓等の閉止を検討する。
+
+
+        # メーターガス栓閉止
+
+        室内臭気：
+        高
+
+        都市ガス警報器鳴動：
+        高
+
+        室内側漏えいの疑い：
+        高
+
+        共用部、屋外、漏えい源不明：
+        基本は中
+
+        設備有無、漏えい系統、室内への流入状況等により昇格する。
+
+
+        # 分岐バルブ・引込管ガス遮断装置等
+
+        基本：
+        中
+
+        設備有無、系統、使用状況が不明：
+        中＋確認事項
+
+        以下では高へ昇格する。
+
+        ・LEL10％以上
+        ・警報継続
+        ・強い臭気
+        ・広範囲臭気
+        ・多量漏えい
+        ・集合建物で3戸を超える室内調査
+        ・共用部漏えい
+        ・有効な供給遮断が必要な危険状態
+
+        可能な場合、
+        1回の操作で漏えいを止められる上流側バルブを優先する。
+
+
+        # 消火器
+
+        以下では高。
+
+        ・検知器反応あり
+        ・作業者自身が臭気確認
+        ・遮断不能
+        ・調査長期化
+        ・着火等事故のおそれ
+
+        臭気も検知もなく、事故のおそれが低い場合：
+        中～低
+
+
+        # 消防・警察への要請
+
+        通常の臭気・検知のみ：
+        低
+
+        以下の危険条件がある場合：
+        高
+
+        ・人身被害
+        ・着火
+        ・爆発
+        ・火災
+        ・多量漏えい
+        ・強い臭気
+        ・広範囲臭気
+        ・都市ガス警報器の継続鳴動
+        ・ポケット警報器鳴動
+        ・LEL10％以上
+        ・有効な遮断不能
+        ・速やかな滞留ガス排出不能
+
+        多量漏えいかつ有効な遮断・排出ができない場合は、
+        警戒区域・避難についても高として扱う。
+
+
+        # 立入禁止・保安柵・警戒区域
+
+        基本：
+        中
+
+        以下では高。
+
+        ・漏えい箇所付近
+        ・マンホール臭気
+        ・強い／広範囲臭気
+        ・多量漏えい
+        ・道路陥没等
+
+        密閉空間でLEL30％以上：
+        進入禁止を高
+
+
+        # 避難誘導
+
+        通常の軽微な臭気のみ：
+        低
+
+        以下では高。
+
+        ・人身危険
+        ・多量漏えい
+        ・遮断不能
+        ・排出不能
+        ・遮断・排出後も滞留ガス濃度が低下しない
+        ・警戒区域設定が必要
+
+
+        # 周辺住戸・建物調査
+
+        基本：
+        中
+
+        以下では高。
+
+        ・屋外臭気の近くに建物がある
+        ・共用部臭気
+        ・室内へのガス流入可能性あり
+
+        共用部臭気の場合も、
+        室内への流入・流出を考慮し、室内調査を優先する。
+
+
+        # マンホール蓋開放・換気
+
+        マンホール臭気、
+        地下埋設構造物で検知器反応あり：
+        高
+
+        火気がないことを確認し、
+        少しずつ開放し、濃度測定・換気・保安柵を検討する。
+
+
+        # 場所別の基本判定
+
+        ## 室内臭気・室内検知
+
+        高：
+        ・火気禁止
+        ・電気操作禁止
+        ・表示シート
+        ・ポケット警報器
+        ・室内検知
+        ・換気
+        ・メーターガス栓
+
+        中：
+        ・分岐／引込遮断
+        ・消火器
+        ・周辺住戸調査
+
+        低：
+        ・消防警察
+        ※危険条件がない場合
+
+
+        ## 屋内共用部
+
+        高：
+        ・火気禁止
+        ・電気操作禁止
+        ・表示シート
+        ・ポケット警報器
+        ・共用部検知
+        ・室内流入確認
+        ・換気
+
+        中：
+        ・メーターガス栓
+        ・分岐／引込遮断
+        ・消火器
+
+        低：
+        ・消防警察
+        ※危険条件がない場合
+
+
+        ## 屋外・敷地・道路
+
+        高：
+        ・火気禁止
+        ・電気操作禁止
+        ・表示シート
+        ・ポケット警報器
+        ・屋外検知
+
+        中：
+        ・メーターガス栓
+        ・分岐／引込遮断
+        ・消火器
+        ・近接建物調査
+        ・保安柵
+
+        ただし検知器反応がある場合、
+        消火器は高へ昇格する。
+
+        低：
+        ・窓開放
+        ・消防警察
+        ※危険条件がない場合
+
+
+        ## マンホール・地下埋設物
+
+        高：
+        ・火気禁止
+        ・表示
+        ・検知
+        ・濃度測定
+        ・蓋の安全な開放、換気
+        ・保安柵
+
+        中：
+        ・供給遮断
+        ・消火器
+        ・消防警察
+
+        低：
+        ・メーターガス栓
+        ※系統による
+
+
+        ## 地下室・地下街
+
+        高：
+        ・火気禁止
+        ・電気操作禁止
+        ・検知、濃度測定
+        ・換気、排出
+        ・進入可否確認
+
+        中：
+        ・供給遮断
+        ・消防警察
+        ・避難
+        ・空気呼吸器等
+
+        危険側に評価する。
+
+
+        # 強制的に「高」へ昇格する危険トリガー
+
+        H-01
+        人身被害
+        → 消防・警察、救護、避難等を高
+
+        H-02
+        着火・爆発・火災・ガス噴出等
+        → 供給遮断、火気管理、消防警察、立入規制等を高
+
+        H-03
+        強い又は広範囲の臭気／検知反応
+        → 多量漏えいとして遮断・消防警察等を高
+
+        注意：
+        単に「検知器反応あり」とだけ記載され、
+        強い・広範囲等が明示されていない場合は、
+        強い／広範囲だと勝手に推測しない。
+
+        H-04
+        都市ガス警報器が正常作動で鳴り続ける
+        → 供給遮断を高。危険度に応じ消防警察も高
+
+        H-05
+        携帯ポケット警報器が警報音
+        → 多量漏えい条件。遮断・消防警察等を高
+
+        H-06
+        室内・屋内・床下・天井点検口等でLEL10％以上
+        → 供給遮断・滞留ガス排出を高
+
+        H-07
+        密閉空間でLEL30％以上
+        → 進入禁止を高
+
+        H-08
+        有効な供給遮断または速やかな滞留ガス排出ができない
+        → 消防警察、警戒区域、避難を高
+
+        H-09
+        遮断・排出後も滞留ガス濃度が低下しない
+        → 避難誘導を高
+
+        H-10
+        集合建物で室内調査対象が3戸超、
+        または共用部漏えいが明らかで長時間化
+        → 系統遮断を高
+
+        H-11
+        道路陥没等
+        → 漏えい範囲の供給遮断・立入禁止を高
+
+        H-12
+        CO中毒、酸欠、硫化水素等の有毒ガス発生または疑い
+        → 供給遮断・専門対応を高
+
+
+        # 判定手順
+
+        必ず次の順序で処理する。
+
+        STEP1
+        ユーザー発言から「事実」だけを抽出する。
+        推測を事実として扱わない。
+
+        STEP2
+        場所を確定する。
+        不明なら質問する。
+
+        STEP3
+        H-01～H-12の危険トリガーを照合する。
+
+        STEP4
+        全現場共通の基本高項目を付与する。
+
+        ・火気禁止
+        ・電気操作禁止
+        ・表示シート
+        ・ポケット警報器
+        ・検知調査
+
+        STEP5
+        場所別に以下を高中低へ分類する。
+
+        ・換気
+        ・メーターガス栓
+        ・上流遮断
+        ・消火器
+        ・消防警察
+        ・周辺調査
+        ・立入規制等
+
+        STEP6
+        設備有無、系統、ガス使用中、遮断可否等が不明なら、
+        存在や状態を推測せず「中＋確認事項」とする。
+
+        STEP7
+        これまでのユーザー回答により、
+        明確に実施済みと確認できた措置だけを「対応済み」とする。
+
+        実施したとの情報がないものは「未実施」とする。
+
+        ただし、
+        「未実施」と判定したこと自体を現場事実とは扱わない。
+
+
+        # 最重要
+
+        高優先度の措置については、
+        対応済みか未実施かを必ず明示する。
+
+        高優先度項目が1つでも未実施の場合、
+        【高優先度の完了状況】は「未完了あり」とする。
+
+        全て対応済みであることがユーザー発言から確認できた場合のみ、
+        「全て対応済み」とする。
+
+        情報不足の場合は、
+        不足している内容について具体的な確認質問を出す。
+
+
+        # 出力フォーマット
+        必ず以下の見出し名・順序だけで回答してください。見出しの言い換えは禁止です。
+        回答本文の前後に説明文・総括文・挨拶を追加しないでください。
+        各項目は必ず「└」で開始してください。
+
+        【確認できた事実】
+        └（ユーザー入力・追加履歴から明示的に確認できた事実）
+
+        【初動措置　優先度：高】
+        └（措置名）：対応済み／未実施　根拠：（入力事実とルール）
+
+        【初動措置　優先度：中】
+        └（措置名）：対応済み／未実施／要確認　根拠：（入力事実とルール）　確認事項：（必要な場合のみ）
+
+        【初動措置　優先度：低】
+        └（措置名）：対応済み／未実施／要確認　根拠：（入力事実とルール）
+
+        【高優先度の完了状況】
+        └全て対応済み
+        または
+        └未完了あり
+
+        【ネクストアクション】
+        └（未実施の高優先度措置を最優先。高が全て対応済みなら次に確認・実施すべき事項）
+        └（複数あれば必要数）
+
+        【確認したいこと】
+        └（追加確認が必要な事項を質問形式で記載）
+        └確認不要なら「なし」
+
+        # 禁止事項
+
+        ・一般知識で補完しない
+        ・入力されていないLEL値を作らない
+        ・入力されていない臭気の強弱を作らない
+        ・設備が存在すると推測しない
+        ・措置済みとの記載がないものを対応済みにしない
+        ・危険トリガーが明示されていないのに勝手に適用しない
+        ・「検知器反応あり」だけで「強い／広範囲の検知反応」と断定しない
+        ・この固定ルール以外を根拠にしない"
+
+    - kind: ConditionGroup
+      id: conditionGroup_priorityGuideRetrieveSucceeded
+      conditions:
+        - id: conditionItem_priorityGuideRetrieveSucceeded
+          condition: =!IsBlank(Topic.優先度ガイド取得結果)
+          actions:
+            - kind: SetVariable
+              id: setVariable_priorityPrompt
+              variable: Topic.優先度判定プロンプト
+              value: |-
+                ="# 重要な前提
+                あなたは今まさに緊急保安業務トピック自身として実行されています。
+                下記【ガイド抜粋】は初動措置_AI優先度判断ガイド.docxの内容です。新たな検索は行わず、
+                この【ガイド抜粋】と現場事実・報告内容だけを根拠に判断してください。一般知識による補完、
+                ガイドに無い基準の創作は禁止します。
+
+                # 【ガイド抜粋】
+                " & Topic.優先度ガイド取得結果 & "
+
+                # 現場事実（初回）
+                " & Topic.初回入力 & "
+
+                # 追加確認・報告内容
+                " & Topic.追加情報履歴 & "
+
+                # 再判定ルール
+                この処理は、追加情報が入力されるたびに必ず最初から再判定してください。
+                初回入力だけで固定せず、【追加確認・報告内容】に追加された全履歴を現場事実として再評価してください。
+                同じ措置について後から明示的な更新があった場合は、後から入力された最新情報を優先してください。
+                例：
+                ・「消火器設置済み」→ 消火器は「対応済み」として再判定
+                ・「道路上で爆発有」→ 爆発を新しい現場事実として追加し、危険トリガーH-02を適用して全体を再判定
+                ・「火気厳禁表示シート設置済み」→ 表示シートは「対応済み」として再判定
+                過去にAI自身が出力した「未実施」「中」「低」などの判定は現場事実ではありません。
+                必ずユーザーが入力した事実・追加報告だけを根拠に状態を更新してください。
+
+                # 写真による実施確認（重要）
+                【追加確認・報告内容】に「【撮影要領に基づく実施済み措置】」という見出しがある場合、
+                その配下に列挙された「【写真有】…」の各項目は、撮影要領に沿った写真という根拠がある実施済みの措置です。
+                対応する初動措置を必ず「対応済み」として扱ってください。
+                例：「【写真有】消火器設置確認（MS-010）」があれば、消火器は「対応済み　根拠：写真により設置を確認」とする。
+                「【要確認】」という見出しの配下に列挙された「＜要確認＞…」は、
+                【ネクストアクション】および【確認したいこと】へ必ず反映してください。
+                例：「＜要確認＞ポケット警報器の設置位置を再確認してください」
+                「【画像から分かる現場状況】」の配下は、現場事実として扱ってください。
+                なお、これらの見出しが無い、または配下が「・なし」の場合は、
+                写真による実施確認は行われていないものとして扱ってください。
+
+                # 画像入力について
+                現在のユーザーターンに画像添付があり、画像内容を参照できる場合は画像も現場事実として確認してください。
+                画像から明確に確認できた措置だけを「画像確認済み」として扱ってください。
+                例：消火器が現場に設置されていることが明確に確認できる場合は「消火器：対応済み」として再判定します。
+                画像から確認できない項目を「未実施」と断定してはいけません。
+                画像内容を参照できない場合は、画像から確認したふりをせず「画像内容は判定できない」としてください。
+
+                # 手順（必ず内部で順に実行すること）
+                1. 業種・作業工程・現場状況から確定している事実のみを抽出する。
+                2. 【ガイド抜粋】の基準に照らし、該当する初動措置ごとに優先度（高・中・低）を判定する。
+                3. これまでの報告内容・画像分析結果（あれば）から、各初動措置が既に実施済みかどうかを判定する。
+                   実施済みと確認できないものは「未実施」として扱う。未確認を実施済みにしない。
+                4. 優先度「高」の措置は、実施状況を必ず個別に明記する。
+
+                # 判定に必要な情報が不足している場合
+                憶測で優先度・状況を決めず、不足している情報を質問として返してください。
+
+                # 出力フォーマット（このフォーマット以外は出力しないこと）
+                【確認できた事実】
+                └（ユーザー入力・追加履歴から明示的に確認できた事実）
+                【初動措置　優先度：高】
+                └（措置名）：対応済み／未実施　根拠：（入力事実とルール）
+                【初動措置　優先度：中】
+                └（措置名）：対応済み／未実施／要確認　根拠：（入力事実とルール）　確認事項：（必要な場合のみ）
+                【初動措置　優先度：低】
+                └（措置名）：対応済み／未実施／要確認　根拠：（入力事実とルール）
+                【高優先度の完了状況】
+                └全て対応済み または └未完了あり
+                【ネクストアクション】
+                └（未実施の高優先度措置を最優先。高が全て対応済みなら次に確認・実施すべき事項）
+                【確認したいこと】
+                └（追加確認が必要な事項。確認不要なら「なし」）
+                回答本文の前後に説明文・総括文・挨拶を追加しないこと。"
+
+            - kind: AnswerQuestionWithAI
+              id: answer_priority
+              displayName: 11B_ガイド抜粋からの優先度判定
+              autoSend: false
+              variable: Topic.優先度判定結果
+              userInput: =Topic.優先度判定プロンプト
+              additionalInstructions: |-
+                この入力には、判定に必要な【初動措置AI優先度判断ルール】・現場事実・追加報告・出力形式が
+                すべて含まれています。外部ナレッジを検索せず、一般知識で補完せず、入力内の情報だけで判定してください。
+                入力に書かれた出力フォーマット（【確認できた事実】から【確認したいこと】まで）だけを、
+                見出し名・順序をそのまま守って出力してください。前置き・総括・挨拶・引用番号は禁止です。
+
+            - kind: ConditionGroup
+              id: conditionGroup_prioritySucceeded
+              conditions:
+                - id: conditionItem_prioritySucceeded
+                  condition: =!IsBlank(Topic.優先度判定結果)
+                  actions:
+                    - kind: InvokeFlowAction
+                      id: invokeFlowAction_caseSaveFieldAdvice
+                      input:
+                        binding:
+                          text: =System.Conversation.Id
+                          text_1: ="現場アドバイス"
+                          text_2: =Topic.優先度判定結果
+                          text_3: ="なし"
+
+                      output:
+                        binding:
+                          case_id: Topic.案件ID
+
+                      flowId: 9a770168-65a8-f111-aaad-7ced8d2f9cab
+
+                    - kind: ConditionGroup
+                      id: conditionGroup_priorityLoopNeeded
+                      conditions:
+                        - id: conditionItem_priorityLoopNeeded
+                          condition: =Not("全て対応済み" in Topic.優先度判定結果)
+                          actions:
+                            - kind: ConditionGroup
+                              id: conditionGroup_priorityRetryLimit
+                              conditions:
+                                - id: conditionItem_priorityRetryLimitReached
+                                  condition: =Topic.優先度確認再試行回数 >= 10
+                                  actions:
+                                    - kind: SetVariable
+                                      id: setVariable_imageReceptionOffGiveUp
+                                      variable: Global.緊急保安画像受付中
+                                      value: =false
+
+                                    - kind: SendActivity
+                                      id: sendActivity_priorityGiveUp
+                                      activity: |-
+                                        確認の往復が多くなったため、現時点の状況を一旦提示します。高優先度の項目が残っている可能性があります。
+
+                                        {Topic.優先度判定結果}
+
+                              elseActions:
+                                - kind: SetVariable
+                                  id: setVariable_priorityRetryIncrement
+                                  variable: Topic.優先度確認再試行回数
+                                  value: =Topic.優先度確認再試行回数 + 1
+
+                                - kind: SetVariable
+                                  id: setVariable_syncInitialBeforeWait
+                                  variable: Global.緊急保安初回入力
+                                  value: =Topic.初回入力
+
+                                - kind: SetVariable
+                                  id: setVariable_syncHistoryBeforeWait
+                                  variable: Global.緊急保安追加情報履歴
+                                  value: =Topic.追加情報履歴
+
+                                - kind: SetVariable
+                                  id: setVariable_imageReceptionOn
+                                  variable: Global.緊急保安画像受付中
+                                  value: =true
+
+                                - kind: Question
+                                  id: question_priorityUpdate
+                                  interruptionPolicy:
+                                    allowInterruption: true
+
+                                  variable: Topic.優先度追加回答
+                                  prompt: |-
+                                    {Topic.優先度判定結果}
+
+                                    対応状況や新しい現場情報があれば入力してください。
+                                    例：「消火器設置済み」「道路上で爆発有」
+                                    画像で報告する場合は、画像に一言（例：「消火器設置」「写真です」）を添えて送ってください。
+                                    画像は自動で分析し、撮影要領に沿った写真があれば実施済みとして反映します。
+                                  entity:
+                                    kind: StringPrebuiltEntity
+                                    sensitivityLevel: None
+
+                                - kind: SetVariable
+                                  id: setVariable_resyncHistoryFromGlobal
+                                  variable: Topic.追加情報履歴
+                                  value: =Global.緊急保安追加情報履歴
+
+                                - kind: ConditionGroup
+                                  id: conditionGroup_repairRequestedInPriority
+                                  conditions:
+                                    - id: conditionItem_repairRequestedInPriority
+                                      condition: =Or("修理方法" in Topic.優先度追加回答, "修理の方法" in Topic.優先度追加回答, "修理手順" in Topic.優先度追加回答, "どう直す" in Topic.優先度追加回答, "どうやって直す" in Topic.優先度追加回答, "復旧方法" in Topic.優先度追加回答)
+                                      actions:
+                                        - kind: SetVariable
+                                          id: setVariable_appendRepairRequestHistory
+                                          variable: Topic.追加情報履歴
+                                          value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
+
+                                        - kind: SetVariable
+                                          id: setVariable_syncHistoryBeforeRepair
+                                          variable: Global.緊急保安追加情報履歴
+                                          value: =Topic.追加情報履歴
+
+                                        - kind: SetVariable
+                                          id: setVariable_repairModeOn
+                                          variable: Topic.修理方法モード
+                                          value: =true
+
+                                        - kind: GotoAction
+                                          id: goto_repairSelect
+                                          actionId: setVariable_repairSelectInit
+
+                                - kind: ConditionGroup
+                                  id: conditionGroup_priorityPurposeSwitchToJunkai
+                                  conditions:
+                                    - id: conditionItem_priorityPurposeSwitchToJunkai
+                                      condition: =Or("マニュアル確認" in Topic.優先度追加回答, "内容確認" in Topic.優先度追加回答, "規定確認" in Topic.優先度追加回答, "マニュアル改訂" in Topic.優先度追加回答, "マニュアル改定" in Topic.優先度追加回答, "改訂案" in Topic.優先度追加回答, "改定案" in Topic.優先度追加回答)
+                                      actions:
+                                        - kind: SetVariable
+                                          id: setVariable_priorityPurposeSwitchToJunkaiInput
+                                          variable: Global.巡回切替入力
+                                          value: =Topic.優先度追加回答
+
+                                        - kind: SetVariable
+                                          id: setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff
+                                          variable: Global.緊急保安画像受付中
+                                          value: =false
+
+                                        - kind: EndDialog
+                                          id: endDialog_priorityPurposeSwitchToJunkai
+
+                                  elseActions:
+                                    - kind: SetVariable
+                                      id: setVariable_appendPriorityHistory
+                                      variable: Topic.追加情報履歴
+                                      value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
+
+                                    - kind: SetVariable
+                                      id: setVariable_syncHistoryAfterText
+                                      variable: Global.緊急保安追加情報履歴
+                                      value: =Topic.追加情報履歴
+
+                                    - kind: SetVariable
+                                      id: setVariable_keepImageReceptionOn
+                                      variable: Global.緊急保安画像受付中
+                                      value: =true
+
+                                    - kind: SendActivity
+                                      id: sendActivity_debugPriorityHistory
+                                      activity: |-
+                                        【DEBUG・確認後削除】
+                                        今回回答：{Topic.優先度追加回答}
+                                        累積履歴：
+                                        {Topic.追加情報履歴}
+
+                                    - kind: GotoAction
+                                      id: goto_priorityAgain
+                                      actionId: setVariable_priorityPrompt
+
+                    - kind: SetVariable
+                      id: setVariable_imageReceptionOffDone
+                      variable: Global.緊急保安画像受付中
+                      value: =false
+
+                    - kind: SendActivity
+                      id: sendActivity_priorityDone
+                      activity: |-
+                        初動措置の優先度確認が完了しました。
+
+                        {Topic.優先度判定結果}
+
+              elseActions:
+                - kind: SetVariable
+                  id: setVariable_imageReceptionOffPriorityFailed
+                  variable: Global.緊急保安画像受付中
+                  value: =false
+
+                - kind: SendActivity
+                  id: sendActivity_priorityFailed
+                  activity: |-
+                    現場事実と初動措置ガイドの内容から優先度を判定できませんでした。
+                    一般知識で補完せず終了します。
+
+                - kind: EndDialog
+                  id: endDialog_priorityFailed
+                  clearTopicQueue: true
+
+      elseActions:
+        - kind: SetVariable
+          id: setVariable_imageReceptionOffGuideFailed
+          variable: Global.緊急保安画像受付中
+          value: =false
+
+        - kind: SendActivity
+          id: sendActivity_priorityGuideRetrieveFailed
+          activity: |-
+            固定の初動措置優先度判断ルールを読み込めませんでした。
+            一般知識で補完せず終了します。
+
+        - kind: EndDialog
+          id: endDialog_priorityGuideRetrieveFailed
+          clearTopicQueue: true
+
+    - kind: SetVariable
+      id: setVariable_repairSelectInit
+      variable: Topic.修理再検索回数
+      value: =0
+
+    - kind: ConditionGroup
+      id: conditionGroup_repairSelectMode
+      conditions:
+        - id: conditionItem_repairSelectMode
+          condition: =Topic.修理方法モード = true
+          actions:
+            - kind: SetVariable
+              id: setVariable_repairExcluded
+              variable: Topic.修理除外工法
+              value: =""
+
+            - kind: SetVariable
+              id: setVariable_repairScanText
+              variable: Topic.修理判定用テキスト
+              value: =Topic.初回入力 & Char(10) & Topic.追加情報履歴
+
+            - kind: SetVariable
+              id: setVariable_repairKnownPipe
+              variable: Topic.確定管種
+              value: =If(Or("白ガス管" in Topic.修理判定用テキスト, "KS" in Topic.修理判定用テキスト, "SGP" in Topic.修理判定用テキスト), "白ガス管（KS）", If(Or("ポリエチレン" in Topic.修理判定用テキスト, "PE管" in Topic.修理判定用テキスト, "ポリエチ" in Topic.修理判定用テキスト), "ポリエチレン管", If(Or("ダクタイル" in Topic.修理判定用テキスト, "DIP" in Topic.修理判定用テキスト), "ダクタイル鋳鉄管（DIP）", If(Or("鋳鉄" in Topic.修理判定用テキスト, "FG" in Topic.修理判定用テキスト, "ねずみ" in Topic.修理判定用テキスト), "鋳鉄管（FG）", If(Or("被覆鋼管" in Topic.修理判定用テキスト, "PLP" in Topic.修理判定用テキスト), "被覆鋼管（PLP）", If(Or("ステンレス" in Topic.修理判定用テキスト, "SUS" in Topic.修理判定用テキスト), "ステンレス管", If("銅管" in Topic.修理判定用テキスト, "銅管", "")))))))
+
+            - kind: SetVariable
+              id: setVariable_repairKnownSize
+              variable: Topic.確定口径
+              value: =If("500A" in Topic.修理判定用テキスト, "500A", If("450A" in Topic.修理判定用テキスト, "450A", If("400A" in Topic.修理判定用テキスト, "400A", If("350A" in Topic.修理判定用テキスト, "350A", If("300A" in Topic.修理判定用テキスト, "300A", If("250A" in Topic.修理判定用テキスト, "250A", If("200A" in Topic.修理判定用テキスト, "200A", If("150A" in Topic.修理判定用テキスト, "150A", If("125A" in Topic.修理判定用テキスト, "125A", If("100A" in Topic.修理判定用テキスト, "100A", If("80A" in Topic.修理判定用テキスト, "80A", If("75A" in Topic.修理判定用テキスト, "75A", If("65A" in Topic.修理判定用テキスト, "65A", If("50A" in Topic.修理判定用テキスト, "50A", If("40A" in Topic.修理判定用テキスト, "40A", If("32A" in Topic.修理判定用テキスト, "32A", If("25A" in Topic.修理判定用テキスト, "25A", If("20A" in Topic.修理判定用テキスト, "20A", If("15A" in Topic.修理判定用テキスト, "15A", "")))))))))))))))))))
+
+            - kind: SetVariable
+              id: setVariable_repairKnownCategory
+              variable: Topic.確定設備区分
+              value: =If(Or("灯外内管" in Topic.修理判定用テキスト, "灯外管" in Topic.修理判定用テキスト, "灯外" in Topic.修理判定用テキスト), "灯外内管", If(Or("灯内内管" in Topic.修理判定用テキスト, "灯内管" in Topic.修理判定用テキスト, "灯内" in Topic.修理判定用テキスト), "灯内内管", If("供給管" in Topic.修理判定用テキスト, "供給管", If("中圧本管" in Topic.修理判定用テキスト, "中圧本管", If("低圧本管" in Topic.修理判定用テキスト, "低圧本管", If("本管" in Topic.修理判定用テキスト, "本管", If("支管" in Topic.修理判定用テキスト, "支管", "")))))))
+
+            - kind: SetVariable
+              id: setVariable_repairKnownEnv
+              variable: Topic.確定施工環境
+              value: =If(Or("埋設" in Topic.修理判定用テキスト, "地中" in Topic.修理判定用テキスト), "埋設部", If(Or("隠ぺい" in Topic.修理判定用テキスト, "隠蔽" in Topic.修理判定用テキスト, "壁の中" in Topic.修理判定用テキスト, "床下" in Topic.修理判定用テキスト, "コンクリート内" in Topic.修理判定用テキスト, "パイプシャフト" in Topic.修理判定用テキスト), "隠ぺい部", If("露出" in Topic.修理判定用テキスト, "露出部", "")))
+
+            - kind: SetVariable
+              id: setVariable_repairKnownLeak
+              variable: Topic.確定漏えい箇所
+              value: =If(Or("特定" in Topic.修理判定用テキスト, "発見" in Topic.修理判定用テキスト, "腐食漏れ" in Topic.修理判定用テキスト, "漏えい箇所" in Topic.修理判定用テキスト, "検知器反応" in Topic.修理判定用テキスト), "特定済み", "")
+
+            - kind: SetVariable
+              id: setVariable_repairConditionSummary
+              variable: Topic.修理条件要約
+              value: =Trim(Topic.確定設備区分 & " " & Topic.確定管種 & " " & Topic.確定口径 & " " & Topic.確定施工環境)
+
+            - kind: SetVariable
+              id: setVariable_repairKnownList
+              variable: Topic.確定条件一覧
+              value: |-
+                ="管種：" & If(Len(Topic.確定管種) = 0, "未確定", Topic.確定管種) & Char(10)
+                & "口径：" & If(Len(Topic.確定口径) = 0, "未確定", Topic.確定口径) & Char(10)
+                & "設備区分：" & If(Len(Topic.確定設備区分) = 0, "未確定", Topic.確定設備区分) & Char(10)
+                & "施工環境：" & If(Len(Topic.確定施工環境) = 0, "未確定", Topic.確定施工環境) & Char(10)
+                & "漏えい箇所：" & If(Len(Topic.確定漏えい箇所) = 0, "未確定", Topic.確定漏えい箇所)
+
+            - kind: SetVariable
+              id: setVariable_repairCandidatePrompt
+              variable: Topic.修理適用範囲取得プロンプト
+              value: |-
+                ="# 役割
+                ガス管の修理工法について、マニュアルに書かれている適用範囲・適用条件を、
+                要約・解釈・自分の意見を加えず、できるだけ原文に近い形でそのまま提示してください。
+                これは判定作業ではありません。どの工法を使うべきかの判断や、番号付けは行わないでください。
+
+                # 必ず含めること（工法ごとに、漏れなく、原文相当で）
+                ・工法名（マニュアルに記載されている正式名称）
+                ・適用できる管種
+                ・適用できる口径の範囲
+                ・適用できる設備区分（灯内内管、灯外内管、供給管、本管、支管など）
+                ・適用できる施工環境（埋設部、隠ぺい部、露出部のどれに使えるか。　使えない環境が書かれていればそれも）
+
+                ・その他の適用条件（漏えい量、圧力、延長、配管形状など）
+                ・適用除外・使用できない条件
+
+                # 出力
+                （上記を工法ごとに、原文相当のまま記載。前置き・総括・引用番号は付けない）"
+
+            - kind: SearchAndSummarizeContent
+              id: search_repairScope
+              displayName: 21A_修理工法の適用範囲の取得
+              autoSend: false
+              variable: Topic.修理適用範囲本文
+              userInput: ="ガス管 修理 工法 適用範囲 適用条件 " & Topic.修理条件要約
+              additionalInstructions: =Topic.修理適用範囲取得プロンプト
+              fileSearchDataSource:
+                searchFilesMode:
+                  kind: DoNotSearchFiles
+
+              knowledgeSources:
+                kind: SearchSpecificKnowledgeSources
+                knowledgeSources:
+                  - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+                  - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
+
+              applyModelKnowledgeSetting: false
+
+            - kind: AnswerQuestionWithAI
+              id: answer_repairCandidates
+              displayName: 21B_修理工法の候補整形
+              autoSend: false
+              variable: Topic.修理候補結果
+              userInput: |-
+                ="# 現場条件
+                " & Topic.確定条件一覧 & "
+
+                # 現場情報（原文）
+                " & Topic.初回入力 & "
+                " & Topic.追加情報履歴 & "
+
+                # マニュアルに記載された各工法の適用範囲
+                " & Topic.修理適用範囲本文 & "
+
+                # 除外する工法（すでに提示済みのため、今回は挙げない）
+                " & If(Len(Topic.修理除外工法) = 0, "なし", Topic.修理除外工法) & "
+
+                # 絞り込みルール（必ず全て適用すること）
+                1. 確定している条件だけで絞り込む。　 未確定の条件は「制約なし」として扱い、それを理由に候補を外さない。　 ユーザーへの質問は絶対にしない。今ある情報だけで必ず候補を出すこと。
+
+
+                2. 施工環境が確定している場合、それに合わない工法は外す。　 内面から補修する工法（ライニング系、シール系など）は、　 掘削や露出が困難な埋設部・隠ぺい部（壁の中、床下、コンクリート内、　 パイプシャフト内など、目視できない部分）で使うものである。　 漏えい箇所がすでに露出している露出部では、これらを候補にしないこと。
+
+
+
+
+                3. 除外リストに載っている工法は絶対に挙げない。
+                4. マニュアルに適用範囲の記載が無い工法は候補にしない。
+                5. 一般知識で補完しない。上記の適用範囲に書かれていることだけを根拠にする。
+                6. 候補は多くても5件までにする。
+                7. 並び順は、確定条件との合致度が高い順にする。　 合致度が同程度なら、適用範囲がより具体的で狭い工法を上にする。　 条件が1つも確定していない場合でも、　 マニュアルに載っている工法を一般的な適用頻度の順に並べて必ず出す。
+
+
+
+
+                # 出力フォーマット（この形式以外は一切出力しないこと）
+                【考えられる修理方法】（適合度の高い順）
+                [1] 工法名 - 確定条件のどこが合致するか。適用に条件がある場合はその条件も1行で
+                [2] 工法名 - 同上
+                [0] それ以外（上記に当てはまらない場合は 0 を送ってください）
+
+                【判断に使った現場条件】
+                ・管種／口径／設備区分／施工環境／漏えい箇所のうち、確定しているもの
+                ・未確定のものは「未確定（制約なしとして扱った）」と書く
+
+                【さらに絞り込むために有効な情報】
+                ・（未確定の項目のうち、候補の順位が変わる要因になっているものだけを挙げる。　 質問文にはせず、単語で列挙する。該当が無ければ「なし」）
+
+
+                候補を1件も挙げられない場合だけ、【考えられる修理方法】の下に
+                [0] それ以外　だけを出力してください。
+                前置き・総括・引用番号・URL・見出し以外の説明文は出力しないでください。"
+              additionalInstructions: |-
+                入力には、判定に必要な現場条件・マニュアルの適用範囲・出力形式がすべて含まれています。
+                外部ナレッジを検索せず、一般知識で補完せず、入力内の情報だけで判定してください。
+                指定された3つの見出し（【考えられる修理方法】【判断に使った現場条件】
+                【さらに絞り込むために有効な情報】）だけを出力してください。
+                各候補は必ず [1] [2] のように角かっこ付きの番号で始め、
+                最後に必ず [0] それ以外 の行を入れてください。
+                ユーザーへの質問は書かないでください。情報が足りなくても候補を出してください。
+                前置き・総括・引用番号・URLは一切出力しないでください。
+
+            - kind: ConditionGroup
+              id: conditionGroup_repairCandidatesFound
+              conditions:
+                - id: conditionItem_repairCandidatesFound
+                  condition: =And(!IsBlank(Topic.修理候補結果), "[1]" in Topic.修理候補結果)
+                  actions:
+                    - kind: Question
+                      id: question_repairChoice
+                      interruptionPolicy:
+                        allowInterruption: true
+
+                      variable: Topic.修理選択回答
+                      prompt: |-
+                        {Topic.修理候補結果}
+
+                        番号を送っていただければ、その工法の作業手順をマニュアルから探してお伝えします。
+                        当てはまるものが無ければ 0 を送ってください。別の工法を探し直します。
+                        管種・口径・施工環境などを追記して送っていただいても構いません。
+                      entity:
+                        kind: StringPrebuiltEntity
+                        sensitivityLevel: None
+
+                    - kind: SetVariable
+                      id: setVariable_repairChoiceNumber
+                      variable: Topic.修理選択番号
+                      value: =Trim(Substitute(Substitute(Substitute(Substitute(Topic.修理選択回答, "[", ""), "]", ""), "番", ""), "．", ""))
+
+                    - kind: ConditionGroup
+                      id: conditionGroup_repairChoiceZero
+                      conditions:
+                        - id: conditionItem_repairChoiceZero
+                          condition: =Topic.修理選択番号 = "0" && Topic.修理再検索回数 < 3
+                          actions:
+                            - kind: SetVariable
+                              id: setVariable_repairExcludedAppend
+                              variable: Topic.修理除外工法
+                              value: =Topic.修理除外工法 & Char(10) & Trim(First(Split(Last(Split(Topic.修理候補結果, "【考えられる修理方法】")).Value, "【判断に使った現場条件】")).Value)
+
+                            - kind: SetVariable
+                              id: setVariable_repairResearchIncrement
+                              variable: Topic.修理再検索回数
+                              value: =Topic.修理再検索回数 + 1
+
+                            - kind: SendActivity
+                              id: sendActivity_repairResearch
+                              activity: 承知しました。提示した工法を除いて、あらためて探します。
+
+                            - kind: GotoAction
+                              id: goto_repairCandidatesAgain
+                              actionId: setVariable_repairCandidatePrompt
+
+                    - kind: ConditionGroup
+                      id: conditionGroup_repairChoiceZeroLimit
+                      conditions:
+                        - id: conditionItem_repairChoiceZeroLimit
+                          condition: =Topic.修理選択番号 = "0" && Topic.修理再検索回数 >= 3
+                          actions:
+                            - kind: SendActivity
+                              id: sendActivity_repairZeroLimit
+                              activity: |-
+                                これ以上の候補をマニュアルから見つけられませんでした。
+                                現場条件を変えて探し直しますので、分かる範囲で入力してください。
+
+                                {Topic.確定条件一覧}
+
+                            - kind: EndDialog
+                              id: endDialog_repairZeroLimit
+
+                    - kind: SetVariable
+                      id: setVariable_repairChosenLine
+                      variable: Topic.修理選択行
+                      value: =If("[" & Topic.修理選択番号 & "]" in Topic.修理候補結果, Trim(First(Split(Last(Split(Topic.修理候補結果, "[" & Topic.修理選択番号 & "]")).Value, Char(10))).Value), "")
+
+                    - kind: SetVariable
+                      id: setVariable_repairChosenName
+                      variable: Topic.修理選択工法
+                      value: =Trim(First(Split(Substitute(Substitute(Substitute(Topic.修理選択行, "－", "-"), "—", "-"), "‐", "-"), "-")).Value)
+
+                    - kind: ConditionGroup
+                      id: conditionGroup_repairChosenResolved
+                      conditions:
+                        - id: conditionItem_repairChosenResolved
+                          condition: =Len(Topic.修理選択工法) > 0
+                          actions:
+                            - kind: SetVariable
+                              id: setVariable_repairProcedurePrompt
+                              variable: Topic.修理手順取得プロンプト
+                              value: |-
+                                ="# 役割
+                                次の工法について、マニュアルに書かれている内容を、要約・解釈・自分の意見を加えず、
+                                できるだけ原文に近い形でそのまま提示してください。
+                                これは判定作業ではありません。工法の良否や選定理由は書かないでください。
+
+                                # 対象の工法
+                                " & Topic.修理選択工法 & "
+
+                                # 必ず含めること（漏れなく、原文相当で）
+                                ・工法の正式名称
+                                ・適用範囲・適用条件
+                                ・作業手順（マニュアルに書かれている順序と番号のまま）
+                                ・使用資機材
+                                ・安全上の注意
+                                ・記載されている文書名
+
+                                # 出力
+                                （上記を原文相当のまま記載。前置き・総括・引用番号は付けない）"
+
+                            - kind: SearchAndSummarizeContent
+                              id: search_repairProcedure
+                              displayName: 22A_選択工法の記述の取得
+                              autoSend: false
+                              variable: Topic.修理手順本文
+                              userInput: =Topic.修理選択工法 & " 作業手順"
+                              additionalInstructions: =Topic.修理手順取得プロンプト
+                              fileSearchDataSource:
+                                searchFilesMode:
+                                  kind: DoNotSearchFiles
+
+                              knowledgeSources:
+                                kind: SearchSpecificKnowledgeSources
+                                knowledgeSources:
+                                  - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+                                  - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
+
+                              applyModelKnowledgeSetting: false
+
+                            - kind: AnswerQuestionWithAI
+                              id: answer_repairProcedure
+                              displayName: 22B_作業手順の整形
+                              autoSend: false
+                              variable: Topic.修理手順結果
+                              userInput: |-
+                                ="# 対象の工法
+                                " & Topic.修理選択工法 & "
+
+                                # マニュアルから取得した内容
+                                " & Topic.修理手順本文 & "
+
+                                # 現場条件
+                                " & Topic.確定条件一覧 & "
+
+                                # 出力フォーマット（この形式以外は出力しないこと）
+                                【工法名】
+                                ・（正式名称）
+                                【適用範囲・条件】
+                                ・（取得した内容の記載。無ければ「記載なし」）
+                                【この現場への適合】
+                                ・（現場条件と適用範囲を突き合わせた結果。合致しない点があれば必ず書く）
+                                【作業手順】
+                                1. …
+                                2. …
+                                【使用資機材】
+                                ・（記載。無ければ「記載なし」）
+                                【安全上の注意】
+                                ・（記載。無ければ「記載なし」）
+                                【根拠マニュアル】
+                                ・文書名 / 節（分かる範囲で）
+                                【自己検証】
+                                合格 または 不合格"
+                              additionalInstructions: |-
+                                入力に含まれる内容だけを使ってください。外部ナレッジを検索せず、
+                                一般知識で補完しないでください。取得した内容に書かれていない手順を作らないでください。
+                                指定された見出しだけを、順序どおりに出力してください。
+                                前置き・総括・引用番号・URLは出力しないでください。
+
+                            - kind: ConditionGroup
+                              id: conditionGroup_repairProcedureFound
+                              conditions:
+                                - id: conditionItem_repairProcedureFound
+                                  condition: =!IsBlank(Topic.修理手順結果)
+                                  actions:
+                                    - kind: SendActivity
+                                      id: sendActivity_repairProcedure
+                                      activity: |-
+                                        {Topic.修理手順結果}
+
+                                        安全確保を最優先に、落ち着いて対応してください。
+
+                                    - kind: EndDialog
+                                      id: endDialog_repairProcedureDone
+
+                              elseActions:
+                                - kind: SendActivity
+                                  id: sendActivity_repairProcedureNotFound
+                                  activity: |-
+                                    「{Topic.修理選択工法}」の作業手順を、マニュアルから見つけられませんでした。
+                                    一般知識で補完せず終了します。工法名が分かる場合は、そのまま入力してください。
+
+                                - kind: EndDialog
+                                  id: endDialog_repairProcedureNotFound
+
+                      elseActions:
+                        - kind: SendActivity
+                          id: sendActivity_repairChoiceUnresolved
+                          activity: |-
+                            送っていただいた番号（{Topic.修理選択回答}）に対応する工法を特定できませんでした。
+                            もう一度、候補の番号だけを送ってください。
+
+                        - kind: GotoAction
+                          id: goto_repairChoiceAgain
+                          actionId: setVariable_repairCandidatePrompt
+
+              elseActions:
+                - kind: SendActivity
+                  id: sendActivity_repairNoCandidate
+                  activity: |-
+                    現場条件に合う修理方法を、マニュアルから絞り込めませんでした。
+
+                    把握できている条件は次のとおりです。
+                    {Topic.確定条件一覧}
+
+                    未確定の項目や、漏えい量・圧力・配管形状など分かるものを入力してください。
+                    条件を足して探し直します。
+
+                - kind: EndDialog
+                  id: endDialog_repairNoCandidate
+
+    - kind: SetVariable
+      id: setVariable_investigationRetryCount
+      variable: Topic.問診再試行回数
+      value: =0
+
+    - kind: SetVariable
+      id: setVariable_investigationPrompt
+      variable: Topic.調査指示プロンプト
+      value: |-
+        ="# 役割
+        01_業務基準フォルダの内容だけを根拠に、ガス漏れ調査の進め方を指示してください。
+
+        # これまでの状況
+        " & Topic.優先度判定結果 & "
+        " & Topic.追加情報履歴 & "
+
+        # 手順
+        1. 通報者や現場で問診できる人がいる場合に確認すべき項目（いつ、どこで、どんな時、どの程度の臭気があったか等）を、
+           まだ確認できていなければ質問として提示する。
+        2. 問診内容（またはこれまでの報告内容）を踏まえ、検知器調査や、圧力異常時の圧力調査など、
+           業務基準に基づく調査の進め方を具体的に指示する。
+
+        # 出力フォーマット
+        【問診で確認したいこと】
+        ・（まだ不明な場合のみ。全て確認済みなら「なし」）
+        【調査の指示】
+        ・（業務基準に基づく具体的な調査手順）"
+
+    - kind: SearchAndSummarizeContent
+      id: search_investigation
+      displayName: 12_調査指示
+      autoSend: false
+      variable: Topic.調査指示結果
+      userInput: =Topic.初回入力
+      additionalInstructions: =Topic.調査指示プロンプト
+      fileSearchDataSource:
+        searchFilesMode:
+          kind: DoNotSearchFiles
+
+      knowledgeSources:
+        kind: SearchSpecificKnowledgeSources
+        knowledgeSources:
+          - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+
+      applyModelKnowledgeSetting: false
+
+    - kind: ConditionGroup
+      id: conditionGroup_investigationSucceeded
+      conditions:
+        - id: conditionItem_investigationSucceeded
+          condition: =!IsBlank(Topic.調査指示結果)
+          actions:
+            - kind: ConditionGroup
+              id: conditionGroup_investigationNeedsInterview
+              conditions:
+                - id: conditionItem_investigationNeedsInterview
+                  condition: =Not("・なし" in Topic.調査指示結果)
+                  actions:
+                    - kind: ConditionGroup
+                      id: conditionGroup_investigationRetryLimit
+                      conditions:
+                        - id: conditionItem_investigationRetryNotExceeded
+                          condition: =Topic.問診再試行回数 < 5
+                          actions:
+                            - kind: SetVariable
+                              id: setVariable_investigationRetryIncrement
+                              variable: Topic.問診再試行回数
+                              value: =Topic.問診再試行回数 + 1
+
+                            - kind: Question
+                              id: question_investigationInterview
+                              interruptionPolicy:
+                                allowInterruption: true
+
+                              variable: Topic.問診回答
+                              prompt: "{Topic.調査指示結果}"
+                              entity:
+                                kind: StringPrebuiltEntity
+                                sensitivityLevel: None
+
+                            - kind: ConditionGroup
+                              id: conditionGroup_repairRequestedInInvestigation
+                              conditions:
+                                - id: conditionItem_repairRequestedInInvestigation
+                                  condition: =Or("修理方法" in Topic.問診回答, "修理の方法" in Topic.問診回答, "修理手順" in Topic.問診回答, "どう直す" in Topic.問診回答, "どうやって直す" in Topic.問診回答, "復旧方法" in Topic.問診回答)
+                                  actions:
+                                    - kind: SetVariable
+                                      id: setVariable_appendRepairRequestFromInvestigation
+                                      variable: Topic.追加情報履歴
+                                      value: =Topic.追加情報履歴 & Char(10) & "問診回答：" & Topic.問診回答
+
+                                    - kind: SetVariable
+                                      id: setVariable_repairModeOnFromInvestigation
+                                      variable: Topic.修理方法モード
+                                      value: =true
+
+                                    - kind: GotoAction
+                                      id: goto_repairSelectFromInvestigation
+                                      actionId: setVariable_repairSelectInit
+
+                            - kind: ConditionGroup
+                              id: conditionGroup_investigationPurposeSwitchToJunkai
+                              conditions:
+                                - id: conditionItem_investigationPurposeSwitchToJunkai
+                                  condition: =Or("マニュアル確認" in Topic.問診回答, "内容確認" in Topic.問診回答, "規定確認" in Topic.問診回答, "マニュアル改訂" in Topic.問診回答, "マニュアル改定" in Topic.問診回答, "改訂案" in Topic.問診回答, "改定案" in Topic.問診回答)
+                                  actions:
+                                    - kind: SetVariable
+                                      id: setVariable_investigationPurposeSwitchToJunkaiInput
+                                      variable: Global.巡回切替入力
+                                      value: =Topic.問診回答
+
+                                    - kind: SetVariable
+                                      id: setVariable_investigationPurposeSwitchToJunkaiImageReceptionOff
+                                      variable: Global.緊急保安画像受付中
+                                      value: =false
+
+                                    - kind: EndDialog
+                                      id: endDialog_investigationPurposeSwitchToJunkai
+
+                              elseActions:
+                                - kind: SetVariable
+                                  id: setVariable_appendInterviewHistory
+                                  variable: Topic.追加情報履歴
+                                  value: =Topic.追加情報履歴 & Char(10) & "問診回答：" & Topic.問診回答
+
+                                - kind: GotoAction
+                                  id: goto_investigationAgain
+                                  actionId: setVariable_investigationPrompt
+
+            - kind: SendActivity
+              id: sendActivity_investigationResult
+              activity: "{Topic.調査指示結果}"
+
+      elseActions:
+        - kind: SendActivity
+          id: sendActivity_investigationFailed
+          activity: |-
+            調査の進め方について、業務基準から情報を取得できませんでした。
+            一般知識で補完せず終了します。
+
+        - kind: EndDialog
+          id: endDialog_investigationFailed
+          clearTopicQueue: true
+
+    - kind: ConditionGroup
+      id: conditionGroup_leakConfirmed
+      conditions:
+        - id: conditionItem_leakConfirmed
+          condition: =Or("検知器反応" in Topic.追加情報履歴, "ガス漏れ" in Topic.追加情報履歴, "ガス漏え" in Topic.追加情報履歴, "検知器反応" in Topic.初回入力, "ガス漏れ" in Topic.初回入力, "ガス漏え" in Topic.初回入力)
+          actions:
+            - kind: SetVariable
+              id: setVariable_repairRetryCount
+              variable: Topic.修理確認再試行回数
+              value: =0
+
+            - kind: SetVariable
+              id: setVariable_repairPrompt
+              variable: Topic.修理指示プロンプト
+              value: |-
+                ="# 役割
+                02_作業要領フォルダの内容だけを根拠に、考えられる修理方法を提示してください。
+                一般知識で補完せず、管種・口径・設置場所など判断に必要な情報が不足している場合は質問で確認してください。
+
+                # これまでの状況
+                " & Topic.調査指示結果 & "
+                " & Topic.追加情報履歴 & "
+
+                # 手順
+                1. ガス漏れの状況（発生箇所の種別：道路漏洩／敷地内漏洩／その他、管種、口径、設置場所等）を確認する。
+                2. 該当する作業要領（工法）を検索し、状況に合致するものだけを提示する。
+                3. 提示した修理方法が状況に本当に合致しているか自己検証する。
+
+                # 出力フォーマット
+                【考えられる修理方法】
+                ・工法名 - 理由
+                【自己検証】
+                合格 または 不合格
+                【不足情報・不足条件】
+                ・（あれば質問形式で。全て確認済み・合格なら「なし」）"
+
+            - kind: SearchAndSummarizeContent
+              id: search_repair
+              displayName: 13_修理方法提示
+              autoSend: false
+              variable: Topic.修理指示結果
+              userInput: ="ガス漏れ 修理 工法 " & Topic.初回入力
+              additionalInstructions: =Topic.修理指示プロンプト
+              fileSearchDataSource:
+                searchFilesMode:
+                  kind: DoNotSearchFiles
+
+              knowledgeSources:
+                kind: SearchSpecificKnowledgeSources
+                knowledgeSources:
+                  - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+
+              applyModelKnowledgeSetting: false
+
+            - kind: ConditionGroup
+              id: conditionGroup_repairSucceeded
+              conditions:
+                - id: conditionItem_repairSucceeded
+                  condition: =!IsBlank(Topic.修理指示結果)
+                  actions:
+                    - kind: ConditionGroup
+                      id: conditionGroup_repairVerified
+                      conditions:
+                        - id: conditionItem_repairVerified
+                          condition: =And("合格" in Topic.修理指示結果, "・なし" in Topic.修理指示結果)
+                          actions:
+                            - kind: SendActivity
+                              id: sendActivity_repairResult
+                              activity: |-
+                                {Topic.修理指示結果}
+
+                                お疲れさまでした。安全確保を最優先に、落ち着いて対応してください。
+
+                            - kind: EndDialog
+                              id: endDialog_repairDone
+
+                      elseActions:
+                        - kind: ConditionGroup
+                          id: conditionGroup_repairRetryLimit
+                          conditions:
+                            - id: conditionItem_repairRetryLimitReached
+                              condition: =Topic.修理確認再試行回数 >= 3
+                              actions:
+                                - kind: SendActivity
+                                  id: sendActivity_repairBestEffort
+                                  activity: |-
+                                    現時点で考えられる修理方法をお伝えします（十分に絞り込めていない可能性があります）。安全確保を最優先に対応してください。
+
+                                    {Topic.修理指示結果}
+
+                                - kind: EndDialog
+                                  id: endDialog_repairBestEffort
+
+                          elseActions:
+                            - kind: SetVariable
+                              id: setVariable_repairRetryIncrement
+                              variable: Topic.修理確認再試行回数
+                              value: =Topic.修理確認再試行回数 + 1
+
+                            - kind: Question
+                              id: question_repairMoreInfo
+                              interruptionPolicy:
+                                allowInterruption: true
+
+                              variable: Topic.修理追加回答
+                              prompt: "{Topic.修理指示結果}"
+                              entity:
+                                kind: StringPrebuiltEntity
+                                sensitivityLevel: None
+
+                            - kind: ConditionGroup
+                              id: conditionGroup_repairPurposeSwitchToJunkai
+                              conditions:
+                                - id: conditionItem_repairPurposeSwitchToJunkai
+                                  condition: =Or("マニュアル確認" in Topic.修理追加回答, "内容確認" in Topic.修理追加回答, "規定確認" in Topic.修理追加回答, "マニュアル改訂" in Topic.修理追加回答, "マニュアル改定" in Topic.修理追加回答, "改訂案" in Topic.修理追加回答, "改定案" in Topic.修理追加回答)
+                                  actions:
+                                    - kind: SetVariable
+                                      id: setVariable_repairPurposeSwitchToJunkaiInput
+                                      variable: Global.巡回切替入力
+                                      value: =Topic.修理追加回答
+
+                                    - kind: SetVariable
+                                      id: setVariable_repairPurposeSwitchToJunkaiImageReceptionOff
+                                      variable: Global.緊急保安画像受付中
+                                      value: =false
+
+                                    - kind: EndDialog
+                                      id: endDialog_repairPurposeSwitchToJunkai
+
+                              elseActions:
+                                - kind: SetVariable
+                                  id: setVariable_appendRepairHistory
+                                  variable: Topic.追加情報履歴
+                                  value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.修理追加回答
+
+                                - kind: GotoAction
+                                  id: goto_repairAgain
+                                  actionId: setVariable_repairPrompt
+
+              elseActions:
+                - kind: SendActivity
+                  id: sendActivity_repairFailed
+                  activity: |-
+                    02_作業要領から修理方法に関する情報を取得できませんでした。
+                    一般知識で補完せず終了します。
+
+                - kind: EndDialog
+                  id: endDialog_repairFailed
+                  clearTopicQueue: true
+
+      elseActions:
+        - kind: SendActivity
+          id: sendActivity_noLeakFound
+          activity: |-
+            現時点でガス漏れ・検知器反応の報告はありません。
+            調査結果に応じて、あらためて報告してください。
+
+        - kind: EndDialog
+          id: endDialog_noLeakFound
+
+inputType:
+  properties:
+    初回入力:
+      displayName: 初回入力
+      description: 巡回トピックで受け取ったユーザーの最初の発話
+      type: String
+
+    追加情報履歴:
+      displayName: 追加情報履歴
+      description: 巡回トピックまでに確認した追加情報の履歴
+      type: String
+
+outputType: {}

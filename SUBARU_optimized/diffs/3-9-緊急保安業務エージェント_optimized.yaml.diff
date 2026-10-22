@@ -1,0 +1,146 @@
+--- originals/3-9-緊急保安業務エージェント(2).txt
++++ 3-9-緊急保安業務エージェント_optimized.yaml
+@@ -6,8 +6,9 @@
+   その後、ガス漏れ調査の指示、必要であれば02_作業要領を根拠にした修理方法の提示まで行う。
+   一般知識による補完はせず、不足情報は必ず質問で確認する。
+   追加テキストは履歴に累積して再判定する。
+-  初動措置の追加情報待ち中に画像が送信された場合は、本トピックの中で画像分析（第1段：事実抽出／第2段：撮影要領との照合）を行い、
+-  結果を履歴へ追記して再判定へ戻る。別トピックへ割り込ませて戻す作りにはしない（2枚目以降が動かなくなるため）。
++  初動措置の追加情報待ち中の画像は4-9画像分析トピックが割り込み処理する。
++  画像トピックはGlobal履歴へ追記して終了し、本トピックは質問復帰後に履歴を再同期する。
++  画像トピックからBeginDialogで本トピックを呼び直さず、2枚目以降の割り込みを維持する。
+   撮影要領に沿った写真がある措置は「対応済み」として扱う。
+ beginDialog:
+   kind: OnRedirect
+@@ -856,14 +857,19 @@
+                                       variable: Global.緊急保安画像受付中
+                                       value: =true
+ 
+-                                    - kind: SendActivity
+-                                      id: sendActivity_debugPriorityHistory
+-                                      activity: |-
+-                                        【DEBUG・確認後削除】
+-                                        今回回答：{Topic.優先度追加回答}
+-                                        累積履歴：
+-                                        {Topic.追加情報履歴}
+-
++                                    - kind: ConditionGroup
++                                      id: conditionGroup_priorityDebugOnly
++                                      conditions:
++                                        - id: conditionGroup_priorityDebugOnly_item
++                                          condition: =false
++                                          actions:
++                                            - kind: SendActivity
++                                              id: sendActivity_debugPriorityHistory
++                                              activity: |-
++                                                【DEBUG・確認後削除】
++                                                今回回答：{Topic.優先度追加回答}
++                                                累積履歴：
++                                                {Topic.追加情報履歴}
+                                     - kind: GotoAction
+                                       id: goto_priorityAgain
+                                       actionId: setVariable_priorityPrompt
+@@ -936,8 +942,7 @@
+             - kind: SetVariable
+               id: setVariable_repairKnownPipe
+               variable: Topic.確定管種
+-              value: =If(Or("白ガス管" in Topic.修理判定用テキスト, "KS" in Topic.修理判定用テキスト, "SGP" in Topic.修理判定用テキスト), "白ガス管（KS）", If(Or("ポリエチレン" in Topic.修理判定用テキスト, "PE管" in Topic.修理判定用テキスト, "ポリエチ" in Topic.修理判定用テキスト), "ポリエチレン管", If(Or("ダクタイル" in Topic.修理判定用テキスト, "DIP" in Topic.修理判定用テキスト), "ダクタイル鋳鉄管（DIP）", If(Or("鋳鉄" in Topic.修理判定用テキスト, "FG" in Topic.修理判定用テキスト, "ねずみ" in Topic.修理判定用テキスト), "鋳鉄管（FG）", If(Or("被覆鋼管" in Topic.修理判定用テキスト, "PLP" in Topic.修理判定用テキスト), "被覆鋼管（PLP）", If(Or("ステンレス" in Topic.修理判定用テキスト, "SUS" in Topic.修理判定用テキスト), "ステンレス管", If("銅管" in Topic.修理判定用テキスト, "銅管", "")))))))
+-
++              value: =If(Or("白ガス管" in Topic.修理判定用テキスト, "KS" in Topic.修理判定用テキスト, "SGP" in Topic.修理判定用テキスト), "白ガス管（KS）", If(Or("ポリエチレン" in Topic.修理判定用テキスト, "PE管" in Topic.修理判定用テキスト, "ポリエチ" in Topic.修理判定用テキスト), "ポリエチレン管", If(Or("ダクタイル" in Topic.修理判定用テキスト, "DIP" in Topic.修理判定用テキスト), "ダクタイル鋳鉄管（DIP）", If(Or("鋳鉄" in Topic.修理判定用テキスト, "FG" in Topic.修理判定用テキスト, "ねずみ" in Topic.修理判定用テキスト), "普通鋳鉄管（FG）", If(Or("被覆鋼管" in Topic.修理判定用テキスト, "PLP" in Topic.修理判定用テキスト), "被覆鋼管（PLP）", If(Or("ステンレス" in Topic.修理判定用テキスト, "SUS" in Topic.修理判定用テキスト), "ステンレス管", If("銅管" in Topic.修理判定用テキスト, "銅管", "")))))))
+             - kind: SetVariable
+               id: setVariable_repairKnownSize
+               variable: Topic.確定口径
+@@ -1077,7 +1082,7 @@
+                 最後に必ず [0] それ以外 の行を入れてください。
+                 ユーザーへの質問は書かないでください。情報が足りなくても候補を出してください。
+                 前置き・総括・引用番号・URLは一切出力しないでください。
+-
++                FG＋口径は普通鋳鉄管、KS＋口径は低圧。未定義略語を展開しない。未知条件を適用確認済みとは扱わず、候補の未確認条件を必ず明示する。一般的な適用頻度を原文以外から作らず、条件同点なら原文の掲載順とする。撮影要領・ガイド・外部Webを修理根拠にしない。数値や工法は原本文書で確認し、文書目的・章節・条件の一致を確認する。
+             - kind: ConditionGroup
+               id: conditionGroup_repairCandidatesFound
+               conditions:
+@@ -1278,8 +1283,7 @@
+ 
+                         - kind: GotoAction
+                           id: goto_repairChoiceAgain
+-                          actionId: setVariable_repairCandidatePrompt
+-
++                          actionId: question_repairChoice
+               elseActions:
+                 - kind: SendActivity
+                   id: sendActivity_repairNoCandidate
+@@ -1503,7 +1507,7 @@
+                       id: conditionGroup_repairVerified
+                       conditions:
+                         - id: conditionItem_repairVerified
+-                          condition: =And("合格" in Topic.修理指示結果, "・なし" in Topic.修理指示結果)
++                          condition: =And(And("合格" in Topic.修理指示結果, Not("不合格" in Topic.修理指示結果)), "・なし" in Topic.修理指示結果)
+                           actions:
+                             - kind: SendActivity
+                               id: sendActivity_repairResult
+@@ -1511,10 +1515,8 @@
+                                 {Topic.修理指示結果}
+ 
+                                 お疲れさまでした。安全確保を最優先に、落ち着いて対応してください。
+-
+                             - kind: EndDialog
+                               id: endDialog_repairDone
+-
+                       elseActions:
+                         - kind: ConditionGroup
+                           id: conditionGroup_repairRetryLimit
+@@ -1528,27 +1530,22 @@
+                                     現時点で考えられる修理方法をお伝えします（十分に絞り込めていない可能性があります）。安全確保を最優先に対応してください。
+ 
+                                     {Topic.修理指示結果}
+-
+                                 - kind: EndDialog
+                                   id: endDialog_repairBestEffort
+-
+                           elseActions:
+                             - kind: SetVariable
+                               id: setVariable_repairRetryIncrement
+                               variable: Topic.修理確認再試行回数
+                               value: =Topic.修理確認再試行回数 + 1
+-
+                             - kind: Question
+                               id: question_repairMoreInfo
+                               interruptionPolicy:
+                                 allowInterruption: true
+-
+                               variable: Topic.修理追加回答
+-                              prompt: "{Topic.修理指示結果}"
++                              prompt: '{Topic.修理指示結果}'
+                               entity:
+                                 kind: StringPrebuiltEntity
+                                 sensitivityLevel: None
+-
+                             - kind: ConditionGroup
+                               id: conditionGroup_repairPurposeSwitchToJunkai
+                               conditions:
+@@ -1559,25 +1556,20 @@
+                                       id: setVariable_repairPurposeSwitchToJunkaiInput
+                                       variable: Global.巡回切替入力
+                                       value: =Topic.修理追加回答
+-
+                                     - kind: SetVariable
+                                       id: setVariable_repairPurposeSwitchToJunkaiImageReceptionOff
+                                       variable: Global.緊急保安画像受付中
+                                       value: =false
+-
+                                     - kind: EndDialog
+                                       id: endDialog_repairPurposeSwitchToJunkai
+-
+                               elseActions:
+                                 - kind: SetVariable
+                                   id: setVariable_appendRepairHistory
+                                   variable: Topic.追加情報履歴
+                                   value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.修理追加回答
+-
+                                 - kind: GotoAction
+                                   id: goto_repairAgain
+                                   actionId: setVariable_repairPrompt
+-
+               elseActions:
+                 - kind: SendActivity
+                   id: sendActivity_repairFailed

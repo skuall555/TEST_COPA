@@ -1,0 +1,158 @@
+{
+  "scope": "静的検証のみ。Copilot Studio読込・Power Fx実行・実ナレッジ・性能は未検証",
+  "files": [
+    {
+      "file": "1-マニュアル関連入口_optimized.yaml",
+      "yaml": "PASS (duplicate keys rejected)",
+      "unique_ids": 287,
+      "broken_goto": [],
+      "removed_ids": [],
+      "dependencies": "UNCHANGED",
+      "formula_delimiters": "PASS (not type validation)",
+      "read_before_write_baseline": [
+        {
+          "id": "conditionGroup_manualCheckBodyAvailable",
+          "variables": [
+            "確認予備結果"
+          ]
+        },
+        {
+          "id": "conditionGroup_manualReviseChunkEmpty",
+          "variables": [
+            "改訂予備結果"
+          ]
+        },
+        {
+          "id": "setVariable_manualCheckBodyMergedText",
+          "variables": [
+            "確認予備結果"
+          ]
+        },
+        {
+          "id": "setVariable_manualReviseSelectedMergedText",
+          "variables": [
+            "改訂予備結果"
+          ]
+        }
+      ],
+      "read_before_write_optimized": [],
+      "new_read_before_write_candidates": [],
+      "node_counts_before": {
+        "OnRecognizedIntent": 1,
+        "SetVariable": 81,
+        "ConditionGroup": 39,
+        "SearchKnowledgeSources": 2,
+        "SearchAndSummarizeContent": 15,
+        "SendActivity": 15,
+        "EndDialog": 16,
+        "Question": 8,
+        "GotoAction": 14,
+        "AnswerQuestionWithAI": 18,
+        "InvokeFlowAction": 5,
+        "CreateSearchQuery": 6,
+        "BeginDialog": 2
+      },
+      "node_counts_after": {
+        "OnRecognizedIntent": 1,
+        "SetVariable": 95,
+        "ConditionGroup": 43,
+        "SearchKnowledgeSources": 2,
+        "SearchAndSummarizeContent": 15,
+        "SendActivity": 16,
+        "EndDialog": 16,
+        "Question": 8,
+        "GotoAction": 15,
+        "AnswerQuestionWithAI": 20,
+        "InvokeFlowAction": 5,
+        "CreateSearchQuery": 6,
+        "BeginDialog": 2
+      },
+      "sha256": "4f8029eb08cd33720a9bf11eaefad8a9f4582cb8039bf02bdd4570158d425561"
+    },
+    {
+      "file": "3-9-緊急保安業務エージェント_optimized.yaml",
+      "yaml": "PASS (duplicate keys rejected)",
+      "unique_ids": 157,
+      "broken_goto": [],
+      "removed_ids": [],
+      "dependencies": "UNCHANGED",
+      "formula_delimiters": "PASS (not type validation)",
+      "read_before_write_baseline": [
+        {
+          "id": "setVariable_investigationPrompt",
+          "variables": [
+            "優先度判定結果"
+          ]
+        }
+      ],
+      "read_before_write_optimized": [
+        {
+          "id": "setVariable_investigationPrompt",
+          "variables": [
+            "優先度判定結果"
+          ]
+        }
+      ],
+      "new_read_before_write_candidates": [],
+      "node_counts_before": {
+        "OnRedirect": 1,
+        "SetVariable": 57,
+        "ConditionGroup": 23,
+        "GotoAction": 8,
+        "AnswerQuestionWithAI": 3,
+        "InvokeFlowAction": 1,
+        "SendActivity": 17,
+        "Question": 4,
+        "EndDialog": 14,
+        "SearchAndSummarizeContent": 4
+      },
+      "node_counts_after": {
+        "OnRedirect": 1,
+        "SetVariable": 57,
+        "ConditionGroup": 24,
+        "GotoAction": 8,
+        "AnswerQuestionWithAI": 3,
+        "InvokeFlowAction": 1,
+        "SendActivity": 17,
+        "Question": 4,
+        "EndDialog": 14,
+        "SearchAndSummarizeContent": 4
+      },
+      "sha256": "da08930248dd6a3ba62059e44fbc4aa10f1cb022f373fc42178938617bf485f8"
+    },
+    {
+      "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",
+      "yaml": "PASS (duplicate keys rejected)",
+      "unique_ids": 52,
+      "broken_goto": [],
+      "removed_ids": [],
+      "dependencies": "UNCHANGED",
+      "formula_delimiters": "PASS (not type validation)",
+      "read_before_write_baseline": [],
+      "read_before_write_optimized": [],
+      "new_read_before_write_candidates": [],
+      "node_counts_before": {
+        "OnActivity": 1,
+        "SetVariable": 20,
+        "ConditionGroup": 7,
+        "SendActivity": 7,
+        "EndDialog": 2,
+        "InvokeAIBuilderModelAction": 1,
+        "SearchAndSummarizeContent": 1,
+        "AnswerQuestionWithAI": 1
+      },
+      "node_counts_after": {
+        "OnActivity": 1,
+        "SetVariable": 22,
+        "ConditionGroup": 8,
+        "SendActivity": 7,
+        "EndDialog": 2,
+        "InvokeAIBuilderModelAction": 1,
+        "SearchAndSummarizeContent": 1,
+        "GotoAction": 1,
+        "AnswerQuestionWithAI": 1
+      },
+      "sha256": "684715528267421049229bfa149c4c380c4213d121052b42ddd2804931252d18"
+    }
+  ]
+}

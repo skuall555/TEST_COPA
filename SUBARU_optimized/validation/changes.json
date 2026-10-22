@@ -1,0 +1,251 @@
+[
+  {
+    "file": "1-マニュアル関連入口_optimized.yaml",
+    "changed": [
+      {
+        "id": "setVariable_buildVersion",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_manualCheckAnswerAudit",
+        "fields": [
+          "additionalInstructions",
+          "userInput"
+        ]
+      },
+      {
+        "id": "conditionGroup_manualCheckVerified",
+        "fields": [
+          "conditions"
+        ]
+      },
+      {
+        "id": "goto_manualCheckContinueAgain",
+        "fields": [
+          "actionId"
+        ]
+      },
+      {
+        "id": "goto_manualCheckAgain",
+        "fields": [
+          "actionId"
+        ]
+      },
+      {
+        "id": "sendActivity_manualCheckNoBody",
+        "fields": [
+          "activity"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseIndexSearchCount",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "createSearchQuery_manualReviseSelectedContext",
+        "fields": [
+          "userInput"
+        ]
+      },
+      {
+        "id": "createSearchQuery_manualReviseSelectedImpact",
+        "fields": [
+          "userInput"
+        ]
+      },
+      {
+        "id": "createSearchQuery_manualReviseSelectedContextEnrichment",
+        "fields": [
+          "userInput"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseChunkEmptyResponse",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "search_manualReviseFullText",
+        "fields": [
+          "userInput"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseNeedMore",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "search_manualReviseContinuation",
+        "fields": [
+          "additionalInstructions",
+          "userInput"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseExpandedText",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseCandidatePrompt",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_manualReviseCandidates",
+        "fields": [
+          "userInput"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseAuditPrompt",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_manualReviseFinalAudit",
+        "fields": [
+          "userInput"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseFormatterPrompt",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_manualReviseFormatter",
+        "fields": [
+          "userInput"
+        ]
+      },
+      {
+        "id": "conditionGroup_manualReviseFormatReady",
+        "fields": [
+          "conditions"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseFinalResponse",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_manualReviseFormatRepair",
+        "fields": [
+          "additionalInstructions",
+          "userInput"
+        ]
+      },
+      {
+        "id": "conditionGroup_manualReviseRepairFormatReady",
+        "fields": [
+          "conditions"
+        ]
+      },
+      {
+        "id": "setVariable_manualReviseRepairFinalResponse",
+        "fields": [
+          "value"
+        ]
+      }
+    ],
+    "added": [
+      "setVariable_guideDefault",
+      "setVariable_guideFallbackDefault",
+      "setVariable_classifyPromptDefault",
+      "conditionGroup_manualGuideBypass",
+      "goto_manualClassifierWithoutGuide",
+      "setVariable_checkOptionalReset",
+      "setVariable_checkGateReset",
+      "conditionGroup_checkCoverageForDocument",
+      "answer_manualCheckDirectCoverage",
+      "conditionGroup_checkAdditionalSearchNeeded",
+      "setVariable_checkApplicabilitySkipped",
+      "setVariable_checkMethodsSkipped",
+      "setVariable_checkExceptionsSkipped",
+      "setVariable_reviseIndexFlowCount",
+      "setVariable_reviseOptionalReset",
+      "setVariable_revisePlainCount",
+      "sendActivity_reviseChunkEmptyReason",
+      "search_manualReviseFullText_count",
+      "answer_manualReviseContextCoverage",
+      "search_manualReviseContinuation_count",
+      "conditionGroup_reviseMergeNeeded",
+      "setVariable_reviseCopyWithoutMerge"
+    ]
+  },
+  {
+    "file": "3-9-緊急保安業務エージェント_optimized.yaml",
+    "changed": [
+      {
+        "id": "setVariable_repairKnownPipe",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_repairCandidates",
+        "fields": [
+          "additionalInstructions"
+        ]
+      },
+      {
+        "id": "goto_repairChoiceAgain",
+        "fields": [
+          "actionId"
+        ]
+      },
+      {
+        "id": "conditionGroup_repairVerified",
+        "fields": [
+          "conditions"
+        ]
+      }
+    ],
+    "added": [
+      "conditionGroup_priorityDebugOnly"
+    ]
+  },
+  {
+    "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",
+    "changed": [
+      {
+        "id": "setVariable_prompt1",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_photoGuidelineJudge",
+        "fields": [
+          "additionalInstructions"
+        ]
+      },
+      {
+        "id": "conditionGroup_sectionsMissing",
+        "fields": [
+          "conditions"
+        ]
+      }
+    ],
+    "added": [
+      "conditionGroup_photoGuideUnavailable",
+      "setVariable_photoGuideUnavailableResult",
+      "goto_photoGuideUnavailableSections",
+      "setVariable_clearUnvalidatedPhotoDone"
+    ]
+  }
+]

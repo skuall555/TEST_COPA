@@ -1,0 +1,743 @@
+{
+  "main": [],
+  "setVariable_initialInput": [
+    "setVariable_buildVersion"
+  ],
+  "setVariable_buildVersion": [
+    "conditionGroup_probeMode"
+  ],
+  "conditionGroup_probeMode": [
+    "setVariable_history",
+    "setVariable_probeQuery"
+  ],
+  "setVariable_probeQuery": [
+    "searchKnowledge_probe09A"
+  ],
+  "searchKnowledge_probe09A": [
+    "searchSummarize_probe09B"
+  ],
+  "searchSummarize_probe09B": [
+    "searchKnowledge_probeGA"
+  ],
+  "searchKnowledge_probeGA": [
+    "searchSummarize_probeGB"
+  ],
+  "searchSummarize_probeGB": [
+    "setVariable_probeCount09"
+  ],
+  "setVariable_probeCount09": [
+    "setVariable_probeLen09"
+  ],
+  "setVariable_probeLen09": [
+    "setVariable_probeCountGuide"
+  ],
+  "setVariable_probeCountGuide": [
+    "setVariable_probeLenGuide"
+  ],
+  "setVariable_probeLenGuide": [
+    "setVariable_probeSumLen09"
+  ],
+  "setVariable_probeSumLen09": [
+    "setVariable_probeSumLenGuide"
+  ],
+  "setVariable_probeSumLenGuide": [
+    "sendActivity_probeResult"
+  ],
+  "sendActivity_probeResult": [
+    "endDialog_probeMode"
+  ],
+  "endDialog_probeMode": [],
+  "setVariable_history": [
+    "setVariable_purposeRetryCount"
+  ],
+  "setVariable_purposeRetryCount": [
+    "setVariable_purposeDetect"
+  ],
+  "setVariable_purposeDetect": [
+    "conditionGroup_purposeMissing"
+  ],
+  "conditionGroup_purposeMissing": [
+    "conditionGroup_purposeRetryLimit",
+    "setVariable_classifyRetryCount"
+  ],
+  "conditionGroup_purposeRetryLimit": [
+    "sendActivity_purposeGiveUp",
+    "setVariable_purposeRetryIncrement"
+  ],
+  "sendActivity_purposeGiveUp": [
+    "endDialog_purposeGiveUp"
+  ],
+  "endDialog_purposeGiveUp": [],
+  "setVariable_purposeRetryIncrement": [
+    "question_purposeMissing"
+  ],
+  "question_purposeMissing": [
+    "conditionGroup_probeFromPurpose"
+  ],
+  "conditionGroup_probeFromPurpose": [
+    "setVariable_appendPurposeHistory",
+    "setVariable_probeFromPurposeInput"
+  ],
+  "setVariable_probeFromPurposeInput": [
+    "goto_probeMode"
+  ],
+  "goto_probeMode": [
+    "conditionGroup_probeMode"
+  ],
+  "setVariable_appendPurposeHistory": [
+    "goto_purposeDetectAgain"
+  ],
+  "goto_purposeDetectAgain": [
+    "setVariable_purposeDetect"
+  ],
+  "setVariable_classifyRetryCount": [
+    "setVariable_guideDefault"
+  ],
+  "setVariable_guideDefault": [
+    "setVariable_guideFallbackDefault"
+  ],
+  "setVariable_guideFallbackDefault": [
+    "setVariable_classifyPromptDefault"
+  ],
+  "setVariable_classifyPromptDefault": [
+    "conditionGroup_manualGuideBypass"
+  ],
+  "conditionGroup_manualGuideBypass": [
+    "goto_manualClassifierWithoutGuide",
+    "setVariable_guideRetrievePrompt"
+  ],
+  "goto_manualClassifierWithoutGuide": [
+    "conditionGroup_skipFolderClassifyForManual"
+  ],
+  "setVariable_guideRetrievePrompt": [
+    "search_guideRetrieve"
+  ],
+  "search_guideRetrieve": [
+    "conditionGroup_guideRetrieveRetry"
+  ],
+  "conditionGroup_guideRetrieveRetry": [
+    "search_guideRetrieveRetry",
+    "setVariable_guideFallbackUsed"
+  ],
+  "search_guideRetrieveRetry": [
+    "setVariable_guideFallbackUsed"
+  ],
+  "setVariable_guideFallbackUsed": [
+    "conditionGroup_guideFallback"
+  ],
+  "conditionGroup_guideFallback": [
+    "conditionGroup_guideRetrieveSucceeded",
+    "setVariable_guideFallback"
+  ],
+  "setVariable_guideFallback": [
+    "conditionGroup_guideRetrieveSucceeded"
+  ],
+  "conditionGroup_guideRetrieveSucceeded": [
+    "sendActivity_guideRetrieveFailed",
+    "setVariable_classifyPrompt"
+  ],
+  "setVariable_classifyPrompt": [
+    "conditionGroup_skipFolderClassifyForManual"
+  ],
+  "conditionGroup_skipFolderClassifyForManual": [
+    "answer_classify",
+    "setVariable_manualCrossSearchClassification"
+  ],
+  "setVariable_manualCrossSearchClassification": [
+    "conditionGroup_classifySucceeded"
+  ],
+  "answer_classify": [
+    "conditionGroup_classifySucceeded"
+  ],
+  "conditionGroup_classifySucceeded": [
+    "sendActivity_classifyFailed",
+    "setVariable_selectedFolderRaw"
+  ],
+  "setVariable_selectedFolderRaw": [
+    "setVariable_targetFolder"
+  ],
+  "setVariable_targetFolder": [
+    "setVariable_needConfirmSection"
+  ],
+  "setVariable_needConfirmSection": [
+    "setVariable_needConfirmExists"
+  ],
+  "setVariable_needConfirmExists": [
+    "setVariable_signalScanText"
+  ],
+  "setVariable_signalScanText": [
+    "conditionGroup_emergencySignalFallback"
+  ],
+  "conditionGroup_emergencySignalFallback": [
+    "conditionGroup_needMoreInfo",
+    "setVariable_targetFolderEmergency"
+  ],
+  "setVariable_targetFolderEmergency": [
+    "conditionGroup_needMoreInfo"
+  ],
+  "conditionGroup_needMoreInfo": [
+    "conditionGroup_classifyRetryLimit",
+    "conditionGroup_purposeManualCheck"
+  ],
+  "conditionGroup_classifyRetryLimit": [
+    "conditionGroup_giveUpButNothingToAsk",
+    "setVariable_classifyRetryIncrement"
+  ],
+  "conditionGroup_giveUpButNothingToAsk": [
+    "question_classifyLastResort",
+    "setVariable_targetFolderDefault"
+  ],
+  "setVariable_targetFolderDefault": [
+    "conditionGroup_purposeManualCheck"
+  ],
+  "question_classifyLastResort": [
+    "setVariable_appendClassifyHistoryLastResort"
+  ],
+  "setVariable_appendClassifyHistoryLastResort": [
+    "setVariable_targetFolderDefaultAfterAsk"
+  ],
+  "setVariable_targetFolderDefaultAfterAsk": [
+    "conditionGroup_purposeManualCheck"
+  ],
+  "setVariable_classifyRetryIncrement": [
+    "conditionGroup_classifyWrongFolderName"
+  ],
+  "conditionGroup_classifyWrongFolderName": [
+    "conditionGroup_nothingToAsk",
+    "setVariable_appendClassifyCorrection"
+  ],
+  "setVariable_appendClassifyCorrection": [
+    "goto_classifyAgainAfterCorrection"
+  ],
+  "goto_classifyAgainAfterCorrection": [
+    "setVariable_classifyPrompt"
+  ],
+  "conditionGroup_nothingToAsk": [
+    "question_classifyMoreInfo",
+    "setVariable_appendClassifyRetryNote"
+  ],
+  "setVariable_appendClassifyRetryNote": [
+    "goto_classifyAgainNothingToAsk"
+  ],
+  "goto_classifyAgainNothingToAsk": [
+    "setVariable_classifyPrompt"
+  ],
+  "question_classifyMoreInfo": [
+    "setVariable_appendClassifyHistory"
+  ],
+  "setVariable_appendClassifyHistory": [
+    "goto_classifyAgain"
+  ],
+  "goto_classifyAgain": [
+    "setVariable_classifyPrompt"
+  ],
+  "conditionGroup_purposeManualCheck": [
+    "conditionGroup_purposeManualRevise",
+    "setVariable_manualCheckRetryCount"
+  ],
+  "setVariable_manualCheckRetryCount": [
+    "answer_manualCheckModeClassify"
+  ],
+  "answer_manualCheckModeClassify": [
+    "invokeFlowAction_manualCheckIndexAll"
+  ],
+  "invokeFlowAction_manualCheckIndexAll": [
+    "setVariable_checkOptionalReset"
+  ],
+  "setVariable_checkOptionalReset": [
+    "setVariable_checkGateReset"
+  ],
+  "setVariable_checkGateReset": [
+    "answer_manualCheckIndexCompare"
+  ],
+  "answer_manualCheckIndexCompare": [
+    "answer_manualCheckIndexAudit"
+  ],
+  "answer_manualCheckIndexAudit": [
+    "searchKnowledge_manualCheckBodyRaw"
+  ],
+  "searchKnowledge_manualCheckBodyRaw": [
+    "conditionGroup_checkCoverageForDocument"
+  ],
+  "conditionGroup_checkCoverageForDocument": [
+    "answer_manualCheckDirectCoverage",
+    "conditionGroup_checkAdditionalSearchNeeded"
+  ],
+  "answer_manualCheckDirectCoverage": [
+    "conditionGroup_checkAdditionalSearchNeeded"
+  ],
+  "conditionGroup_checkAdditionalSearchNeeded": [
+    "createSearchQuery_manualCheckApplicability",
+    "setVariable_checkApplicabilitySkipped"
+  ],
+  "createSearchQuery_manualCheckApplicability": [
+    "searchKnowledge_manualCheckApplicability"
+  ],
+  "searchKnowledge_manualCheckApplicability": [
+    "createSearchQuery_manualCheckMethodList"
+  ],
+  "createSearchQuery_manualCheckMethodList": [
+    "searchKnowledge_manualCheckMethodList"
+  ],
+  "searchKnowledge_manualCheckMethodList": [
+    "createSearchQuery_manualCheckExceptions"
+  ],
+  "createSearchQuery_manualCheckExceptions": [
+    "searchKnowledge_manualCheckExceptions"
+  ],
+  "searchKnowledge_manualCheckExceptions": [
+    "conditionGroup_manualCheckPlainRetry"
+  ],
+  "setVariable_checkApplicabilitySkipped": [
+    "setVariable_checkMethodsSkipped"
+  ],
+  "setVariable_checkMethodsSkipped": [
+    "setVariable_checkExceptionsSkipped"
+  ],
+  "setVariable_checkExceptionsSkipped": [
+    "conditionGroup_manualCheckPlainRetry"
+  ],
+  "conditionGroup_manualCheckPlainRetry": [
+    "searchKnowledge_manualCheckPlainRetry",
+    "setVariable_manualCheckBodyMergedText"
+  ],
+  "searchKnowledge_manualCheckPlainRetry": [
+    "setVariable_manualCheckBodyMergedText"
+  ],
+  "setVariable_manualCheckBodyMergedText": [
+    "setVariable_manualCheckBodyLength"
+  ],
+  "setVariable_manualCheckBodyLength": [
+    "setVariable_manualCheckBodyHead"
+  ],
+  "setVariable_manualCheckBodyHead": [
+    "conditionGroup_manualCheckBodyAvailable"
+  ],
+  "conditionGroup_manualCheckBodyAvailable": [
+    "sendActivity_manualCheckNoBody",
+    "setVariable_manualCheckPrompt"
+  ],
+  "setVariable_manualCheckPrompt": [
+    "answer_manualCheckBodyFirst"
+  ],
+  "answer_manualCheckBodyFirst": [
+    "conditionGroup_manualCheckRecommendationRanking"
+  ],
+  "conditionGroup_manualCheckRecommendationRanking": [
+    "answer_manualCheckRankFit",
+    "setVariable_manualCheckNoRanking"
+  ],
+  "answer_manualCheckRankFit": [
+    "answer_manualCheckRankDirectness"
+  ],
+  "answer_manualCheckRankDirectness": [
+    "answer_manualCheckRankCertainty"
+  ],
+  "answer_manualCheckRankCertainty": [
+    "answer_manualCheckRankConsensus"
+  ],
+  "answer_manualCheckRankConsensus": [
+    "answer_manualCheckAnswerAudit"
+  ],
+  "setVariable_manualCheckNoRanking": [
+    "answer_manualCheckAnswerAudit"
+  ],
+  "answer_manualCheckAnswerAudit": [
+    "invokeFlowAction_caseSaveManualCheckEveryResult"
+  ],
+  "invokeFlowAction_caseSaveManualCheckEveryResult": [
+    "conditionGroup_manualCheckVerified"
+  ],
+  "conditionGroup_manualCheckVerified": [
+    "conditionGroup_manualCheckRetryLimit",
+    "sendActivity_manualCheckResult"
+  ],
+  "sendActivity_manualCheckResult": [
+    "question_manualCheckContinue"
+  ],
+  "question_manualCheckContinue": [
+    "conditionGroup_manualCheckContinueExit"
+  ],
+  "conditionGroup_manualCheckContinueExit": [
+    "conditionGroup_manualCheckContinuePurposeSwitch",
+    "endDialog_manualCheckDone"
+  ],
+  "endDialog_manualCheckDone": [],
+  "conditionGroup_manualCheckContinuePurposeSwitch": [
+    "setVariable_appendManualCheckContinueHistory",
+    "setVariable_manualCheckContinueSwitchInitialInput"
+  ],
+  "setVariable_manualCheckContinueSwitchInitialInput": [
+    "setVariable_manualCheckContinueSwitchClearHistory"
+  ],
+  "setVariable_manualCheckContinueSwitchClearHistory": [
+    "setVariable_manualCheckContinueSwitchPurposeRetryReset"
+  ],
+  "setVariable_manualCheckContinueSwitchPurposeRetryReset": [
+    "goto_manualCheckContinueSwitchPurposeDetect"
+  ],
+  "goto_manualCheckContinueSwitchPurposeDetect": [
+    "setVariable_purposeDetect"
+  ],
+  "setVariable_appendManualCheckContinueHistory": [
+    "goto_manualCheckContinueAgain"
+  ],
+  "goto_manualCheckContinueAgain": [
+    "answer_manualCheckModeClassify"
+  ],
+  "conditionGroup_manualCheckRetryLimit": [
+    "sendActivity_manualCheckBestEffort",
+    "setVariable_manualCheckRetryIncrement"
+  ],
+  "sendActivity_manualCheckBestEffort": [
+    "endDialog_manualCheckBestEffort"
+  ],
+  "endDialog_manualCheckBestEffort": [],
+  "setVariable_manualCheckRetryIncrement": [
+    "question_manualCheckMoreInfo"
+  ],
+  "question_manualCheckMoreInfo": [
+    "conditionGroup_manualCheckPurposeSwitch"
+  ],
+  "conditionGroup_manualCheckPurposeSwitch": [
+    "setVariable_appendManualCheckHistory",
+    "setVariable_manualCheckSwitchInitialInput"
+  ],
+  "setVariable_manualCheckSwitchInitialInput": [
+    "setVariable_manualCheckSwitchClearHistory"
+  ],
+  "setVariable_manualCheckSwitchClearHistory": [
+    "setVariable_manualCheckSwitchPurposeRetryReset"
+  ],
+  "setVariable_manualCheckSwitchPurposeRetryReset": [
+    "goto_manualCheckSwitchPurposeDetect"
+  ],
+  "goto_manualCheckSwitchPurposeDetect": [
+    "setVariable_purposeDetect"
+  ],
+  "setVariable_appendManualCheckHistory": [
+    "goto_manualCheckAgain"
+  ],
+  "goto_manualCheckAgain": [
+    "answer_manualCheckModeClassify"
+  ],
+  "sendActivity_manualCheckNoBody": [
+    "endDialog_manualCheckNoBody"
+  ],
+  "endDialog_manualCheckNoBody": [],
+  "conditionGroup_purposeManualRevise": [
+    "conditionGroup_purposeFieldAdvice",
+    "setVariable_manualReviseSearchPass"
+  ],
+  "setVariable_manualReviseSearchPass": [
+    "setVariable_manualReviseDocumentRetryInit"
+  ],
+  "setVariable_manualReviseDocumentRetryInit": [
+    "setVariable_manualReviseDocumentExcludeInit"
+  ],
+  "setVariable_manualReviseDocumentExcludeInit": [
+    "invokeFlowAction_manualReviseIndexAll"
+  ],
+  "invokeFlowAction_manualReviseIndexAll": [
+    "setVariable_reviseIndexFlowCount"
+  ],
+  "setVariable_reviseIndexFlowCount": [
+    "answer_manualReviseIndexDocumentSelect"
+  ],
+  "answer_manualReviseIndexDocumentSelect": [
+    "setVariable_manualReviseIndexSearchCount"
+  ],
+  "setVariable_manualReviseIndexSearchCount": [
+    "setVariable_manualReviseCandidateTitleTable"
+  ],
+  "setVariable_manualReviseCandidateTitleTable": [
+    "conditionGroup_manualReviseCandidateAvailable"
+  ],
+  "conditionGroup_manualReviseCandidateAvailable": [
+    "conditionGroup_manualReviseCandidateNoResultLimit",
+    "setVariable_manualReviseCandidateListText"
+  ],
+  "setVariable_manualReviseCandidateListText": [
+    "question_manualReviseDocumentChoice"
+  ],
+  "question_manualReviseDocumentChoice": [
+    "conditionGroup_manualReviseDocumentChoiceZero"
+  ],
+  "conditionGroup_manualReviseDocumentChoiceZero": [
+    "answer_manualReviseDocumentChoiceResolve",
+    "conditionGroup_manualReviseDocumentResearchLimit"
+  ],
+  "conditionGroup_manualReviseDocumentResearchLimit": [
+    "sendActivity_manualReviseDocumentResearchLimit",
+    "setVariable_manualReviseDocumentResearchIncrement"
+  ],
+  "sendActivity_manualReviseDocumentResearchLimit": [
+    "endDialog_manualReviseDocumentResearchLimit"
+  ],
+  "endDialog_manualReviseDocumentResearchLimit": [],
+  "setVariable_manualReviseDocumentResearchIncrement": [
+    "setVariable_manualReviseDocumentExcludeAppend"
+  ],
+  "setVariable_manualReviseDocumentExcludeAppend": [
+    "goto_manualReviseDocumentCandidatesAgain"
+  ],
+  "goto_manualReviseDocumentCandidatesAgain": [
+    "answer_manualReviseIndexDocumentSelect"
+  ],
+  "answer_manualReviseDocumentChoiceResolve": [
+    "conditionGroup_manualReviseDocumentChoiceValid"
+  ],
+  "conditionGroup_manualReviseDocumentChoiceValid": [
+    "sendActivity_manualReviseDocumentChoiceInvalid",
+    "setVariable_manualReviseSelectedDocumentsFromChoice"
+  ],
+  "setVariable_manualReviseSelectedDocumentsFromChoice": [
+    "createSearchQuery_manualReviseSelectedContext"
+  ],
+  "sendActivity_manualReviseDocumentChoiceInvalid": [
+    "goto_manualReviseDocumentChoiceAgain"
+  ],
+  "goto_manualReviseDocumentChoiceAgain": [
+    "question_manualReviseDocumentChoice"
+  ],
+  "conditionGroup_manualReviseCandidateNoResultLimit": [
+    "sendActivity_manualReviseCandidateNoResultLimit",
+    "setVariable_manualReviseCandidateNoResultIncrement"
+  ],
+  "sendActivity_manualReviseCandidateNoResultLimit": [
+    "endDialog_manualReviseCandidateNoResultLimit"
+  ],
+  "endDialog_manualReviseCandidateNoResultLimit": [],
+  "setVariable_manualReviseCandidateNoResultIncrement": [
+    "goto_manualReviseCandidateNoResultAgain"
+  ],
+  "goto_manualReviseCandidateNoResultAgain": [
+    "answer_manualReviseIndexDocumentSelect"
+  ],
+  "createSearchQuery_manualReviseSelectedContext": [
+    "setVariable_reviseOptionalReset"
+  ],
+  "setVariable_reviseOptionalReset": [
+    "searchKnowledge_manualReviseSelectedContext"
+  ],
+  "searchKnowledge_manualReviseSelectedContext": [
+    "setVariable_manualReviseSelectedContextText"
+  ],
+  "setVariable_manualReviseSelectedContextText": [
+    "setVariable_manualReviseSelectedContextCount"
+  ],
+  "setVariable_manualReviseSelectedContextCount": [
+    "createSearchQuery_manualReviseSelectedImpact"
+  ],
+  "createSearchQuery_manualReviseSelectedImpact": [
+    "searchKnowledge_manualReviseSelectedImpact"
+  ],
+  "searchKnowledge_manualReviseSelectedImpact": [
+    "setVariable_manualReviseSelectedImpactText"
+  ],
+  "setVariable_manualReviseSelectedImpactText": [
+    "setVariable_manualReviseSelectedImpactCount"
+  ],
+  "setVariable_manualReviseSelectedImpactCount": [
+    "createSearchQuery_manualReviseSelectedContextEnrichment"
+  ],
+  "createSearchQuery_manualReviseSelectedContextEnrichment": [
+    "searchKnowledge_manualReviseSelectedContextEnrichment"
+  ],
+  "searchKnowledge_manualReviseSelectedContextEnrichment": [
+    "setVariable_manualReviseSelectedContextEnrichmentText"
+  ],
+  "setVariable_manualReviseSelectedContextEnrichmentText": [
+    "setVariable_manualReviseSelectedContextEnrichmentCount"
+  ],
+  "setVariable_manualReviseSelectedContextEnrichmentCount": [
+    "conditionGroup_manualRevisePlainRetry"
+  ],
+  "conditionGroup_manualRevisePlainRetry": [
+    "searchKnowledge_manualRevisePlainRetry",
+    "setVariable_manualReviseSelectedMergedText"
+  ],
+  "searchKnowledge_manualRevisePlainRetry": [
+    "setVariable_revisePlainCount"
+  ],
+  "setVariable_revisePlainCount": [
+    "setVariable_manualReviseSelectedMergedText"
+  ],
+  "setVariable_manualReviseSelectedMergedText": [
+    "conditionGroup_manualReviseChunkEmpty"
+  ],
+  "conditionGroup_manualReviseChunkEmpty": [
+    "answer_manualReviseAnchor",
+    "setVariable_manualReviseChunkEmptyResponse"
+  ],
+  "setVariable_manualReviseChunkEmptyResponse": [
+    "sendActivity_reviseChunkEmptyReason"
+  ],
+  "sendActivity_reviseChunkEmptyReason": [
+    "endDialog_manualReviseChunkEmpty"
+  ],
+  "endDialog_manualReviseChunkEmpty": [],
+  "answer_manualReviseAnchor": [
+    "setVariable_manualReviseAnchorHeading"
+  ],
+  "setVariable_manualReviseAnchorHeading": [
+    "setVariable_manualReviseAnchorSentence"
+  ],
+  "setVariable_manualReviseAnchorSentence": [
+    "setVariable_manualReviseFullTextPrompt"
+  ],
+  "setVariable_manualReviseFullTextPrompt": [
+    "search_manualReviseFullText"
+  ],
+  "search_manualReviseFullText": [
+    "search_manualReviseFullText_count"
+  ],
+  "search_manualReviseFullText_count": [
+    "answer_manualReviseContextCoverage"
+  ],
+  "answer_manualReviseContextCoverage": [
+    "setVariable_manualReviseNeedMore"
+  ],
+  "setVariable_manualReviseNeedMore": [
+    "setVariable_manualReviseContinuation"
+  ],
+  "setVariable_manualReviseContinuation": [
+    "conditionGroup_manualReviseNeedMore"
+  ],
+  "conditionGroup_manualReviseNeedMore": [
+    "conditionGroup_reviseMergeNeeded",
+    "search_manualReviseContinuation"
+  ],
+  "search_manualReviseContinuation": [
+    "search_manualReviseContinuation_count"
+  ],
+  "search_manualReviseContinuation_count": [
+    "conditionGroup_reviseMergeNeeded"
+  ],
+  "conditionGroup_reviseMergeNeeded": [
+    "answer_manualReviseMergeFullText",
+    "setVariable_reviseCopyWithoutMerge"
+  ],
+  "answer_manualReviseMergeFullText": [
+    "setVariable_manualReviseExpandedText"
+  ],
+  "setVariable_reviseCopyWithoutMerge": [
+    "setVariable_manualReviseExpandedText"
+  ],
+  "setVariable_manualReviseExpandedText": [
+    "setVariable_manualReviseCandidatePrompt"
+  ],
+  "setVariable_manualReviseCandidatePrompt": [
+    "answer_manualReviseCandidates"
+  ],
+  "answer_manualReviseCandidates": [
+    "setVariable_manualReviseAuditPrompt"
+  ],
+  "setVariable_manualReviseAuditPrompt": [
+    "answer_manualReviseFinalAudit"
+  ],
+  "answer_manualReviseFinalAudit": [
+    "setVariable_manualReviseFormatterPrompt"
+  ],
+  "setVariable_manualReviseFormatterPrompt": [
+    "answer_manualReviseFormatter"
+  ],
+  "answer_manualReviseFormatter": [
+    "conditionGroup_manualReviseFormatReady"
+  ],
+  "conditionGroup_manualReviseFormatReady": [
+    "answer_manualReviseFormatRepair",
+    "setVariable_manualReviseFinalResponse"
+  ],
+  "setVariable_manualReviseFinalResponse": [
+    "invokeFlowAction_caseSaveManualRevision"
+  ],
+  "invokeFlowAction_caseSaveManualRevision": [
+    "sendActivity_manualReviseFinalResponse"
+  ],
+  "sendActivity_manualReviseFinalResponse": [
+    "question_manualReviseContinue"
+  ],
+  "question_manualReviseContinue": [
+    "conditionGroup_manualReviseContinueExit"
+  ],
+  "conditionGroup_manualReviseContinueExit": [
+    "endDialog_manualReviseFinal",
+    "setVariable_appendManualReviseContinueHistory"
+  ],
+  "endDialog_manualReviseFinal": [],
+  "setVariable_appendManualReviseContinueHistory": [
+    "goto_manualReviseContinueAgain"
+  ],
+  "goto_manualReviseContinueAgain": [
+    "createSearchQuery_manualReviseSelectedContext"
+  ],
+  "answer_manualReviseFormatRepair": [
+    "conditionGroup_manualReviseRepairFormatReady"
+  ],
+  "conditionGroup_manualReviseRepairFormatReady": [
+    "sendActivity_manualReviseFormatHardFail",
+    "setVariable_manualReviseRepairFinalResponse"
+  ],
+  "setVariable_manualReviseRepairFinalResponse": [
+    "invokeFlowAction_caseSaveManualRevisionRepair"
+  ],
+  "invokeFlowAction_caseSaveManualRevisionRepair": [
+    "sendActivity_manualReviseRepairFinalResponse"
+  ],
+  "sendActivity_manualReviseRepairFinalResponse": [
+    "question_manualReviseContinueRepair"
+  ],
+  "question_manualReviseContinueRepair": [
+    "conditionGroup_manualReviseContinueExitRepair"
+  ],
+  "conditionGroup_manualReviseContinueExitRepair": [
+    "endDialog_manualReviseRepairFinal",
+    "setVariable_appendManualReviseContinueHistoryRepair"
+  ],
+  "endDialog_manualReviseRepairFinal": [],
+  "setVariable_appendManualReviseContinueHistoryRepair": [
+    "goto_manualReviseContinueAgainRepair"
+  ],
+  "goto_manualReviseContinueAgainRepair": [
+    "createSearchQuery_manualReviseSelectedContext"
+  ],
+  "sendActivity_manualReviseFormatHardFail": [
+    "endDialog_manualReviseFormatHardFail"
+  ],
+  "endDialog_manualReviseFormatHardFail": [],
+  "conditionGroup_purposeFieldAdvice": [
+    "conditionGroup_routeToEmergency",
+    "sendActivity_unknownPurpose"
+  ],
+  "conditionGroup_routeToEmergency": [
+    "64VMOA",
+    "sendActivity_noHandlerYet"
+  ],
+  "64VMOA": [
+    "endDialog_afterEmergency"
+  ],
+  "endDialog_afterEmergency": [],
+  "sendActivity_noHandlerYet": [
+    "endDialog_noHandlerYet"
+  ],
+  "endDialog_noHandlerYet": [],
+  "sendActivity_unknownPurpose": [
+    "endDialog_unknownPurpose"
+  ],
+  "endDialog_unknownPurpose": [],
+  "sendActivity_classifyFailed": [
+    "endDialog_classifyFailed"
+  ],
+  "endDialog_classifyFailed": [],
+  "sendActivity_guideRetrieveFailed": [
+    "setVariable_targetFolderOnGuideFailure"
+  ],
+  "setVariable_targetFolderOnGuideFailure": [
+    "beginDialog_emergencyOnGuideFailure"
+  ],
+  "beginDialog_emergencyOnGuideFailure": [
+    "endDialog_guideRetrieveFailed"
+  ],
+  "endDialog_guideRetrieveFailed": []
+}

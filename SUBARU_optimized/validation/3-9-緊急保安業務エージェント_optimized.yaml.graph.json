@@ -1,0 +1,395 @@
+{
+  "main": [],
+  "setVariable_priorityRetryCount": [
+    "setVariable_repairModeInit"
+  ],
+  "setVariable_repairModeInit": [
+    "conditionGroup_repairRequestedAtStart"
+  ],
+  "conditionGroup_repairRequestedAtStart": [
+    "setVariable_repairModeOnAtStart",
+    "setVariable_syncEmergencyInitialToGlobal"
+  ],
+  "setVariable_repairModeOnAtStart": [
+    "goto_repairSelectAtStart"
+  ],
+  "goto_repairSelectAtStart": [
+    "setVariable_repairSelectInit"
+  ],
+  "setVariable_syncEmergencyInitialToGlobal": [
+    "setVariable_syncEmergencyHistoryToGlobal"
+  ],
+  "setVariable_syncEmergencyHistoryToGlobal": [
+    "setVariable_imageReceptionOffAtStart"
+  ],
+  "setVariable_imageReceptionOffAtStart": [
+    "setVariable_priorityGuideRetrievePrompt"
+  ],
+  "setVariable_priorityGuideRetrievePrompt": [
+    "setVariable_priorityGuideFixed"
+  ],
+  "setVariable_priorityGuideFixed": [
+    "conditionGroup_priorityGuideRetrieveSucceeded"
+  ],
+  "conditionGroup_priorityGuideRetrieveSucceeded": [
+    "setVariable_imageReceptionOffGuideFailed",
+    "setVariable_priorityPrompt"
+  ],
+  "setVariable_priorityPrompt": [
+    "answer_priority"
+  ],
+  "answer_priority": [
+    "conditionGroup_prioritySucceeded"
+  ],
+  "conditionGroup_prioritySucceeded": [
+    "invokeFlowAction_caseSaveFieldAdvice",
+    "setVariable_imageReceptionOffPriorityFailed"
+  ],
+  "invokeFlowAction_caseSaveFieldAdvice": [
+    "conditionGroup_priorityLoopNeeded"
+  ],
+  "conditionGroup_priorityLoopNeeded": [
+    "conditionGroup_priorityRetryLimit",
+    "setVariable_imageReceptionOffDone"
+  ],
+  "conditionGroup_priorityRetryLimit": [
+    "setVariable_imageReceptionOffGiveUp",
+    "setVariable_priorityRetryIncrement"
+  ],
+  "setVariable_imageReceptionOffGiveUp": [
+    "sendActivity_priorityGiveUp"
+  ],
+  "sendActivity_priorityGiveUp": [
+    "setVariable_imageReceptionOffDone"
+  ],
+  "setVariable_priorityRetryIncrement": [
+    "setVariable_syncInitialBeforeWait"
+  ],
+  "setVariable_syncInitialBeforeWait": [
+    "setVariable_syncHistoryBeforeWait"
+  ],
+  "setVariable_syncHistoryBeforeWait": [
+    "setVariable_imageReceptionOn"
+  ],
+  "setVariable_imageReceptionOn": [
+    "question_priorityUpdate"
+  ],
+  "question_priorityUpdate": [
+    "setVariable_resyncHistoryFromGlobal"
+  ],
+  "setVariable_resyncHistoryFromGlobal": [
+    "conditionGroup_repairRequestedInPriority"
+  ],
+  "conditionGroup_repairRequestedInPriority": [
+    "conditionGroup_priorityPurposeSwitchToJunkai",
+    "setVariable_appendRepairRequestHistory"
+  ],
+  "setVariable_appendRepairRequestHistory": [
+    "setVariable_syncHistoryBeforeRepair"
+  ],
+  "setVariable_syncHistoryBeforeRepair": [
+    "setVariable_repairModeOn"
+  ],
+  "setVariable_repairModeOn": [
+    "goto_repairSelect"
+  ],
+  "goto_repairSelect": [
+    "setVariable_repairSelectInit"
+  ],
+  "conditionGroup_priorityPurposeSwitchToJunkai": [
+    "setVariable_appendPriorityHistory",
+    "setVariable_priorityPurposeSwitchToJunkaiInput"
+  ],
+  "setVariable_priorityPurposeSwitchToJunkaiInput": [
+    "setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff"
+  ],
+  "setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff": [
+    "endDialog_priorityPurposeSwitchToJunkai"
+  ],
+  "endDialog_priorityPurposeSwitchToJunkai": [],
+  "setVariable_appendPriorityHistory": [
+    "setVariable_syncHistoryAfterText"
+  ],
+  "setVariable_syncHistoryAfterText": [
+    "setVariable_keepImageReceptionOn"
+  ],
+  "setVariable_keepImageReceptionOn": [
+    "conditionGroup_priorityDebugOnly"
+  ],
+  "conditionGroup_priorityDebugOnly": [
+    "goto_priorityAgain",
+    "sendActivity_debugPriorityHistory"
+  ],
+  "sendActivity_debugPriorityHistory": [
+    "goto_priorityAgain"
+  ],
+  "goto_priorityAgain": [
+    "setVariable_priorityPrompt"
+  ],
+  "setVariable_imageReceptionOffDone": [
+    "sendActivity_priorityDone"
+  ],
+  "sendActivity_priorityDone": [
+    "setVariable_repairSelectInit"
+  ],
+  "setVariable_imageReceptionOffPriorityFailed": [
+    "sendActivity_priorityFailed"
+  ],
+  "sendActivity_priorityFailed": [
+    "endDialog_priorityFailed"
+  ],
+  "endDialog_priorityFailed": [],
+  "setVariable_imageReceptionOffGuideFailed": [
+    "sendActivity_priorityGuideRetrieveFailed"
+  ],
+  "sendActivity_priorityGuideRetrieveFailed": [
+    "endDialog_priorityGuideRetrieveFailed"
+  ],
+  "endDialog_priorityGuideRetrieveFailed": [],
+  "setVariable_repairSelectInit": [
+    "conditionGroup_repairSelectMode"
+  ],
+  "conditionGroup_repairSelectMode": [
+    "setVariable_investigationRetryCount",
+    "setVariable_repairExcluded"
+  ],
+  "setVariable_repairExcluded": [
+    "setVariable_repairScanText"
+  ],
+  "setVariable_repairScanText": [
+    "setVariable_repairKnownPipe"
+  ],
+  "setVariable_repairKnownPipe": [
+    "setVariable_repairKnownSize"
+  ],
+  "setVariable_repairKnownSize": [
+    "setVariable_repairKnownCategory"
+  ],
+  "setVariable_repairKnownCategory": [
+    "setVariable_repairKnownEnv"
+  ],
+  "setVariable_repairKnownEnv": [
+    "setVariable_repairKnownLeak"
+  ],
+  "setVariable_repairKnownLeak": [
+    "setVariable_repairConditionSummary"
+  ],
+  "setVariable_repairConditionSummary": [
+    "setVariable_repairKnownList"
+  ],
+  "setVariable_repairKnownList": [
+    "setVariable_repairCandidatePrompt"
+  ],
+  "setVariable_repairCandidatePrompt": [
+    "search_repairScope"
+  ],
+  "search_repairScope": [
+    "answer_repairCandidates"
+  ],
+  "answer_repairCandidates": [
+    "conditionGroup_repairCandidatesFound"
+  ],
+  "conditionGroup_repairCandidatesFound": [
+    "question_repairChoice",
+    "sendActivity_repairNoCandidate"
+  ],
+  "question_repairChoice": [
+    "setVariable_repairChoiceNumber"
+  ],
+  "setVariable_repairChoiceNumber": [
+    "conditionGroup_repairChoiceZero"
+  ],
+  "conditionGroup_repairChoiceZero": [
+    "conditionGroup_repairChoiceZeroLimit",
+    "setVariable_repairExcludedAppend"
+  ],
+  "setVariable_repairExcludedAppend": [
+    "setVariable_repairResearchIncrement"
+  ],
+  "setVariable_repairResearchIncrement": [
+    "sendActivity_repairResearch"
+  ],
+  "sendActivity_repairResearch": [
+    "goto_repairCandidatesAgain"
+  ],
+  "goto_repairCandidatesAgain": [
+    "setVariable_repairCandidatePrompt"
+  ],
+  "conditionGroup_repairChoiceZeroLimit": [
+    "sendActivity_repairZeroLimit",
+    "setVariable_repairChosenLine"
+  ],
+  "sendActivity_repairZeroLimit": [
+    "endDialog_repairZeroLimit"
+  ],
+  "endDialog_repairZeroLimit": [],
+  "setVariable_repairChosenLine": [
+    "setVariable_repairChosenName"
+  ],
+  "setVariable_repairChosenName": [
+    "conditionGroup_repairChosenResolved"
+  ],
+  "conditionGroup_repairChosenResolved": [
+    "sendActivity_repairChoiceUnresolved",
+    "setVariable_repairProcedurePrompt"
+  ],
+  "setVariable_repairProcedurePrompt": [
+    "search_repairProcedure"
+  ],
+  "search_repairProcedure": [
+    "answer_repairProcedure"
+  ],
+  "answer_repairProcedure": [
+    "conditionGroup_repairProcedureFound"
+  ],
+  "conditionGroup_repairProcedureFound": [
+    "sendActivity_repairProcedure",
+    "sendActivity_repairProcedureNotFound"
+  ],
+  "sendActivity_repairProcedure": [
+    "endDialog_repairProcedureDone"
+  ],
+  "endDialog_repairProcedureDone": [],
+  "sendActivity_repairProcedureNotFound": [
+    "endDialog_repairProcedureNotFound"
+  ],
+  "endDialog_repairProcedureNotFound": [],
+  "sendActivity_repairChoiceUnresolved": [
+    "goto_repairChoiceAgain"
+  ],
+  "goto_repairChoiceAgain": [
+    "question_repairChoice"
+  ],
+  "sendActivity_repairNoCandidate": [
+    "endDialog_repairNoCandidate"
+  ],
+  "endDialog_repairNoCandidate": [],
+  "setVariable_investigationRetryCount": [
+    "setVariable_investigationPrompt"
+  ],
+  "setVariable_investigationPrompt": [
+    "search_investigation"
+  ],
+  "search_investigation": [
+    "conditionGroup_investigationSucceeded"
+  ],
+  "conditionGroup_investigationSucceeded": [
+    "conditionGroup_investigationNeedsInterview",
+    "sendActivity_investigationFailed"
+  ],
+  "conditionGroup_investigationNeedsInterview": [
+    "conditionGroup_investigationRetryLimit",
+    "sendActivity_investigationResult"
+  ],
+  "conditionGroup_investigationRetryLimit": [
+    "sendActivity_investigationResult",
+    "setVariable_investigationRetryIncrement"
+  ],
+  "setVariable_investigationRetryIncrement": [
+    "question_investigationInterview"
+  ],
+  "question_investigationInterview": [
+    "conditionGroup_repairRequestedInInvestigation"
+  ],
+  "conditionGroup_repairRequestedInInvestigation": [
+    "conditionGroup_investigationPurposeSwitchToJunkai",
+    "setVariable_appendRepairRequestFromInvestigation"
+  ],
+  "setVariable_appendRepairRequestFromInvestigation": [
+    "setVariable_repairModeOnFromInvestigation"
+  ],
+  "setVariable_repairModeOnFromInvestigation": [
+    "goto_repairSelectFromInvestigation"
+  ],
+  "goto_repairSelectFromInvestigation": [
+    "setVariable_repairSelectInit"
+  ],
+  "conditionGroup_investigationPurposeSwitchToJunkai": [
+    "setVariable_appendInterviewHistory",
+    "setVariable_investigationPurposeSwitchToJunkaiInput"
+  ],
+  "setVariable_investigationPurposeSwitchToJunkaiInput": [
+    "setVariable_investigationPurposeSwitchToJunkaiImageReceptionOff"
+  ],
+  "setVariable_investigationPurposeSwitchToJunkaiImageReceptionOff": [
+    "endDialog_investigationPurposeSwitchToJunkai"
+  ],
+  "endDialog_investigationPurposeSwitchToJunkai": [],
+  "setVariable_appendInterviewHistory": [
+    "goto_investigationAgain"
+  ],
+  "goto_investigationAgain": [
+    "setVariable_investigationPrompt"
+  ],
+  "sendActivity_investigationResult": [
+    "conditionGroup_leakConfirmed"
+  ],
+  "sendActivity_investigationFailed": [
+    "endDialog_investigationFailed"
+  ],
+  "endDialog_investigationFailed": [],
+  "conditionGroup_leakConfirmed": [
+    "sendActivity_noLeakFound",
+    "setVariable_repairRetryCount"
+  ],
+  "setVariable_repairRetryCount": [
+    "setVariable_repairPrompt"
+  ],
+  "setVariable_repairPrompt": [
+    "search_repair"
+  ],
+  "search_repair": [
+    "conditionGroup_repairSucceeded"
+  ],
+  "conditionGroup_repairSucceeded": [
+    "conditionGroup_repairVerified",
+    "sendActivity_repairFailed"
+  ],
+  "conditionGroup_repairVerified": [
+    "conditionGroup_repairRetryLimit",
+    "sendActivity_repairResult"
+  ],
+  "sendActivity_repairResult": [
+    "endDialog_repairDone"
+  ],
+  "endDialog_repairDone": [],
+  "conditionGroup_repairRetryLimit": [
+    "sendActivity_repairBestEffort",
+    "setVariable_repairRetryIncrement"
+  ],
+  "sendActivity_repairBestEffort": [
+    "endDialog_repairBestEffort"
+  ],
+  "endDialog_repairBestEffort": [],
+  "setVariable_repairRetryIncrement": [
+    "question_repairMoreInfo"
+  ],
+  "question_repairMoreInfo": [
+    "conditionGroup_repairPurposeSwitchToJunkai"
+  ],
+  "conditionGroup_repairPurposeSwitchToJunkai": [
+    "setVariable_appendRepairHistory",
+    "setVariable_repairPurposeSwitchToJunkaiInput"
+  ],
+  "setVariable_repairPurposeSwitchToJunkaiInput": [
+    "setVariable_repairPurposeSwitchToJunkaiImageReceptionOff"
+  ],
+  "setVariable_repairPurposeSwitchToJunkaiImageReceptionOff": [
+    "endDialog_repairPurposeSwitchToJunkai"
+  ],
+  "endDialog_repairPurposeSwitchToJunkai": [],
+  "setVariable_appendRepairHistory": [
+    "goto_repairAgain"
+  ],
+  "goto_repairAgain": [
+    "setVariable_repairPrompt"
+  ],
+  "sendActivity_repairFailed": [
+    "endDialog_repairFailed"
+  ],
+  "endDialog_repairFailed": [],
+  "sendActivity_noLeakFound": [
+    "endDialog_noLeakFound"
+  ],
+  "endDialog_noLeakFound": []
+}
