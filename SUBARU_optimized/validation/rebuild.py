@@ -135,9 +135,20 @@ def row_format(v):
  before='Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value)'
  after='Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value)'
  checks.extend([before+' <> '+after,before+' <> "不明"',after+' <> "不明"','Or(Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "高", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "中", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "低")'])
- return '=Or(And(StartsWith(Trim('+v+'), "[[ROW]]"), EndsWith(Trim('+v+'), "[[ENDROW]]"), Not("[[NO_HIT]]" in '+v+'), CountRows(Filter(Split('+v+', "[[ROW]]"), '+' && '.join(checks)+')) = CountRows(Split('+v+', "[[ROW]]")) - 1), And(StartsWith(Trim('+v+'), "[[NO_HIT]]"), EndsWith(Trim('+v+'), "[[END_NO_HIT]]"), Not("[[ROW]]" in '+v+'), "理由：" in '+v+'))'
-for ident,var in [('conditionGroup_manualReviseFormatReady','Topic.改訂固定形式結果'),('conditionGroup_manualReviseRepairFormatReady','Topic.改訂形式修復結果')]:
- ops[ident]=lambda n,var=var:n['conditions'][0].update(condition=row_format(var))
+ return checks
+for ident,var,prefix,label in [('conditionGroup_manualReviseFormatReady','Topic.改訂固定形式結果','format','整形'),('conditionGroup_manualReviseRepairFormatReady','Topic.改訂形式修復結果','repair','修復')]:
+ def staged_guard(n,var=var,prefix=prefix,label=label):
+  table='Topic.改訂'+label+'検査行'
+  envelope='Topic.改訂'+label+'ROW外形'
+  nohit='Topic.改訂'+label+'NOHIT外形'
+  steps=[setv('setVariable_'+prefix+'Rows',table,'=Split('+var+', "[[ROW]]")')]
+  for i,check in enumerate(row_format(var)):
+   steps.append(setv('setVariable_'+prefix+'RowCheck'+str(i),table,'=Filter('+table+', '+check+')'))
+  steps.append(setv('setVariable_'+prefix+'Envelope',envelope,'=And(StartsWith(Trim('+var+'), "[[ROW]]"), EndsWith(Trim('+var+'), "[[ENDROW]]"), Not("[[NO_HIT]]" in '+var+'))'))
+  steps.append(setv('setVariable_'+prefix+'NoHit',nohit,'=And(StartsWith(Trim('+var+'), "[[NO_HIT]]"), EndsWith(Trim('+var+'), "[[END_NO_HIT]]"), Not("[[ROW]]" in '+var+'), "理由：" in '+var+')'))
+  n['conditions'][0]['condition']='=Or(And('+envelope+', CountRows('+table+') = CountRows(Split('+var+', "[[ROW]]")) - 1), '+nohit+')'
+  return steps+[n]
+ ops[ident]=staged_guard
 ops['endDialog_manualReviseChunkEmpty']=lambda n:[{'kind':'SendActivity','id':'sendActivity_reviseChunkEmptyReason','activity':'{Topic.Response}'},n]
 # Optional queries do not exist on the fast path; diagnostics use initialized evidence.
 def no_body(n):

@@ -2186,11 +2186,99 @@ beginDialog:
                                   variable: Topic.改訂固定形式結果
                                   userInput: ="【依頼内容】" & Char(10) & Topic.初回入力 & Char(10) & Topic.追加情報履歴 & Char(10) & Char(10) & "【選択文書】" & Char(10) & Topic.改訂選択文書一覧 & Char(10) & Char(10) & "【変更前に使う原文（この範囲を丸ごと変更前にすること）】" & Char(10) & Topic.改訂拡張原文テキスト & Char(10) & Char(10) & "【選択文書検索結果】" & Char(10) & Topic.改訂選択文書検索テキスト & Char(10) & Char(10) & "【候補抽出結果】" & Char(10) & Topic.改訂候補結果 & Char(10) & Char(10) & "【独立監査結果】" & Char(10) & Topic.改訂最終監査結果 & Char(10) & "【実行済み検索回数】" & Text(Topic.改訂検索回数) & Char(10) & "【初回原文境界判定（続き取得前）】" & Topic.改訂原文境界判定
                                   additionalInstructions: =Topic.改訂固定形式プロンプト
+                                - kind: SetVariable
+                                  id: setVariable_formatRows
+                                  variable: Topic.改訂整形検査行
+                                  value: =Split(Topic.改訂固定形式結果, "[[ROW]]")
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck0
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, "[[ENDROW]]" in Value)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck1
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, EndsWith(Trim(Value), "[[ENDROW]]"))
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck2
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, CountRows(Split(Value, "文書名：")) = 2)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck3
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, CountRows(Split(Value, "ページ：")) = 2)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck4
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, CountRows(Split(Value, "項目・見出し：")) = 2)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck5
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, CountRows(Split(Value, "変更前：")) = 2)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck6
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, CountRows(Split(Value, "変更後：")) = 2)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck7
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, CountRows(Split(Value, "変更理由：")) = 2)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck8
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, CountRows(Split(Value, "信頼度：")) = 2)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck9
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Len(Trim(First(Split(Last(Split(Value, "文書名：")).Value, "ページ：")).Value)) > 0)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck10
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Len(Trim(First(Split(Last(Split(Value, "ページ：")).Value, "項目・見出し：")).Value)) > 0)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck11
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Len(Trim(First(Split(Last(Split(Value, "項目・見出し：")).Value, "変更前：")).Value)) > 0)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck12
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Len(Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value)) > 0)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck13
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Len(Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value)) > 0)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck14
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Len(Trim(First(Split(Last(Split(Value, "変更理由：")).Value, "信頼度：")).Value)) > 0)
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck15
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value) <> Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value))
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck16
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value) <> "不明")
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck17
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value) <> "不明")
+                                - kind: SetVariable
+                                  id: setVariable_formatRowCheck18
+                                  variable: Topic.改訂整形検査行
+                                  value: =Filter(Topic.改訂整形検査行, Or(Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "高", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "中", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "低"))
+                                - kind: SetVariable
+                                  id: setVariable_formatEnvelope
+                                  variable: Topic.改訂整形ROW外形
+                                  value: =And(StartsWith(Trim(Topic.改訂固定形式結果), "[[ROW]]"), EndsWith(Trim(Topic.改訂固定形式結果), "[[ENDROW]]"), Not("[[NO_HIT]]" in Topic.改訂固定形式結果))
+                                - kind: SetVariable
+                                  id: setVariable_formatNoHit
+                                  variable: Topic.改訂整形NOHIT外形
+                                  value: =And(StartsWith(Trim(Topic.改訂固定形式結果), "[[NO_HIT]]"), EndsWith(Trim(Topic.改訂固定形式結果), "[[END_NO_HIT]]"), Not("[[ROW]]" in Topic.改訂固定形式結果), "理由：" in Topic.改訂固定形式結果)
                                 - kind: ConditionGroup
                                   id: conditionGroup_manualReviseFormatReady
                                   conditions:
                                     - id: conditionItem_manualReviseFormatReady
-                                      condition: =Or(And(StartsWith(Trim(Topic.改訂固定形式結果), "[[ROW]]"), EndsWith(Trim(Topic.改訂固定形式結果), "[[ENDROW]]"), Not("[[NO_HIT]]" in Topic.改訂固定形式結果), CountRows(Filter(Split(Topic.改訂固定形式結果, "[[ROW]]"), "[[ENDROW]]" in Value && EndsWith(Trim(Value), "[[ENDROW]]") && CountRows(Split(Value, "文書名：")) = 2 && CountRows(Split(Value, "ページ：")) = 2 && CountRows(Split(Value, "項目・見出し：")) = 2 && CountRows(Split(Value, "変更前：")) = 2 && CountRows(Split(Value, "変更後：")) = 2 && CountRows(Split(Value, "変更理由：")) = 2 && CountRows(Split(Value, "信頼度：")) = 2 && Len(Trim(First(Split(Last(Split(Value, "文書名：")).Value, "ページ：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "ページ：")).Value, "項目・見出し：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "項目・見出し：")).Value, "変更前：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "変更理由：")).Value, "信頼度：")).Value)) > 0 && Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value) <> Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value) && Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value) <> "不明" && Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value) <> "不明" && Or(Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "高", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "中", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "低"))) = CountRows(Split(Topic.改訂固定形式結果, "[[ROW]]")) - 1), And(StartsWith(Trim(Topic.改訂固定形式結果), "[[NO_HIT]]"), EndsWith(Trim(Topic.改訂固定形式結果), "[[END_NO_HIT]]"), Not("[[ROW]]" in Topic.改訂固定形式結果), "理由：" in Topic.改訂固定形式結果))
+                                      condition: =Or(And(Topic.改訂整形ROW外形, CountRows(Topic.改訂整形検査行) = CountRows(Split(Topic.改訂固定形式結果, "[[ROW]]")) - 1), Topic.改訂整形NOHIT外形)
                                       actions:
                                         - kind: SetVariable
                                           id: setVariable_manualReviseFinalResponse
@@ -2264,11 +2352,99 @@ beginDialog:
                                         途中欠落・取り違え・原文未取得なら当該候補の完成ROWを作らない。利用可能な別の完全な候補は残す。原文の一部のみ取得した場合はNO_HITの理由に「原文一部のみ取得」と取得範囲・不足範囲を明記し、規定不存在とは書かない。
                                         変更前は該当項目の取得済み全文、変更後はその全文を複製し指定部分だけ編集する。変更対象外は一字一句維持し、表・列挙・注記を落とさない。全文が短い場合だけ短文を許容する。正式文面未確定時の既存保留表現は維持する。変更理由は依頼内容、原文の問題または追記目的、確認できる影響を複数文で具体的に記し、不確かな点は確認事項とする。依頼・原文にない効果や数値を作らない。
                                         変更前を不明で埋めたROWは禁止。各ROWの7項目、閉じマーカー、原文一致、全文保持を全件確認する。
+                                    - kind: SetVariable
+                                      id: setVariable_repairRows
+                                      variable: Topic.改訂修復検査行
+                                      value: =Split(Topic.改訂形式修復結果, "[[ROW]]")
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck0
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, "[[ENDROW]]" in Value)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck1
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, EndsWith(Trim(Value), "[[ENDROW]]"))
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck2
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, CountRows(Split(Value, "文書名：")) = 2)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck3
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, CountRows(Split(Value, "ページ：")) = 2)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck4
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, CountRows(Split(Value, "項目・見出し：")) = 2)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck5
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, CountRows(Split(Value, "変更前：")) = 2)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck6
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, CountRows(Split(Value, "変更後：")) = 2)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck7
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, CountRows(Split(Value, "変更理由：")) = 2)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck8
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, CountRows(Split(Value, "信頼度：")) = 2)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck9
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Len(Trim(First(Split(Last(Split(Value, "文書名：")).Value, "ページ：")).Value)) > 0)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck10
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Len(Trim(First(Split(Last(Split(Value, "ページ：")).Value, "項目・見出し：")).Value)) > 0)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck11
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Len(Trim(First(Split(Last(Split(Value, "項目・見出し：")).Value, "変更前：")).Value)) > 0)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck12
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Len(Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value)) > 0)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck13
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Len(Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value)) > 0)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck14
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Len(Trim(First(Split(Last(Split(Value, "変更理由：")).Value, "信頼度：")).Value)) > 0)
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck15
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value) <> Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value))
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck16
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value) <> "不明")
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck17
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value) <> "不明")
+                                    - kind: SetVariable
+                                      id: setVariable_repairRowCheck18
+                                      variable: Topic.改訂修復検査行
+                                      value: =Filter(Topic.改訂修復検査行, Or(Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "高", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "中", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "低"))
+                                    - kind: SetVariable
+                                      id: setVariable_repairEnvelope
+                                      variable: Topic.改訂修復ROW外形
+                                      value: =And(StartsWith(Trim(Topic.改訂形式修復結果), "[[ROW]]"), EndsWith(Trim(Topic.改訂形式修復結果), "[[ENDROW]]"), Not("[[NO_HIT]]" in Topic.改訂形式修復結果))
+                                    - kind: SetVariable
+                                      id: setVariable_repairNoHit
+                                      variable: Topic.改訂修復NOHIT外形
+                                      value: =And(StartsWith(Trim(Topic.改訂形式修復結果), "[[NO_HIT]]"), EndsWith(Trim(Topic.改訂形式修復結果), "[[END_NO_HIT]]"), Not("[[ROW]]" in Topic.改訂形式修復結果), "理由：" in Topic.改訂形式修復結果)
                                     - kind: ConditionGroup
                                       id: conditionGroup_manualReviseRepairFormatReady
                                       conditions:
                                         - id: conditionItem_manualReviseRepairFormatReady
-                                          condition: =Or(And(StartsWith(Trim(Topic.改訂形式修復結果), "[[ROW]]"), EndsWith(Trim(Topic.改訂形式修復結果), "[[ENDROW]]"), Not("[[NO_HIT]]" in Topic.改訂形式修復結果), CountRows(Filter(Split(Topic.改訂形式修復結果, "[[ROW]]"), "[[ENDROW]]" in Value && EndsWith(Trim(Value), "[[ENDROW]]") && CountRows(Split(Value, "文書名：")) = 2 && CountRows(Split(Value, "ページ：")) = 2 && CountRows(Split(Value, "項目・見出し：")) = 2 && CountRows(Split(Value, "変更前：")) = 2 && CountRows(Split(Value, "変更後：")) = 2 && CountRows(Split(Value, "変更理由：")) = 2 && CountRows(Split(Value, "信頼度：")) = 2 && Len(Trim(First(Split(Last(Split(Value, "文書名：")).Value, "ページ：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "ページ：")).Value, "項目・見出し：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "項目・見出し：")).Value, "変更前：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value)) > 0 && Len(Trim(First(Split(Last(Split(Value, "変更理由：")).Value, "信頼度：")).Value)) > 0 && Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value) <> Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value) && Trim(First(Split(Last(Split(Value, "変更前：")).Value, "変更後：")).Value) <> "不明" && Trim(First(Split(Last(Split(Value, "変更後：")).Value, "変更理由：")).Value) <> "不明" && Or(Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "高", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "中", Trim(First(Split(Last(Split(Value, "信頼度：")).Value, "[[ENDROW]]")).Value) = "低"))) = CountRows(Split(Topic.改訂形式修復結果, "[[ROW]]")) - 1), And(StartsWith(Trim(Topic.改訂形式修復結果), "[[NO_HIT]]"), EndsWith(Trim(Topic.改訂形式修復結果), "[[END_NO_HIT]]"), Not("[[ROW]]" in Topic.改訂形式修復結果), "理由：" in Topic.改訂形式修復結果))
+                                          condition: =Or(And(Topic.改訂修復ROW外形, CountRows(Topic.改訂修復検査行) = CountRows(Split(Topic.改訂形式修復結果, "[[ROW]]")) - 1), Topic.改訂修復NOHIT外形)
                                           actions:
                                             - kind: SetVariable
                                               id: setVariable_manualReviseRepairFinalResponse

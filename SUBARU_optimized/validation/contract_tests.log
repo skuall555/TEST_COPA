@@ -15,9 +15,10 @@ test_questions_and_interruptions_preserved (test_contracts.Contracts.test_questi
 test_rankers_unchanged (test_contracts.Contracts.test_rankers_unchanged) ... ok
 test_revise_all_row_validation (test_contracts.Contracts.test_revise_all_row_validation) ... ok
 test_revise_short_text_not_discarded (test_contracts.Contracts.test_revise_short_text_not_discarded) ... ok
+test_row_checks_have_shallow_expressions (test_contracts.Contracts.test_row_checks_have_shallow_expressions) ... ok
 
 ----------------------------------------------------------------------
-Ran 17 tests in 0.323s
+Ran 18 tests in 0.426s
 
 OK
 1-マニュアル関連入口_optimized.yaml PASS new variable candidates: []

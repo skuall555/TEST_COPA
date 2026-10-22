@@ -37,9 +37,23 @@ class Contracts(unittest.TestCase):
  def test_no_continuation_copies_original(self):
   n=self.b[0]['setVariable_reviseCopyWithoutMerge'];self.assertEqual(n['value'],'=Topic.改訂見出し全文')
  def test_revise_all_row_validation(self):
-  for k in ['conditionGroup_manualReviseFormatReady','conditionGroup_manualReviseRepairFormatReady']:
-   expr=self.b[0][k]['conditions'][0]['condition'];self.assertIn('CountRows(Filter(Split(',expr)
-   for f in ['文書名：','ページ：','項目・見出し：','変更前：','変更後：','変更理由：','信頼度：']:self.assertIn(f,expr)
+  for prefix,ident in [('format','conditionGroup_manualReviseFormatReady'),('repair','conditionGroup_manualReviseRepairFormatReady')]:
+   stages=[n for k,n in self.b[0].items() if k.startswith('setVariable_'+prefix+'RowCheck')]
+   self.assertEqual(len(stages),19)
+   checks=' '.join(n['value'] for n in stages)
+   for f in ['文書名：','ページ：','項目・見出し：','変更前：','変更後：','変更理由：','信頼度：']:self.assertIn(f,checks)
+   self.assertNotIn('Filter(',self.b[0][ident]['conditions'][0]['condition'])
+ def test_row_checks_have_shallow_expressions(self):
+  import re
+  for k,n in self.b[0].items():
+   if k.startswith(('setVariable_format','setVariable_repairRow','setVariable_repairEnvelope','setVariable_repairNoHit')):
+    expr=re.sub(r'"(?:[^"]|"")*"','',n.get('value',''))
+    depth=peak=0
+    for c in expr:
+     if c=='(':depth+=1;peak=max(peak,depth)
+     elif c==')':depth-=1
+    self.assertLessEqual(peak,8,k)
+    self.assertNotIn('&&',expr)
  def test_no_new_variable_candidates(self):
   for a,b in zip(self.old,self.new):
    old,_=dataflow(a);new,_=dataflow(b);prior={(n['id'],v)for n in old for v in n['variables']}

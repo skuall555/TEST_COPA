@@ -25,3 +25,5 @@ python -m unittest -v test_contracts
 ```
 
 検証用依存：Python 3.12、PyYAML 6.0.3（`validation/requirements.txt`）。Copilot本体の追加フロー・新規API・新規ナレッジは不要です。
+
+呼び出し深度エラーを受けた修正は [07_呼び出し深度エラー修正.md](07_呼び出し深度エラー修正.md) を参照。

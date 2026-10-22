@@ -4,7 +4,7 @@
     {
       "file": "1-マニュアル関連入口_optimized.yaml",
       "yaml": "PASS (duplicate keys rejected)",
-      "unique_ids": 287,
+      "unique_ids": 331,
       "broken_goto": [],
       "removed_ids": [],
       "dependencies": "UNCHANGED",
@@ -54,7 +54,7 @@
       },
       "node_counts_after": {
         "OnRecognizedIntent": 1,
-        "SetVariable": 95,
+        "SetVariable": 139,
         "ConditionGroup": 43,
         "SearchKnowledgeSources": 2,
         "SearchAndSummarizeContent": 15,
@@ -67,7 +67,7 @@
         "CreateSearchQuery": 6,
         "BeginDialog": 2
       },
-      "sha256": "4f8029eb08cd33720a9bf11eaefad8a9f4582cb8039bf02bdd4570158d425561"
+      "sha256": "3a271251790c0393883d90191c6817d92cd86c54b013cc2d1f41bf3f34385e5a"
     },
     {
       "file": "3-9-緊急保安業務エージェント_optimized.yaml",
