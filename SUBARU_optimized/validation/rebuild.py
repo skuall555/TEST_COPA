@@ -196,6 +196,8 @@ ops['search_photoGuidelineRetrieve']=lambda n:[n,cg('conditionGroup_photoGuideUn
 (R/'4-9-画像分析エージェント_緊急保安_optimized.yaml').write_text(edit(p,ops))
 s=(O/'00_現行エージェント指示.txt').read_text()+'\n## 根拠と改訂結果の扱い（フェーズ1追記）\n検索0件は規定不存在を意味しません。撮影要領・AI検索ガイド・外部Webを修理規定の根拠にしないでください。\n改訂案は提案テキストです。Word原本へ書き込まないでください。原文一部取得・全文未保証の表示を削除しないでください。\n'
 (R/'SUBARU_エージェント指示_optimized.txt').write_text(s)
+from followup import apply
+apply(R,edit,setv,cg,nodes)
 # Save diffs including exact original filenames, normalized newlines only.
 mapping=[('1-マニュアル関連入口 (1).txt','1-マニュアル関連入口_optimized.yaml'),('3-9-緊急保安業務エージェント(2).txt','3-9-緊急保安業務エージェント_optimized.yaml'),('4-9-画像分析エージェント_緊急保安(1).txt','4-9-画像分析エージェント_緊急保安_optimized.yaml'),('00_現行エージェント指示.txt','SUBARU_エージェント指示_optimized.txt')]
 for a,b in mapping:

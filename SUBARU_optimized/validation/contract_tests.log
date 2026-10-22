@@ -1,24 +1,31 @@
 test_all_existing_action_ids_preserved (test_contracts.Contracts.test_all_existing_action_ids_preserved) ... ok
+test_appearance_import_excludes_pdf_comparison_workflow (test_contracts.Contracts.test_appearance_import_excludes_pdf_comparison_workflow) ... ok
 test_coverage_gates_are_conservative (test_contracts.Contracts.test_coverage_gates_are_conservative) ... ok
 test_dependencies_preserved (test_contracts.Contracts.test_dependencies_preserved) ... ok
+test_field_exit_preserves_parent_and_history (test_contracts.Contracts.test_field_exit_preserves_parent_and_history) ... ok
+test_field_returns_to_owned_question (test_contracts.Contracts.test_field_returns_to_owned_question) ... ok
 test_final_guard_receives_source (test_contracts.Contracts.test_final_guard_receives_source) ... ok
 test_guide_failure_does_not_generate_completed_measures (test_contracts.Contracts.test_guide_failure_does_not_generate_completed_measures) ... ok
 test_image_history_return_preserved (test_contracts.Contracts.test_image_history_return_preserved) ... ok
 test_image_trigger_unchanged (test_contracts.Contracts.test_image_trigger_unchanged) ... ok
 test_invalid_number_does_not_search_again (test_contracts.Contracts.test_invalid_number_does_not_search_again) ... ok
+test_natural_manual_requests_are_not_forced_to_field_by_alarm_keyword (test_contracts.Contracts.test_natural_manual_requests_are_not_forced_to_field_by_alarm_keyword) ... ok
 test_negative_pass_substring_rejected (test_contracts.Contracts.test_negative_pass_substring_rejected) ... ok
 test_no_continuation_copies_original (test_contracts.Contracts.test_no_continuation_copies_original) ... ok
 test_no_new_variable_candidates (test_contracts.Contracts.test_no_new_variable_candidates) ... ok
 test_no_removed_sends (test_contracts.Contracts.test_no_removed_sends) ... ok
-test_priority_guide_unchanged (test_contracts.Contracts.test_priority_guide_unchanged) ... ok
+test_placement_is_not_unconditional_presence (test_contracts.Contracts.test_placement_is_not_unconditional_presence) ... ok
+test_priority_guide_has_authorized_current_risk_override (test_contracts.Contracts.test_priority_guide_has_authorized_current_risk_override) ... ok
+test_purpose_number_mapping_executes_scalar_formulas (test_contracts.Contracts.test_purpose_number_mapping_executes_scalar_formulas) ... ok
 test_questions_and_interruptions_preserved (test_contracts.Contracts.test_questions_and_interruptions_preserved) ... ok
 test_rankers_unchanged (test_contracts.Contracts.test_rankers_unchanged) ... ok
 test_revise_all_row_validation (test_contracts.Contracts.test_revise_all_row_validation) ... ok
 test_revise_short_text_not_discarded (test_contracts.Contracts.test_revise_short_text_not_discarded) ... ok
 test_row_checks_have_shallow_expressions (test_contracts.Contracts.test_row_checks_have_shallow_expressions) ... ok
+test_unclear_purpose_has_natural_inference_then_number_question (test_contracts.Contracts.test_unclear_purpose_has_natural_inference_then_number_question) ... ok
 
 ----------------------------------------------------------------------
-Ran 18 tests in 0.426s
+Ran 25 tests in 0.444s
 
 OK
 1-マニュアル関連入口_optimized.yaml PASS new variable candidates: []

@@ -3,9 +3,27 @@
     "file": "1-マニュアル関連入口_optimized.yaml",
     "changed": [
       {
+        "id": "main",
+        "fields": [
+          "intent"
+        ]
+      },
+      {
         "id": "setVariable_buildVersion",
         "fields": [
           "value"
+        ]
+      },
+      {
+        "id": "sendActivity_purposeGiveUp",
+        "fields": [
+          "activity"
+        ]
+      },
+      {
+        "id": "question_purposeMissing",
+        "fields": [
+          "prompt"
         ]
       },
       {
@@ -163,6 +181,19 @@
       }
     ],
     "added": [
+      "setVariable_newRequestOwnershipReset",
+      "conditionGroup_inferPurposeIfMissing",
+      "answer_purposeInfer",
+      "setVariable_inferredPurpose",
+      "setVariable_purposeNumber",
+      "setVariable_purposeFromNumber",
+      "conditionGroup_purposeNumberAccepted",
+      "setVariable_numberPurposeMeaning",
+      "conditionGroup_numberFieldDirect",
+      "setVariable_numberFieldFolder",
+      "setVariable_numberFieldResponseReset",
+      "goto_numberFieldSpecialist",
+      "goto_numberPurposeToWorkflow",
       "setVariable_guideDefault",
       "setVariable_guideFallbackDefault",
       "setVariable_classifyPromptDefault",
@@ -228,12 +259,110 @@
       "setVariable_repairRowCheck17",
       "setVariable_repairRowCheck18",
       "setVariable_repairEnvelope",
-      "setVariable_repairNoHit"
+      "setVariable_repairNoHit",
+      "setVariable_fieldResponseReset",
+      "setVariable_fieldEntryOwnership",
+      "conditionGroup_fieldReturnPurposeSwitch",
+      "setVariable_fieldSwitchInput",
+      "setVariable_fieldSwitchClearHistory",
+      "setVariable_fieldSwitchClearGlobal",
+      "setVariable_fieldSwitchModeOff",
+      "setVariable_fieldSwitchRetryReset",
+      "goto_fieldSwitchPurpose",
+      "question_fieldContinue",
+      "conditionGroup_fieldContinueEnd",
+      "setVariable_fieldFinished",
+      "setVariable_fieldImageOff",
+      "endDialog_fieldUserFinished",
+      "setVariable_fieldContinuePurposeDefault",
+      "conditionGroup_fieldContinueInfer",
+      "answer_fieldContinuePurpose",
+      "conditionGroup_fieldContinueSwitch",
+      "setVariable_fieldContinueSwitchInput",
+      "setVariable_fieldContinueSwitchClear",
+      "setVariable_fieldContinueSwitchOff",
+      "setVariable_fieldContinueRetryReset",
+      "setVariable_fieldContinuePurposeConfirmed",
+      "goto_fieldContinuePurpose",
+      "conditionGroup_fieldContinueUnknown",
+      "setVariable_fieldUnknownHistory",
+      "setVariable_fieldUnknownInput",
+      "setVariable_fieldUnknownPurpose",
+      "setVariable_fieldUnknownRetry",
+      "setVariable_fieldUnknownOwnership",
+      "goto_fieldUnknownNumberMenu",
+      "setVariable_fieldContinueHistory",
+      "setVariable_fieldContinueInput",
+      "goto_fieldContinueSpecialist",
+      "setVariable_fieldResponseResetFallback",
+      "setVariable_fieldEntryOwnershipFallback",
+      "conditionGroup_fieldReturnPurposeSwitchFallback",
+      "setVariable_fieldSwitchInputFallback",
+      "setVariable_fieldSwitchClearHistoryFallback",
+      "setVariable_fieldSwitchClearGlobalFallback",
+      "setVariable_fieldSwitchModeOffFallback",
+      "setVariable_fieldSwitchRetryResetFallback",
+      "goto_fieldSwitchPurposeFallback",
+      "question_fieldContinueFallback",
+      "conditionGroup_fieldContinueEndFallback",
+      "setVariable_fieldFinishedFallback",
+      "setVariable_fieldImageOffFallback",
+      "endDialog_fieldUserFinishedFallback",
+      "setVariable_fieldContinuePurposeDefaultFallback",
+      "conditionGroup_fieldContinueInferFallback",
+      "answer_fieldContinuePurposeFallback",
+      "conditionGroup_fieldContinueSwitchFallback",
+      "setVariable_fieldContinueSwitchInputFallback",
+      "setVariable_fieldContinueSwitchClearFallback",
+      "setVariable_fieldContinueSwitchOffFallback",
+      "setVariable_fieldContinueRetryResetFallback",
+      "setVariable_fieldContinuePurposeConfirmedFallback",
+      "goto_fieldContinuePurposeFallback",
+      "conditionGroup_fieldContinueUnknownFallback",
+      "setVariable_fieldUnknownHistoryFallback",
+      "setVariable_fieldUnknownInputFallback",
+      "setVariable_fieldUnknownPurposeFallback",
+      "setVariable_fieldUnknownRetryFallback",
+      "setVariable_fieldUnknownOwnershipFallback",
+      "goto_fieldUnknownNumberMenuFallback",
+      "setVariable_fieldContinueHistoryFallback",
+      "setVariable_fieldContinueInputFallback",
+      "goto_fieldContinueSpecialistFallback"
     ]
   },
   {
     "file": "3-9-緊急保安業務エージェント_optimized.yaml",
     "changed": [
+      {
+        "id": "setVariable_priorityGuideFixed",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "setVariable_priorityPrompt",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_priority",
+        "fields": [
+          "additionalInstructions"
+        ]
+      },
+      {
+        "id": "endDialog_priorityFailed",
+        "fields": [
+          "clearTopicQueue"
+        ]
+      },
+      {
+        "id": "endDialog_priorityGuideRetrieveFailed",
+        "fields": [
+          "clearTopicQueue"
+        ]
+      },
       {
         "id": "setVariable_repairKnownPipe",
         "fields": [
@@ -253,14 +382,62 @@
         ]
       },
       {
+        "id": "endDialog_investigationFailed",
+        "fields": [
+          "clearTopicQueue"
+        ]
+      },
+      {
         "id": "conditionGroup_repairVerified",
         "fields": [
           "conditions"
         ]
+      },
+      {
+        "id": "endDialog_repairFailed",
+        "fields": [
+          "clearTopicQueue"
+        ]
       }
     ],
     "added": [
-      "conditionGroup_priorityDebugOnly"
+      "setVariable_fieldOwnershipOn",
+      "setVariable_fieldSwitchInit",
+      "setVariable_fieldInitialSync",
+      "setVariable_fieldTurnHistory",
+      "setVariable_fieldHistorySync",
+      "endDialog_priorityRetryExhausted_historyToGlobal",
+      "endDialog_priorityRetryExhausted_imageOff",
+      "endDialog_priorityRetryExhausted",
+      "endDialog_priorityPurposeSwitchToJunkai_historyToGlobal",
+      "endDialog_priorityPurposeSwitchToJunkai_imageOff",
+      "conditionGroup_priorityDebugOnly",
+      "endDialog_priorityFailed_historyToGlobal",
+      "endDialog_priorityFailed_imageOff",
+      "endDialog_priorityGuideRetrieveFailed_historyToGlobal",
+      "endDialog_priorityGuideRetrieveFailed_imageOff",
+      "endDialog_repairZeroLimit_historyToGlobal",
+      "endDialog_repairZeroLimit_imageOff",
+      "endDialog_repairProcedureDone_historyToGlobal",
+      "endDialog_repairProcedureDone_imageOff",
+      "endDialog_repairProcedureNotFound_historyToGlobal",
+      "endDialog_repairProcedureNotFound_imageOff",
+      "endDialog_repairNoCandidate_historyToGlobal",
+      "endDialog_repairNoCandidate_imageOff",
+      "endDialog_investigationPurposeSwitchToJunkai_historyToGlobal",
+      "endDialog_investigationPurposeSwitchToJunkai_imageOff",
+      "endDialog_investigationFailed_historyToGlobal",
+      "endDialog_investigationFailed_imageOff",
+      "endDialog_repairDone_historyToGlobal",
+      "endDialog_repairDone_imageOff",
+      "endDialog_repairBestEffort_historyToGlobal",
+      "endDialog_repairBestEffort_imageOff",
+      "endDialog_repairPurposeSwitchToJunkai_historyToGlobal",
+      "endDialog_repairPurposeSwitchToJunkai_imageOff",
+      "endDialog_repairFailed_historyToGlobal",
+      "endDialog_repairFailed_imageOff",
+      "endDialog_noLeakFound_historyToGlobal",
+      "endDialog_noLeakFound_imageOff"
     ]
   },
   {
@@ -273,9 +450,16 @@
         ]
       },
       {
+        "id": "setVariable_prompt2",
+        "fields": [
+          "value"
+        ]
+      },
+      {
         "id": "answer_photoGuidelineJudge",
         "fields": [
-          "additionalInstructions"
+          "additionalInstructions",
+          "userInput"
         ]
       },
       {

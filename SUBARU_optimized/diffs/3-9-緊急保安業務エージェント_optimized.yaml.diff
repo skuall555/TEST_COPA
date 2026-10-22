@@ -12,7 +12,132 @@
    撮影要領に沿った写真がある措置は「対応済み」として扱う。
  beginDialog:
    kind: OnRedirect
-@@ -856,14 +857,19 @@
+@@ -17,7 +18,26 @@
+       id: setVariable_priorityRetryCount
+       variable: Topic.優先度確認再試行回数
+       value: =0
+-
++    - kind: SetVariable
++      id: setVariable_fieldOwnershipOn
++      variable: Global.現場トピック処理中
++      value: =true
++    - kind: SetVariable
++      id: setVariable_fieldSwitchInit
++      variable: Global.巡回切替入力
++      value: =""
++    - kind: SetVariable
++      id: setVariable_fieldInitialSync
++      variable: Global.緊急保安初回入力
++      value: =Topic.初回入力
++    - kind: SetVariable
++      id: setVariable_fieldTurnHistory
++      variable: Topic.追加情報履歴
++      value: =Topic.追加情報履歴 & Char(10) & "現場入力（時系列）：" & Topic.初回入力
++    - kind: SetVariable
++      id: setVariable_fieldHistorySync
++      variable: Global.緊急保安追加情報履歴
++      value: =Topic.追加情報履歴
+     - kind: SetVariable
+       id: setVariable_repairModeInit
+       variable: Topic.修理方法モード
+@@ -612,8 +632,24 @@
+         ・措置済みとの記載がないものを対応済みにしない
+         ・危険トリガーが明示されていないのに勝手に適用しない
+         ・「検知器反応あり」だけで「強い／広範囲の検知反応」と断定しない
+-        ・この固定ルール以外を根拠にしない"
+-
++        ・この固定ルール以外を根拠にしない
++
++        # 消防・警察要請：現在の危険と改善を踏まえる優先規則
++        この節は消防・警察要請について前述の基本分類とH-01〜H-12を補足し、過去と現在の区別・改善時の再評価では本節を優先する。他の初動措置の基準を勝手に変更しない。
++        事故が起きるまで待たず、明示された現在の事実に次のいずれかがあれば消防・警察要請を「高」とする。
++        ・ガスの噴出・噴き出しが続いている。
++        ・複数のお客様宅で臭気または検知器反応があり、複数住戸への影響が確認されている。
++        ・都市ガス警報器が鳴り続け、ガスも検知されている。
++        ・強い臭気やガス噴出があり、有効な止漏・遮断ができない、止めるまで時間を要する、または止めようとしたが止められない。
++        ・利用者が広範囲への拡大、または事故につながるおそれを報告している。単なる仮定・規定の質問を現在の現場事実にしない。推測だけで広範囲漏えいと確定せず、疑われている内容とその根拠を区別して、高の要請と必要な追加確認を示す。
++        人身被害、着火、火災、爆発、危険な流入、排出不能など、他の高条件が現在も続くときは高を維持する。数値不明や設備不明を安全確認済みとせず、既存の危険基準も維持する。
++
++        # 止漏後の再評価
++        履歴の過去の噴出・警報だけで高を永久固定しない。新しい明示報告から、(1)有効な止漏・遮断済み、かつ(2)周辺のガス濃度低下、検知器反応の減弱・消失、または臭気の減弱・消失を確認し、(3)消防・警察要請の他の継続中の高条件がないことを確認できた場合に消防・警察要請を再評価する。
++        改善傾向はあるが残留ガス・周辺住戸・再漏えい等の確認が残るなら「中（継続確認）」とし、未確認事項を示す。止漏だけ、単一地点の改善だけ、一定時間の経過だけ、または『止めたつもり』だけで下げない。複数住戸に影響した場合は影響範囲全体の状況を確認する。
++        止漏後に検知反応・臭気が解消し、影響範囲と危険条件の解消が明示確認され、他の要請理由が無い場合は「低」へ再評価できる。未確認を『なし』とみなさない。再噴出・再警報・新たな周辺反応があれば再び高へ上げる。
++        実施済みの消防・警察要請を取り消す指示は出さない。要請の実施状況と、現在の優先度・継続対応の必要性を別々に扱う。
++        出力の【確認できた事実】と各措置の根拠に、現在継続中の危険、確認済みの改善、不足情報を区別する。未報告の『安全になった』『全戸解消』を作らない。"
+     - kind: ConditionGroup
+       id: conditionGroup_priorityGuideRetrieveSucceeded
+       conditions:
+@@ -626,14 +662,14 @@
+               value: |-
+                 ="# 重要な前提
+                 あなたは今まさに緊急保安業務トピック自身として実行されています。
+-                下記【ガイド抜粋】は初動措置_AI優先度判断ガイド.docxの内容です。新たな検索は行わず、
++                下記【ガイド抜粋】は既存の固定ルールに、利用者指定の消防・警察要請の現在危険と改善時再評価を追記した判断規則です。新たな検索は行わず、
+                 この【ガイド抜粋】と現場事実・報告内容だけを根拠に判断してください。一般知識による補完、
+                 ガイドに無い基準の創作は禁止します。
+ 
+                 # 【ガイド抜粋】
+                 " & Topic.優先度ガイド取得結果 & "
+ 
+-                # 現場事実（初回）
++                # 今回の専門トピック開始時の入力（履歴にも時系列で記録）
+                 " & Topic.初回入力 & "
+ 
+                 # 追加確認・報告内容
+@@ -695,7 +731,6 @@
+                 【確認したいこと】
+                 └（追加確認が必要な事項。確認不要なら「なし」）
+                 回答本文の前後に説明文・総括文・挨拶を追加しないこと。"
+-
+             - kind: AnswerQuestionWithAI
+               id: answer_priority
+               displayName: 11B_ガイド抜粋からの優先度判定
+@@ -707,7 +742,7 @@
+                 すべて含まれています。外部ナレッジを検索せず、一般知識で補完せず、入力内の情報だけで判定してください。
+                 入力に書かれた出力フォーマット（【確認できた事実】から【確認したいこと】まで）だけを、
+                 見出し名・順序をそのまま守って出力してください。前置き・総括・挨拶・引用番号は禁止です。
+-
++                消防・警察要請では、ガイド末尾の現在の危険・止漏後再評価の優先規則を適用する。過去の危険と現在継続中の危険を分け、改善条件未確認で優先度を下げない。
+             - kind: ConditionGroup
+               id: conditionGroup_prioritySucceeded
+               conditions:
+@@ -752,7 +787,16 @@
+                                         確認の往復が多くなったため、現時点の状況を一旦提示します。高優先度の項目が残っている可能性があります。
+ 
+                                         {Topic.優先度判定結果}
+-
++                                    - kind: SetVariable
++                                      id: endDialog_priorityRetryExhausted_historyToGlobal
++                                      variable: Global.緊急保安追加情報履歴
++                                      value: =Topic.追加情報履歴
++                                    - kind: SetVariable
++                                      id: endDialog_priorityRetryExhausted_imageOff
++                                      variable: Global.緊急保安画像受付中
++                                      value: =false
++                                    - kind: EndDialog
++                                      id: endDialog_priorityRetryExhausted
+                               elseActions:
+                                 - kind: SetVariable
+                                   id: setVariable_priorityRetryIncrement
+@@ -837,9 +881,16 @@
+                                           variable: Global.緊急保安画像受付中
+                                           value: =false
+ 
++                                        - kind: SetVariable
++                                          id: endDialog_priorityPurposeSwitchToJunkai_historyToGlobal
++                                          variable: Global.緊急保安追加情報履歴
++                                          value: =Topic.追加情報履歴
++                                        - kind: SetVariable
++                                          id: endDialog_priorityPurposeSwitchToJunkai_imageOff
++                                          variable: Global.緊急保安画像受付中
++                                          value: =false
+                                         - kind: EndDialog
+                                           id: endDialog_priorityPurposeSwitchToJunkai
+-
+                                   elseActions:
+                                     - kind: SetVariable
+                                       id: setVariable_appendPriorityHistory
+@@ -856,14 +907,19 @@
                                        variable: Global.緊急保安画像受付中
                                        value: =true
  
@@ -40,7 +165,45 @@
                                      - kind: GotoAction
                                        id: goto_priorityAgain
                                        actionId: setVariable_priorityPrompt
-@@ -936,8 +942,7 @@
+@@ -892,10 +948,16 @@
+                     現場事実と初動措置ガイドの内容から優先度を判定できませんでした。
+                     一般知識で補完せず終了します。
+ 
++                - kind: SetVariable
++                  id: endDialog_priorityFailed_historyToGlobal
++                  variable: Global.緊急保安追加情報履歴
++                  value: =Topic.追加情報履歴
++                - kind: SetVariable
++                  id: endDialog_priorityFailed_imageOff
++                  variable: Global.緊急保安画像受付中
++                  value: =false
+                 - kind: EndDialog
+                   id: endDialog_priorityFailed
+-                  clearTopicQueue: true
+-
+       elseActions:
+         - kind: SetVariable
+           id: setVariable_imageReceptionOffGuideFailed
+@@ -908,10 +970,16 @@
+             固定の初動措置優先度判断ルールを読み込めませんでした。
+             一般知識で補完せず終了します。
+ 
++        - kind: SetVariable
++          id: endDialog_priorityGuideRetrieveFailed_historyToGlobal
++          variable: Global.緊急保安追加情報履歴
++          value: =Topic.追加情報履歴
++        - kind: SetVariable
++          id: endDialog_priorityGuideRetrieveFailed_imageOff
++          variable: Global.緊急保安画像受付中
++          value: =false
+         - kind: EndDialog
+           id: endDialog_priorityGuideRetrieveFailed
+-          clearTopicQueue: true
+-
+     - kind: SetVariable
+       id: setVariable_repairSelectInit
+       variable: Topic.修理再検索回数
+@@ -936,8 +1004,7 @@
              - kind: SetVariable
                id: setVariable_repairKnownPipe
                variable: Topic.確定管種
@@ -50,7 +213,7 @@
              - kind: SetVariable
                id: setVariable_repairKnownSize
                variable: Topic.確定口径
-@@ -1077,7 +1082,7 @@
+@@ -1077,7 +1144,7 @@
                  最後に必ず [0] それ以外 の行を入れてください。
                  ユーザーへの質問は書かないでください。情報が足りなくても候補を出してください。
                  前置き・総括・引用番号・URLは一切出力しないでください。
@@ -59,7 +222,61 @@
              - kind: ConditionGroup
                id: conditionGroup_repairCandidatesFound
                conditions:
-@@ -1278,8 +1283,7 @@
+@@ -1143,9 +1210,16 @@
+ 
+                                 {Topic.確定条件一覧}
+ 
++                            - kind: SetVariable
++                              id: endDialog_repairZeroLimit_historyToGlobal
++                              variable: Global.緊急保安追加情報履歴
++                              value: =Topic.追加情報履歴
++                            - kind: SetVariable
++                              id: endDialog_repairZeroLimit_imageOff
++                              variable: Global.緊急保安画像受付中
++                              value: =false
+                             - kind: EndDialog
+                               id: endDialog_repairZeroLimit
+-
+                     - kind: SetVariable
+                       id: setVariable_repairChosenLine
+                       variable: Topic.修理選択行
+@@ -1256,9 +1330,16 @@
+ 
+                                         安全確保を最優先に、落ち着いて対応してください。
+ 
++                                    - kind: SetVariable
++                                      id: endDialog_repairProcedureDone_historyToGlobal
++                                      variable: Global.緊急保安追加情報履歴
++                                      value: =Topic.追加情報履歴
++                                    - kind: SetVariable
++                                      id: endDialog_repairProcedureDone_imageOff
++                                      variable: Global.緊急保安画像受付中
++                                      value: =false
+                                     - kind: EndDialog
+                                       id: endDialog_repairProcedureDone
+-
+                               elseActions:
+                                 - kind: SendActivity
+                                   id: sendActivity_repairProcedureNotFound
+@@ -1266,9 +1347,16 @@
+                                     「{Topic.修理選択工法}」の作業手順を、マニュアルから見つけられませんでした。
+                                     一般知識で補完せず終了します。工法名が分かる場合は、そのまま入力してください。
+ 
++                                - kind: SetVariable
++                                  id: endDialog_repairProcedureNotFound_historyToGlobal
++                                  variable: Global.緊急保安追加情報履歴
++                                  value: =Topic.追加情報履歴
++                                - kind: SetVariable
++                                  id: endDialog_repairProcedureNotFound_imageOff
++                                  variable: Global.緊急保安画像受付中
++                                  value: =false
+                                 - kind: EndDialog
+                                   id: endDialog_repairProcedureNotFound
+-
+                       elseActions:
+                         - kind: SendActivity
+                           id: sendActivity_repairChoiceUnresolved
+@@ -1278,8 +1366,7 @@
  
                          - kind: GotoAction
                            id: goto_repairChoiceAgain
@@ -69,7 +286,62 @@
                elseActions:
                  - kind: SendActivity
                    id: sendActivity_repairNoCandidate
-@@ -1503,7 +1507,7 @@
+@@ -1292,9 +1379,16 @@
+                     未確定の項目や、漏えい量・圧力・配管形状など分かるものを入力してください。
+                     条件を足して探し直します。
+ 
++                - kind: SetVariable
++                  id: endDialog_repairNoCandidate_historyToGlobal
++                  variable: Global.緊急保安追加情報履歴
++                  value: =Topic.追加情報履歴
++                - kind: SetVariable
++                  id: endDialog_repairNoCandidate_imageOff
++                  variable: Global.緊急保安画像受付中
++                  value: =false
+                 - kind: EndDialog
+                   id: endDialog_repairNoCandidate
+-
+     - kind: SetVariable
+       id: setVariable_investigationRetryCount
+       variable: Topic.問診再試行回数
+@@ -1411,9 +1505,16 @@
+                                       variable: Global.緊急保安画像受付中
+                                       value: =false
+ 
++                                    - kind: SetVariable
++                                      id: endDialog_investigationPurposeSwitchToJunkai_historyToGlobal
++                                      variable: Global.緊急保安追加情報履歴
++                                      value: =Topic.追加情報履歴
++                                    - kind: SetVariable
++                                      id: endDialog_investigationPurposeSwitchToJunkai_imageOff
++                                      variable: Global.緊急保安画像受付中
++                                      value: =false
+                                     - kind: EndDialog
+                                       id: endDialog_investigationPurposeSwitchToJunkai
+-
+                               elseActions:
+                                 - kind: SetVariable
+                                   id: setVariable_appendInterviewHistory
+@@ -1435,10 +1536,16 @@
+             調査の進め方について、業務基準から情報を取得できませんでした。
+             一般知識で補完せず終了します。
+ 
++        - kind: SetVariable
++          id: endDialog_investigationFailed_historyToGlobal
++          variable: Global.緊急保安追加情報履歴
++          value: =Topic.追加情報履歴
++        - kind: SetVariable
++          id: endDialog_investigationFailed_imageOff
++          variable: Global.緊急保安画像受付中
++          value: =false
+         - kind: EndDialog
+           id: endDialog_investigationFailed
+-          clearTopicQueue: true
+-
+     - kind: ConditionGroup
+       id: conditionGroup_leakConfirmed
+       conditions:
+@@ -1503,7 +1610,7 @@
                        id: conditionGroup_repairVerified
                        conditions:
                          - id: conditionItem_repairVerified
@@ -78,22 +350,38 @@
                            actions:
                              - kind: SendActivity
                                id: sendActivity_repairResult
-@@ -1511,10 +1515,8 @@
+@@ -1511,10 +1618,16 @@
                                  {Topic.修理指示結果}
  
                                  お疲れさまでした。安全確保を最優先に、落ち着いて対応してください。
 -
++                            - kind: SetVariable
++                              id: endDialog_repairDone_historyToGlobal
++                              variable: Global.緊急保安追加情報履歴
++                              value: =Topic.追加情報履歴
++                            - kind: SetVariable
++                              id: endDialog_repairDone_imageOff
++                              variable: Global.緊急保安画像受付中
++                              value: =false
                              - kind: EndDialog
                                id: endDialog_repairDone
 -
                        elseActions:
                          - kind: ConditionGroup
                            id: conditionGroup_repairRetryLimit
-@@ -1528,27 +1530,22 @@
+@@ -1528,27 +1641,30 @@
                                      現時点で考えられる修理方法をお伝えします（十分に絞り込めていない可能性があります）。安全確保を最優先に対応してください。
  
                                      {Topic.修理指示結果}
 -
++                                - kind: SetVariable
++                                  id: endDialog_repairBestEffort_historyToGlobal
++                                  variable: Global.緊急保安追加情報履歴
++                                  value: =Topic.追加情報履歴
++                                - kind: SetVariable
++                                  id: endDialog_repairBestEffort_imageOff
++                                  variable: Global.緊急保安画像受付中
++                                  value: =false
                                  - kind: EndDialog
                                    id: endDialog_repairBestEffort
 -
@@ -118,7 +406,7 @@
                              - kind: ConditionGroup
                                id: conditionGroup_repairPurposeSwitchToJunkai
                                conditions:
-@@ -1559,25 +1556,20 @@
+@@ -1559,25 +1675,28 @@
                                        id: setVariable_repairPurposeSwitchToJunkaiInput
                                        variable: Global.巡回切替入力
                                        value: =Topic.修理追加回答
@@ -128,6 +416,14 @@
                                        variable: Global.緊急保安画像受付中
                                        value: =false
 -
++                                    - kind: SetVariable
++                                      id: endDialog_repairPurposeSwitchToJunkai_historyToGlobal
++                                      variable: Global.緊急保安追加情報履歴
++                                      value: =Topic.追加情報履歴
++                                    - kind: SetVariable
++                                      id: endDialog_repairPurposeSwitchToJunkai_imageOff
++                                      variable: Global.緊急保安画像受付中
++                                      value: =false
                                      - kind: EndDialog
                                        id: endDialog_repairPurposeSwitchToJunkai
 -
@@ -144,3 +440,40 @@
                elseActions:
                  - kind: SendActivity
                    id: sendActivity_repairFailed
+@@ -1585,10 +1704,16 @@
+                     02_作業要領から修理方法に関する情報を取得できませんでした。
+                     一般知識で補完せず終了します。
+ 
++                - kind: SetVariable
++                  id: endDialog_repairFailed_historyToGlobal
++                  variable: Global.緊急保安追加情報履歴
++                  value: =Topic.追加情報履歴
++                - kind: SetVariable
++                  id: endDialog_repairFailed_imageOff
++                  variable: Global.緊急保安画像受付中
++                  value: =false
+                 - kind: EndDialog
+                   id: endDialog_repairFailed
+-                  clearTopicQueue: true
+-
+       elseActions:
+         - kind: SendActivity
+           id: sendActivity_noLeakFound
+@@ -1596,9 +1721,16 @@
+             現時点でガス漏れ・検知器反応の報告はありません。
+             調査結果に応じて、あらためて報告してください。
+ 
++        - kind: SetVariable
++          id: endDialog_noLeakFound_historyToGlobal
++          variable: Global.緊急保安追加情報履歴
++          value: =Topic.追加情報履歴
++        - kind: SetVariable
++          id: endDialog_noLeakFound_imageOff
++          variable: Global.緊急保安画像受付中
++          value: =false
+         - kind: EndDialog
+           id: endDialog_noLeakFound
+-
+ inputType:
+   properties:
+     初回入力:

@@ -1,6 +1,21 @@
 {
   "main": [],
   "setVariable_priorityRetryCount": [
+    "setVariable_fieldOwnershipOn"
+  ],
+  "setVariable_fieldOwnershipOn": [
+    "setVariable_fieldSwitchInit"
+  ],
+  "setVariable_fieldSwitchInit": [
+    "setVariable_fieldInitialSync"
+  ],
+  "setVariable_fieldInitialSync": [
+    "setVariable_fieldTurnHistory"
+  ],
+  "setVariable_fieldTurnHistory": [
+    "setVariable_fieldHistorySync"
+  ],
+  "setVariable_fieldHistorySync": [
     "setVariable_repairModeInit"
   ],
   "setVariable_repairModeInit": [
@@ -60,8 +75,15 @@
     "sendActivity_priorityGiveUp"
   ],
   "sendActivity_priorityGiveUp": [
-    "setVariable_imageReceptionOffDone"
+    "endDialog_priorityRetryExhausted_historyToGlobal"
   ],
+  "endDialog_priorityRetryExhausted_historyToGlobal": [
+    "endDialog_priorityRetryExhausted_imageOff"
+  ],
+  "endDialog_priorityRetryExhausted_imageOff": [
+    "endDialog_priorityRetryExhausted"
+  ],
+  "endDialog_priorityRetryExhausted": [],
   "setVariable_priorityRetryIncrement": [
     "setVariable_syncInitialBeforeWait"
   ],
@@ -104,6 +126,12 @@
     "setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff"
   ],
   "setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff": [
+    "endDialog_priorityPurposeSwitchToJunkai_historyToGlobal"
+  ],
+  "endDialog_priorityPurposeSwitchToJunkai_historyToGlobal": [
+    "endDialog_priorityPurposeSwitchToJunkai_imageOff"
+  ],
+  "endDialog_priorityPurposeSwitchToJunkai_imageOff": [
     "endDialog_priorityPurposeSwitchToJunkai"
   ],
   "endDialog_priorityPurposeSwitchToJunkai": [],
@@ -136,6 +164,12 @@
     "sendActivity_priorityFailed"
   ],
   "sendActivity_priorityFailed": [
+    "endDialog_priorityFailed_historyToGlobal"
+  ],
+  "endDialog_priorityFailed_historyToGlobal": [
+    "endDialog_priorityFailed_imageOff"
+  ],
+  "endDialog_priorityFailed_imageOff": [
     "endDialog_priorityFailed"
   ],
   "endDialog_priorityFailed": [],
@@ -143,6 +177,12 @@
     "sendActivity_priorityGuideRetrieveFailed"
   ],
   "sendActivity_priorityGuideRetrieveFailed": [
+    "endDialog_priorityGuideRetrieveFailed_historyToGlobal"
+  ],
+  "endDialog_priorityGuideRetrieveFailed_historyToGlobal": [
+    "endDialog_priorityGuideRetrieveFailed_imageOff"
+  ],
+  "endDialog_priorityGuideRetrieveFailed_imageOff": [
     "endDialog_priorityGuideRetrieveFailed"
   ],
   "endDialog_priorityGuideRetrieveFailed": [],
@@ -220,6 +260,12 @@
     "setVariable_repairChosenLine"
   ],
   "sendActivity_repairZeroLimit": [
+    "endDialog_repairZeroLimit_historyToGlobal"
+  ],
+  "endDialog_repairZeroLimit_historyToGlobal": [
+    "endDialog_repairZeroLimit_imageOff"
+  ],
+  "endDialog_repairZeroLimit_imageOff": [
     "endDialog_repairZeroLimit"
   ],
   "endDialog_repairZeroLimit": [],
@@ -247,10 +293,22 @@
     "sendActivity_repairProcedureNotFound"
   ],
   "sendActivity_repairProcedure": [
+    "endDialog_repairProcedureDone_historyToGlobal"
+  ],
+  "endDialog_repairProcedureDone_historyToGlobal": [
+    "endDialog_repairProcedureDone_imageOff"
+  ],
+  "endDialog_repairProcedureDone_imageOff": [
     "endDialog_repairProcedureDone"
   ],
   "endDialog_repairProcedureDone": [],
   "sendActivity_repairProcedureNotFound": [
+    "endDialog_repairProcedureNotFound_historyToGlobal"
+  ],
+  "endDialog_repairProcedureNotFound_historyToGlobal": [
+    "endDialog_repairProcedureNotFound_imageOff"
+  ],
+  "endDialog_repairProcedureNotFound_imageOff": [
     "endDialog_repairProcedureNotFound"
   ],
   "endDialog_repairProcedureNotFound": [],
@@ -261,6 +319,12 @@
     "question_repairChoice"
   ],
   "sendActivity_repairNoCandidate": [
+    "endDialog_repairNoCandidate_historyToGlobal"
+  ],
+  "endDialog_repairNoCandidate_historyToGlobal": [
+    "endDialog_repairNoCandidate_imageOff"
+  ],
+  "endDialog_repairNoCandidate_imageOff": [
     "endDialog_repairNoCandidate"
   ],
   "endDialog_repairNoCandidate": [],
@@ -312,6 +376,12 @@
     "setVariable_investigationPurposeSwitchToJunkaiImageReceptionOff"
   ],
   "setVariable_investigationPurposeSwitchToJunkaiImageReceptionOff": [
+    "endDialog_investigationPurposeSwitchToJunkai_historyToGlobal"
+  ],
+  "endDialog_investigationPurposeSwitchToJunkai_historyToGlobal": [
+    "endDialog_investigationPurposeSwitchToJunkai_imageOff"
+  ],
+  "endDialog_investigationPurposeSwitchToJunkai_imageOff": [
     "endDialog_investigationPurposeSwitchToJunkai"
   ],
   "endDialog_investigationPurposeSwitchToJunkai": [],
@@ -325,6 +395,12 @@
     "conditionGroup_leakConfirmed"
   ],
   "sendActivity_investigationFailed": [
+    "endDialog_investigationFailed_historyToGlobal"
+  ],
+  "endDialog_investigationFailed_historyToGlobal": [
+    "endDialog_investigationFailed_imageOff"
+  ],
+  "endDialog_investigationFailed_imageOff": [
     "endDialog_investigationFailed"
   ],
   "endDialog_investigationFailed": [],
@@ -350,6 +426,12 @@
     "sendActivity_repairResult"
   ],
   "sendActivity_repairResult": [
+    "endDialog_repairDone_historyToGlobal"
+  ],
+  "endDialog_repairDone_historyToGlobal": [
+    "endDialog_repairDone_imageOff"
+  ],
+  "endDialog_repairDone_imageOff": [
     "endDialog_repairDone"
   ],
   "endDialog_repairDone": [],
@@ -358,6 +440,12 @@
     "setVariable_repairRetryIncrement"
   ],
   "sendActivity_repairBestEffort": [
+    "endDialog_repairBestEffort_historyToGlobal"
+  ],
+  "endDialog_repairBestEffort_historyToGlobal": [
+    "endDialog_repairBestEffort_imageOff"
+  ],
+  "endDialog_repairBestEffort_imageOff": [
     "endDialog_repairBestEffort"
   ],
   "endDialog_repairBestEffort": [],
@@ -375,6 +463,12 @@
     "setVariable_repairPurposeSwitchToJunkaiImageReceptionOff"
   ],
   "setVariable_repairPurposeSwitchToJunkaiImageReceptionOff": [
+    "endDialog_repairPurposeSwitchToJunkai_historyToGlobal"
+  ],
+  "endDialog_repairPurposeSwitchToJunkai_historyToGlobal": [
+    "endDialog_repairPurposeSwitchToJunkai_imageOff"
+  ],
+  "endDialog_repairPurposeSwitchToJunkai_imageOff": [
     "endDialog_repairPurposeSwitchToJunkai"
   ],
   "endDialog_repairPurposeSwitchToJunkai": [],
@@ -385,10 +479,22 @@
     "setVariable_repairPrompt"
   ],
   "sendActivity_repairFailed": [
+    "endDialog_repairFailed_historyToGlobal"
+  ],
+  "endDialog_repairFailed_historyToGlobal": [
+    "endDialog_repairFailed_imageOff"
+  ],
+  "endDialog_repairFailed_imageOff": [
     "endDialog_repairFailed"
   ],
   "endDialog_repairFailed": [],
   "sendActivity_noLeakFound": [
+    "endDialog_noLeakFound_historyToGlobal"
+  ],
+  "endDialog_noLeakFound_historyToGlobal": [
+    "endDialog_noLeakFound_imageOff"
+  ],
+  "endDialog_noLeakFound_imageOff": [
     "endDialog_noLeakFound"
   ],
   "endDialog_noLeakFound": []

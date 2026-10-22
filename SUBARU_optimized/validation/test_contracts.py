@@ -14,10 +14,20 @@ class Contracts(unittest.TestCase):
  def test_questions_and_interruptions_preserved(self):
   for a,b in zip(self.a,self.b):
    for k,n in a.items():
-    if n['kind']=='Question':self.assertEqual(n,b[k])
+    if n['kind']=='Question':
+     if k=='question_purposeMissing':
+      self.assertEqual(n['variable'],b[k]['variable']);self.assertEqual(n['entity'],b[k]['entity']);self.assertEqual(n['interruptionPolicy'],b[k]['interruptionPolicy'])
+     else:self.assertEqual(n,b[k])
  def test_no_removed_sends(self):
   for a,b in zip(self.a,self.b):self.assertLessEqual({k for k,n in a.items()if n['kind']=='SendActivity'},set(b))
- def test_priority_guide_unchanged(self):self.assertEqual(self.a[1]['setVariable_priorityGuideFixed'],self.b[1]['setVariable_priorityGuideFixed'])
+ def test_priority_guide_has_authorized_current_risk_override(self):
+  old=self.a[1]['setVariable_priorityGuideFixed']['value'];new=self.b[1]['setVariable_priorityGuideFixed']['value']
+  self.assertTrue(new.startswith(old[:-1]))
+  self.assertIn('現在の危険と改善を踏まえる優先規則',new)
+  self.assertIn('事故が起きるまで待たず',new)
+  self.assertIn('止漏だけ、単一地点の改善だけ',new)
+  self.assertIn('endDialog_priorityRetryExhausted',self.b[1])
+  self.assertEqual(self.b[1]['endDialog_priorityRetryExhausted']['kind'],'EndDialog')
  def test_rankers_unchanged(self):
   for suffix in ['Fit','Directness','Certainty','Consensus']:
    k='answer_manualCheckRank'+suffix;self.assertEqual(self.a[0][k],self.b[0][k])
@@ -64,4 +74,50 @@ class Contracts(unittest.TestCase):
   self.assertEqual(self.b[2]['goto_photoGuideUnavailableSections']['actionId'],'setVariable_sectionExtra')
  def test_negative_pass_substring_rejected(self):
   for i,k in [(0,'conditionGroup_manualCheckVerified'),(1,'conditionGroup_repairVerified')]:self.assertIn('Not("不合格" in ',self.b[i][k]['conditions'][0]['condition'])
+ def test_purpose_number_mapping_executes_scalar_formulas(self):
+  from powerfx_subset import evaluate
+  b=self.b[0]
+  for raw,want in [('1','現場対応アドバイス'),('[2]','マニュアル確認'),(' ［３］ ','マニュアル改訂'),('9',''),('0',''),('1,2',''),('写真です','')]:
+   normalized=evaluate(b['setVariable_purposeNumber']['value'],{'目的回答':raw})
+   got=evaluate(b['setVariable_purposeFromNumber']['value'],{'目的選択番号':normalized})
+   self.assertEqual(got,want)
+  self.assertEqual(b['goto_numberFieldSpecialist']['actionId'],'64VMOA')
+  self.assertIn('ガス漏れ対応中',b['setVariable_numberPurposeMeaning']['value'])
+ def test_unclear_purpose_has_natural_inference_then_number_question(self):
+  b=self.b[0];self.assertEqual(b['answer_purposeInfer']['autoSend'],False)
+  self.assertIn('不明',b['answer_purposeInfer']['additionalInstructions'])
+  prompt=b['question_purposeMissing']['prompt']
+  for line in ['番号を入力してください。','[1]ガス漏れ対応中','[2]社内基準、マニュアルを確認したい','[3]社内基準、マニュアルを変更したい']:self.assertIn(line,prompt)
+ def test_natural_manual_requests_are_not_forced_to_field_by_alarm_keyword(self):
+  from powerfx_subset import evaluate
+  expr=self.b[0]['conditionGroup_inferPurposeIfMissing']['conditions'][0]['condition']
+  for text,want in [('警報器が鳴る場合の社内基準を確認したい',True),('ガス漏れ時の規定に項目を追記したい',True),('ES工法の口径は',True),('現場アドバイス ガスが噴き出している',False),('マニュアル確認 ES工法',False)]:
+   self.assertEqual(evaluate(expr,{'目的分野':'現場対応アドバイス','初回入力':text}),want)
+ def test_field_returns_to_owned_question(self):
+  import json
+  graph=json.loads((R/'validation/1-マニュアル関連入口_optimized.yaml.graph.json').read_text())
+  self.assertEqual(graph['64VMOA'],['conditionGroup_fieldReturnPurposeSwitch'])
+  self.assertIn('question_fieldContinue',graph['conditionGroup_fieldReturnPurposeSwitch'])
+  self.assertEqual(self.b[0]['goto_fieldContinueSpecialist']['actionId'],'64VMOA')
+  self.assertEqual(self.b[0]['setVariable_fieldContinueHistory']['value'],'=Global.緊急保安追加情報履歴')
+  self.assertIn('現場入力（時系列）',self.b[1]['setVariable_fieldTurnHistory']['value'])
+  self.assertEqual(self.b[0]['goto_fieldSwitchPurpose']['actionId'],'setVariable_purposeDetect')
+  from powerfx_subset import evaluate
+  condition=self.b[0]['conditionGroup_fieldContinueSwitch']['conditions'][0]['condition']
+  for intent,want in [('現場対応アドバイス',False),('マニュアル確認',True),('マニュアル改訂',True),('不明',False)]:self.assertEqual(evaluate(condition,{'現場継続目的':intent}),want)
+  self.assertEqual(self.b[0]['goto_fieldUnknownNumberMenu']['actionId'],'conditionGroup_purposeMissing')
+ def test_field_exit_preserves_parent_and_history(self):
+  for k,n in self.b[1].items():
+   if n['kind']=='EndDialog':
+    self.assertNotIn('clearTopicQueue',n)
+    self.assertEqual(self.b[1][k+'_historyToGlobal']['value'],'=Topic.追加情報履歴')
+ def test_appearance_import_excludes_pdf_comparison_workflow(self):
+  text=self.b[2]['setVariable_prompt1']['value']+self.b[2]['setVariable_prompt2']['value']
+  for x in ['PHOTOACCESS','TOTAL_ALARM_RAW','AI9','AI10','28列','正答率']:self.assertNotIn(x,text)
+  for x in ['アンテナ状の筒','手に持って検査','火気使用禁止','スイッチ操作禁止','配管・外壁貫通部','ケース・ストラップだけでは確定しない']:self.assertIn(x,text)
+ def test_placement_is_not_unconditional_presence(self):
+  text=self.b[2]['setVariable_prompt2']['value']
+  self.assertIn('対象物の識別＋置かれた設置／監視状態＋滞留または流入箇所との位置関係の3条件',text)
+  self.assertIn('対象物の識別＋実際の掲示／設置＋対象場所との位置関係',text)
+  self.assertNotIn('→ 火気厳禁表示シート。',text)
 if __name__=='__main__':unittest.main()

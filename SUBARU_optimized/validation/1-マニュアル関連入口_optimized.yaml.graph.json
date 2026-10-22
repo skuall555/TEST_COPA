@@ -1,6 +1,9 @@
 {
   "main": [],
   "setVariable_initialInput": [
+    "setVariable_newRequestOwnershipReset"
+  ],
+  "setVariable_newRequestOwnershipReset": [
     "setVariable_buildVersion"
   ],
   "setVariable_buildVersion": [
@@ -54,6 +57,16 @@
     "setVariable_purposeDetect"
   ],
   "setVariable_purposeDetect": [
+    "conditionGroup_inferPurposeIfMissing"
+  ],
+  "conditionGroup_inferPurposeIfMissing": [
+    "answer_purposeInfer",
+    "conditionGroup_purposeMissing"
+  ],
+  "answer_purposeInfer": [
+    "setVariable_inferredPurpose"
+  ],
+  "setVariable_inferredPurpose": [
     "conditionGroup_purposeMissing"
   ],
   "conditionGroup_purposeMissing": [
@@ -85,7 +98,36 @@
     "conditionGroup_probeMode"
   ],
   "setVariable_appendPurposeHistory": [
-    "goto_purposeDetectAgain"
+    "setVariable_purposeNumber"
+  ],
+  "setVariable_purposeNumber": [
+    "setVariable_purposeFromNumber"
+  ],
+  "setVariable_purposeFromNumber": [
+    "conditionGroup_purposeNumberAccepted"
+  ],
+  "conditionGroup_purposeNumberAccepted": [
+    "goto_purposeDetectAgain",
+    "setVariable_numberPurposeMeaning"
+  ],
+  "setVariable_numberPurposeMeaning": [
+    "conditionGroup_numberFieldDirect"
+  ],
+  "conditionGroup_numberFieldDirect": [
+    "goto_numberPurposeToWorkflow",
+    "setVariable_numberFieldFolder"
+  ],
+  "setVariable_numberFieldFolder": [
+    "setVariable_numberFieldResponseReset"
+  ],
+  "setVariable_numberFieldResponseReset": [
+    "goto_numberFieldSpecialist"
+  ],
+  "goto_numberFieldSpecialist": [
+    "64VMOA"
+  ],
+  "goto_numberPurposeToWorkflow": [
+    "setVariable_classifyRetryCount"
   ],
   "goto_purposeDetectAgain": [
     "setVariable_purposeDetect"
@@ -843,11 +885,116 @@
     "sendActivity_unknownPurpose"
   ],
   "conditionGroup_routeToEmergency": [
-    "64VMOA",
-    "sendActivity_noHandlerYet"
+    "sendActivity_noHandlerYet",
+    "setVariable_fieldResponseReset"
+  ],
+  "setVariable_fieldResponseReset": [
+    "setVariable_fieldEntryOwnership"
+  ],
+  "setVariable_fieldEntryOwnership": [
+    "64VMOA"
   ],
   "64VMOA": [
-    "endDialog_afterEmergency"
+    "conditionGroup_fieldReturnPurposeSwitch"
+  ],
+  "conditionGroup_fieldReturnPurposeSwitch": [
+    "question_fieldContinue",
+    "setVariable_fieldSwitchInput"
+  ],
+  "setVariable_fieldSwitchInput": [
+    "setVariable_fieldSwitchClearHistory"
+  ],
+  "setVariable_fieldSwitchClearHistory": [
+    "setVariable_fieldSwitchClearGlobal"
+  ],
+  "setVariable_fieldSwitchClearGlobal": [
+    "setVariable_fieldSwitchModeOff"
+  ],
+  "setVariable_fieldSwitchModeOff": [
+    "setVariable_fieldSwitchRetryReset"
+  ],
+  "setVariable_fieldSwitchRetryReset": [
+    "goto_fieldSwitchPurpose"
+  ],
+  "goto_fieldSwitchPurpose": [
+    "setVariable_purposeDetect"
+  ],
+  "question_fieldContinue": [
+    "conditionGroup_fieldContinueEnd"
+  ],
+  "conditionGroup_fieldContinueEnd": [
+    "setVariable_fieldContinuePurposeDefault",
+    "setVariable_fieldFinished"
+  ],
+  "setVariable_fieldFinished": [
+    "setVariable_fieldImageOff"
+  ],
+  "setVariable_fieldImageOff": [
+    "endDialog_fieldUserFinished"
+  ],
+  "endDialog_fieldUserFinished": [],
+  "setVariable_fieldContinuePurposeDefault": [
+    "conditionGroup_fieldContinueInfer"
+  ],
+  "conditionGroup_fieldContinueInfer": [
+    "answer_fieldContinuePurpose",
+    "conditionGroup_fieldContinueSwitch"
+  ],
+  "answer_fieldContinuePurpose": [
+    "conditionGroup_fieldContinueSwitch"
+  ],
+  "conditionGroup_fieldContinueSwitch": [
+    "conditionGroup_fieldContinueUnknown",
+    "setVariable_fieldContinueSwitchInput"
+  ],
+  "setVariable_fieldContinueSwitchInput": [
+    "setVariable_fieldContinueSwitchClear"
+  ],
+  "setVariable_fieldContinueSwitchClear": [
+    "setVariable_fieldContinueSwitchOff"
+  ],
+  "setVariable_fieldContinueSwitchOff": [
+    "setVariable_fieldContinueRetryReset"
+  ],
+  "setVariable_fieldContinueRetryReset": [
+    "setVariable_fieldContinuePurposeConfirmed"
+  ],
+  "setVariable_fieldContinuePurposeConfirmed": [
+    "goto_fieldContinuePurpose"
+  ],
+  "goto_fieldContinuePurpose": [
+    "setVariable_classifyRetryCount"
+  ],
+  "conditionGroup_fieldContinueUnknown": [
+    "setVariable_fieldContinueHistory",
+    "setVariable_fieldUnknownHistory"
+  ],
+  "setVariable_fieldUnknownHistory": [
+    "setVariable_fieldUnknownInput"
+  ],
+  "setVariable_fieldUnknownInput": [
+    "setVariable_fieldUnknownPurpose"
+  ],
+  "setVariable_fieldUnknownPurpose": [
+    "setVariable_fieldUnknownRetry"
+  ],
+  "setVariable_fieldUnknownRetry": [
+    "setVariable_fieldUnknownOwnership"
+  ],
+  "setVariable_fieldUnknownOwnership": [
+    "goto_fieldUnknownNumberMenu"
+  ],
+  "goto_fieldUnknownNumberMenu": [
+    "conditionGroup_purposeMissing"
+  ],
+  "setVariable_fieldContinueHistory": [
+    "setVariable_fieldContinueInput"
+  ],
+  "setVariable_fieldContinueInput": [
+    "goto_fieldContinueSpecialist"
+  ],
+  "goto_fieldContinueSpecialist": [
+    "64VMOA"
   ],
   "endDialog_afterEmergency": [],
   "sendActivity_noHandlerYet": [
@@ -866,10 +1013,115 @@
     "setVariable_targetFolderOnGuideFailure"
   ],
   "setVariable_targetFolderOnGuideFailure": [
+    "setVariable_fieldResponseResetFallback"
+  ],
+  "setVariable_fieldResponseResetFallback": [
+    "setVariable_fieldEntryOwnershipFallback"
+  ],
+  "setVariable_fieldEntryOwnershipFallback": [
     "beginDialog_emergencyOnGuideFailure"
   ],
   "beginDialog_emergencyOnGuideFailure": [
-    "endDialog_guideRetrieveFailed"
+    "conditionGroup_fieldReturnPurposeSwitchFallback"
+  ],
+  "conditionGroup_fieldReturnPurposeSwitchFallback": [
+    "question_fieldContinueFallback",
+    "setVariable_fieldSwitchInputFallback"
+  ],
+  "setVariable_fieldSwitchInputFallback": [
+    "setVariable_fieldSwitchClearHistoryFallback"
+  ],
+  "setVariable_fieldSwitchClearHistoryFallback": [
+    "setVariable_fieldSwitchClearGlobalFallback"
+  ],
+  "setVariable_fieldSwitchClearGlobalFallback": [
+    "setVariable_fieldSwitchModeOffFallback"
+  ],
+  "setVariable_fieldSwitchModeOffFallback": [
+    "setVariable_fieldSwitchRetryResetFallback"
+  ],
+  "setVariable_fieldSwitchRetryResetFallback": [
+    "goto_fieldSwitchPurposeFallback"
+  ],
+  "goto_fieldSwitchPurposeFallback": [
+    "setVariable_purposeDetect"
+  ],
+  "question_fieldContinueFallback": [
+    "conditionGroup_fieldContinueEndFallback"
+  ],
+  "conditionGroup_fieldContinueEndFallback": [
+    "setVariable_fieldContinuePurposeDefaultFallback",
+    "setVariable_fieldFinishedFallback"
+  ],
+  "setVariable_fieldFinishedFallback": [
+    "setVariable_fieldImageOffFallback"
+  ],
+  "setVariable_fieldImageOffFallback": [
+    "endDialog_fieldUserFinishedFallback"
+  ],
+  "endDialog_fieldUserFinishedFallback": [],
+  "setVariable_fieldContinuePurposeDefaultFallback": [
+    "conditionGroup_fieldContinueInferFallback"
+  ],
+  "conditionGroup_fieldContinueInferFallback": [
+    "answer_fieldContinuePurposeFallback",
+    "conditionGroup_fieldContinueSwitchFallback"
+  ],
+  "answer_fieldContinuePurposeFallback": [
+    "conditionGroup_fieldContinueSwitchFallback"
+  ],
+  "conditionGroup_fieldContinueSwitchFallback": [
+    "conditionGroup_fieldContinueUnknownFallback",
+    "setVariable_fieldContinueSwitchInputFallback"
+  ],
+  "setVariable_fieldContinueSwitchInputFallback": [
+    "setVariable_fieldContinueSwitchClearFallback"
+  ],
+  "setVariable_fieldContinueSwitchClearFallback": [
+    "setVariable_fieldContinueSwitchOffFallback"
+  ],
+  "setVariable_fieldContinueSwitchOffFallback": [
+    "setVariable_fieldContinueRetryResetFallback"
+  ],
+  "setVariable_fieldContinueRetryResetFallback": [
+    "setVariable_fieldContinuePurposeConfirmedFallback"
+  ],
+  "setVariable_fieldContinuePurposeConfirmedFallback": [
+    "goto_fieldContinuePurposeFallback"
+  ],
+  "goto_fieldContinuePurposeFallback": [
+    "setVariable_classifyRetryCount"
+  ],
+  "conditionGroup_fieldContinueUnknownFallback": [
+    "setVariable_fieldContinueHistoryFallback",
+    "setVariable_fieldUnknownHistoryFallback"
+  ],
+  "setVariable_fieldUnknownHistoryFallback": [
+    "setVariable_fieldUnknownInputFallback"
+  ],
+  "setVariable_fieldUnknownInputFallback": [
+    "setVariable_fieldUnknownPurposeFallback"
+  ],
+  "setVariable_fieldUnknownPurposeFallback": [
+    "setVariable_fieldUnknownRetryFallback"
+  ],
+  "setVariable_fieldUnknownRetryFallback": [
+    "setVariable_fieldUnknownOwnershipFallback"
+  ],
+  "setVariable_fieldUnknownOwnershipFallback": [
+    "goto_fieldUnknownNumberMenuFallback"
+  ],
+  "goto_fieldUnknownNumberMenuFallback": [
+    "conditionGroup_purposeMissing"
+  ],
+  "setVariable_fieldContinueHistoryFallback": [
+    "setVariable_fieldContinueInputFallback"
+  ],
+  "setVariable_fieldContinueInputFallback": [
+    "goto_fieldContinueSpecialistFallback"
+  ],
+  "goto_fieldContinueSpecialistFallback": [
+    "64VMOA"
   ],
   "endDialog_guideRetrieveFailed": []
 }
