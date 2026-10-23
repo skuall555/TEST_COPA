@@ -22,7 +22,8 @@ class Contracts(unittest.TestCase):
   for a,b in zip(self.a,self.b):self.assertLessEqual({k for k,n in a.items()if n['kind']=='SendActivity'},set(b))
  def test_priority_guide_has_authorized_current_risk_override(self):
   old=self.a[1]['setVariable_priorityGuideFixed']['value'];new=self.b[1]['setVariable_priorityGuideFixed']['value']
-  self.assertTrue(new.startswith(old[:-1]))
+  # Risk thresholds remain verbatim; output formatting and the unknown-status rule are intentionally revised.
+  self.assertEqual(new.split('# 判定手順')[0],old.split('# 判定手順')[0])
   self.assertIn('現在の危険と改善を踏まえる優先規則',new)
   self.assertIn('事故が起きるまで待たず',new)
   self.assertIn('止漏だけ、単一地点の改善だけ',new)

@@ -51,12 +51,31 @@
     "setVariable_priorityPrompt"
   ],
   "setVariable_priorityPrompt": [
+    "setVariable_priorityFormatVersion"
+  ],
+  "setVariable_priorityFormatVersion": [
+    "setVariable_priorityFormatRepairReset"
+  ],
+  "setVariable_priorityFormatRepairReset": [
+    "setVariable_priorityFirstRawReset"
+  ],
+  "setVariable_priorityFirstRawReset": [
     "answer_priority"
   ],
   "answer_priority": [
     "setVariable_priorityRaw"
   ],
   "setVariable_priorityRaw": [
+    "conditionGroup_priorityCaptureFirstRaw"
+  ],
+  "conditionGroup_priorityCaptureFirstRaw": [
+    "setVariable_priorityFirstRaw",
+    "setVariable_priorityNormalizeNewlines"
+  ],
+  "setVariable_priorityFirstRaw": [
+    "setVariable_priorityNormalizeNewlines"
+  ],
+  "setVariable_priorityNormalizeNewlines": [
     "setVariable_priorityEvidenceInput"
   ],
   "setVariable_priorityEvidenceInput": [
@@ -66,18 +85,57 @@
     "setVariable_priorityExtractFacts"
   ],
   "setVariable_priorityExtractFacts": [
+    "setVariable_priorityFactsAvailable"
+  ],
+  "setVariable_priorityFactsAvailable": [
     "setVariable_priorityExtractRisk"
   ],
   "setVariable_priorityExtractRisk": [
     "setVariable_priorityExtractRows"
   ],
   "setVariable_priorityExtractRows": [
+    "setVariable_priorityNormalizeRiskColumns"
+  ],
+  "setVariable_priorityNormalizeRiskColumns": [
+    "setVariable_priorityNormalizeRiskStatus"
+  ],
+  "setVariable_priorityNormalizeRiskStatus": [
+    "setVariable_priorityNormalizeRisk0"
+  ],
+  "setVariable_priorityNormalizeRisk0": [
+    "setVariable_priorityNormalizeRisk1"
+  ],
+  "setVariable_priorityNormalizeRisk1": [
+    "setVariable_priorityNormalizeRisk2"
+  ],
+  "setVariable_priorityNormalizeRisk2": [
+    "setVariable_priorityNormalizeRisk3"
+  ],
+  "setVariable_priorityNormalizeRisk3": [
+    "setVariable_priorityNormalizeRisk4"
+  ],
+  "setVariable_priorityNormalizeRisk4": [
+    "setVariable_priorityNormalizeRisk5"
+  ],
+  "setVariable_priorityNormalizeRisk5": [
+    "setVariable_priorityNormalizeRisk6"
+  ],
+  "setVariable_priorityNormalizeRisk6": [
+    "setVariable_priorityNormalizeRisk7"
+  ],
+  "setVariable_priorityNormalizeRisk7": [
+    "setVariable_priorityNormalizeRisk8"
+  ],
+  "setVariable_priorityNormalizeRisk8": [
     "setVariable_priorityRiskRows"
   ],
   "setVariable_priorityRiskRows": [
     "setVariable_priorityRiskCount"
   ],
   "setVariable_priorityRiskCount": [
+    "setVariable_priorityRiskOriginalRows"
+  ],
+  "setVariable_priorityRiskOriginalRows": [
     "setVariable_priorityRiskColumns"
   ],
   "setVariable_priorityRiskColumns": [
@@ -102,9 +160,54 @@
     "setVariable_priorityRiskPositive"
   ],
   "setVariable_priorityRiskPositive": [
+    "setVariable_priorityRiskOther0"
+  ],
+  "setVariable_priorityRiskOther0": [
+    "setVariable_priorityRiskOther1"
+  ],
+  "setVariable_priorityRiskOther1": [
+    "setVariable_priorityRiskOther2"
+  ],
+  "setVariable_priorityRiskOther2": [
+    "setVariable_priorityRiskOther3"
+  ],
+  "setVariable_priorityRiskOther3": [
     "setVariable_priorityFireHigh"
   ],
   "setVariable_priorityFireHigh": [
+    "setVariable_priorityNormalizeMeasuresColumns"
+  ],
+  "setVariable_priorityNormalizeMeasuresColumns": [
+    "setVariable_priorityNormalizeMeasuresStatus"
+  ],
+  "setVariable_priorityNormalizeMeasuresStatus": [
+    "setVariable_priorityNormalizeMeasures0"
+  ],
+  "setVariable_priorityNormalizeMeasures0": [
+    "setVariable_priorityNormalizeMeasures1"
+  ],
+  "setVariable_priorityNormalizeMeasures1": [
+    "setVariable_priorityNormalizeMeasures2"
+  ],
+  "setVariable_priorityNormalizeMeasures2": [
+    "setVariable_priorityNormalizeMeasures3"
+  ],
+  "setVariable_priorityNormalizeMeasures3": [
+    "setVariable_priorityNormalizeMeasures4"
+  ],
+  "setVariable_priorityNormalizeMeasures4": [
+    "setVariable_priorityNormalizeMeasures5"
+  ],
+  "setVariable_priorityNormalizeMeasures5": [
+    "setVariable_priorityNormalizeMeasures6"
+  ],
+  "setVariable_priorityNormalizeMeasures6": [
+    "setVariable_priorityNormalizeMeasures7"
+  ],
+  "setVariable_priorityNormalizeMeasures7": [
+    "setVariable_priorityNormalizeMeasures8"
+  ],
+  "setVariable_priorityNormalizeMeasures8": [
     "setVariable_priorityMeasureRows"
   ],
   "setVariable_priorityMeasureRows": [
@@ -141,17 +244,29 @@
     "setVariable_priorityMeasureUnique"
   ],
   "setVariable_priorityMeasureUnique": [
+    "setVariable_priorityRemoveAmbiguousTargets"
+  ],
+  "setVariable_priorityRemoveAmbiguousTargets": [
     "setVariable_priorityMeasureRequired"
   ],
   "setVariable_priorityMeasureRequired": [
     "setVariable_priorityDataValid"
   ],
   "setVariable_priorityDataValid": [
-    "conditionGroup_priorityStructuredValid"
+    "conditionGroup_priorityRepairNeeded"
   ],
-  "conditionGroup_priorityStructuredValid": [
-    "setVariable_priorityHighRows",
-    "setVariable_priorityInvalidDone"
+  "conditionGroup_priorityRepairNeeded": [
+    "setVariable_priorityFormatRepairIncrement",
+    "setVariable_priorityHighRows"
+  ],
+  "setVariable_priorityFormatRepairIncrement": [
+    "answer_priorityFormatRepair"
+  ],
+  "answer_priorityFormatRepair": [
+    "goto_priorityAfterFormatRepair"
+  ],
+  "goto_priorityAfterFormatRepair": [
+    "setVariable_priorityRaw"
   ],
   "setVariable_priorityHighRows": [
     "setVariable_priorityMiddleRows"
@@ -217,9 +332,160 @@
     "setVariable_priorityRenderQuestions"
   ],
   "setVariable_priorityRenderQuestions": [
+    "conditionGroup_priorityMissingItem0"
+  ],
+  "conditionGroup_priorityMissingItem0": [
+    "conditionGroup_priorityMissingItem1",
+    "conditionGroup_priorityMissingRank0"
+  ],
+  "conditionGroup_priorityMissingRank0": [
+    "setVariable_priorityMissingHigh0",
+    "setVariable_priorityMissingMiddle0"
+  ],
+  "setVariable_priorityMissingHigh0": [
+    "setVariable_priorityMissingOtherNext0"
+  ],
+  "setVariable_priorityMissingMiddle0": [
+    "setVariable_priorityMissingOtherNext0"
+  ],
+  "setVariable_priorityMissingOtherNext0": [
+    "conditionGroup_priorityMissingItem1"
+  ],
+  "conditionGroup_priorityMissingItem1": [
+    "conditionGroup_priorityMissingItem2",
+    "conditionGroup_priorityMissingRank1"
+  ],
+  "conditionGroup_priorityMissingRank1": [
+    "setVariable_priorityMissingHigh1",
+    "setVariable_priorityMissingMiddle1"
+  ],
+  "setVariable_priorityMissingHigh1": [
+    "setVariable_priorityMissingOtherNext1"
+  ],
+  "setVariable_priorityMissingMiddle1": [
+    "setVariable_priorityMissingOtherNext1"
+  ],
+  "setVariable_priorityMissingOtherNext1": [
+    "conditionGroup_priorityMissingItem2"
+  ],
+  "conditionGroup_priorityMissingItem2": [
+    "conditionGroup_priorityMissingItem3",
+    "conditionGroup_priorityMissingRank2"
+  ],
+  "conditionGroup_priorityMissingRank2": [
+    "setVariable_priorityMissingHigh2",
+    "setVariable_priorityMissingMiddle2"
+  ],
+  "setVariable_priorityMissingHigh2": [
+    "setVariable_priorityMissingOtherNext2"
+  ],
+  "setVariable_priorityMissingMiddle2": [
+    "setVariable_priorityMissingOtherNext2"
+  ],
+  "setVariable_priorityMissingOtherNext2": [
+    "conditionGroup_priorityMissingItem3"
+  ],
+  "conditionGroup_priorityMissingItem3": [
+    "conditionGroup_priorityMissingItem4",
+    "conditionGroup_priorityMissingRank3"
+  ],
+  "conditionGroup_priorityMissingRank3": [
+    "setVariable_priorityMissingHigh3",
+    "setVariable_priorityMissingMiddle3"
+  ],
+  "setVariable_priorityMissingHigh3": [
+    "setVariable_priorityMissingOtherNext3"
+  ],
+  "setVariable_priorityMissingMiddle3": [
+    "setVariable_priorityMissingOtherNext3"
+  ],
+  "setVariable_priorityMissingOtherNext3": [
+    "conditionGroup_priorityMissingItem4"
+  ],
+  "conditionGroup_priorityMissingItem4": [
+    "conditionGroup_priorityMissingItem5",
+    "conditionGroup_priorityMissingRank4"
+  ],
+  "conditionGroup_priorityMissingRank4": [
+    "setVariable_priorityMissingHigh4",
+    "setVariable_priorityMissingMiddle4"
+  ],
+  "setVariable_priorityMissingHigh4": [
+    "setVariable_priorityMissingOtherNext4"
+  ],
+  "setVariable_priorityMissingMiddle4": [
+    "setVariable_priorityMissingOtherNext4"
+  ],
+  "setVariable_priorityMissingOtherNext4": [
+    "conditionGroup_priorityMissingItem5"
+  ],
+  "conditionGroup_priorityMissingItem5": [
+    "conditionGroup_priorityMissingItem6",
+    "conditionGroup_priorityMissingRank5"
+  ],
+  "conditionGroup_priorityMissingRank5": [
+    "setVariable_priorityMissingHigh5",
+    "setVariable_priorityMissingMiddle5"
+  ],
+  "setVariable_priorityMissingHigh5": [
+    "conditionGroup_priorityMissingRequestNext5"
+  ],
+  "setVariable_priorityMissingMiddle5": [
+    "conditionGroup_priorityMissingRequestNext5"
+  ],
+  "conditionGroup_priorityMissingRequestNext5": [
+    "conditionGroup_priorityMissingItem6",
+    "setVariable_priorityMissingRequestNext5"
+  ],
+  "setVariable_priorityMissingRequestNext5": [
+    "conditionGroup_priorityMissingItem6"
+  ],
+  "conditionGroup_priorityMissingItem6": [
+    "conditionGroup_priorityMissingItem7",
+    "conditionGroup_priorityMissingRank6"
+  ],
+  "conditionGroup_priorityMissingRank6": [
+    "setVariable_priorityMissingHigh6",
+    "setVariable_priorityMissingMiddle6"
+  ],
+  "setVariable_priorityMissingHigh6": [
+    "conditionGroup_priorityMissingRequestNext6"
+  ],
+  "setVariable_priorityMissingMiddle6": [
+    "conditionGroup_priorityMissingRequestNext6"
+  ],
+  "conditionGroup_priorityMissingRequestNext6": [
+    "conditionGroup_priorityMissingItem7",
+    "setVariable_priorityMissingRequestNext6"
+  ],
+  "setVariable_priorityMissingRequestNext6": [
+    "conditionGroup_priorityMissingItem7"
+  ],
+  "conditionGroup_priorityMissingItem7": [
+    "conditionGroup_priorityMissingRank7",
+    "setVariable_priorityRenderedResult"
+  ],
+  "conditionGroup_priorityMissingRank7": [
+    "setVariable_priorityMissingHigh7",
+    "setVariable_priorityMissingMiddle7"
+  ],
+  "setVariable_priorityMissingHigh7": [
+    "setVariable_priorityMissingOtherNext7"
+  ],
+  "setVariable_priorityMissingMiddle7": [
+    "setVariable_priorityMissingOtherNext7"
+  ],
+  "setVariable_priorityMissingOtherNext7": [
     "setVariable_priorityRenderedResult"
   ],
   "setVariable_priorityRenderedResult": [
+    "conditionGroup_priorityStructuredValid"
+  ],
+  "conditionGroup_priorityStructuredValid": [
+    "setVariable_priorityInvalidDone",
+    "setVariable_priorityValidatedResult"
+  ],
+  "setVariable_priorityValidatedResult": [
     "conditionGroup_prioritySucceeded"
   ],
   "setVariable_priorityInvalidDone": [

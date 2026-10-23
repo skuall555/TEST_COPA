@@ -27,14 +27,25 @@ class PriorityState(unittest.TestCase):
    actions=n.get('actions')
    if isinstance(actions,list)and any(a.get('id')=='setVariable_priorityRaw'for a in actions):
     a=next(i for i,x in enumerate(actions)if x.get('id')=='setVariable_priorityRaw');b=next(i for i,x in enumerate(actions)if x.get('id')=='conditionGroup_prioritySucceeded');cls.pipeline=actions[a:b];break
- def render(self,raw,report=REPORT):
-  values={'優先度判定結果':raw,'初回入力':report,'追加情報履歴':''}
+ def render(self,raw,report=REPORT,repair_outputs=None):
+  values={'優先度判定結果':raw,'初回入力':report,'追加情報履歴':'','優先度形式修復回数':0,'優先度初回構造化結果':'','_repair_calls':0}
+  outputs=iter([raw] if repair_outputs is None else repair_outputs)
+  class Jump(Exception):pass
   def run(actions):
    for n in actions:
     if n['kind']=='SetVariable':values[n['variable'][6:]]=evaluate(n['value'],values)
     elif n['kind']=='ConditionGroup':run(next((c['actions']for c in n['conditions']if evaluate(c['condition'],values)),n.get('elseActions',[])))
+    elif n['kind']=='AnswerQuestionWithAI':
+     self.assertEqual(n['id'],'answer_priorityFormatRepair');self.assertFalse(n['autoSend'])
+     values['_repair_calls']+=1;values[n['variable'][6:]]=next(outputs,'')
+    elif n['kind']=='GotoAction':raise Jump(n['actionId'])
     else:self.fail(n['kind'])
-  run(self.pipeline);return values
+  start=0
+  for _ in range(3):
+   try:run(self.pipeline[start:]);break
+   except Jump as jump:start=next(i for i,n in enumerate(self.pipeline)if n['id']==str(jump))
+  else:self.fail('Unbounded internal repair')
+  return values
  def complete(self,effect='対象外'):
   return [row(n,status='実施済み',effect=effect,source='報告',proof='全措置実施済み')for n in BASIC+['消防への要請','警察への要請']]
  def test_closed_valve_and_unresolved_effect_are_both_preserved(self):
@@ -97,7 +108,7 @@ class PriorityState(unittest.TestCase):
    self.assertIn(name,v['措置表示High']);self.assertNotIn(name,v['措置表示Middle'])
  def test_invalid_measure_rows_do_not_hide_verified_request_risk(self):
   v=self.render(result(base()+['誤った|列数']))
-  self.assertFalse(v['措置状態妥当']);self.assertIn('消防・警察への要請：高',v['優先度判定結果'])
+  self.assertFalse(v['措置状態妥当']);self.assertIn('消防への要請（現場）：未実施',v['措置表示High'])
  def test_all_new_formulas_have_shallow_calls(self):
   for n in walk(self.pipeline):
    for expr in ([n.get('value','')]if n.get('kind')=='SetVariable'else[c['condition']for c in n.get('conditions',[])]):
@@ -106,7 +117,62 @@ class PriorityState(unittest.TestCase):
      if c=='(':depth+=1;peak=max(peak,depth)
      elif c==')':depth-=1
     self.assertEqual(depth,0,n.get('id'));self.assertLessEqual(peak,8,n.get('id'))
- def test_no_additional_model_calls(self):
+ def test_only_one_conditional_repair_model_call_is_added(self):
   old=yaml.safe_load((R/'originals/3-9-緊急保安業務エージェント(2).txt').read_text())
-  self.assertEqual(sum(n.get('kind')=='AnswerQuestionWithAI'for n in walk(old)),sum(n.get('kind')=='AnswerQuestionWithAI'for n in walk(self.doc)))
+  self.assertEqual(sum(n.get('kind')=='AnswerQuestionWithAI'for n in walk(old))+1,sum(n.get('kind')=='AnswerQuestionWithAI'for n in walk(self.doc)))
+  self.assertEqual(self.render(result(base()+[row('メーターガス栓閉止')]))['_repair_calls'],0)
+ def test_main_and_repair_instructions_have_one_output_contract(self):
+  for key in ['answer_priority','answer_priorityFormatRepair']:
+   text=self.ix[key]['additionalInstructions']
+   self.assertIn('[[FACTS]]',text);self.assertNotIn('見出し名・順序をそのまま守って',text)
+  self.assertNotIn('# 出力フォーマット（このフォーマット以外',self.ix['setVariable_priorityPrompt']['value'])
+  self.assertNotIn('必ず以下の見出し名・順序だけで',self.ix['setVariable_priorityGuideFixed']['value'])
+ def test_legacy_text_is_repaired_without_asking_user_to_repeat(self):
+  raw='【確認できた事実】\n└ガスを検知\n【初動措置　優先度：高】\n└メーターガス栓閉止：未実施'
+  fixed=result(base()+[row('メーターガス栓閉止','警報器鳴動宅',status='実施済み',effect='未解決',source='報告',proof=CLOSED)])
+  v=self.render(raw,repair_outputs=[fixed])
+  self.assertEqual(v['_repair_calls'],1);self.assertTrue(v['措置状態妥当']);self.assertEqual(v['優先度初回構造化結果'],raw)
+  self.assertIn('警報器鳴動宅）：実施済み',v['優先度判定結果']);self.assertNotIn('判定保留',v['優先度判定結果'])
+ def test_repair_failure_is_bounded_and_does_not_blank_all_headings(self):
+  v=self.render('旧形式も不完全',repair_outputs=['修復も形式不正'])
+  self.assertEqual(v['_repair_calls'],1);self.assertEqual(v['優先度形式修復回数'],1);self.assertFalse(v['高優先度完了'])
+  self.assertNotIn('└判定保留',v['優先度判定結果']);self.assertIn(BASIC[0],v['措置表示High'])
+ def test_one_bad_action_keeps_other_completed_actions_and_high_requests(self):
+  rows=base()+[row('メーターガス栓閉止','警報器鳴動宅',status='実施済み',effect='未解決',source='報告',proof=CLOSED),'消火器設置|列数不正']
+  v=self.render(result(rows));self.assertFalse(v['措置状態妥当'])
+  self.assertIn('メーターガス栓閉止（警報器鳴動宅）：実施済み',v['措置表示High']);self.assertIn('消防への要請',v['措置表示High'])
+ def test_missing_other_risk_does_not_hide_independently_proven_alarm_and_detection(self):
+  v=self.render(result(base()+[row('メーターガス栓閉止')],risk()[:-1]))
+  self.assertFalse(v['措置状態妥当']);self.assertTrue(v['消防警察強制高']);self.assertIn('消防への要請',v['措置表示High'])
+ def test_conflicting_risk_does_not_create_a_positive_flag(self):
+  risks=risk()+['継続警報|なし|なし']
+  v=self.render(result(base()+[row('メーターガス栓閉止')],risks))
+  self.assertFalse(v['現危険Alarm']);self.assertFalse(v['消防警察強制高'])
+  self.assertNotIn('消防への要請',v['措置表示Low']);self.assertIn('消防への要請',v['措置表示Middle'])
+ def test_empty_primary_and_repair_responses_do_not_cause_unbounded_retry(self):
+  v=self.render(None,repair_outputs=[None])
+  self.assertEqual(v['_repair_calls'],1);self.assertFalse(v['高優先度完了']);self.assertNotIn('└判定保留',v['優先度判定結果'])
+ def test_wrong_block_order_cannot_declare_complete(self):
+  raw=result(self.complete(),risk(False));a=raw.index('[[RISK]]');b=raw.index('[[MEASURES]]')
+  raw=raw[:a]+raw[b:]+raw[a:b]
+  v=self.render(raw,'全措置実施済み');self.assertFalse(v['措置状態妥当']);self.assertFalse(v['高優先度完了'])
+ def test_wrappers_crlf_fullwidth_pipes_and_outer_spaces_are_format_only(self):
+  raw='```text\r\n'+result(base()+[row('メーターガス栓閉止')]).replace('|',' ｜ ').replace('\n','\r\n')+'\r\n```'
+  v=self.render(raw);self.assertTrue(v['措置状態妥当']);self.assertEqual(v['_repair_calls'],0)
+ def test_internal_spaces_in_verbatim_evidence_are_preserved(self):
+  proof='A室の栓を  閉めた';report=REPORT+'\n'+proof
+  v=self.render(result(base()+[row('メーターガス栓閉止','A室',status='実施済み',source='報告',proof=proof)]),report)
+  self.assertTrue(v['措置状態妥当']);self.assertIn(proof,v['優先度判定結果']);self.assertEqual(v['_repair_calls'],0)
+ def test_status_and_action_aliases_do_not_rewrite_evidence(self):
+  proof='A室メーターガス栓の閉止';rows=base()+[row('メーターガス栓の閉止','A室',status='対応済み',source='報告',proof=proof)]
+  v=self.render(result(rows),REPORT+'\n'+proof)
+  self.assertTrue(v['措置状態妥当']);self.assertIn('メーターガス栓閉止（A室）：実施済み',v['優先度判定結果']);self.assertIn(proof,v['優先度判定結果'])
+ def test_concrete_format_example_is_accepted_by_saved_parser(self):
+  from priority_recovery import FORMAT
+  example='[[FACTS]]'+FORMAT.split('[[FACTS]]',1)[1].split('[[END_MEASURES]]',1)[0]+'[[END_MEASURES]]'
+  v=self.render(example,'現場情報はまだ未報告。')
+  self.assertTrue(v['措置状態妥当']);self.assertEqual(v['_repair_calls'],0)
+ def test_duplicate_action_targets_are_not_displayed_as_conflicting_states(self):
+  rows=base()+[row('メーターガス栓閉止','A室',status='実施済み',source='報告',proof=CLOSED),row('メーターガス栓閉止','A室',status='未実施')]
+  v=self.render(result(rows));self.assertFalse(v['措置状態妥当']);self.assertNotIn('メーターガス栓閉止（A室）',v['優先度判定結果'])
 if __name__=='__main__':unittest.main()
