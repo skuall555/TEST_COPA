@@ -1,14 +1,49 @@
-"""Small offline evaluator for pure scalar routing formulas only, not a Power Fx runtime."""
-import ast,re
-TOKENS=re.compile(r'"(?:[^"]|"")*"|Topic\.\w+|<>|&&|\|\||[A-Za-z_]\w*|\d+|[^\s]')
+"""Offline evaluator for tested scalar/table expressions, not the Power Fx engine/type checker."""
+import ast,re,operator
+TOKENS=re.compile(r'"(?:[^"]|"")*"|Topic\.\w+|<>|<=|>=|&&|\|\||[A-Za-z_]\w*|\d+|[^\s]')
 def evaluate(expr,values):
  parts=[]
  for t in TOKENS.findall(expr.lstrip('=')):
   if t.startswith('"'):parts.append(repr(t[1:-1].replace('""','"')))
   elif t.startswith('Topic.'):parts.append('values['+repr(t[6:])+']')
   else:parts.append({'=':'==','<>':'!=','&&':'and','||':'or','&':'+','true':'True','false':'False'}.get(t,t))
- source=' '.join(parts);tree=ast.parse(source,mode='eval')
- allowed=(ast.Expression,ast.Call,ast.Name,ast.Load,ast.Constant,ast.Subscript,ast.Compare,ast.Eq,ast.NotEq,ast.In,ast.BoolOp,ast.And,ast.Or,ast.BinOp,ast.Add)
- if any(not isinstance(n,allowed)for n in ast.walk(tree)):raise ValueError(source)
- funcs={'If':lambda c,a,b:a if c else b,'Or':lambda *x:any(x),'And':lambda *x:all(x),'Not':lambda x:not x,'StartsWith':lambda x,p:x.startswith(p),'Trim':lambda x:x.strip(),'Substitute':lambda x,a,b:x.replace(a,b),'IsBlank':lambda x:x is None or x==''}
- return eval(compile(tree,'<routing-formula>','eval'),{'__builtins__':{}},{**funcs,'values':values})
+ tree=ast.parse(' '.join(parts),mode='eval')
+ funcs={'Or':lambda *x:any(x),'And':lambda *x:all(x),'Not':lambda x:not x,'StartsWith':lambda x,p:x.startswith(p),'EndsWith':lambda x,p:x.endswith(p),'Trim':lambda x:x.strip(),'Substitute':lambda x,a,b:x.replace(a,b),'IsBlank':lambda x:x is None or x=='','Char':chr,'Len':len,'CountRows':len,'Split':lambda x,d:[{'Value':v}for v in x.split(d)],'FirstN':lambda x,n:x[:n],'First':lambda x:x[0],'Last':lambda x:x[-1]}
+ comparisons={ast.Eq:operator.eq,ast.NotEq:operator.ne,ast.Gt:operator.gt,ast.GtE:operator.ge,ast.Lt:operator.lt,ast.LtE:operator.le,ast.In:lambda a,b:a in b}
+ def run(n,context):
+  if isinstance(n,ast.Expression):return run(n.body,context)
+  if isinstance(n,ast.Constant):return n.value
+  if isinstance(n,ast.Name):
+   if n.id in context:return context[n.id]
+   raise ValueError('Unknown name '+n.id)
+  if isinstance(n,ast.Subscript):
+   if not isinstance(n.value,ast.Name)or n.value.id!='values':raise ValueError('Only variable lookups supported')
+   return values[run(n.slice,context)]
+  if isinstance(n,ast.Attribute)and n.attr=='Value':return run(n.value,context)['Value']
+  if isinstance(n,ast.BinOp)and isinstance(n.op,ast.Add):return run(n.left,context)+run(n.right,context)
+  if isinstance(n,ast.BoolOp):
+   if isinstance(n.op,ast.And):return all(run(v,context)for v in n.values)
+   if isinstance(n.op,ast.Or):return any(run(v,context)for v in n.values)
+  if isinstance(n,ast.Compare):
+   left=run(n.left,context)
+   for op,right in zip(n.ops,n.comparators):
+    right=run(right,context)
+    if type(op)not in comparisons or not comparisons[type(op)](left,right):return False
+    left=right
+   return True
+  if isinstance(n,ast.Call)and isinstance(n.func,ast.Name)and not n.keywords:
+   name=n.func.id
+   if name=='If':return run(n.args[1]if run(n.args[0],context)else n.args[2],context)
+   if name=='Filter':return [row for row in run(n.args[0],context)if run(n.args[1],{**context,**row})]
+   if name=='Distinct':
+    result=[]
+    for row in run(n.args[0],context):
+     value=run(n.args[1],{**context,**row})
+     if value not in result:result.append(value)
+    return result
+   if name=='Concat':
+    table=run(n.args[0],context);separator=run(n.args[2],context)if len(n.args)>2 else ''
+    return separator.join(str(run(n.args[1],{**context,**row}))for row in table)
+   if name in funcs:return funcs[name](*(run(a,context)for a in n.args))
+  raise ValueError('Unsupported expression '+ast.dump(n))
+ return run(tree,{})

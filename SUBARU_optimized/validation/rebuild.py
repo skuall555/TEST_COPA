@@ -198,6 +198,10 @@ s=(O/'00_現行エージェント指示.txt').read_text()+'\n## 根拠と改訂�
 (R/'SUBARU_エージェント指示_optimized.txt').write_text(s)
 from followup import apply
 apply(R,edit,setv,cg,nodes)
+from image_revision import apply as apply_image_revision
+apply_image_revision(R,edit,setv,cg,nodes)
+from priority_revision import apply as apply_priority_revision
+apply_priority_revision(R,edit,setv,cg,nodes)
 # Save diffs including exact original filenames, normalized newlines only.
 mapping=[('1-マニュアル関連入口 (1).txt','1-マニュアル関連入口_optimized.yaml'),('3-9-緊急保安業務エージェント(2).txt','3-9-緊急保安業務エージェント_optimized.yaml'),('4-9-画像分析エージェント_緊急保安(1).txt','4-9-画像分析エージェント_緊急保安_optimized.yaml'),('00_現行エージェント指示.txt','SUBARU_エージェント指示_optimized.txt')]
 for a,b in mapping:

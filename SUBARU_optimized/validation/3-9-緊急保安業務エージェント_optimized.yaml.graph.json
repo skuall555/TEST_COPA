@@ -54,6 +54,178 @@
     "answer_priority"
   ],
   "answer_priority": [
+    "setVariable_priorityRaw"
+  ],
+  "setVariable_priorityRaw": [
+    "setVariable_priorityEvidenceInput"
+  ],
+  "setVariable_priorityEvidenceInput": [
+    "setVariable_priorityEnvelope"
+  ],
+  "setVariable_priorityEnvelope": [
+    "setVariable_priorityExtractFacts"
+  ],
+  "setVariable_priorityExtractFacts": [
+    "setVariable_priorityExtractRisk"
+  ],
+  "setVariable_priorityExtractRisk": [
+    "setVariable_priorityExtractRows"
+  ],
+  "setVariable_priorityExtractRows": [
+    "setVariable_priorityRiskRows"
+  ],
+  "setVariable_priorityRiskRows": [
+    "setVariable_priorityRiskCount"
+  ],
+  "setVariable_priorityRiskCount": [
+    "setVariable_priorityRiskColumns"
+  ],
+  "setVariable_priorityRiskColumns": [
+    "setVariable_priorityRiskKeys"
+  ],
+  "setVariable_priorityRiskKeys": [
+    "setVariable_priorityRiskValues"
+  ],
+  "setVariable_priorityRiskValues": [
+    "setVariable_priorityRiskProof"
+  ],
+  "setVariable_priorityRiskProof": [
+    "setVariable_priorityRiskUnique"
+  ],
+  "setVariable_priorityRiskUnique": [
+    "setVariable_priorityRiskAlarm"
+  ],
+  "setVariable_priorityRiskAlarm": [
+    "setVariable_priorityRiskDetected"
+  ],
+  "setVariable_priorityRiskDetected": [
+    "setVariable_priorityRiskPositive"
+  ],
+  "setVariable_priorityRiskPositive": [
+    "setVariable_priorityFireHigh"
+  ],
+  "setVariable_priorityFireHigh": [
+    "setVariable_priorityMeasureRows"
+  ],
+  "setVariable_priorityMeasureRows": [
+    "setVariable_priorityMeasureCount"
+  ],
+  "setVariable_priorityMeasureCount": [
+    "setVariable_priorityMeasureColumns"
+  ],
+  "setVariable_priorityMeasureColumns": [
+    "setVariable_priorityMeasurePriority"
+  ],
+  "setVariable_priorityMeasurePriority": [
+    "setVariable_priorityMeasureStatus"
+  ],
+  "setVariable_priorityMeasureStatus": [
+    "setVariable_priorityMeasureEffect"
+  ],
+  "setVariable_priorityMeasureEffect": [
+    "setVariable_priorityMeasureSource"
+  ],
+  "setVariable_priorityMeasureSource": [
+    "setVariable_priorityMeasureNonempty"
+  ],
+  "setVariable_priorityMeasureNonempty": [
+    "setVariable_priorityMeasureRetired"
+  ],
+  "setVariable_priorityMeasureRetired": [
+    "setVariable_priorityMeasureProof"
+  ],
+  "setVariable_priorityMeasureProof": [
+    "setVariable_priorityMeasurePhotoProof"
+  ],
+  "setVariable_priorityMeasurePhotoProof": [
+    "setVariable_priorityMeasureUnique"
+  ],
+  "setVariable_priorityMeasureUnique": [
+    "setVariable_priorityMeasureRequired"
+  ],
+  "setVariable_priorityMeasureRequired": [
+    "setVariable_priorityDataValid"
+  ],
+  "setVariable_priorityDataValid": [
+    "conditionGroup_priorityStructuredValid"
+  ],
+  "conditionGroup_priorityStructuredValid": [
+    "setVariable_priorityHighRows",
+    "setVariable_priorityInvalidDone"
+  ],
+  "setVariable_priorityHighRows": [
+    "setVariable_priorityMiddleRows"
+  ],
+  "setVariable_priorityMiddleRows": [
+    "setVariable_priorityMiddleNotBasic"
+  ],
+  "setVariable_priorityMiddleNotBasic": [
+    "setVariable_priorityMiddleNotFire"
+  ],
+  "setVariable_priorityMiddleNotFire": [
+    "setVariable_priorityLowRows"
+  ],
+  "setVariable_priorityLowRows": [
+    "setVariable_priorityLowNotBasic"
+  ],
+  "setVariable_priorityLowNotBasic": [
+    "setVariable_priorityLowNotFire"
+  ],
+  "setVariable_priorityLowNotFire": [
+    "setVariable_priorityMiddleNotExtinguisher"
+  ],
+  "setVariable_priorityMiddleNotExtinguisher": [
+    "setVariable_priorityMiddleNotMeter"
+  ],
+  "setVariable_priorityMiddleNotMeter": [
+    "setVariable_priorityLowNotExtinguisher"
+  ],
+  "setVariable_priorityLowNotExtinguisher": [
+    "setVariable_priorityLowNotMeter"
+  ],
+  "setVariable_priorityLowNotMeter": [
+    "setVariable_priorityPendingHigh"
+  ],
+  "setVariable_priorityPendingHigh": [
+    "setVariable_priorityAllDone"
+  ],
+  "setVariable_priorityAllDone": [
+    "setVariable_priorityRenderHigh"
+  ],
+  "setVariable_priorityRenderHigh": [
+    "setVariable_priorityRenderMiddle"
+  ],
+  "setVariable_priorityRenderMiddle": [
+    "setVariable_priorityRenderLow"
+  ],
+  "setVariable_priorityRenderLow": [
+    "setVariable_priorityFirePendingRows"
+  ],
+  "setVariable_priorityFirePendingRows": [
+    "setVariable_priorityFireNotDoneRows"
+  ],
+  "setVariable_priorityFireNotDoneRows": [
+    "setVariable_priorityOtherPendingRows"
+  ],
+  "setVariable_priorityOtherPendingRows": [
+    "setVariable_priorityRenderFireNext"
+  ],
+  "setVariable_priorityRenderFireNext": [
+    "setVariable_priorityRenderNext"
+  ],
+  "setVariable_priorityRenderNext": [
+    "setVariable_priorityRenderQuestions"
+  ],
+  "setVariable_priorityRenderQuestions": [
+    "setVariable_priorityRenderedResult"
+  ],
+  "setVariable_priorityRenderedResult": [
+    "conditionGroup_prioritySucceeded"
+  ],
+  "setVariable_priorityInvalidDone": [
+    "setVariable_priorityInvalidResult"
+  ],
+  "setVariable_priorityInvalidResult": [
     "conditionGroup_prioritySucceeded"
   ],
   "conditionGroup_prioritySucceeded": [

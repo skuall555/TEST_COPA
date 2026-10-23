@@ -72,7 +72,7 @@
     {
       "file": "3-9-緊急保安業務エージェント_optimized.yaml",
       "yaml": "PASS (duplicate keys rejected)",
-      "unique_ids": 193,
+      "unique_ids": 251,
       "broken_goto": [],
       "removed_ids": [],
       "dependencies": "UNCHANGED",
@@ -108,8 +108,8 @@
       },
       "node_counts_after": {
         "OnRedirect": 1,
-        "SetVariable": 92,
-        "ConditionGroup": 24,
+        "SetVariable": 148,
+        "ConditionGroup": 25,
         "GotoAction": 8,
         "AnswerQuestionWithAI": 3,
         "InvokeFlowAction": 1,
@@ -118,12 +118,12 @@
         "Question": 4,
         "SearchAndSummarizeContent": 4
       },
-      "sha256": "62f9385bfaa4e1e04b036441b350b72ca1179a8b674590a4c4b7d674554f0014"
+      "sha256": "7ea1451c992dc57265bbb2b98c6b9cb6c3b835912b64fdb05a681291f4efeb0e"
     },
     {
       "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",
       "yaml": "PASS (duplicate keys rejected)",
-      "unique_ids": 52,
+      "unique_ids": 91,
       "broken_goto": [],
       "removed_ids": [],
       "dependencies": "UNCHANGED",
@@ -143,8 +143,8 @@
       },
       "node_counts_after": {
         "OnActivity": 1,
-        "SetVariable": 22,
-        "ConditionGroup": 8,
+        "SetVariable": 57,
+        "ConditionGroup": 10,
         "SendActivity": 7,
         "EndDialog": 2,
         "InvokeAIBuilderModelAction": 1,
@@ -152,7 +152,7 @@
         "GotoAction": 1,
         "AnswerQuestionWithAI": 1
       },
-      "sha256": "bbee7074b8cf264b7afb3b1c56edc15209c0ac1c406393cb0bf43286d4772c01"
+      "sha256": "3712455310ab5f6b15bab8342b5aaa3c0cdb9216ff9b07d4382811dafa7102aa"
     }
   ]
 }

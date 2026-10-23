@@ -40,7 +40,7 @@
      - kind: SetVariable
        id: setVariable_repairModeInit
        variable: Topic.修理方法モード
-@@ -612,8 +632,24 @@
+@@ -612,8 +632,25 @@
          ・措置済みとの記載がないものを対応済みにしない
          ・危険トリガーが明示されていないのに勝手に適用しない
          ・「検知器反応あり」だけで「強い／広範囲の検知反応」と断定しない
@@ -63,11 +63,12 @@
 +        改善傾向はあるが残留ガス・周辺住戸・再漏えい等の確認が残るなら「中（継続確認）」とし、未確認事項を示す。止漏だけ、単一地点の改善だけ、一定時間の経過だけ、または『止めたつもり』だけで下げない。複数住戸に影響した場合は影響範囲全体の状況を確認する。
 +        止漏後に検知反応・臭気が解消し、影響範囲と危険条件の解消が明示確認され、他の要請理由が無い場合は「低」へ再評価できる。未確認を『なし』とみなさない。再噴出・再警報・新たな周辺反応があれば再び高へ上げる。
 +        実施済みの消防・警察要請を取り消す指示は出さない。要請の実施状況と、現在の優先度・継続対応の必要性を別々に扱う。
-+        出力の【確認できた事実】と各措置の根拠に、現在継続中の危険、確認済みの改善、不足情報を区別する。未報告の『安全になった』『全戸解消』を作らない。"
++        出力の【確認できた事実】と各措置の根拠に、現在継続中の危険、確認済みの改善、不足情報を区別する。未報告の『安全になった』『全戸解消』を作らない。
++        実施状況と効果を分離する。実施報告なしは要確認。実施済みの操作でも効果未解決なら危険は継続し、必要な対応を高に保つ。未要請は消防・警察の優先度を下げる理由にならない。"
      - kind: ConditionGroup
        id: conditionGroup_priorityGuideRetrieveSucceeded
        conditions:
-@@ -626,14 +662,14 @@
+@@ -626,14 +663,14 @@
                value: |-
                  ="# 重要な前提
                  あなたは今まさに緊急保安業務トピック自身として実行されています。
@@ -84,24 +85,337 @@
                  " & Topic.初回入力 & "
  
                  # 追加確認・報告内容
-@@ -695,7 +731,6 @@
+@@ -641,7 +678,7 @@
+ 
+                 # 再判定ルール
+                 この処理は、追加情報が入力されるたびに必ず最初から再判定してください。
+-                初回入力だけで固定せず、【追加確認・報告内容】に追加された全履歴を現場事実として再評価してください。
++                初回入力だけで固定せず、【追加確認・報告内容】に追加された全履歴を時系列で照合し、ユーザー報告と採用済み画像事実を再評価してください。
+                 同じ措置について後から明示的な更新があった場合は、後から入力された最新情報を優先してください。
+                 例：
+                 ・「消火器設置済み」→ 消火器は「対応済み」として再判定
+@@ -673,7 +710,7 @@
+                 1. 業種・作業工程・現場状況から確定している事実のみを抽出する。
+                 2. 【ガイド抜粋】の基準に照らし、該当する初動措置ごとに優先度（高・中・低）を判定する。
+                 3. これまでの報告内容・画像分析結果（あれば）から、各初動措置が既に実施済みかどうかを判定する。
+-                   実施済みと確認できないものは「未実施」として扱う。未確認を実施済みにしない。
++                   実施報告がないものは「要確認」、明示的な未実施報告があるものだけ「未実施」。実施済みと効果未解決を分ける。
+                 4. 優先度「高」の措置は、実施状況を必ず個別に明記する。
+ 
+                 # 判定に必要な情報が不足している場合
+@@ -694,8 +731,52 @@
+                 └（未実施の高優先度措置を最優先。高が全て対応済みなら次に確認・実施すべき事項）
                  【確認したいこと】
                  └（追加確認が必要な事項。確認不要なら「なし」）
-                 回答本文の前後に説明文・総括文・挨拶を追加しないこと。"
+-                回答本文の前後に説明文・総括文・挨拶を追加しないこと。"
 -
++                回答本文の前後に説明文・総括文・挨拶を追加しないこと。
++                画像撮影項目はMS-001〜MS-017を対象とし、廃止したMS-018のホワイトシートは評価・要確認・撮り直し要求の対象外とする。古い履歴に残っていても当該項目を再要求しない。
++
++                # 実施状態と効果の独立管理（旧出力規則より優先）
++                この呼出しは内部データ生成。前述の人向け見出し形式はここでは出力しない。後段が表示を組み立てる。AI呼出しは増やさない。
++                各措置について、対象場所／設備、優先度、操作の実施状況、効果を独立して記録する。
++                ・優先度は危険条件で決める。未実施・未要請だから低、実施済みだから低、という分類は禁止。
++                ・明示された実施報告は実施済み。効果が出ていないことを理由に未実施へ戻さない。
++                ・例『警報器が鳴っている部屋のメーターガス栓を閉めたが濃度変わらず、警報も鳴りやまない』は、その部屋のメーターガス栓閉止＝実施済み／効果＝未解決。ガス漏れ停止済みではない。ネクストアクションは閉止済みの同じ栓を未実施としてやり直させず、遮断効果・流入元・上流側対応の確認を既存ガイドの範囲で示す。
++                ・『消防・警察は要請していない』は実施状況＝未実施。継続警報とガス検知等があれば優先度＝高。高の根拠を書いた措置を低へ置くな。
++                ・『ドアポストからLEL1％検知』はガス検知あり。LEL10％以上ではないが、継続する都市ガス警報器＋ガス検知による要請高の条件に濃度10％の閾値を追加しない。
++                ・『到着時臭気なし』を、その後の別室の検知・警報継続が消えた根拠にしない。
++                ・『ドアポストからLEL1％検知』は、そのドアポストで検知器調査・濃度測定を行った報告として扱う。他の場所の調査完了や全体調査完了とはしない。
++                ・図面に分岐バルブがあるが現場で見つからない報告は、図面上の記載と現物未発見を区別し、存在を一切未報告とはしない。操作場所・操作可否を確認する。
++                ・調査・濃度測定が実施された報告は、その測定箇所の実施済みとして保持。測定値不明、調査継続中、漏えい源未特定でも、既に行った調査を未実施へ戻さない。新しい対象箇所の追加調査は別の対象として記録する。
++                ・対象を混同しない。別室・別戸・別設備は別行。同じ対象について最新の明示更新を採用する。ある部屋の閉止済みを全戸の閉止済みにしない。『その栓を再開した』『撤去した』等の最新報告がある場合は最新状態を反映し、過去の実施済みを永久固定しない。
++                ・消防と警察は別行。消防だけ要請済みなら警察まで実施済みにしない。両方要請済みという明示なら両方を実施済みにする。
++                ・実施済みの根拠は、利用者の実施報告、または画像トピックが採用した【写真有】行だけ。AIの以前の回答、＜要確認＞行、機器候補の存在、画像に写っていないことは実施根拠にならない。写真の設置場所が不明でも、別の明示された利用者の実施報告を消さない。
++                ・未実施は『まだしていない』等の明示がある場合。実施報告が無いだけなら要確認。実施済みを再質問せず、効果が未解決・未確認なら効果について尋ねる。
++                ・実施と効果の未解決は両立する。高の操作を実施しただけで、継続する危険が解消したことにしない。
++                ・廃止MS-018は出力しない。ガイドにない操作手順を作らない。
++
++                # 内部出力形式（厳守）
++                以下の3ブロックだけ。コードフェンス・前置き禁止。区切りは半角|。各行の値に|、改行、ブロック記号を入れない。値なしは『なし』。事実は利用者報告と採用済み画像事実だけで整理する。
++                [[FACTS]]
++                └事実を1行ずつ
++                [[END_FACTS]]
++                [[RISK]]
++                継続警報|あり／なし／不明|根拠となる入力の正確な部分引用、またはなし
++                ガス検知|あり／なし／不明|根拠となる入力の正確な部分引用、またはなし
++                継続噴出|あり／なし／不明|根拠となる入力の正確な部分引用、またはなし
++                複数住戸影響|あり／なし／不明|根拠となる入力の正確な部分引用、またはなし
++                強臭等と遮断不能|あり／なし／不明|根拠となる入力の正確な部分引用、またはなし
++                その他要請高条件|あり／なし／不明|根拠となる入力の正確な部分引用、またはなし
++                [[END_RISK]]
++                [[MEASURES]]
++                措置名|対象場所・設備|高／中／低|実施済み／未実施／要確認|確認済み／未解決／未確認／対象外|報告／写真／なし|入力の実施根拠の正確な部分引用、またはなし|優先度と効果の根拠|次の対応、またはなし|確認質問、またはなし
++                [[END_MEASURES]]
++                RISKは6行を各1回。あり／なし／不明は1つだけを出す。『あり』は今も継続している明示事実だけで、過去・仮定・否定・疑問文を肯定にしない。現在のガス検知には報告された正のLEL測定も含む。『継続警報』は都市ガス警報器の継続鳴動。『その他要請高条件』は人身被害・火災・有効遮断不能等の既存の要請高条件。なしは明示的に否定された場合、不明は未報告・確認不足。ありの根拠引用は入力中に存在する文字列を使い、否定を切り落として反転しない。改善と新たな悪化は時系列・影響範囲を区別する。全域の改善が明示された後に古い危険を現在ありにしない。
++                MEASURESは1対象1行、10列。上記説明の選択肢をそのまま列挙しない。対象不明は『対象未特定』。同じ措置名と対象の重複禁止。全現場共通の基本高5項目、消防への要請、警察への要請を必ず含め、他はガイドに照らして該当する措置を漏らさない。メーターガス栓に言及があれば対象を分けて必ず含める。調査・濃度測定の実施報告も落とさない。
++                消火器の措置名は『消火器設置』とする。ガス検知ありなら固定ガイドに従い消火器設置は高。都市ガス警報器継続鳴動ならメーターガス栓閉止は高。事故発生前というだけで下げない。
++                消防・警察の措置名は正確に『消防への要請』『警察への要請』とする。メーターガス栓閉止は正確に『メーターガス栓閉止』とする。基本5項目の名称は『火気使用禁止の徹底』『電気スイッチ等の操作禁止』『火気厳禁表示シート設置』『ポケット警報器等の設置』『流入ガス・滞留ガスの検知器調査』。
++                実施済み行は6列目が報告または写真、7列目が入力に存在する正確な実施根拠引用で必須。写真の根拠引用は【写真有】を含む採用済み行。未実施／要確認では実施根拠はなしでよい。対象に対する完了報告の引用を使い、別対象の引用・一般的な『済み』だけの引用・未実施報告を実施済みの証拠にしない。
++                効果の『確認済み』は必要な効果・状態が確認された場合、『未解決』は効果なし・危険継続、『未確認』は効果不明。設置・周知・要請・調査の実施そのものを確認し、別途の効果判定が不要な行は『対象外』。閉止・換気で危険継続なら未解決。
++                実施済みかつ効果が確認済み／対象外なら次の対応と確認質問はなし。実施済みかつ効果未解決／未確認なら、実施したか再質問せず残る効果・対象の確認だけ。未実施の高措置と効果未解決の高措置を優先し、消防・警察の要請が高で未実施なら次の対応へ必ず入れる。
++                "
              - kind: AnswerQuestionWithAI
                id: answer_priority
                displayName: 11B_ガイド抜粋からの優先度判定
-@@ -707,7 +742,7 @@
+@@ -707,7 +788,239 @@
                  すべて含まれています。外部ナレッジを検索せず、一般知識で補完せず、入力内の情報だけで判定してください。
                  入力に書かれた出力フォーマット（【確認できた事実】から【確認したいこと】まで）だけを、
                  見出し名・順序をそのまま守って出力してください。前置き・総括・挨拶・引用番号は禁止です。
 -
 +                消防・警察要請では、ガイド末尾の現在の危険・止漏後再評価の優先規則を適用する。過去の危険と現在継続中の危険を分け、改善条件未確認で優先度を下げない。
++                この呼出しでは、プロンプト末尾の内部出力形式[[FACTS]]、[[RISK]]、[[MEASURES]]のみを優先する。人向けの見出しは後段が生成する。実施済みと効果未解決を同時に記録し、実施状況で優先度を下げない。
++            - kind: SetVariable
++              id: setVariable_priorityRaw
++              variable: Topic.優先度構造化結果
++              value: =Topic.優先度判定結果
++            - kind: SetVariable
++              id: setVariable_priorityEvidenceInput
++              variable: Topic.措置状態根拠入力
++              value: =Topic.初回入力 & Char(10) & Topic.追加情報履歴
++            - kind: SetVariable
++              id: setVariable_priorityEnvelope
++              variable: Topic.優先度構造妥当
++              value: =And(StartsWith(Trim(Topic.優先度構造化結果), "[[FACTS]]"), EndsWith(Trim(Topic.優先度構造化結果), "[[END_MEASURES]]"), CountRows(Split(Topic.優先度構造化結果, "[[FACTS]]")) = 2, CountRows(Split(Topic.優先度構造化結果, "[[END_FACTS]]")) = 2, CountRows(Split(Topic.優先度構造化結果, "[[RISK]]")) = 2, CountRows(Split(Topic.優先度構造化結果, "[[END_RISK]]")) = 2, CountRows(Split(Topic.優先度構造化結果, "[[MEASURES]]")) = 2, CountRows(Split(Topic.優先度構造化結果, "[[END_MEASURES]]")) = 2)
++            - kind: SetVariable
++              id: setVariable_priorityExtractFacts
++              variable: Topic.措置確認事実
++              value: =Trim(First(Split(Last(Split(Topic.優先度構造化結果, "[[FACTS]]")).Value, "[[END_FACTS]]")).Value)
++            - kind: SetVariable
++              id: setVariable_priorityExtractRisk
++              variable: Topic.現危険監査本文
++              value: =Trim(First(Split(Last(Split(Topic.優先度構造化結果, "[[RISK]]")).Value, "[[END_RISK]]")).Value)
++            - kind: SetVariable
++              id: setVariable_priorityExtractRows
++              variable: Topic.措置状態監査本文
++              value: =Trim(First(Split(Last(Split(Topic.優先度構造化結果, "[[MEASURES]]")).Value, "[[END_MEASURES]]")).Value)
++            - kind: SetVariable
++              id: setVariable_priorityRiskRows
++              variable: Topic.現危険監査行
++              value: =Filter(Split(Topic.現危険監査本文, Char(10)), Not(IsBlank(Trim(Value))))
++            - kind: SetVariable
++              id: setVariable_priorityRiskCount
++              variable: Topic.現危険元件数
++              value: =CountRows(Topic.現危険監査行)
++            - kind: SetVariable
++              id: setVariable_priorityRiskColumns
++              variable: Topic.現危険監査行
++              value: =Filter(Topic.現危険監査行, CountRows(Split(Value, "|")) = 3)
++            - kind: SetVariable
++              id: setVariable_priorityRiskKeys
++              variable: Topic.現危険監査行
++              value: =Filter(Topic.現危険監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "継続警報", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "ガス検知", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "継続噴出", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "複数住戸影響", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "強臭等と遮断不能", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "その他要請高条件"))
++            - kind: SetVariable
++              id: setVariable_priorityRiskValues
++              variable: Topic.現危険監査行
++              value: =Filter(Topic.現危険監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 2)).Value) = "あり", Trim(Last(FirstN(Split(Value, "|"), 2)).Value) = "なし", Trim(Last(FirstN(Split(Value, "|"), 2)).Value) = "不明"))
++            - kind: SetVariable
++              id: setVariable_priorityRiskProof
++              variable: Topic.現危険監査行
++              value: =Filter(Topic.現危険監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 2)).Value) <> "あり", And(Trim(Last(FirstN(Split(Value, "|"), 3)).Value) <> "なし", Trim(Last(FirstN(Split(Value, "|"), 3)).Value) <> "", Trim(Last(FirstN(Split(Value, "|"), 3)).Value) in Topic.措置状態根拠入力)))
++            - kind: SetVariable
++              id: setVariable_priorityRiskUnique
++              variable: Topic.現危険妥当
++              value: =And(Topic.現危険元件数 = 6, CountRows(Topic.現危険監査行) = 6, CountRows(Filter(Topic.現危険監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "継続警報")) = 1, CountRows(Filter(Topic.現危険監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "ガス検知")) = 1, CountRows(Filter(Topic.現危険監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "継続噴出")) = 1, CountRows(Filter(Topic.現危険監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "複数住戸影響")) = 1, CountRows(Filter(Topic.現危険監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "強臭等と遮断不能")) = 1, CountRows(Filter(Topic.現危険監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "その他要請高条件")) = 1)
++            - kind: SetVariable
++              id: setVariable_priorityRiskAlarm
++              variable: Topic.現危険Alarm
++              value: =CountRows(Filter(Topic.現危険監査行, And(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "継続警報", Trim(Last(FirstN(Split(Value, "|"), 2)).Value) = "あり"))) = 1
++            - kind: SetVariable
++              id: setVariable_priorityRiskDetected
++              variable: Topic.現危険Detected
++              value: =CountRows(Filter(Topic.現危険監査行, And(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "ガス検知", Trim(Last(FirstN(Split(Value, "|"), 2)).Value) = "あり"))) = 1
++            - kind: SetVariable
++              id: setVariable_priorityRiskPositive
++              variable: Topic.現危険肯定行
++              value: =Filter(Topic.現危険監査行, Trim(Last(FirstN(Split(Value, "|"), 2)).Value) = "あり")
++            - kind: SetVariable
++              id: setVariable_priorityFireHigh
++              variable: Topic.消防警察強制高
++              value: =Or(And(Topic.現危険Alarm, Topic.現危険Detected), CountRows(Filter(Topic.現危険肯定行, Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "継続噴出", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "複数住戸影響", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "強臭等と遮断不能", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "その他要請高条件"))) > 0)
++            - kind: SetVariable
++              id: setVariable_priorityMeasureRows
++              variable: Topic.措置状態監査行
++              value: =Filter(Split(Topic.措置状態監査本文, Char(10)), Not(IsBlank(Trim(Value))))
++            - kind: SetVariable
++              id: setVariable_priorityMeasureCount
++              variable: Topic.措置状態元件数
++              value: =CountRows(Topic.措置状態監査行)
++            - kind: SetVariable
++              id: setVariable_priorityMeasureColumns
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, CountRows(Split(Value, "|")) = 10)
++            - kind: SetVariable
++              id: setVariable_priorityMeasurePriority
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 3)).Value) = "高", Trim(Last(FirstN(Split(Value, "|"), 3)).Value) = "中", Trim(Last(FirstN(Split(Value, "|"), 3)).Value) = "低"))
++            - kind: SetVariable
++              id: setVariable_priorityMeasureStatus
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 4)).Value) = "実施済み", Trim(Last(FirstN(Split(Value, "|"), 4)).Value) = "未実施", Trim(Last(FirstN(Split(Value, "|"), 4)).Value) = "要確認"))
++            - kind: SetVariable
++              id: setVariable_priorityMeasureEffect
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 5)).Value) = "確認済み", Trim(Last(FirstN(Split(Value, "|"), 5)).Value) = "未解決", Trim(Last(FirstN(Split(Value, "|"), 5)).Value) = "未確認", Trim(Last(FirstN(Split(Value, "|"), 5)).Value) = "対象外"))
++            - kind: SetVariable
++              id: setVariable_priorityMeasureSource
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 6)).Value) = "報告", Trim(Last(FirstN(Split(Value, "|"), 6)).Value) = "写真", Trim(Last(FirstN(Split(Value, "|"), 6)).Value) = "なし"))
++            - kind: SetVariable
++              id: setVariable_priorityMeasureNonempty
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, And(Not(IsBlank(Trim(Last(FirstN(Split(Value, "|"), 1)).Value))), Not(IsBlank(Trim(Last(FirstN(Split(Value, "|"), 2)).Value)))))
++            - kind: SetVariable
++              id: setVariable_priorityMeasureRetired
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, Not("ホワイトシート" in Value) && Not("MS-018" in Value))
++            - kind: SetVariable
++              id: setVariable_priorityMeasureProof
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 4)).Value) <> "実施済み", And(Or(Trim(Last(FirstN(Split(Value, "|"), 6)).Value) = "報告", Trim(Last(FirstN(Split(Value, "|"), 6)).Value) = "写真"), Trim(Last(FirstN(Split(Value, "|"), 7)).Value) <> "なし", Trim(Last(FirstN(Split(Value, "|"), 7)).Value) <> "", Trim(Last(FirstN(Split(Value, "|"), 7)).Value) in Topic.措置状態根拠入力)))
++            - kind: SetVariable
++              id: setVariable_priorityMeasurePhotoProof
++              variable: Topic.措置状態監査行
++              value: =Filter(Topic.措置状態監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 6)).Value) <> "写真", "【写真有】" in Trim(Last(FirstN(Split(Value, "|"), 7)).Value)))
++            - kind: SetVariable
++              id: setVariable_priorityMeasureUnique
++              variable: Topic.措置状態一意
++              value: =CountRows(Distinct(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) & "@" & Trim(Last(FirstN(Split(Value, "|"), 2)).Value))) = CountRows(Topic.措置状態監査行)
++            - kind: SetVariable
++              id: setVariable_priorityMeasureRequired
++              variable: Topic.措置状態必須行
++              value: =And(CountRows(Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "火気使用禁止の徹底")) > 0, CountRows(Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "電気スイッチ等の操作禁止")) > 0, CountRows(Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "火気厳禁表示シート設置")) > 0, CountRows(Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "ポケット警報器等の設置")) > 0, CountRows(Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "流入ガス・滞留ガスの検知器調査")) > 0, CountRows(Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請")) > 0, CountRows(Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請")) > 0, Or(Not("メーターガス栓" in Topic.措置状態根拠入力), CountRows(Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "メーターガス栓閉止")) > 0))
++            - kind: SetVariable
++              id: setVariable_priorityDataValid
++              variable: Topic.措置状態妥当
++              value: =And(Topic.優先度構造妥当, Topic.現危険妥当, Topic.措置状態一意, Topic.措置状態必須行, CountRows(Topic.措置状態監査行) = Topic.措置状態元件数, Not(IsBlank(Topic.措置確認事実)))
++            - kind: ConditionGroup
++              id: conditionGroup_priorityStructuredValid
++              conditions:
++                - id: conditionGroup_priorityStructuredValid_item
++                  condition: =Topic.措置状態妥当
++                  actions:
++                    - kind: SetVariable
++                      id: setVariable_priorityHighRows
++                      variable: Topic.優先度高行
++                      value: =Filter(Topic.措置状態監査行, Or(Trim(Last(FirstN(Split(Value, "|"), 3)).Value) = "高", Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "火気使用禁止の徹底", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "電気スイッチ等の操作禁止", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "火気厳禁表示シート設置", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "ポケット警報器等の設置", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "流入ガス・滞留ガスの検知器調査"), And(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請"), Topic.消防警察強制高), And(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消火器設置", Topic.現危険Detected), And(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "メーターガス栓閉止", Topic.現危険Alarm)))
++                    - kind: SetVariable
++                      id: setVariable_priorityMiddleRows
++                      variable: Topic.優先度Middle行
++                      value: =Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 3)).Value) = "中")
++                    - kind: SetVariable
++                      id: setVariable_priorityMiddleNotBasic
++                      variable: Topic.優先度Middle行
++                      value: =Filter(Topic.優先度Middle行, Not(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "火気使用禁止の徹底", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "電気スイッチ等の操作禁止", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "火気厳禁表示シート設置", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "ポケット警報器等の設置", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "流入ガス・滞留ガスの検知器調査")))
++                    - kind: SetVariable
++                      id: setVariable_priorityMiddleNotFire
++                      variable: Topic.優先度Middle行
++                      value: =Filter(Topic.優先度Middle行, Or(Not(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請")), Not(Topic.消防警察強制高)))
++                    - kind: SetVariable
++                      id: setVariable_priorityLowRows
++                      variable: Topic.優先度Low行
++                      value: =Filter(Topic.措置状態監査行, Trim(Last(FirstN(Split(Value, "|"), 3)).Value) = "低")
++                    - kind: SetVariable
++                      id: setVariable_priorityLowNotBasic
++                      variable: Topic.優先度Low行
++                      value: =Filter(Topic.優先度Low行, Not(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "火気使用禁止の徹底", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "電気スイッチ等の操作禁止", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "火気厳禁表示シート設置", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "ポケット警報器等の設置", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "流入ガス・滞留ガスの検知器調査")))
++                    - kind: SetVariable
++                      id: setVariable_priorityLowNotFire
++                      variable: Topic.優先度Low行
++                      value: =Filter(Topic.優先度Low行, Or(Not(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請")), Not(Topic.消防警察強制高)))
++                    - kind: SetVariable
++                      id: setVariable_priorityMiddleNotExtinguisher
++                      variable: Topic.優先度Middle行
++                      value: =Filter(Topic.優先度Middle行, Not(And(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消火器設置", Topic.現危険Detected)))
++                    - kind: SetVariable
++                      id: setVariable_priorityMiddleNotMeter
++                      variable: Topic.優先度Middle行
++                      value: =Filter(Topic.優先度Middle行, Not(And(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "メーターガス栓閉止", Topic.現危険Alarm)))
++                    - kind: SetVariable
++                      id: setVariable_priorityLowNotExtinguisher
++                      variable: Topic.優先度Low行
++                      value: =Filter(Topic.優先度Low行, Not(And(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消火器設置", Topic.現危険Detected)))
++                    - kind: SetVariable
++                      id: setVariable_priorityLowNotMeter
++                      variable: Topic.優先度Low行
++                      value: =Filter(Topic.優先度Low行, Not(And(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "メーターガス栓閉止", Topic.現危険Alarm)))
++                    - kind: SetVariable
++                      id: setVariable_priorityPendingHigh
++                      variable: Topic.高優先度未完了行
++                      value: =Filter(Topic.優先度高行, Or(Trim(Last(FirstN(Split(Value, "|"), 4)).Value) <> "実施済み", Trim(Last(FirstN(Split(Value, "|"), 5)).Value) = "未解決", Trim(Last(FirstN(Split(Value, "|"), 5)).Value) = "未確認"))
++                    - kind: SetVariable
++                      id: setVariable_priorityAllDone
++                      variable: Topic.高優先度完了
++                      value: =And(CountRows(Topic.高優先度未完了行) = 0, CountRows(Topic.優先度高行) > 0)
++                    - kind: SetVariable
++                      id: setVariable_priorityRenderHigh
++                      variable: Topic.措置表示High
++                      value: =Concat(Topic.優先度高行, "└" & Trim(Last(FirstN(Split(Value, "|"), 1)).Value) & "（" & Trim(Last(FirstN(Split(Value, "|"), 2)).Value) & "）：" & Trim(Last(FirstN(Split(Value, "|"), 4)).Value) & "　効果：" & Trim(Last(FirstN(Split(Value, "|"), 5)).Value) & "　根拠：" & Trim(Last(FirstN(Split(Value, "|"), 8)).Value) & If(Trim(Last(FirstN(Split(Value, "|"), 4)).Value) = "実施済み", "　実施根拠：" & Trim(Last(FirstN(Split(Value, "|"), 7)).Value), "") & If(And(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請"), Topic.消防警察強制高), "　現在の危険条件により要請は高。実施状況とは別に判定。", ""), Char(10))
++                    - kind: SetVariable
++                      id: setVariable_priorityRenderMiddle
++                      variable: Topic.措置表示Middle
++                      value: =Concat(Topic.優先度Middle行, "└" & Trim(Last(FirstN(Split(Value, "|"), 1)).Value) & "（" & Trim(Last(FirstN(Split(Value, "|"), 2)).Value) & "）：" & Trim(Last(FirstN(Split(Value, "|"), 4)).Value) & "　効果：" & Trim(Last(FirstN(Split(Value, "|"), 5)).Value) & "　根拠：" & Trim(Last(FirstN(Split(Value, "|"), 8)).Value) & If(Trim(Last(FirstN(Split(Value, "|"), 4)).Value) = "実施済み", "　実施根拠：" & Trim(Last(FirstN(Split(Value, "|"), 7)).Value), "") & If(And(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請"), Topic.消防警察強制高), "　現在の危険条件により要請は高。実施状況とは別に判定。", ""), Char(10))
++                    - kind: SetVariable
++                      id: setVariable_priorityRenderLow
++                      variable: Topic.措置表示Low
++                      value: =Concat(Topic.優先度Low行, "└" & Trim(Last(FirstN(Split(Value, "|"), 1)).Value) & "（" & Trim(Last(FirstN(Split(Value, "|"), 2)).Value) & "）：" & Trim(Last(FirstN(Split(Value, "|"), 4)).Value) & "　効果：" & Trim(Last(FirstN(Split(Value, "|"), 5)).Value) & "　根拠：" & Trim(Last(FirstN(Split(Value, "|"), 8)).Value) & If(Trim(Last(FirstN(Split(Value, "|"), 4)).Value) = "実施済み", "　実施根拠：" & Trim(Last(FirstN(Split(Value, "|"), 7)).Value), "") & If(And(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請"), Topic.消防警察強制高), "　現在の危険条件により要請は高。実施状況とは別に判定。", ""), Char(10))
++                    - kind: SetVariable
++                      id: setVariable_priorityFirePendingRows
++                      variable: Topic.要請未完了行
++                      value: =Filter(Topic.高優先度未完了行, Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請"))
++                    - kind: SetVariable
++                      id: setVariable_priorityFireNotDoneRows
++                      variable: Topic.要請未完了行
++                      value: =Filter(Topic.要請未完了行, Trim(Last(FirstN(Split(Value, "|"), 4)).Value) <> "実施済み")
++                    - kind: SetVariable
++                      id: setVariable_priorityOtherPendingRows
++                      variable: Topic.他措置未完了行
++                      value: =Filter(Topic.高優先度未完了行, Or(Not(Or(Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "消防への要請", Trim(Last(FirstN(Split(Value, "|"), 1)).Value) = "警察への要請")), Trim(Last(FirstN(Split(Value, "|"), 4)).Value) = "実施済み"))
++                    - kind: SetVariable
++                      id: setVariable_priorityRenderFireNext
++                      variable: Topic.要請次対応
++                      value: =Concat(Topic.要請未完了行, If(Trim(Last(FirstN(Split(Value, "|"), 4)).Value) = "未実施", "└" & Trim(Last(FirstN(Split(Value, "|"), 1)).Value) & "（" & Trim(Last(FirstN(Split(Value, "|"), 2)).Value) & "）を優先して実施してください。", "└" & Trim(Last(FirstN(Split(Value, "|"), 1)).Value) & "（" & Trim(Last(FirstN(Split(Value, "|"), 2)).Value) & "）の実施状況を確認し、未実施なら優先して要請してください。"), Char(10))
++                    - kind: SetVariable
++                      id: setVariable_priorityRenderNext
++                      variable: Topic.措置次対応
++                      value: =Concat(Topic.他措置未完了行, If(Trim(Last(FirstN(Split(Value, "|"), 9)).Value) = "なし", "└" & Trim(Last(FirstN(Split(Value, "|"), 1)).Value) & "（" & Trim(Last(FirstN(Split(Value, "|"), 2)).Value) & "）：実施状況または未解決の効果を確認してください。", "└" & Trim(Last(FirstN(Split(Value, "|"), 9)).Value)), Char(10))
++                    - kind: SetVariable
++                      id: setVariable_priorityRenderQuestions
++                      variable: Topic.措置確認質問
++                      value: =Concat(Filter(Topic.措置状態監査行, And(Or(Trim(Last(FirstN(Split(Value, "|"), 4)).Value) <> "実施済み", Trim(Last(FirstN(Split(Value, "|"), 5)).Value) = "未解決", Trim(Last(FirstN(Split(Value, "|"), 5)).Value) = "未確認"), Trim(Last(FirstN(Split(Value, "|"), 10)).Value) <> "なし")), "└" & Trim(Last(FirstN(Split(Value, "|"), 10)).Value), Char(10))
++                    - kind: SetVariable
++                      id: setVariable_priorityRenderedResult
++                      variable: Topic.優先度判定結果
++                      value: ="【確認できた事実】" & Char(10) & Topic.措置確認事実 & Char(10) & "【初動措置　優先度：高】" & Char(10) & If(IsBlank(Topic.措置表示High), "└該当なし", Topic.措置表示High) & Char(10) & "【初動措置　優先度：中】" & Char(10) & If(IsBlank(Topic.措置表示Middle), "└該当なし", Topic.措置表示Middle) & Char(10) & "【初動措置　優先度：低】" & Char(10) & If(IsBlank(Topic.措置表示Low), "└該当なし", Topic.措置表示Low) & Char(10) & "【高優先度の完了状況】" & Char(10) & If(Topic.高優先度完了, "└全て対応済み", "└未完了あり") & Char(10) & "【ネクストアクション】" & Char(10) & If(Topic.高優先度完了, "└高優先度の操作実施と必要な効果を確認しました。残る条件確認を継続してください。", Topic.要請次対応 & Char(10) & Topic.措置次対応) & Char(10) & "【確認したいこと】" & Char(10) & If(IsBlank(Topic.措置確認質問), "└なし", Topic.措置確認質問)
++              elseActions:
++                - kind: SetVariable
++                  id: setVariable_priorityInvalidDone
++                  variable: Topic.高優先度完了
++                  value: =false
++                - kind: SetVariable
++                  id: setVariable_priorityInvalidResult
++                  variable: Topic.優先度判定結果
++                  value: ="【確認できた事実】" & Char(10) & "└ご報告の実施状況を確認しきれないため、完了判定を保留しています。実施済みのご報告を未実施へ変更しません。" & Char(10) & "【初動措置　優先度：高】" & Char(10) & If(And(Topic.現危険妥当, Topic.消防警察強制高), "└消防・警察への要請：高　実施状況：要確認　根拠：現在の危険条件が確認されています。", "└判定保留") & Char(10) & "【初動措置　優先度：中】" & Char(10) & "└判定保留" & Char(10) & "【初動措置　優先度：低】" & Char(10) & "└判定保留" & Char(10) & "【高優先度の完了状況】" & Char(10) & "└未完了あり" & Char(10) & "【ネクストアクション】" & Char(10) & If(And(Topic.現危険妥当, Topic.消防警察強制高), "└未要請であれば消防・警察への要請を優先してください。", "└未解決の状況と、実施した措置の効果を確認してください。") & Char(10) & "【確認したいこと】" & Char(10) & "└対象の部屋・設備、実施した操作、その後の濃度・警報の変化を補足してください。"
              - kind: ConditionGroup
                id: conditionGroup_prioritySucceeded
                conditions:
-@@ -752,7 +787,16 @@
+@@ -733,7 +1046,7 @@
+                       id: conditionGroup_priorityLoopNeeded
+                       conditions:
+                         - id: conditionItem_priorityLoopNeeded
+-                          condition: =Not("全て対応済み" in Topic.優先度判定結果)
++                          condition: =Not(Topic.高優先度完了)
+                           actions:
+                             - kind: ConditionGroup
+                               id: conditionGroup_priorityRetryLimit
+@@ -745,40 +1058,43 @@
+                                       id: setVariable_imageReceptionOffGiveUp
+                                       variable: Global.緊急保安画像受付中
+                                       value: =false
+-
+                                     - kind: SendActivity
+                                       id: sendActivity_priorityGiveUp
+                                       activity: |-
                                          確認の往復が多くなったため、現時点の状況を一旦提示します。高優先度の項目が残っている可能性があります。
  
                                          {Topic.優先度判定結果}
@@ -119,10 +433,77 @@
                                elseActions:
                                  - kind: SetVariable
                                    id: setVariable_priorityRetryIncrement
-@@ -837,9 +881,16 @@
+                                   variable: Topic.優先度確認再試行回数
+                                   value: =Topic.優先度確認再試行回数 + 1
+-
+                                 - kind: SetVariable
+                                   id: setVariable_syncInitialBeforeWait
+                                   variable: Global.緊急保安初回入力
+                                   value: =Topic.初回入力
+-
+                                 - kind: SetVariable
+                                   id: setVariable_syncHistoryBeforeWait
+                                   variable: Global.緊急保安追加情報履歴
+                                   value: =Topic.追加情報履歴
+-
+                                 - kind: SetVariable
+                                   id: setVariable_imageReceptionOn
+                                   variable: Global.緊急保安画像受付中
+                                   value: =true
+-
+                                 - kind: Question
+                                   id: question_priorityUpdate
+                                   interruptionPolicy:
+                                     allowInterruption: true
+-
+                                   variable: Topic.優先度追加回答
+                                   prompt: |-
+                                     {Topic.優先度判定結果}
+@@ -790,12 +1106,10 @@
+                                   entity:
+                                     kind: StringPrebuiltEntity
+                                     sensitivityLevel: None
+-
+                                 - kind: SetVariable
+                                   id: setVariable_resyncHistoryFromGlobal
+                                   variable: Topic.追加情報履歴
+                                   value: =Global.緊急保安追加情報履歴
+-
+                                 - kind: ConditionGroup
+                                   id: conditionGroup_repairRequestedInPriority
+                                   conditions:
+@@ -806,21 +1120,17 @@
+                                           id: setVariable_appendRepairRequestHistory
+                                           variable: Topic.追加情報履歴
+                                           value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
+-
+                                         - kind: SetVariable
+                                           id: setVariable_syncHistoryBeforeRepair
+                                           variable: Global.緊急保安追加情報履歴
+                                           value: =Topic.追加情報履歴
+-
+                                         - kind: SetVariable
+                                           id: setVariable_repairModeOn
+                                           variable: Topic.修理方法モード
+                                           value: =true
+-
+                                         - kind: GotoAction
+                                           id: goto_repairSelect
+                                           actionId: setVariable_repairSelectInit
+-
+                                 - kind: ConditionGroup
+                                   id: conditionGroup_priorityPurposeSwitchToJunkai
+                                   conditions:
+@@ -831,43 +1141,49 @@
+                                           id: setVariable_priorityPurposeSwitchToJunkaiInput
+                                           variable: Global.巡回切替入力
+                                           value: =Topic.優先度追加回答
+-
+                                         - kind: SetVariable
+                                           id: setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff
                                            variable: Global.緊急保安画像受付中
                                            value: =false
- 
+-
 +                                        - kind: SetVariable
 +                                          id: endDialog_priorityPurposeSwitchToJunkai_historyToGlobal
 +                                          variable: Global.緊急保安追加情報履歴
@@ -137,10 +518,19 @@
                                    elseActions:
                                      - kind: SetVariable
                                        id: setVariable_appendPriorityHistory
-@@ -856,14 +907,19 @@
+                                       variable: Topic.追加情報履歴
+                                       value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
+-
+                                     - kind: SetVariable
+                                       id: setVariable_syncHistoryAfterText
+                                       variable: Global.緊急保安追加情報履歴
+                                       value: =Topic.追加情報履歴
+-
+                                     - kind: SetVariable
+                                       id: setVariable_keepImageReceptionOn
                                        variable: Global.緊急保安画像受付中
                                        value: =true
- 
+-
 -                                    - kind: SendActivity
 -                                      id: sendActivity_debugPriorityHistory
 -                                      activity: |-
@@ -165,7 +555,11 @@
                                      - kind: GotoAction
                                        id: goto_priorityAgain
                                        actionId: setVariable_priorityPrompt
-@@ -892,10 +948,16 @@
+-
+                     - kind: SetVariable
+                       id: setVariable_imageReceptionOffDone
+                       variable: Global.緊急保安画像受付中
+@@ -892,10 +1208,16 @@
                      現場事実と初動措置ガイドの内容から優先度を判定できませんでした。
                      一般知識で補完せず終了します。
  
@@ -184,7 +578,7 @@
        elseActions:
          - kind: SetVariable
            id: setVariable_imageReceptionOffGuideFailed
-@@ -908,10 +970,16 @@
+@@ -908,10 +1230,16 @@
              固定の初動措置優先度判断ルールを読み込めませんでした。
              一般知識で補完せず終了します。
  
@@ -203,7 +597,7 @@
      - kind: SetVariable
        id: setVariable_repairSelectInit
        variable: Topic.修理再検索回数
-@@ -936,8 +1004,7 @@
+@@ -936,8 +1264,7 @@
              - kind: SetVariable
                id: setVariable_repairKnownPipe
                variable: Topic.確定管種
@@ -213,7 +607,7 @@
              - kind: SetVariable
                id: setVariable_repairKnownSize
                variable: Topic.確定口径
-@@ -1077,7 +1144,7 @@
+@@ -1077,7 +1404,7 @@
                  最後に必ず [0] それ以外 の行を入れてください。
                  ユーザーへの質問は書かないでください。情報が足りなくても候補を出してください。
                  前置き・総括・引用番号・URLは一切出力しないでください。
@@ -222,7 +616,7 @@
              - kind: ConditionGroup
                id: conditionGroup_repairCandidatesFound
                conditions:
-@@ -1143,9 +1210,16 @@
+@@ -1143,9 +1470,16 @@
  
                                  {Topic.確定条件一覧}
  
@@ -240,7 +634,7 @@
                      - kind: SetVariable
                        id: setVariable_repairChosenLine
                        variable: Topic.修理選択行
-@@ -1256,9 +1330,16 @@
+@@ -1256,9 +1590,16 @@
  
                                          安全確保を最優先に、落ち着いて対応してください。
  
@@ -258,7 +652,7 @@
                                elseActions:
                                  - kind: SendActivity
                                    id: sendActivity_repairProcedureNotFound
-@@ -1266,9 +1347,16 @@
+@@ -1266,9 +1607,16 @@
                                      「{Topic.修理選択工法}」の作業手順を、マニュアルから見つけられませんでした。
                                      一般知識で補完せず終了します。工法名が分かる場合は、そのまま入力してください。
  
@@ -276,7 +670,7 @@
                        elseActions:
                          - kind: SendActivity
                            id: sendActivity_repairChoiceUnresolved
-@@ -1278,8 +1366,7 @@
+@@ -1278,8 +1626,7 @@
  
                          - kind: GotoAction
                            id: goto_repairChoiceAgain
@@ -286,7 +680,7 @@
                elseActions:
                  - kind: SendActivity
                    id: sendActivity_repairNoCandidate
-@@ -1292,9 +1379,16 @@
+@@ -1292,9 +1639,16 @@
                      未確定の項目や、漏えい量・圧力・配管形状など分かるものを入力してください。
                      条件を足して探し直します。
  
@@ -304,7 +698,7 @@
      - kind: SetVariable
        id: setVariable_investigationRetryCount
        variable: Topic.問診再試行回数
-@@ -1411,9 +1505,16 @@
+@@ -1411,9 +1765,16 @@
                                        variable: Global.緊急保安画像受付中
                                        value: =false
  
@@ -322,7 +716,7 @@
                                elseActions:
                                  - kind: SetVariable
                                    id: setVariable_appendInterviewHistory
-@@ -1435,10 +1536,16 @@
+@@ -1435,10 +1796,16 @@
              調査の進め方について、業務基準から情報を取得できませんでした。
              一般知識で補完せず終了します。
  
@@ -341,7 +735,7 @@
      - kind: ConditionGroup
        id: conditionGroup_leakConfirmed
        conditions:
-@@ -1503,7 +1610,7 @@
+@@ -1503,7 +1870,7 @@
                        id: conditionGroup_repairVerified
                        conditions:
                          - id: conditionItem_repairVerified
@@ -350,7 +744,7 @@
                            actions:
                              - kind: SendActivity
                                id: sendActivity_repairResult
-@@ -1511,10 +1618,16 @@
+@@ -1511,10 +1878,16 @@
                                  {Topic.修理指示結果}
  
                                  お疲れさまでした。安全確保を最優先に、落ち着いて対応してください。
@@ -369,7 +763,7 @@
                        elseActions:
                          - kind: ConditionGroup
                            id: conditionGroup_repairRetryLimit
-@@ -1528,27 +1641,30 @@
+@@ -1528,27 +1901,30 @@
                                      現時点で考えられる修理方法をお伝えします（十分に絞り込めていない可能性があります）。安全確保を最優先に対応してください。
  
                                      {Topic.修理指示結果}
@@ -406,7 +800,7 @@
                              - kind: ConditionGroup
                                id: conditionGroup_repairPurposeSwitchToJunkai
                                conditions:
-@@ -1559,25 +1675,28 @@
+@@ -1559,25 +1935,28 @@
                                        id: setVariable_repairPurposeSwitchToJunkaiInput
                                        variable: Global.巡回切替入力
                                        value: =Topic.修理追加回答
@@ -440,7 +834,7 @@
                elseActions:
                  - kind: SendActivity
                    id: sendActivity_repairFailed
-@@ -1585,10 +1704,16 @@
+@@ -1585,10 +1964,16 @@
                      02_作業要領から修理方法に関する情報を取得できませんでした。
                      一般知識で補完せず終了します。
  
@@ -459,7 +853,7 @@
        elseActions:
          - kind: SendActivity
            id: sendActivity_noLeakFound
-@@ -1596,9 +1721,16 @@
+@@ -1596,9 +1981,16 @@
              現時点でガス漏れ・検知器反応の報告はありません。
              調査結果に応じて、あらためて報告してください。
  

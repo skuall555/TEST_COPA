@@ -23,9 +23,46 @@ test_revise_all_row_validation (test_contracts.Contracts.test_revise_all_row_val
 test_revise_short_text_not_discarded (test_contracts.Contracts.test_revise_short_text_not_discarded) ... ok
 test_row_checks_have_shallow_expressions (test_contracts.Contracts.test_row_checks_have_shallow_expressions) ... ok
 test_unclear_purpose_has_natural_inference_then_number_question (test_contracts.Contracts.test_unclear_purpose_has_natural_inference_then_number_question) ... ok
+test_alternative_ms_ids_are_rejected (test_image_audit.ImageAudit.test_alternative_ms_ids_are_rejected) ... ok
+test_candidate_device_is_not_confirmed_presence (test_image_audit.ImageAudit.test_candidate_device_is_not_confirmed_presence) ... ok
+test_conflicting_duplicate_observation_is_not_positive (test_image_audit.ImageAudit.test_conflicting_duplicate_observation_is_not_positive) ... ok
+test_handheld_alarm_is_not_installed (test_image_audit.ImageAudit.test_handheld_alarm_is_not_installed) ... ok
+test_image_diagnostics_are_explicitly_requested (test_image_audit.ImageAudit.test_image_diagnostics_are_explicitly_requested) ... ok
+test_missing_or_copied_observation_fields_fail_closed (test_image_audit.ImageAudit.test_missing_or_copied_observation_fields_fail_closed) ... ok
+test_neighbor_requires_current_photo_scope (test_image_audit.ImageAudit.test_neighbor_requires_current_photo_scope) ... ok
+test_new_audit_expressions_are_shallow (test_image_audit.ImageAudit.test_new_audit_expressions_are_shallow) ... ok
+test_no_completion_does_not_create_a_retaking_request (test_image_audit.ImageAudit.test_no_completion_does_not_create_a_retaking_request) ... ok
+test_placed_detector_does_not_prove_investigation (test_image_audit.ImageAudit.test_placed_detector_does_not_prove_investigation) ... ok
+test_retired_item_is_removed_from_every_section (test_image_audit.ImageAudit.test_retired_item_is_removed_from_every_section) ... ok
+test_retired_target_not_requested_by_prompts (test_image_audit.ImageAudit.test_retired_target_not_requested_by_prompts) ... ok
+test_selected_md_definition_is_included_verbatim (test_image_audit.ImageAudit.test_selected_md_definition_is_included_verbatim) ... ok
+test_two_independent_devices_can_both_be_adopted (test_image_audit.ImageAudit.test_two_independent_devices_can_both_be_adopted) ... ok
+test_unknown_location_cannot_be_assigned_any_site (test_image_audit.ImageAudit.test_unknown_location_cannot_be_assigned_any_site) ... ok
+test_unreadable_value_does_not_invalidate_visible_action (test_image_audit.ImageAudit.test_unreadable_value_does_not_invalidate_visible_action) ... ok
+test_wrong_location_id_is_removed_without_losing_valid_one (test_image_audit.ImageAudit.test_wrong_location_id_is_removed_without_losing_valid_one) ... ok
+test_all_actions_done_but_effect_unresolved_is_incomplete (test_priority_state.PriorityState.test_all_actions_done_but_effect_unresolved_is_incomplete) ... ok
+test_all_new_formulas_have_shallow_calls (test_priority_state.PriorityState.test_all_new_formulas_have_shallow_calls) ... ok
+test_closed_valve_and_unresolved_effect_are_both_preserved (test_priority_state.PriorityState.test_closed_valve_and_unresolved_effect_are_both_preserved) ... ok
+test_completed_investigation_is_not_reset_by_unreadable_number (test_priority_state.PriorityState.test_completed_investigation_is_not_reset_by_unreadable_number) ... ok
+test_completed_request_remains_high_and_is_not_requested_again (test_priority_state.PriorityState.test_completed_request_remains_high_and_is_not_requested_again) ... ok
+test_completion_keyword_inside_fact_does_not_end_loop (test_priority_state.PriorityState.test_completion_keyword_inside_fact_does_not_end_loop) ... ok
+test_confirmed_completed_actions_can_finish (test_priority_state.PriorityState.test_confirmed_completed_actions_can_finish) ... ok
+test_detected_gas_and_alarm_enforce_existing_other_high_rules (test_priority_state.PriorityState.test_detected_gas_and_alarm_enforce_existing_other_high_rules) ... ok
+test_duplicate_action_and_scope_fail_closed (test_priority_state.PriorityState.test_duplicate_action_and_scope_fail_closed) ... ok
+test_improvement_reassessment_is_not_permanently_forced_high (test_priority_state.PriorityState.test_improvement_reassessment_is_not_permanently_forced_high) ... ok
+test_invalid_measure_rows_do_not_hide_verified_request_risk (test_priority_state.PriorityState.test_invalid_measure_rows_do_not_hide_verified_request_risk) ... ok
+test_later_reopening_can_replace_earlier_closed_state (test_priority_state.PriorityState.test_later_reopening_can_replace_earlier_closed_state) ... ok
+test_lel_one_and_continuing_alarm_force_requests_high (test_priority_state.PriorityState.test_lel_one_and_continuing_alarm_force_requests_high) ... ok
+test_missing_risk_block_or_bad_columns_fail_closed (test_priority_state.PriorityState.test_missing_risk_block_or_bad_columns_fail_closed) ... ok
+test_no_additional_model_calls (test_priority_state.PriorityState.test_no_additional_model_calls) ... ok
+test_nonexistent_positive_risk_quote_is_not_accepted (test_priority_state.PriorityState.test_nonexistent_positive_risk_quote_is_not_accepted) ... ok
+test_photo_completion_needs_adopted_photo_marker (test_priority_state.PriorityState.test_photo_completion_needs_adopted_photo_marker) ... ok
+test_target_scope_does_not_spread_completion_to_other_room (test_priority_state.PriorityState.test_target_scope_does_not_spread_completion_to_other_room) ... ok
+test_unknown_is_not_rendered_as_explicitly_not_done (test_priority_state.PriorityState.test_unknown_is_not_rendered_as_explicitly_not_done) ... ok
+test_unverified_completion_proof_holds_result (test_priority_state.PriorityState.test_unverified_completion_proof_holds_result) ... ok
 
 ----------------------------------------------------------------------
-Ran 25 tests in 0.444s
+Ran 62 tests in 0.840s
 
 OK
 1-マニュアル関連入口_optimized.yaml PASS new variable candidates: []

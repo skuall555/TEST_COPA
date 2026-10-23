@@ -100,7 +100,7 @@
   ],
   "conditionGroup_sectionsMissing": [
     "setVariable_fallbackExtra",
-    "setVariable_globalDone"
+    "setVariable_photoEvidence_room"
   ],
   "setVariable_fallbackExtra": [
     "setVariable_clearUnvalidatedPhotoDone"
@@ -109,6 +109,119 @@
     "setVariable_fallbackCheck"
   ],
   "setVariable_fallbackCheck": [
+    "setVariable_photoEvidence_room"
+  ],
+  "setVariable_photoEvidence_room": [
+    "setVariable_photoEvidence_common"
+  ],
+  "setVariable_photoEvidence_common": [
+    "setVariable_photoEvidence_outside"
+  ],
+  "setVariable_photoEvidence_outside": [
+    "setVariable_photoEvidence_neighbor"
+  ],
+  "setVariable_photoEvidence_neighbor": [
+    "setVariable_photoEvidence_pocket"
+  ],
+  "setVariable_photoEvidence_pocket": [
+    "setVariable_photoEvidence_placed"
+  ],
+  "setVariable_photoEvidence_placed": [
+    "setVariable_photoEvidence_pocketPosition"
+  ],
+  "setVariable_photoEvidence_pocketPosition": [
+    "setVariable_photoEvidence_sheet"
+  ],
+  "setVariable_photoEvidence_sheet": [
+    "setVariable_photoEvidence_posted"
+  ],
+  "setVariable_photoEvidence_posted": [
+    "setVariable_photoEvidence_sheetPosition"
+  ],
+  "setVariable_photoEvidence_sheetPosition": [
+    "setVariable_photoEvidence_detector"
+  ],
+  "setVariable_photoEvidence_detector": [
+    "setVariable_photoEvidence_measuring"
+  ],
+  "setVariable_photoEvidence_measuring": [
+    "setVariable_photoAuditRows"
+  ],
+  "setVariable_photoAuditRows": [
+    "setVariable_photoAuditRetired"
+  ],
+  "setVariable_photoAuditRetired": [
+    "setVariable_photoAuditOriginalCount"
+  ],
+  "setVariable_photoAuditOriginalCount": [
+    "setVariable_photoAuditSingleId"
+  ],
+  "setVariable_photoAuditSingleId": [
+    "setVariable_photoAuditNoSlash"
+  ],
+  "setVariable_photoAuditNoSlash": [
+    "setVariable_photoAuditNoWideSlash"
+  ],
+  "setVariable_photoAuditNoWideSlash": [
+    "setVariable_photoAuditKnownIds"
+  ],
+  "setVariable_photoAuditKnownIds": [
+    "setVariable_photoAuditMS003"
+  ],
+  "setVariable_photoAuditMS003": [
+    "setVariable_photoAuditMS004"
+  ],
+  "setVariable_photoAuditMS004": [
+    "setVariable_photoAuditMS005"
+  ],
+  "setVariable_photoAuditMS005": [
+    "setVariable_photoAuditMS007"
+  ],
+  "setVariable_photoAuditMS007": [
+    "setVariable_photoAuditMS008"
+  ],
+  "setVariable_photoAuditMS008": [
+    "setVariable_photoAuditMS009"
+  ],
+  "setVariable_photoAuditMS009": [
+    "setVariable_photoAuditMS011"
+  ],
+  "setVariable_photoAuditMS011": [
+    "setVariable_photoAuditMS012"
+  ],
+  "setVariable_photoAuditMS012": [
+    "setVariable_photoAuditMS013"
+  ],
+  "setVariable_photoAuditMS013": [
+    "setVariable_photoAuditMS014"
+  ],
+  "setVariable_photoAuditMS014": [
+    "setVariable_photoAuditDone"
+  ],
+  "setVariable_photoAuditDone": [
+    "setVariable_photoRetiredExtra"
+  ],
+  "setVariable_photoRetiredExtra": [
+    "setVariable_photoRetiredCheck"
+  ],
+  "setVariable_photoRetiredCheck": [
+    "setVariable_photoRetiredUnknown"
+  ],
+  "setVariable_photoRetiredUnknown": [
+    "conditionGroup_photoAuditHeld"
+  ],
+  "conditionGroup_photoAuditHeld": [
+    "conditionGroup_photoPocketPresencePreserved",
+    "setVariable_photoAuditHoldReason"
+  ],
+  "setVariable_photoAuditHoldReason": [
+    "conditionGroup_photoPocketPresencePreserved"
+  ],
+  "conditionGroup_photoPocketPresencePreserved": [
+    "setVariable_globalDone",
+    "setVariable_photoPocketPresence"
+  ],
+  "setVariable_photoPocketPresence": [
     "setVariable_globalDone"
   ],
   "setVariable_globalDone": [

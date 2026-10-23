@@ -114,7 +114,7 @@ class Contracts(unittest.TestCase):
  def test_appearance_import_excludes_pdf_comparison_workflow(self):
   text=self.b[2]['setVariable_prompt1']['value']+self.b[2]['setVariable_prompt2']['value']
   for x in ['PHOTOACCESS','TOTAL_ALARM_RAW','AI9','AI10','28列','正答率']:self.assertNotIn(x,text)
-  for x in ['アンテナ状の筒','手に持って検査','火気使用禁止','スイッチ操作禁止','配管・外壁貫通部','ケース・ストラップだけでは確定しない']:self.assertIn(x,text)
+  for x in ['アンテナ状の筒','手に持って検査','火気使用禁止','スイッチ操作禁止','配管・外壁貫通部','単なる黒色または茶色のケースしか見えない場合は確定しない']:self.assertIn(x,text)
  def test_placement_is_not_unconditional_presence(self):
   text=self.b[2]['setVariable_prompt2']['value']
   self.assertIn('対象物の識別＋置かれた設置／監視状態＋滞留または流入箇所との位置関係の3条件',text)

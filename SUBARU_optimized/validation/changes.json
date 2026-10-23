@@ -352,6 +352,12 @@
         ]
       },
       {
+        "id": "conditionGroup_priorityLoopNeeded",
+        "fields": [
+          "conditions"
+        ]
+      },
+      {
         "id": "endDialog_priorityFailed",
         "fields": [
           "clearTopicQueue"
@@ -406,6 +412,63 @@
       "setVariable_fieldInitialSync",
       "setVariable_fieldTurnHistory",
       "setVariable_fieldHistorySync",
+      "setVariable_priorityRaw",
+      "setVariable_priorityEvidenceInput",
+      "setVariable_priorityEnvelope",
+      "setVariable_priorityExtractFacts",
+      "setVariable_priorityExtractRisk",
+      "setVariable_priorityExtractRows",
+      "setVariable_priorityRiskRows",
+      "setVariable_priorityRiskCount",
+      "setVariable_priorityRiskColumns",
+      "setVariable_priorityRiskKeys",
+      "setVariable_priorityRiskValues",
+      "setVariable_priorityRiskProof",
+      "setVariable_priorityRiskUnique",
+      "setVariable_priorityRiskAlarm",
+      "setVariable_priorityRiskDetected",
+      "setVariable_priorityRiskPositive",
+      "setVariable_priorityFireHigh",
+      "setVariable_priorityMeasureRows",
+      "setVariable_priorityMeasureCount",
+      "setVariable_priorityMeasureColumns",
+      "setVariable_priorityMeasurePriority",
+      "setVariable_priorityMeasureStatus",
+      "setVariable_priorityMeasureEffect",
+      "setVariable_priorityMeasureSource",
+      "setVariable_priorityMeasureNonempty",
+      "setVariable_priorityMeasureRetired",
+      "setVariable_priorityMeasureProof",
+      "setVariable_priorityMeasurePhotoProof",
+      "setVariable_priorityMeasureUnique",
+      "setVariable_priorityMeasureRequired",
+      "setVariable_priorityDataValid",
+      "conditionGroup_priorityStructuredValid",
+      "setVariable_priorityHighRows",
+      "setVariable_priorityMiddleRows",
+      "setVariable_priorityMiddleNotBasic",
+      "setVariable_priorityMiddleNotFire",
+      "setVariable_priorityLowRows",
+      "setVariable_priorityLowNotBasic",
+      "setVariable_priorityLowNotFire",
+      "setVariable_priorityMiddleNotExtinguisher",
+      "setVariable_priorityMiddleNotMeter",
+      "setVariable_priorityLowNotExtinguisher",
+      "setVariable_priorityLowNotMeter",
+      "setVariable_priorityPendingHigh",
+      "setVariable_priorityAllDone",
+      "setVariable_priorityRenderHigh",
+      "setVariable_priorityRenderMiddle",
+      "setVariable_priorityRenderLow",
+      "setVariable_priorityFirePendingRows",
+      "setVariable_priorityFireNotDoneRows",
+      "setVariable_priorityOtherPendingRows",
+      "setVariable_priorityRenderFireNext",
+      "setVariable_priorityRenderNext",
+      "setVariable_priorityRenderQuestions",
+      "setVariable_priorityRenderedResult",
+      "setVariable_priorityInvalidDone",
+      "setVariable_priorityInvalidResult",
       "endDialog_priorityRetryExhausted_historyToGlobal",
       "endDialog_priorityRetryExhausted_imageOff",
       "endDialog_priorityRetryExhausted",
@@ -444,6 +507,12 @@
     "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",
     "changed": [
       {
+        "id": "setVariable_debugMode",
+        "fields": [
+          "value"
+        ]
+      },
+      {
         "id": "setVariable_prompt1",
         "fields": [
           "value"
@@ -453,6 +522,19 @@
         "id": "setVariable_prompt2",
         "fields": [
           "value"
+        ]
+      },
+      {
+        "id": "sendActivity_debugAttachment",
+        "fields": [
+          "activity"
+        ]
+      },
+      {
+        "id": "search_photoGuidelineRetrieve",
+        "fields": [
+          "additionalInstructions",
+          "userInput"
         ]
       },
       {
@@ -473,7 +555,44 @@
       "conditionGroup_photoGuideUnavailable",
       "setVariable_photoGuideUnavailableResult",
       "goto_photoGuideUnavailableSections",
-      "setVariable_clearUnvalidatedPhotoDone"
+      "setVariable_clearUnvalidatedPhotoDone",
+      "setVariable_photoEvidence_room",
+      "setVariable_photoEvidence_common",
+      "setVariable_photoEvidence_outside",
+      "setVariable_photoEvidence_neighbor",
+      "setVariable_photoEvidence_pocket",
+      "setVariable_photoEvidence_placed",
+      "setVariable_photoEvidence_pocketPosition",
+      "setVariable_photoEvidence_sheet",
+      "setVariable_photoEvidence_posted",
+      "setVariable_photoEvidence_sheetPosition",
+      "setVariable_photoEvidence_detector",
+      "setVariable_photoEvidence_measuring",
+      "setVariable_photoAuditRows",
+      "setVariable_photoAuditRetired",
+      "setVariable_photoAuditOriginalCount",
+      "setVariable_photoAuditSingleId",
+      "setVariable_photoAuditNoSlash",
+      "setVariable_photoAuditNoWideSlash",
+      "setVariable_photoAuditKnownIds",
+      "setVariable_photoAuditMS003",
+      "setVariable_photoAuditMS004",
+      "setVariable_photoAuditMS005",
+      "setVariable_photoAuditMS007",
+      "setVariable_photoAuditMS008",
+      "setVariable_photoAuditMS009",
+      "setVariable_photoAuditMS011",
+      "setVariable_photoAuditMS012",
+      "setVariable_photoAuditMS013",
+      "setVariable_photoAuditMS014",
+      "setVariable_photoAuditDone",
+      "setVariable_photoRetiredExtra",
+      "setVariable_photoRetiredCheck",
+      "setVariable_photoRetiredUnknown",
+      "conditionGroup_photoAuditHeld",
+      "setVariable_photoAuditHoldReason",
+      "conditionGroup_photoPocketPresencePreserved",
+      "setVariable_photoPocketPresence"
     ]
   }
 ]

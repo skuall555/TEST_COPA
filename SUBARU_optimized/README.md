@@ -21,7 +21,7 @@
 cd /workspace/TEST_COPA
 python SUBARU_optimized/validation/validate.py
 cd SUBARU_optimized/validation
-python -m unittest -v test_contracts
+python -m unittest -v test_contracts test_image_audit test_priority_state
 ```
 
 検証用依存：Python 3.12、PyYAML 6.0.3（`validation/requirements.txt`）。Copilot本体の追加フロー・新規API・新規ナレッジは不要です。
@@ -29,3 +29,9 @@ python -m unittest -v test_contracts
 呼び出し深度エラーを受けた修正は [07_呼び出し深度エラー修正.md](07_呼び出し深度エラー修正.md) を参照。
 
 最新版の追加改修と4点の更新方法は [08_自然文振分け_現場継続_優先度と画像の追加改修.md](08_自然文振分け_現場継続_優先度と画像の追加改修.md)。外観・設置の採用範囲はreferences/、今回の差分はdiffs/followup_v2/。
+
+画像の最新改修・モデル選定・2トピックの適用方法は [09_画像認識モデル比較_機器別判定_不要項目削除.md](09_画像認識モデル比較_機器別判定_不要項目削除.md)。AIBuilder_第1段画像認識_ContextText全文.txtは確認用。
+
+実施済みが消える問題・要請優先度の修正と導入は [10_実施済みと効果の分離_要請優先度の整合修正.md](10_実施済みと効果の分離_要請優先度の整合修正.md)。今回更新するYAMLは3-9と4-9の2本です。
+
+今回の差分（適用済み752f588基準）は `diffs/image_state_v3/`、原本からの累積差分は `diffs/` の各YAML差分を参照。
