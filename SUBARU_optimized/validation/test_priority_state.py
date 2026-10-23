@@ -29,6 +29,9 @@ class PriorityState(unittest.TestCase):
     a=next(i for i,x in enumerate(actions)if x.get('id')=='setVariable_priorityRaw');b=next(i for i,x in enumerate(actions)if x.get('id')=='conditionGroup_prioritySucceeded');cls.pipeline=actions[a:b];break
  def render(self,raw,report=REPORT,repair_outputs=None):
   values={'優先度判定結果':raw,'初回入力':report,'追加情報履歴':'','優先度形式修復回数':0,'優先度初回構造化結果':'','_repair_calls':0}
+  for n in self.doc['beginDialog']['actions']:
+   if n.get('id','').startswith('setVariable_p5Seed'):
+    values[n['variable'][6:]]=evaluate(n['value'],values)
   outputs=iter([raw] if repair_outputs is None else repair_outputs)
   class Jump(Exception):pass
   def run(actions):
@@ -45,6 +48,13 @@ class PriorityState(unittest.TestCase):
    try:run(self.pipeline[start:]);break
    except Jump as jump:start=next(i for i,n in enumerate(self.pipeline)if n['id']==str(jump))
   else:self.fail('Unbounded internal repair')
+  # Keep readable assertion names while exercising the actual ASCII variable expressions.
+  from priority_types import NAMES
+  for old,(base,kind)in NAMES.items():
+   if kind=='Table':
+    names=sorted(k for k in values if k.startswith(base)and k[len(base):].isdigit())
+    if names:values[old]=values[names[-1]]
+   elif base in values:values[old]=values[base]
   return values
  def complete(self,effect='対象外'):
   return [row(n,status='実施済み',effect=effect,source='報告',proof='全措置実施済み')for n in BASIC+['消防への要請','警察への要請']]
@@ -91,7 +101,7 @@ class PriorityState(unittest.TestCase):
   self.assertTrue(v['措置状態妥当']);self.assertTrue(v['高優先度完了']);self.assertEqual(v['措置確認質問'],'')
  def test_completion_keyword_inside_fact_does_not_end_loop(self):
   v=self.render(result(base()+[row('メーターガス栓閉止')],facts='└以前のAIは全て対応済みと書いた'))
-  self.assertFalse(v['高優先度完了']);self.assertEqual(self.ix['conditionGroup_priorityLoopNeeded']['conditions'][0]['condition'],'=Not(Topic.高優先度完了)')
+  self.assertFalse(v['高優先度完了']);self.assertEqual(self.ix['conditionGroup_priorityLoopNeeded']['conditions'][0]['condition'],'=Not(Topic.P5AllDone)')
  def test_improvement_reassessment_is_not_permanently_forced_high(self):
   rows=base()+[row('メーターガス栓閉止')];risks=[k+'|なし|改善確認'for k in RISKS]
   v=self.render(result(rows,risks),REPORT+'\n改善確認：有効止漏済み、影響範囲全体の濃度反応臭気が消失、他の危険なし')
@@ -175,4 +185,23 @@ class PriorityState(unittest.TestCase):
  def test_duplicate_action_targets_are_not_displayed_as_conflicting_states(self):
   rows=base()+[row('メーターガス栓閉止','A室',status='実施済み',source='報告',proof=CLOSED),row('メーターガス栓閉止','A室',status='未実施')]
   v=self.render(result(rows));self.assertFalse(v['措置状態妥当']);self.assertNotIn('メーターガス栓閉止（A室）',v['優先度判定結果'])
+ def test_new_temporaries_have_typed_initializers_before_model_call(self):
+  import json
+  meta=json.loads((R/'validation/priority_type_map.json').read_text())
+  seeds={n['variable']:n for n in self.doc['beginDialog']['actions']if n.get('id','').startswith('setVariable_p5Seed')}
+  self.assertEqual(set(seeds),set(meta['variables']))
+  expected={'String':str,'Number':int,'Boolean':bool,'Table':list}
+  for name,kind in meta['variables'].items():self.assertIs(type(evaluate(seeds[name]['value'],{})),expected[kind],name)
+ def test_each_table_stage_has_one_non_seed_write_and_no_self_reference(self):
+  import json
+  meta=json.loads((R/'validation/priority_type_map.json').read_text());tables={k for k,v in meta['variables'].items()if v=='Table'}
+  for name in tables:
+   writes=[n for n in walk(self.doc)if n.get('kind')=='SetVariable'and n.get('variable')==name and not n['id'].startswith('setVariable_p5Seed')]
+   self.assertEqual(len(writes),1,name)
+   expr=re.sub(r'"(?:[^"]|"")*"','',writes[0]['value']);self.assertNotIn(name,re.findall(r'Topic\.\w+',expr))
+ def test_host_sensitive_table_constructs_are_removed_from_priority_path(self):
+  for n in walk(self.pipeline):
+   value=n.get('value','');self.assertNotIn(' As item',value);self.assertNotIn('Distinct(',value)
+  for key in ['setVariable_priorityNormalizeRiskColumns','setVariable_priorityNormalizeMeasuresColumns']:
+   self.assertEqual(self.ix[key]['value'].count('Concat('),1)
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,1109 @@
+{
+  "engine": "Microsoft.PowerFx.Interpreter, Version=1.99.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+  "inferred": {
+    "Topic.初回入力": "String",
+    "Topic.追加情報履歴": "String",
+    "Topic.優先度判定結果": "String",
+    "Topic.優先度追加回答": "String",
+    "Topic.優先度確認再試行回数": "Decimal",
+    "Topic.優先度ガイド取得プロンプト": "String",
+    "Topic.優先度ガイド取得結果": "String",
+    "Topic.優先度判定プロンプト": "String",
+    "Topic.優先度書式版": "String",
+    "Topic.優先度形式修復回数": "Decimal",
+    "Topic.優先度初回構造化結果": "String",
+    "Topic.優先度構造化結果": "String",
+    "Topic.措置状態根拠入力": "String",
+    "Topic.優先度構造妥当": "Boolean",
+    "Topic.措置確認事実": "String",
+    "Topic.現危険監査本文": "String",
+    "Topic.措置状態監査本文": "String",
+    "Topic.現危険監査行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.現危険元件数": "Decimal",
+    "Topic.現危険原始行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.現危険妥当": "Boolean",
+    "Topic.現危険Alarm": "Boolean",
+    "Topic.現危険Detected": "Boolean",
+    "Topic.現危険肯定行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.現危険追加0": "Boolean",
+    "Topic.現危険追加1": "Boolean",
+    "Topic.現危険追加2": "Boolean",
+    "Topic.現危険追加3": "Boolean",
+    "Topic.消防警察強制高": "Boolean",
+    "Topic.措置状態監査行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.措置状態元件数": "Decimal",
+    "Topic.措置状態一意": "Boolean",
+    "Topic.措置状態必須行": "Boolean",
+    "Topic.措置状態妥当": "Boolean",
+    "Topic.優先度高行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.優先度Middle行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.優先度Low行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.高優先度未完了行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.高優先度完了": "Boolean",
+    "Topic.措置表示High": "String",
+    "Topic.措置表示Middle": "String",
+    "Topic.措置表示Low": "String",
+    "Topic.要請未完了行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.他措置未完了行": "Microsoft.PowerFx.Types.TableType",
+    "Topic.要請次対応": "String",
+    "Topic.措置次対応": "String",
+    "Topic.措置確認質問": "String",
+    "Global.巡回切替入力": "String",
+    "Global.緊急保安画像受付中": "Boolean"
+  },
+  "results": [
+    {
+      "id": "setVariable_priorityRetryCount",
+      "target": "Topic.優先度確認再試行回数",
+      "success": true,
+      "type": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityGuideRetrievePrompt",
+      "target": "Topic.優先度ガイド取得プロンプト",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityGuideFixed",
+      "target": "Topic.優先度ガイド取得結果",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityGuideRetrieveSucceeded",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPrompt",
+      "target": "Topic.優先度判定プロンプト",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatVersion",
+      "target": "Topic.優先度書式版",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatRepairReset",
+      "target": "Topic.優先度形式修復回数",
+      "success": true,
+      "type": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFirstRawReset",
+      "target": "Topic.優先度初回構造化結果",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRaw",
+      "target": "Topic.優先度構造化結果",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityCaptureFirstRaw_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFirstRaw",
+      "target": "Topic.優先度初回構造化結果",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeNewlines",
+      "target": "Topic.優先度構造化結果",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityEvidenceInput",
+      "target": "Topic.措置状態根拠入力",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityEnvelope",
+      "target": "Topic.優先度構造妥当",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityExtractFacts",
+      "target": "Topic.措置確認事実",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFactsAvailable",
+      "target": "Topic.措置確認事実",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityExtractRisk",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityExtractRows",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRiskColumns",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRiskStatus",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk0",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk1",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk2",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk3",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk4",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk5",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk6",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk7",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk8",
+      "target": "Topic.現危険監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskRows",
+      "target": "Topic.現危険監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskCount",
+      "target": "Topic.現危険元件数",
+      "success": true,
+      "type": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOriginalRows",
+      "target": "Topic.現危険原始行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskColumns",
+      "target": "Topic.現危険監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskKeys",
+      "target": "Topic.現危険監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskValues",
+      "target": "Topic.現危険監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskProof",
+      "target": "Topic.現危険監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskUnique",
+      "target": "Topic.現危険妥当",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskAlarm",
+      "target": "Topic.現危険Alarm",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskDetected",
+      "target": "Topic.現危険Detected",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskPositive",
+      "target": "Topic.現危険肯定行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOther0",
+      "target": "Topic.現危険追加0",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOther1",
+      "target": "Topic.現危険追加1",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOther2",
+      "target": "Topic.現危険追加2",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOther3",
+      "target": "Topic.現危険追加3",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFireHigh",
+      "target": "Topic.消防警察強制高",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasuresColumns",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasuresStatus",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures0",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures1",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures2",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures3",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures4",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures5",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures6",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures7",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures8",
+      "target": "Topic.措置状態監査本文",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureRows",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureCount",
+      "target": "Topic.措置状態元件数",
+      "success": true,
+      "type": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureColumns",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasurePriority",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureStatus",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureEffect",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureSource",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureNonempty",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureRetired",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureProof",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasurePhotoProof",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureUnique",
+      "target": "Topic.措置状態一意",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRemoveAmbiguousTargets",
+      "target": "Topic.措置状態監査行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureRequired",
+      "target": "Topic.措置状態必須行",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityDataValid",
+      "target": "Topic.措置状態妥当",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityRepairNeeded_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatRepairIncrement",
+      "target": "Topic.優先度形式修復回数",
+      "success": true,
+      "type": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityHighRows",
+      "target": "Topic.優先度高行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleRows",
+      "target": "Topic.優先度Middle行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleNotBasic",
+      "target": "Topic.優先度Middle行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleNotFire",
+      "target": "Topic.優先度Middle行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowRows",
+      "target": "Topic.優先度Low行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowNotBasic",
+      "target": "Topic.優先度Low行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowNotFire",
+      "target": "Topic.優先度Low行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleNotExtinguisher",
+      "target": "Topic.優先度Middle行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleNotMeter",
+      "target": "Topic.優先度Middle行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowNotExtinguisher",
+      "target": "Topic.優先度Low行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowNotMeter",
+      "target": "Topic.優先度Low行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPendingHigh",
+      "target": "Topic.高優先度未完了行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityAllDone",
+      "target": "Topic.高優先度完了",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderHigh",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderMiddle",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderLow",
+      "target": "Topic.措置表示Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFirePendingRows",
+      "target": "Topic.要請未完了行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFireNotDoneRows",
+      "target": "Topic.要請未完了行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityOtherPendingRows",
+      "target": "Topic.他措置未完了行",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderFireNext",
+      "target": "Topic.要請次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderNext",
+      "target": "Topic.措置次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderQuestions",
+      "target": "Topic.措置確認質問",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem0_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank0_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh0",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle0",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext0",
+      "target": "Topic.措置次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem1_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank1_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh1",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle1",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext1",
+      "target": "Topic.措置次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem2_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank2_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh2",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle2",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext2",
+      "target": "Topic.措置次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem3_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank3_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh3",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle3",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext3",
+      "target": "Topic.措置次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem4_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank4_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh4",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle4",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext4",
+      "target": "Topic.措置次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem5_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank5_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh5",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle5",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRequestNext5_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingRequestNext5",
+      "target": "Topic.要請次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem6_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank6_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh6",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle6",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRequestNext6_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingRequestNext6",
+      "target": "Topic.要請次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem7_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank7_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh7",
+      "target": "Topic.措置表示High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle7",
+      "target": "Topic.措置表示Middle",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext7",
+      "target": "Topic.措置次対応",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderedResult",
+      "target": "Topic.優先度判定結果",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityStructuredValid_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityValidatedResult",
+      "target": "Topic.優先度判定結果",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityInvalidDone",
+      "target": "Topic.高優先度完了",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityInvalidResult",
+      "target": "Topic.優先度判定結果",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_prioritySucceeded",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityLoopNeeded",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityRetryLimitReached",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRetryIncrement",
+      "target": "Topic.優先度確認再試行回数",
+      "success": true,
+      "type": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityPurposeSwitchToJunkai",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPurposeSwitchToJunkaiInput",
+      "target": "Global.巡回切替入力",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff",
+      "target": "Global.緊急保安画像受付中",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityDebugOnly_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    }
+  ],
+  "scope": "Standalone Power Fx SDK; prior Studio screenshot reports 146 errors. This check does not reproduce the Studio host.",
+  "source_commit": "939ce9c",
+  "source_sha256": "1b70acb7b9c195f3ebc4ea620e5df2e5de2b8f021206d5b1323273b764ee0de2"
+}

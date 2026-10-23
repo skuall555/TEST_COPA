@@ -1,0 +1,747 @@
+{
+  "version": "priority-v5-types-20261023",
+  "variables": {
+    "Topic.P5Version": "String",
+    "Topic.P5RepairCount": "Number",
+    "Topic.P5FirstRaw": "String",
+    "Topic.P5Raw": "String",
+    "Topic.P5Evidence": "String",
+    "Topic.P5EnvelopeOK": "Boolean",
+    "Topic.P5Facts": "String",
+    "Topic.P5RiskText": "String",
+    "Topic.P5MeasureText": "String",
+    "Topic.P5RiskCount": "Number",
+    "Topic.P5RiskOK": "Boolean",
+    "Topic.P5Alarm": "Boolean",
+    "Topic.P5Detected": "Boolean",
+    "Topic.P5RiskExtra0": "Boolean",
+    "Topic.P5RiskExtra1": "Boolean",
+    "Topic.P5RiskExtra2": "Boolean",
+    "Topic.P5RiskExtra3": "Boolean",
+    "Topic.P5RequestHigh": "Boolean",
+    "Topic.P5MeasureCount": "Number",
+    "Topic.P5UniqueOK": "Boolean",
+    "Topic.P5RequiredOK": "Boolean",
+    "Topic.P5DataOK": "Boolean",
+    "Topic.P5AllDone": "Boolean",
+    "Topic.P5HighText": "String",
+    "Topic.P5MiddleText": "String",
+    "Topic.P5LowText": "String",
+    "Topic.P5RequestNext": "String",
+    "Topic.P5OtherNext": "String",
+    "Topic.P5Questions": "String",
+    "Topic.P5RiskRows00": "Table",
+    "Topic.P5RiskOriginal00": "Table",
+    "Topic.P5RiskRows01": "Table",
+    "Topic.P5RiskRows02": "Table",
+    "Topic.P5RiskRows03": "Table",
+    "Topic.P5RiskRows04": "Table",
+    "Topic.P5RiskPositive00": "Table",
+    "Topic.P5MeasureRows00": "Table",
+    "Topic.P5MeasureRows01": "Table",
+    "Topic.P5MeasureRows02": "Table",
+    "Topic.P5MeasureRows03": "Table",
+    "Topic.P5MeasureRows04": "Table",
+    "Topic.P5MeasureRows05": "Table",
+    "Topic.P5MeasureRows06": "Table",
+    "Topic.P5MeasureRows07": "Table",
+    "Topic.P5MeasureRows08": "Table",
+    "Topic.P5MeasureRows09": "Table",
+    "Topic.P5MeasureRows10": "Table",
+    "Topic.P5HighRows00": "Table",
+    "Topic.P5MiddleRows00": "Table",
+    "Topic.P5MiddleRows01": "Table",
+    "Topic.P5MiddleRows02": "Table",
+    "Topic.P5LowRows00": "Table",
+    "Topic.P5LowRows01": "Table",
+    "Topic.P5LowRows02": "Table",
+    "Topic.P5MiddleRows03": "Table",
+    "Topic.P5MiddleRows04": "Table",
+    "Topic.P5LowRows03": "Table",
+    "Topic.P5LowRows04": "Table",
+    "Topic.P5PendingHigh00": "Table",
+    "Topic.P5PendingRequests00": "Table",
+    "Topic.P5PendingRequests01": "Table",
+    "Topic.P5PendingOther00": "Table"
+  },
+  "assignments": [
+    {
+      "id": "setVariable_priorityFormatVersion",
+      "old": "Topic.優先度書式版",
+      "new": "Topic.P5Version",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityFormatRepairReset",
+      "old": "Topic.優先度形式修復回数",
+      "new": "Topic.P5RepairCount",
+      "type": "Number"
+    },
+    {
+      "id": "setVariable_priorityFirstRawReset",
+      "old": "Topic.優先度初回構造化結果",
+      "new": "Topic.P5FirstRaw",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityRaw",
+      "old": "Topic.優先度構造化結果",
+      "new": "Topic.P5Raw",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityFirstRaw",
+      "old": "Topic.優先度初回構造化結果",
+      "new": "Topic.P5FirstRaw",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeNewlines",
+      "old": "Topic.優先度構造化結果",
+      "new": "Topic.P5Raw",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityEvidenceInput",
+      "old": "Topic.措置状態根拠入力",
+      "new": "Topic.P5Evidence",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityEnvelope",
+      "old": "Topic.優先度構造妥当",
+      "new": "Topic.P5EnvelopeOK",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityExtractFacts",
+      "old": "Topic.措置確認事実",
+      "new": "Topic.P5Facts",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityFactsAvailable",
+      "old": "Topic.措置確認事実",
+      "new": "Topic.P5Facts",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityExtractRisk",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityExtractRows",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRiskColumns",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRiskStatus",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk0",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk1",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk2",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk3",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk4",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk5",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk6",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk7",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk8",
+      "old": "Topic.現危険監査本文",
+      "new": "Topic.P5RiskText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityRiskRows",
+      "old": "Topic.現危険監査行",
+      "new": "Topic.P5RiskRows00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityRiskCount",
+      "old": "Topic.現危険元件数",
+      "new": "Topic.P5RiskCount",
+      "type": "Number"
+    },
+    {
+      "id": "setVariable_priorityRiskOriginalRows",
+      "old": "Topic.現危険原始行",
+      "new": "Topic.P5RiskOriginal00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityRiskColumns",
+      "old": "Topic.現危険監査行",
+      "new": "Topic.P5RiskRows01",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityRiskKeys",
+      "old": "Topic.現危険監査行",
+      "new": "Topic.P5RiskRows02",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityRiskValues",
+      "old": "Topic.現危険監査行",
+      "new": "Topic.P5RiskRows03",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityRiskProof",
+      "old": "Topic.現危険監査行",
+      "new": "Topic.P5RiskRows04",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityRiskUnique",
+      "old": "Topic.現危険妥当",
+      "new": "Topic.P5RiskOK",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityRiskAlarm",
+      "old": "Topic.現危険Alarm",
+      "new": "Topic.P5Alarm",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityRiskDetected",
+      "old": "Topic.現危険Detected",
+      "new": "Topic.P5Detected",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityRiskPositive",
+      "old": "Topic.現危険肯定行",
+      "new": "Topic.P5RiskPositive00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityRiskOther0",
+      "old": "Topic.現危険追加0",
+      "new": "Topic.P5RiskExtra0",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityRiskOther1",
+      "old": "Topic.現危険追加1",
+      "new": "Topic.P5RiskExtra1",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityRiskOther2",
+      "old": "Topic.現危険追加2",
+      "new": "Topic.P5RiskExtra2",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityRiskOther3",
+      "old": "Topic.現危険追加3",
+      "new": "Topic.P5RiskExtra3",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityFireHigh",
+      "old": "Topic.消防警察強制高",
+      "new": "Topic.P5RequestHigh",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasuresColumns",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasuresStatus",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures0",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures1",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures2",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures3",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures4",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures5",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures6",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures7",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures8",
+      "old": "Topic.措置状態監査本文",
+      "new": "Topic.P5MeasureText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMeasureRows",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureCount",
+      "old": "Topic.措置状態元件数",
+      "new": "Topic.P5MeasureCount",
+      "type": "Number"
+    },
+    {
+      "id": "setVariable_priorityMeasureColumns",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows01",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasurePriority",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows02",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureStatus",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows03",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureEffect",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows04",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureSource",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows05",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureNonempty",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows06",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureRetired",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows07",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureProof",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows08",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasurePhotoProof",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows09",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureUnique",
+      "old": "Topic.措置状態一意",
+      "new": "Topic.P5UniqueOK",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityRemoveAmbiguousTargets",
+      "old": "Topic.措置状態監査行",
+      "new": "Topic.P5MeasureRows10",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMeasureRequired",
+      "old": "Topic.措置状態必須行",
+      "new": "Topic.P5RequiredOK",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityDataValid",
+      "old": "Topic.措置状態妥当",
+      "new": "Topic.P5DataOK",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityFormatRepairIncrement",
+      "old": "Topic.優先度形式修復回数",
+      "new": "Topic.P5RepairCount",
+      "type": "Number"
+    },
+    {
+      "id": "setVariable_priorityHighRows",
+      "old": "Topic.優先度高行",
+      "new": "Topic.P5HighRows00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMiddleRows",
+      "old": "Topic.優先度Middle行",
+      "new": "Topic.P5MiddleRows00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMiddleNotBasic",
+      "old": "Topic.優先度Middle行",
+      "new": "Topic.P5MiddleRows01",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMiddleNotFire",
+      "old": "Topic.優先度Middle行",
+      "new": "Topic.P5MiddleRows02",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityLowRows",
+      "old": "Topic.優先度Low行",
+      "new": "Topic.P5LowRows00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityLowNotBasic",
+      "old": "Topic.優先度Low行",
+      "new": "Topic.P5LowRows01",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityLowNotFire",
+      "old": "Topic.優先度Low行",
+      "new": "Topic.P5LowRows02",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMiddleNotExtinguisher",
+      "old": "Topic.優先度Middle行",
+      "new": "Topic.P5MiddleRows03",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityMiddleNotMeter",
+      "old": "Topic.優先度Middle行",
+      "new": "Topic.P5MiddleRows04",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityLowNotExtinguisher",
+      "old": "Topic.優先度Low行",
+      "new": "Topic.P5LowRows03",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityLowNotMeter",
+      "old": "Topic.優先度Low行",
+      "new": "Topic.P5LowRows04",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityPendingHigh",
+      "old": "Topic.高優先度未完了行",
+      "new": "Topic.P5PendingHigh00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityAllDone",
+      "old": "Topic.高優先度完了",
+      "new": "Topic.P5AllDone",
+      "type": "Boolean"
+    },
+    {
+      "id": "setVariable_priorityRenderHigh",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityRenderMiddle",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityRenderLow",
+      "old": "Topic.措置表示Low",
+      "new": "Topic.P5LowText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityFirePendingRows",
+      "old": "Topic.要請未完了行",
+      "new": "Topic.P5PendingRequests00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityFireNotDoneRows",
+      "old": "Topic.要請未完了行",
+      "new": "Topic.P5PendingRequests01",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityOtherPendingRows",
+      "old": "Topic.他措置未完了行",
+      "new": "Topic.P5PendingOther00",
+      "type": "Table"
+    },
+    {
+      "id": "setVariable_priorityRenderFireNext",
+      "old": "Topic.要請次対応",
+      "new": "Topic.P5RequestNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityRenderNext",
+      "old": "Topic.措置次対応",
+      "new": "Topic.P5OtherNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityRenderQuestions",
+      "old": "Topic.措置確認質問",
+      "new": "Topic.P5Questions",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingHigh0",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle0",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext0",
+      "old": "Topic.措置次対応",
+      "new": "Topic.P5OtherNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingHigh1",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle1",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext1",
+      "old": "Topic.措置次対応",
+      "new": "Topic.P5OtherNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingHigh2",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle2",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext2",
+      "old": "Topic.措置次対応",
+      "new": "Topic.P5OtherNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingHigh3",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle3",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext3",
+      "old": "Topic.措置次対応",
+      "new": "Topic.P5OtherNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingHigh4",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle4",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext4",
+      "old": "Topic.措置次対応",
+      "new": "Topic.P5OtherNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingHigh5",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle5",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingRequestNext5",
+      "old": "Topic.要請次対応",
+      "new": "Topic.P5RequestNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingHigh6",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle6",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingRequestNext6",
+      "old": "Topic.要請次対応",
+      "new": "Topic.P5RequestNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingHigh7",
+      "old": "Topic.措置表示High",
+      "new": "Topic.P5HighText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle7",
+      "old": "Topic.措置表示Middle",
+      "new": "Topic.P5MiddleText",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext7",
+      "old": "Topic.措置次対応",
+      "new": "Topic.P5OtherNext",
+      "type": "String"
+    },
+    {
+      "id": "setVariable_priorityInvalidDone",
+      "old": "Topic.高優先度完了",
+      "new": "Topic.P5AllDone",
+      "type": "Boolean"
+    }
+  ]
+}

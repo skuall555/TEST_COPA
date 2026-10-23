@@ -72,7 +72,7 @@
     {
       "file": "3-9-緊急保安業務エージェント_optimized.yaml",
       "yaml": "PASS (duplicate keys rejected)",
-      "unique_ids": 353,
+      "unique_ids": 416,
       "broken_goto": [],
       "removed_ids": [],
       "dependencies": "UNCHANGED",
@@ -85,14 +85,7 @@
           ]
         }
       ],
-      "read_before_write_optimized": [
-        {
-          "id": "setVariable_investigationPrompt",
-          "variables": [
-            "優先度判定結果"
-          ]
-        }
-      ],
+      "read_before_write_optimized": [],
       "new_read_before_write_candidates": [],
       "node_counts_before": {
         "OnRedirect": 1,
@@ -108,7 +101,7 @@
       },
       "node_counts_after": {
         "OnRedirect": 1,
-        "SetVariable": 208,
+        "SetVariable": 271,
         "ConditionGroup": 45,
         "GotoAction": 9,
         "AnswerQuestionWithAI": 4,
@@ -118,7 +111,7 @@
         "Question": 4,
         "SearchAndSummarizeContent": 4
       },
-      "sha256": "1b70acb7b9c195f3ebc4ea620e5df2e5de2b8f021206d5b1323273b764ee0de2"
+      "sha256": "4dd473d704d1b80e31495292c18f6b50824e5fd30a1b5c0698038fc14f5b03d1"
     },
     {
       "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",

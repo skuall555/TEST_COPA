@@ -1,0 +1,1870 @@
+{
+  "engine": "Microsoft.PowerFx.Interpreter, Version=1.99.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+  "package": "Microsoft.PowerFx.Interpreter 1.8.1",
+  "scope": "Standalone SDK; not Copilot Studio's host or model",
+  "inferred": {
+    "Topic.初回入力": "String",
+    "Topic.追加情報履歴": "String",
+    "Topic.優先度判定結果": "String",
+    "Topic.優先度追加回答": "String",
+    "Topic.P5Version": "String",
+    "Topic.P5RepairCount": "Decimal",
+    "Topic.P5FirstRaw": "String",
+    "Topic.P5Raw": "String",
+    "Topic.P5Evidence": "String",
+    "Topic.P5EnvelopeOK": "Boolean",
+    "Topic.P5Facts": "String",
+    "Topic.P5RiskText": "String",
+    "Topic.P5MeasureText": "String",
+    "Topic.P5RiskCount": "Decimal",
+    "Topic.P5RiskOK": "Boolean",
+    "Topic.P5Alarm": "Boolean",
+    "Topic.P5Detected": "Boolean",
+    "Topic.P5RiskExtra0": "Boolean",
+    "Topic.P5RiskExtra1": "Boolean",
+    "Topic.P5RiskExtra2": "Boolean",
+    "Topic.P5RiskExtra3": "Boolean",
+    "Topic.P5RequestHigh": "Boolean",
+    "Topic.P5MeasureCount": "Decimal",
+    "Topic.P5UniqueOK": "Boolean",
+    "Topic.P5RequiredOK": "Boolean",
+    "Topic.P5DataOK": "Boolean",
+    "Topic.P5AllDone": "Boolean",
+    "Topic.P5HighText": "String",
+    "Topic.P5MiddleText": "String",
+    "Topic.P5LowText": "String",
+    "Topic.P5RequestNext": "String",
+    "Topic.P5OtherNext": "String",
+    "Topic.P5Questions": "String",
+    "Topic.P5RiskRows00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5RiskOriginal00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5RiskRows01": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5RiskRows02": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5RiskRows03": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5RiskRows04": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5RiskPositive00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows01": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows02": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows03": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows04": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows05": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows06": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows07": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows08": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows09": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MeasureRows10": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5HighRows00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MiddleRows00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MiddleRows01": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MiddleRows02": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5LowRows00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5LowRows01": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5LowRows02": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MiddleRows03": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5MiddleRows04": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5LowRows03": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5LowRows04": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5PendingHigh00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5PendingRequests00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5PendingRequests01": "Microsoft.PowerFx.Types.TableType",
+    "Topic.P5PendingOther00": "Microsoft.PowerFx.Types.TableType",
+    "Topic.優先度確認再試行回数": "Decimal",
+    "Topic.優先度ガイド取得プロンプト": "String",
+    "Topic.優先度ガイド取得結果": "String",
+    "Topic.優先度判定プロンプト": "String",
+    "Global.巡回切替入力": "String",
+    "Global.緊急保安画像受付中": "Boolean"
+  },
+  "results": [
+    {
+      "id": "setVariable_p5Seed00",
+      "target": "Topic.P5Version",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed01",
+      "target": "Topic.P5RepairCount",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed02",
+      "target": "Topic.P5FirstRaw",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed03",
+      "target": "Topic.P5Raw",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed04",
+      "target": "Topic.P5Evidence",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed05",
+      "target": "Topic.P5EnvelopeOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed06",
+      "target": "Topic.P5Facts",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed07",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed08",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed09",
+      "target": "Topic.P5RiskCount",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed10",
+      "target": "Topic.P5RiskOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed11",
+      "target": "Topic.P5Alarm",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed12",
+      "target": "Topic.P5Detected",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed13",
+      "target": "Topic.P5RiskExtra0",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed14",
+      "target": "Topic.P5RiskExtra1",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed15",
+      "target": "Topic.P5RiskExtra2",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed16",
+      "target": "Topic.P5RiskExtra3",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed17",
+      "target": "Topic.P5RequestHigh",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed18",
+      "target": "Topic.P5MeasureCount",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed19",
+      "target": "Topic.P5UniqueOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed20",
+      "target": "Topic.P5RequiredOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed21",
+      "target": "Topic.P5DataOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed22",
+      "target": "Topic.P5AllDone",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed23",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed24",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed25",
+      "target": "Topic.P5LowText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed26",
+      "target": "Topic.P5RequestNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed27",
+      "target": "Topic.P5OtherNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed28",
+      "target": "Topic.P5Questions",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed29",
+      "target": "Topic.P5RiskRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed30",
+      "target": "Topic.P5RiskOriginal00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed31",
+      "target": "Topic.P5RiskRows01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed32",
+      "target": "Topic.P5RiskRows02",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed33",
+      "target": "Topic.P5RiskRows03",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed34",
+      "target": "Topic.P5RiskRows04",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed35",
+      "target": "Topic.P5RiskPositive00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed36",
+      "target": "Topic.P5MeasureRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed37",
+      "target": "Topic.P5MeasureRows01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed38",
+      "target": "Topic.P5MeasureRows02",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed39",
+      "target": "Topic.P5MeasureRows03",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed40",
+      "target": "Topic.P5MeasureRows04",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed41",
+      "target": "Topic.P5MeasureRows05",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed42",
+      "target": "Topic.P5MeasureRows06",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed43",
+      "target": "Topic.P5MeasureRows07",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed44",
+      "target": "Topic.P5MeasureRows08",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed45",
+      "target": "Topic.P5MeasureRows09",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed46",
+      "target": "Topic.P5MeasureRows10",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed47",
+      "target": "Topic.P5HighRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed48",
+      "target": "Topic.P5MiddleRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed49",
+      "target": "Topic.P5MiddleRows01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed50",
+      "target": "Topic.P5MiddleRows02",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed51",
+      "target": "Topic.P5LowRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed52",
+      "target": "Topic.P5LowRows01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed53",
+      "target": "Topic.P5LowRows02",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed54",
+      "target": "Topic.P5MiddleRows03",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed55",
+      "target": "Topic.P5MiddleRows04",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed56",
+      "target": "Topic.P5LowRows03",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed57",
+      "target": "Topic.P5LowRows04",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed58",
+      "target": "Topic.P5PendingHigh00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed59",
+      "target": "Topic.P5PendingRequests00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed60",
+      "target": "Topic.P5PendingRequests01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5Seed61",
+      "target": "Topic.P5PendingOther00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_p5ResultSeed",
+      "target": "Topic.優先度判定結果",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRetryCount",
+      "target": "Topic.優先度確認再試行回数",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityGuideRetrievePrompt",
+      "target": "Topic.優先度ガイド取得プロンプト",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityGuideFixed",
+      "target": "Topic.優先度ガイド取得結果",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityGuideRetrieveSucceeded",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPrompt",
+      "target": "Topic.優先度判定プロンプト",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatVersion",
+      "target": "Topic.P5Version",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatRepairReset",
+      "target": "Topic.P5RepairCount",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFirstRawReset",
+      "target": "Topic.P5FirstRaw",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRaw",
+      "target": "Topic.P5Raw",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityCaptureFirstRaw_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFirstRaw",
+      "target": "Topic.P5FirstRaw",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeNewlines",
+      "target": "Topic.P5Raw",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityEvidenceInput",
+      "target": "Topic.P5Evidence",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityEnvelope",
+      "target": "Topic.P5EnvelopeOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityExtractFacts",
+      "target": "Topic.P5Facts",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFactsAvailable",
+      "target": "Topic.P5Facts",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityExtractRisk",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityExtractRows",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRiskColumns",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRiskStatus",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk0",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk1",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk2",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk3",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk4",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk5",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk6",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk7",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeRisk8",
+      "target": "Topic.P5RiskText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskRows",
+      "target": "Topic.P5RiskRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskCount",
+      "target": "Topic.P5RiskCount",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOriginalRows",
+      "target": "Topic.P5RiskOriginal00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskColumns",
+      "target": "Topic.P5RiskRows01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskKeys",
+      "target": "Topic.P5RiskRows02",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskValues",
+      "target": "Topic.P5RiskRows03",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskProof",
+      "target": "Topic.P5RiskRows04",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskUnique",
+      "target": "Topic.P5RiskOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskAlarm",
+      "target": "Topic.P5Alarm",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskDetected",
+      "target": "Topic.P5Detected",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskPositive",
+      "target": "Topic.P5RiskPositive00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOther0",
+      "target": "Topic.P5RiskExtra0",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOther1",
+      "target": "Topic.P5RiskExtra1",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOther2",
+      "target": "Topic.P5RiskExtra2",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRiskOther3",
+      "target": "Topic.P5RiskExtra3",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFireHigh",
+      "target": "Topic.P5RequestHigh",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasuresColumns",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasuresStatus",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures0",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures1",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures2",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures3",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures4",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures5",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures6",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures7",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityNormalizeMeasures8",
+      "target": "Topic.P5MeasureText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureRows",
+      "target": "Topic.P5MeasureRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureCount",
+      "target": "Topic.P5MeasureCount",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureColumns",
+      "target": "Topic.P5MeasureRows01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasurePriority",
+      "target": "Topic.P5MeasureRows02",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureStatus",
+      "target": "Topic.P5MeasureRows03",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureEffect",
+      "target": "Topic.P5MeasureRows04",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureSource",
+      "target": "Topic.P5MeasureRows05",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureNonempty",
+      "target": "Topic.P5MeasureRows06",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureRetired",
+      "target": "Topic.P5MeasureRows07",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureProof",
+      "target": "Topic.P5MeasureRows08",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasurePhotoProof",
+      "target": "Topic.P5MeasureRows09",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureUnique",
+      "target": "Topic.P5UniqueOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRemoveAmbiguousTargets",
+      "target": "Topic.P5MeasureRows10",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMeasureRequired",
+      "target": "Topic.P5RequiredOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityDataValid",
+      "target": "Topic.P5DataOK",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityRepairNeeded_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatRepairIncrement",
+      "target": "Topic.P5RepairCount",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityHighRows",
+      "target": "Topic.P5HighRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleRows",
+      "target": "Topic.P5MiddleRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleNotBasic",
+      "target": "Topic.P5MiddleRows01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleNotFire",
+      "target": "Topic.P5MiddleRows02",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowRows",
+      "target": "Topic.P5LowRows00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowNotBasic",
+      "target": "Topic.P5LowRows01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowNotFire",
+      "target": "Topic.P5LowRows02",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleNotExtinguisher",
+      "target": "Topic.P5MiddleRows03",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMiddleNotMeter",
+      "target": "Topic.P5MiddleRows04",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowNotExtinguisher",
+      "target": "Topic.P5LowRows03",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityLowNotMeter",
+      "target": "Topic.P5LowRows04",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPendingHigh",
+      "target": "Topic.P5PendingHigh00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityAllDone",
+      "target": "Topic.P5AllDone",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderHigh",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderMiddle",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderLow",
+      "target": "Topic.P5LowText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFirePendingRows",
+      "target": "Topic.P5PendingRequests00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFireNotDoneRows",
+      "target": "Topic.P5PendingRequests01",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityOtherPendingRows",
+      "target": "Topic.P5PendingOther00",
+      "success": true,
+      "type": "Microsoft.PowerFx.Types.TableType",
+      "expected": "Microsoft.PowerFx.Types.TableType",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderFireNext",
+      "target": "Topic.P5RequestNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderNext",
+      "target": "Topic.P5OtherNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderQuestions",
+      "target": "Topic.P5Questions",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem0_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank0_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh0",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle0",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext0",
+      "target": "Topic.P5OtherNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem1_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank1_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh1",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle1",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext1",
+      "target": "Topic.P5OtherNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem2_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank2_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh2",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle2",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext2",
+      "target": "Topic.P5OtherNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem3_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank3_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh3",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle3",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext3",
+      "target": "Topic.P5OtherNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem4_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank4_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh4",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle4",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext4",
+      "target": "Topic.P5OtherNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem5_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank5_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh5",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle5",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRequestNext5_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingRequestNext5",
+      "target": "Topic.P5RequestNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem6_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank6_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh6",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle6",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRequestNext6_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingRequestNext6",
+      "target": "Topic.P5RequestNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingItem7_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityMissingRank7_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingHigh7",
+      "target": "Topic.P5HighText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingMiddle7",
+      "target": "Topic.P5MiddleText",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityMissingOtherNext7",
+      "target": "Topic.P5OtherNext",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRenderedResult",
+      "target": "Topic.優先度判定結果",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityStructuredValid_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityValidatedResult",
+      "target": "Topic.優先度判定結果",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityInvalidDone",
+      "target": "Topic.P5AllDone",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityInvalidResult",
+      "target": "Topic.優先度判定結果",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_prioritySucceeded",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityLoopNeeded",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityRetryLimitReached",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityRetryIncrement",
+      "target": "Topic.優先度確認再試行回数",
+      "success": true,
+      "type": "Decimal",
+      "expected": "Decimal",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityPurposeSwitchToJunkai",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPurposeSwitchToJunkaiInput",
+      "target": "Global.巡回切替入力",
+      "success": true,
+      "type": "String",
+      "expected": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff",
+      "target": "Global.緊急保安画像受付中",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityDebugOnly_item",
+      "target": "",
+      "success": true,
+      "type": "Boolean",
+      "expected": "Boolean",
+      "errors": []
+    }
+  ],
+  "execution": [
+    {
+      "name": "閉止実施済みと効果未解決",
+      "success": true,
+      "repairCalls": 0
+    },
+    {
+      "name": "LEL1と継続警報で要請高",
+      "success": true,
+      "repairCalls": 0
+    },
+    {
+      "name": "消防だけ要請済み",
+      "success": true,
+      "repairCalls": 0
+    },
+    {
+      "name": "一行不正でも閉止済み保持",
+      "success": true,
+      "repairCalls": 1
+    },
+    {
+      "name": "他の危険行欠落でも要請高",
+      "success": true,
+      "repairCalls": 1
+    },
+    {
+      "name": "危険矛盾は肯定しない",
+      "success": true,
+      "repairCalls": 1
+    },
+    {
+      "name": "旧形式を内部修復",
+      "success": true,
+      "repairCalls": 1
+    },
+    {
+      "name": "修復失敗は一回で打切り",
+      "success": true,
+      "repairCalls": 1
+    },
+    {
+      "name": "CRLFと全角区切りと囲み",
+      "success": true,
+      "repairCalls": 0
+    },
+    {
+      "name": "引用内の連続空白保持",
+      "success": true,
+      "repairCalls": 0
+    },
+    {
+      "name": "対象住戸を混同しない",
+      "success": true,
+      "repairCalls": 0
+    },
+    {
+      "name": "整合確認後の正常完了",
+      "success": true,
+      "repairCalls": 0
+    },
+    {
+      "name": "同一対象の重複を表示しない",
+      "success": true,
+      "repairCalls": 1
+    },
+    {
+      "name": "捏造した実施根拠は不採用",
+      "success": true,
+      "repairCalls": 1
+    },
+    {
+      "name": "空応答の修復制限",
+      "success": true,
+      "repairCalls": 1
+    },
+    {
+      "name": "改善後の再評価",
+      "success": true,
+      "repairCalls": 0
+    }
+  ],
+  "source_file": "3-9-緊急保安業務エージェント_optimized.yaml",
+  "source_sha256": "4dd473d704d1b80e31495292c18f6b50824e5fd30a1b5c0698038fc14f5b03d1",
+  "sdk": "8.0.426"
+}

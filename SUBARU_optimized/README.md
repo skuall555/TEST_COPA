@@ -37,3 +37,5 @@ python -m unittest -v test_contracts test_image_audit test_priority_state
 今回の差分（適用済み752f588基準）は `diffs/image_state_v3/`、原本からの累積差分は `diffs/` の各YAML差分を参照。
 
 全項目が判定保留になる場合の最新版と3-9だけの更新手順は [11_全項目判定保留の修正_内部形式の統一と自動修復.md](11_全項目判定保留の修正_内部形式の統一と自動修復.md)。画像カスタムプロンプト本文・4-9・全体指示は今回変更不要。
+
+トピックチェッカーの型エラーへの最新対応と3-9の差替えは [12_トピックチェッカー型エラー対策_型初期化と段階変数.md](12_トピックチェッカー型エラー対策_型初期化と段階変数.md)。Microsoft Power Fxによる検証はvalidation/native_powerfx/。Studioでのエラー解消は未確認です。
