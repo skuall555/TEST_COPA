@@ -19,5 +19,6 @@
   "runtime_cases_not_run": 48,
   "new_topic_variables": [
     "Topic.目的選択入力"
-  ]
+  ],
+  "artifact_scope": "Historical 713b817 five-part report; current sources recorded in additional_manifest.json"
 }

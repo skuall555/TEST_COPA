@@ -84,6 +84,8 @@ def main():
  instructions=R/FILES[3];text=instructions.read_text();text=text.replace('・数字だけの返信（1、2、0、[1] など）　修理方法の候補選択です。必ず実行中のトピックへ渡してください。','・数字だけの返信（1、2、3、１、２、３、0、[1] など）や「1です」「２番」　目的選択または修理候補選択への回答です。必ず質問中のトピックへ渡し、あなた自身で意味付けや別の選択肢を作らないでください。')
  text+='\n## 目的判定と番号選択（61e0c4a基準の追記）\n業務の自然文も「1-マニュアル関連入口」へ渡してください。目的の意味判定と不明時の番号質問は入口トピックが行います。番号の対応は1＝ガス漏れ対応中、2＝社内基準・マニュアル確認、3＝社内基準・マニュアル変更です。質問中はそのトピックへ返信を渡し、別エージェントへ接続するよう利用者に頼まず、既存トピック内の遷移に任せてください。\n'
  instructions.write_text(text)
+ from additional_build import apply
+ apply(field)
  folder=R/'diffs/restart_61e0c4a';folder.mkdir(parents=True,exist_ok=True)
  for name in FILES:(folder/(name+'.diff')).write_text(''.join(difflib.unified_diff(baseline(name).splitlines(True),(R/name).read_text().splitlines(True),fromfile='61e0c4a/'+name,tofile='restart_20261027/'+name)))
  # Keep original-to-current diffs coherent as well.

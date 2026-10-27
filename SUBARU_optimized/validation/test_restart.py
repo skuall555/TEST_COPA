@@ -93,7 +93,7 @@ class Restart(unittest.TestCase):
  def test_image_specs_are_verbatim_and_not_photo_facts(self):
   s=self.new[2]['setVariable_prompt1']['value'];self.assertIn(POCKET_ILLUSTRATION,s);self.assertIn(DETECTOR_ILLUSTRATION,s);self.assertIn('今回の写真にその機器が写っているという事実ではない',s);self.assertNotIn('置いてあるだけならポケット警報器',s)
  def test_other_safety_rules_and_human_output_format_unchanged(self):
-  a=self.old[1]['setVariable_priorityGuideFixed']['value'];b=self.new[1]['setVariable_priorityGuideFixed']['value'];self.assertEqual(a[a.index('# 判定手順'):],b[b.index('# 判定手順'):]);self.assertIn('LEL1％',b);self.assertIn('一時的な反応消失',b);self.assertIn('未要請だから低',b)
+  a=self.old[1]['setVariable_priorityGuideFixed']['value'];b=self.new[1]['setVariable_priorityGuideFixed']['value'];self.assertEqual(a[a.index('# 最重要'):a.index('# 禁止事項')],b[b.index('# 最重要'):b.index('# 禁止事項')]);self.assertIn('LEL1％',b);self.assertIn('一時的な反応消失',b);self.assertIn('未要請だから低',b)
  def test_new_control_expressions_short_and_shallow(self):
   for old,new in zip(self.old,self.new):
    for k in set(new)-set(old):

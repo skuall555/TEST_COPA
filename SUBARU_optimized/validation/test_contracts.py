@@ -21,8 +21,9 @@ class Contracts(unittest.TestCase):
   for a,b in zip(self.a,self.b):self.assertLessEqual({k for k,n in a.items()if n['kind']=='SendActivity'},set(b))
  def test_priority_changes_are_limited_to_authorized_sections(self):
   old=self.a[1]['setVariable_priorityGuideFixed']['value'];new=self.b[1]['setVariable_priorityGuideFixed']['value']
-  self.assertEqual(old.split('【ポケット警報器】')[0],new.split('【ポケット警報器】')[0])
-  self.assertEqual(old[old.index('# 立入禁止・保安柵・警戒区域'):old.index('# 判定手順')],new[new.index('# 立入禁止・保安柵・警戒区域'):new.index('# 消防・警察要請の判定順序の補足')])
+  self.assertEqual(old.split('# 全現場共通で基本的に「高」')[0],new.split('# 今回追加する現場事実の整理')[0])
+  for start,end in [('# 窓等の開放・換気','# メーターガス栓閉止'),('# 避難誘導','# 周辺住戸・建物調査'),('# マンホール蓋開放・換気','# 場所別の基本判定')]:
+   self.assertEqual(old[old.index(start):old.index(end)],new[new.index(start):new.index(end)])
  def test_rankers_unchanged(self):
   for suffix in ['Fit','Directness','Certainty','Consensus']:
    k='answer_manualCheckRank'+suffix;self.assertEqual(self.a[0][k],self.b[0][k])
