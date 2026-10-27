@@ -1,0 +1,23 @@
+{
+  "baseline": "61e0c4a13b8c68c53947cb03a12d9b9d2d2221fa",
+  "branch": "codex/subaru-restart-61e0c4a-20261027",
+  "yaml_files": {
+    "1-マニュアル関連入口_optimized.yaml": {
+      "lines": 2600,
+      "sha256": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec"
+    },
+    "3-9-緊急保安業務エージェント_optimized.yaml": {
+      "lines": 1646,
+      "sha256": "fc55ab2f0a3709a4acfa5526d8030b3543ce282466c72919edba1c75c69e4caa"
+    },
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": {
+      "lines": 521,
+      "sha256": "b1499bbc0fabd019875936c0b6eef1717bd5fed777c8b352f75bb38155ae89a5"
+    }
+  },
+  "full_yaml_blocks_match": true,
+  "runtime_cases_not_run": 48,
+  "new_topic_variables": [
+    "Topic.目的選択入力"
+  ]
+}

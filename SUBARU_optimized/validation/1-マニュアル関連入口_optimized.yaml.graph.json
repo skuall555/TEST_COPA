@@ -51,9 +51,28 @@
     "setVariable_purposeRetryCount"
   ],
   "setVariable_purposeRetryCount": [
+    "setVariable_purposeReplyInit"
+  ],
+  "setVariable_purposeReplyInit": [
+    "setVariable_purposeChoiceInit"
+  ],
+  "setVariable_purposeChoiceInit": [
     "setVariable_purposeDetect"
   ],
   "setVariable_purposeDetect": [
+    "answer_inferPurposeFromText"
+  ],
+  "answer_inferPurposeFromText": [
+    "setVariable_normalizeInferredPurpose"
+  ],
+  "setVariable_normalizeInferredPurpose": [
+    "conditionGroup_rememberPurposeReply"
+  ],
+  "conditionGroup_rememberPurposeReply": [
+    "conditionGroup_purposeMissing",
+    "setVariable_rememberPurposeReply"
+  ],
+  "setVariable_rememberPurposeReply": [
     "conditionGroup_purposeMissing"
   ],
   "conditionGroup_purposeMissing": [
@@ -85,7 +104,33 @@
     "conditionGroup_probeMode"
   ],
   "setVariable_appendPurposeHistory": [
-    "goto_purposeDetectAgain"
+    "setVariable_normalizePurposeNumber"
+  ],
+  "setVariable_normalizePurposeNumber": [
+    "setVariable_purposeFromNumber"
+  ],
+  "setVariable_purposeFromNumber": [
+    "conditionGroup_purposeNumberAccepted"
+  ],
+  "conditionGroup_purposeNumberAccepted": [
+    "goto_purposeDetectAgain",
+    "setVariable_rememberNumberPurpose"
+  ],
+  "setVariable_rememberNumberPurpose": [
+    "conditionGroup_numberPurposeIsField"
+  ],
+  "conditionGroup_numberPurposeIsField": [
+    "goto_numberManualExistingWorkflow",
+    "setVariable_numberFieldFolder"
+  ],
+  "setVariable_numberFieldFolder": [
+    "goto_numberFieldExistingDialog"
+  ],
+  "goto_numberFieldExistingDialog": [
+    "64VMOA"
+  ],
+  "goto_numberManualExistingWorkflow": [
+    "setVariable_classifyRetryCount"
   ],
   "goto_purposeDetectAgain": [
     "setVariable_purposeDetect"

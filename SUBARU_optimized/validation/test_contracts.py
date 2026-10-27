@@ -14,10 +14,15 @@ class Contracts(unittest.TestCase):
  def test_questions_and_interruptions_preserved(self):
   for a,b in zip(self.a,self.b):
    for k,n in a.items():
-    if n['kind']=='Question':self.assertEqual(n,b[k])
+    if n['kind']=='Question':
+     if k=='question_purposeMissing':self.assertEqual({x:y for x,y in n.items()if x!='prompt'},{x:y for x,y in b[k].items()if x!='prompt'})
+     else:self.assertEqual(n,b[k])
  def test_no_removed_sends(self):
   for a,b in zip(self.a,self.b):self.assertLessEqual({k for k,n in a.items()if n['kind']=='SendActivity'},set(b))
- def test_priority_guide_unchanged(self):self.assertEqual(self.a[1]['setVariable_priorityGuideFixed'],self.b[1]['setVariable_priorityGuideFixed'])
+ def test_priority_changes_are_limited_to_authorized_sections(self):
+  old=self.a[1]['setVariable_priorityGuideFixed']['value'];new=self.b[1]['setVariable_priorityGuideFixed']['value']
+  self.assertEqual(old.split('【ポケット警報器】')[0],new.split('【ポケット警報器】')[0])
+  self.assertEqual(old[old.index('# 立入禁止・保安柵・警戒区域'):old.index('# 判定手順')],new[new.index('# 立入禁止・保安柵・警戒区域'):new.index('# 消防・警察要請の判定順序の補足')])
  def test_rankers_unchanged(self):
   for suffix in ['Fit','Directness','Certainty','Consensus']:
    k='answer_manualCheckRank'+suffix;self.assertEqual(self.a[0][k],self.b[0][k])

@@ -1,0 +1,358 @@
+{
+  "package": "Microsoft.PowerFx.Interpreter 1.8.1",
+  "scope": "Standalone SDK, not the Studio host; no live model",
+  "checks": [
+    {
+      "id": "setVariable_buildVersion",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_probeMode",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_purposeReplyInit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_purposeChoiceInit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_purposeDetect",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "answer_inferPurposeFromTextInput",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_normalizeInferredPurpose",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_rememberPurposeReply_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_rememberPurposeReply",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_probeFromPurpose",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_normalizePurposeNumber",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_purposeFromNumber",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_purposeNumberAccepted_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_rememberNumberPurpose",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_numberPurposeIsField_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_numberFieldFolder",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityGuideFixed",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPrompt",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_prompt1",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_prompt2",
+      "success": true,
+      "type": "String",
+      "errors": []
+    }
+  ],
+  "runs": [
+    {
+      "input": "1",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "[1]",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "［1］",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "1です",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "1番",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "1番です",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "１",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "[１]",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "［１］",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "１です",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "１番",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "１番です",
+      "success": true,
+      "result": "現場対応アドバイス"
+    },
+    {
+      "input": "2",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "[2]",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "［2］",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "2です",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "2番",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "2番です",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "２",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "[２]",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "［２］",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "２です",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "２番",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "２番です",
+      "success": true,
+      "result": "マニュアル確認"
+    },
+    {
+      "input": "3",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "[3]",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "［3］",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "3です",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "3番",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "3番です",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "３",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "[３]",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "［３］",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "３です",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "３番",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "３番です",
+      "success": true,
+      "result": "マニュアル改訂"
+    },
+    {
+      "input": "0",
+      "success": true,
+      "result": ""
+    },
+    {
+      "input": "4",
+      "success": true,
+      "result": ""
+    },
+    {
+      "input": "9",
+      "success": true,
+      "result": ""
+    },
+    {
+      "input": "1と2",
+      "success": true,
+      "result": ""
+    },
+    {
+      "input": "２ではない",
+      "success": true,
+      "result": ""
+    },
+    {
+      "input": "2ですか？",
+      "success": true,
+      "result": ""
+    },
+    {
+      "input": "マニュアルを確認したい",
+      "success": true,
+      "result": ""
+    },
+    {
+      "input": "1番でお願いします",
+      "success": true,
+      "result": ""
+    },
+    {
+      "input": "",
+      "success": true,
+      "result": ""
+    }
+  ],
+  "source_sha256": {
+    "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "fc55ab2f0a3709a4acfa5526d8030b3543ce282466c72919edba1c75c69e4caa",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "b1499bbc0fabd019875936c0b6eef1717bd5fed777c8b352f75bb38155ae89a5"
+  }
+}

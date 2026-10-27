@@ -1,0 +1,186 @@
+[
+  {
+    "file": "1-マニュアル関連入口_optimized.yaml",
+    "changed": [
+      {
+        "id": "main",
+        "fields": [
+          "intent"
+        ]
+      },
+      {
+        "id": "setVariable_buildVersion",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "conditionGroup_probeMode",
+        "fields": [
+          "conditions"
+        ]
+      },
+      {
+        "id": "setVariable_purposeDetect",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "sendActivity_purposeGiveUp",
+        "fields": [
+          "activity"
+        ]
+      },
+      {
+        "id": "question_purposeMissing",
+        "fields": [
+          "prompt"
+        ]
+      },
+      {
+        "id": "conditionGroup_probeFromPurpose",
+        "fields": [
+          "conditions"
+        ]
+      }
+    ],
+    "added": [
+      {
+        "id": "setVariable_purposeReplyInit",
+        "kind": "SetVariable",
+        "variable": "Topic.目的回答",
+        "actionId": null
+      },
+      {
+        "id": "setVariable_purposeChoiceInit",
+        "kind": "SetVariable",
+        "variable": "Topic.目的選択入力",
+        "actionId": null
+      },
+      {
+        "id": "answer_inferPurposeFromText",
+        "kind": "AnswerQuestionWithAI",
+        "variable": "Topic.目的分野",
+        "actionId": null
+      },
+      {
+        "id": "setVariable_normalizeInferredPurpose",
+        "kind": "SetVariable",
+        "variable": "Topic.目的分野",
+        "actionId": null
+      },
+      {
+        "id": "conditionGroup_rememberPurposeReply",
+        "kind": "ConditionGroup",
+        "variable": null,
+        "actionId": null
+      },
+      {
+        "id": "setVariable_rememberPurposeReply",
+        "kind": "SetVariable",
+        "variable": "Topic.追加情報履歴",
+        "actionId": null
+      },
+      {
+        "id": "setVariable_normalizePurposeNumber",
+        "kind": "SetVariable",
+        "variable": "Topic.目的選択入力",
+        "actionId": null
+      },
+      {
+        "id": "setVariable_purposeFromNumber",
+        "kind": "SetVariable",
+        "variable": "Topic.目的分野",
+        "actionId": null
+      },
+      {
+        "id": "conditionGroup_purposeNumberAccepted",
+        "kind": "ConditionGroup",
+        "variable": null,
+        "actionId": null
+      },
+      {
+        "id": "setVariable_rememberNumberPurpose",
+        "kind": "SetVariable",
+        "variable": "Topic.追加情報履歴",
+        "actionId": null
+      },
+      {
+        "id": "conditionGroup_numberPurposeIsField",
+        "kind": "ConditionGroup",
+        "variable": null,
+        "actionId": null
+      },
+      {
+        "id": "setVariable_numberFieldFolder",
+        "kind": "SetVariable",
+        "variable": "Topic.対象フォルダ",
+        "actionId": null
+      },
+      {
+        "id": "goto_numberFieldExistingDialog",
+        "kind": "GotoAction",
+        "variable": null,
+        "actionId": "64VMOA"
+      },
+      {
+        "id": "goto_numberManualExistingWorkflow",
+        "kind": "GotoAction",
+        "variable": null,
+        "actionId": "setVariable_classifyRetryCount"
+      }
+    ],
+    "removed": []
+  },
+  {
+    "file": "3-9-緊急保安業務エージェント_optimized.yaml",
+    "changed": [
+      {
+        "id": "setVariable_priorityGuideFixed",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "setVariable_priorityPrompt",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_priority",
+        "fields": [
+          "additionalInstructions"
+        ]
+      }
+    ],
+    "added": [],
+    "removed": []
+  },
+  {
+    "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",
+    "changed": [
+      {
+        "id": "setVariable_prompt1",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "setVariable_prompt2",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_photoGuidelineJudge",
+        "fields": [
+          "additionalInstructions"
+        ]
+      }
+    ],
+    "added": [],
+    "removed": []
+  }
+]

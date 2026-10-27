@@ -4,7 +4,7 @@
     {
       "file": "1-マニュアル関連入口_optimized.yaml",
       "yaml": "PASS (duplicate keys rejected)",
-      "unique_ids": 331,
+      "unique_ids": 348,
       "broken_goto": [],
       "removed_ids": [],
       "dependencies": "UNCHANGED",
@@ -54,20 +54,20 @@
       },
       "node_counts_after": {
         "OnRecognizedIntent": 1,
-        "SetVariable": 139,
-        "ConditionGroup": 43,
+        "SetVariable": 147,
+        "ConditionGroup": 46,
         "SearchKnowledgeSources": 2,
         "SearchAndSummarizeContent": 15,
         "SendActivity": 16,
         "EndDialog": 16,
+        "AnswerQuestionWithAI": 21,
         "Question": 8,
-        "GotoAction": 15,
-        "AnswerQuestionWithAI": 20,
+        "GotoAction": 17,
         "InvokeFlowAction": 5,
         "CreateSearchQuery": 6,
         "BeginDialog": 2
       },
-      "sha256": "3a271251790c0393883d90191c6817d92cd86c54b013cc2d1f41bf3f34385e5a"
+      "sha256": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec"
     },
     {
       "file": "3-9-緊急保安業務エージェント_optimized.yaml",
@@ -118,7 +118,7 @@
         "EndDialog": 14,
         "SearchAndSummarizeContent": 4
       },
-      "sha256": "da08930248dd6a3ba62059e44fbc4aa10f1cb022f373fc42178938617bf485f8"
+      "sha256": "fc55ab2f0a3709a4acfa5526d8030b3543ce282466c72919edba1c75c69e4caa"
     },
     {
       "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",
@@ -152,7 +152,7 @@
         "GotoAction": 1,
         "AnswerQuestionWithAI": 1
       },
-      "sha256": "684715528267421049229bfa149c4c380c4213d121052b42ddd2804931252d18"
+      "sha256": "b1499bbc0fabd019875936c0b6eef1717bd5fed777c8b352f75bb38155ae89a5"
     }
   ]
 }

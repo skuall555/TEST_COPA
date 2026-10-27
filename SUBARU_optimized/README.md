@@ -1,5 +1,13 @@
 # SUBARU 3トピック改修パック
 
+**今回の基準は61e0c4aです。2026年10月27日の要件だけを追加しました。**
+
+- [指定の5項目・3トピックのYAML全文（コードブロック）](08_61e0c4a基準_改修結果_YAML全文.md)
+- [機器の説明と画像・イラスト指定](09_機器の説明と画像イラスト指定.md)
+- [今回の導入・検証・ロールバック](10_61e0c4a基準_導入と検証結果.md)
+
+3つのYAMLと全体「指示」を同じ版で更新してください。61e0c4a以後の複雑な優先度テーブル・型処理は含めていません。
+
 添付の既存3分岐を維持したフェーズ1改修。3トピックとも実変更あり。全文YAMLはこのディレクトリ直下にあります。
 
 **静的検証済み／Copilot Studioへの読込・実機回帰・性能・Word逐語全文照合は未検証です。試験導入用で、本番適合を保証する版ではありません。**
@@ -21,7 +29,7 @@
 cd /workspace/TEST_COPA
 python SUBARU_optimized/validation/validate.py
 cd SUBARU_optimized/validation
-python -m unittest -v test_contracts
+python -m unittest -v test_contracts test_restart
 ```
 
 検証用依存：Python 3.12、PyYAML 6.0.3（`validation/requirements.txt`）。Copilot本体の追加フロー・新規API・新規ナレッジは不要です。

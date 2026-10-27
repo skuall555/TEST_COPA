@@ -3,9 +3,45 @@
     "file": "1-マニュアル関連入口_optimized.yaml",
     "changed": [
       {
+        "id": "main",
+        "fields": [
+          "intent"
+        ]
+      },
+      {
         "id": "setVariable_buildVersion",
         "fields": [
           "value"
+        ]
+      },
+      {
+        "id": "conditionGroup_probeMode",
+        "fields": [
+          "conditions"
+        ]
+      },
+      {
+        "id": "setVariable_purposeDetect",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "sendActivity_purposeGiveUp",
+        "fields": [
+          "activity"
+        ]
+      },
+      {
+        "id": "question_purposeMissing",
+        "fields": [
+          "prompt"
+        ]
+      },
+      {
+        "id": "conditionGroup_probeFromPurpose",
+        "fields": [
+          "conditions"
         ]
       },
       {
@@ -163,6 +199,20 @@
       }
     ],
     "added": [
+      "setVariable_purposeReplyInit",
+      "setVariable_purposeChoiceInit",
+      "answer_inferPurposeFromText",
+      "setVariable_normalizeInferredPurpose",
+      "conditionGroup_rememberPurposeReply",
+      "setVariable_rememberPurposeReply",
+      "setVariable_normalizePurposeNumber",
+      "setVariable_purposeFromNumber",
+      "conditionGroup_purposeNumberAccepted",
+      "setVariable_rememberNumberPurpose",
+      "conditionGroup_numberPurposeIsField",
+      "setVariable_numberFieldFolder",
+      "goto_numberFieldExistingDialog",
+      "goto_numberManualExistingWorkflow",
       "setVariable_guideDefault",
       "setVariable_guideFallbackDefault",
       "setVariable_classifyPromptDefault",
@@ -235,6 +285,24 @@
     "file": "3-9-緊急保安業務エージェント_optimized.yaml",
     "changed": [
       {
+        "id": "setVariable_priorityGuideFixed",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "setVariable_priorityPrompt",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "answer_priority",
+        "fields": [
+          "additionalInstructions"
+        ]
+      },
+      {
         "id": "setVariable_repairKnownPipe",
         "fields": [
           "value"
@@ -268,6 +336,12 @@
     "changed": [
       {
         "id": "setVariable_prompt1",
+        "fields": [
+          "value"
+        ]
+      },
+      {
+        "id": "setVariable_prompt2",
         "fields": [
           "value"
         ]

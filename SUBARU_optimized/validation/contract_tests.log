@@ -10,15 +10,34 @@ test_negative_pass_substring_rejected (test_contracts.Contracts.test_negative_pa
 test_no_continuation_copies_original (test_contracts.Contracts.test_no_continuation_copies_original) ... ok
 test_no_new_variable_candidates (test_contracts.Contracts.test_no_new_variable_candidates) ... ok
 test_no_removed_sends (test_contracts.Contracts.test_no_removed_sends) ... ok
-test_priority_guide_unchanged (test_contracts.Contracts.test_priority_guide_unchanged) ... ok
+test_priority_changes_are_limited_to_authorized_sections (test_contracts.Contracts.test_priority_changes_are_limited_to_authorized_sections) ... ok
 test_questions_and_interruptions_preserved (test_contracts.Contracts.test_questions_and_interruptions_preserved) ... ok
 test_rankers_unchanged (test_contracts.Contracts.test_rankers_unchanged) ... ok
 test_revise_all_row_validation (test_contracts.Contracts.test_revise_all_row_validation) ... ok
 test_revise_short_text_not_discarded (test_contracts.Contracts.test_revise_short_text_not_discarded) ... ok
 test_row_checks_have_shallow_expressions (test_contracts.Contracts.test_row_checks_have_shallow_expressions) ... ok
+test_clear_initial_intent_skips_menu (test_restart.Restart.test_clear_initial_intent_skips_menu) ... ok
+test_clear_natural_reply_does_not_ask_again (test_restart.Restart.test_clear_natural_reply_does_not_ask_again) ... ok
+test_clear_third_reply_is_accepted (test_restart.Restart.test_clear_third_reply_is_accepted) ... ok
+test_existing_ids_and_connector_dependencies_preserved (test_restart.Restart.test_existing_ids_and_connector_dependencies_preserved) ... ok
+test_half_full_width_and_suffixes_choose_correct_routes (test_restart.Restart.test_half_full_width_and_suffixes_choose_correct_routes) ... ok
+test_image_specs_are_verbatim_and_not_photo_facts (test_restart.Restart.test_image_specs_are_verbatim_and_not_photo_facts) ... ok
+test_initial_message_writers_unchanged (test_restart.Restart.test_initial_message_writers_unchanged) ... ok
+test_invalid_replies_stop_after_three_questions (test_restart.Restart.test_invalid_replies_stop_after_three_questions) ... ok
+test_invalid_reply_repeats_same_menu (test_restart.Restart.test_invalid_reply_repeats_same_menu) ... ok
+test_later_broken_parsers_are_not_inherited (test_restart.Restart.test_later_broken_parsers_are_not_inherited) ... ok
+test_measurement_word_in_manual_question_does_not_trigger_probe (test_restart.Restart.test_measurement_word_in_manual_question_does_not_trigger_probe) ... ok
+test_new_control_expressions_short_and_shallow (test_restart.Restart.test_new_control_expressions_short_and_shallow) ... ok
+test_one_jumps_to_existing_dialog_with_same_bindings (test_restart.Restart.test_one_jumps_to_existing_dialog_with_same_bindings) ... ok
+test_one_new_string_variable_no_new_table_expressions (test_restart.Restart.test_one_new_string_variable_no_new_table_expressions) ... ok
+test_only_authorized_existing_nodes_change (test_restart.Restart.test_only_authorized_existing_nodes_change) ... ok
+test_other_safety_rules_and_human_output_format_unchanged (test_restart.Restart.test_other_safety_rules_and_human_output_format_unchanged) ... ok
+test_questions_image_trigger_and_return_preserved (test_restart.Restart.test_questions_image_trigger_and_return_preserved) ... ok
+test_unexpected_classifier_output_is_not_an_intent (test_restart.Restart.test_unexpected_classifier_output_is_not_an_intent) ... ok
+test_unrelated_manual_nodes_identical (test_restart.Restart.test_unrelated_manual_nodes_identical) ... ok
 
 ----------------------------------------------------------------------
-Ran 18 tests in 0.426s
+Ran 37 tests in 0.791s
 
 OK
 1-マニュアル関連入口_optimized.yaml PASS new variable candidates: []
