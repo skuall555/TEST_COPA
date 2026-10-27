@@ -86,6 +86,8 @@ def main():
  instructions.write_text(text)
  from additional_build import apply
  apply(field)
+ from continuity_build import apply as apply_continuity
+ apply_continuity(field,instructions)
  folder=R/'diffs/restart_61e0c4a';folder.mkdir(parents=True,exist_ok=True)
  for name in FILES:(folder/(name+'.diff')).write_text(''.join(difflib.unified_diff(baseline(name).splitlines(True),(R/name).read_text().splitlines(True),fromfile='61e0c4a/'+name,tofile='restart_20261027/'+name)))
  # Keep original-to-current diffs coherent as well.

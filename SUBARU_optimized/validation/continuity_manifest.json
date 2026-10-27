@@ -1,0 +1,198 @@
+{
+  "base_commit": "7b4724bde0cbf1895d3252574b5e6f84c7118c3d",
+  "runtime_cases_not_run": 22,
+  "changes": [
+    {
+      "file": "1-マニュアル関連入口_optimized.yaml",
+      "changed": [],
+      "added": [],
+      "removed": []
+    },
+    {
+      "file": "3-9-緊急保安業務エージェント_optimized.yaml",
+      "changed": [
+        "setVariable_priorityGuideFixed",
+        "setVariable_priorityPrompt",
+        "answer_priority",
+        "conditionGroup_prioritySucceeded",
+        "conditionGroup_priorityLoopNeeded",
+        "sendActivity_priorityFailed"
+      ],
+      "added": [
+        {
+          "id": "setVariable_priorityFormatRetryInit",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度様式再試行回数"
+        },
+        {
+          "id": "setVariable_priorityFormatRaw",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示原文"
+        },
+        {
+          "id": "setVariable_priorityFormatAssembleInit",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "setVariable_priorityFormatEnvelope",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_priorityFormatSection0",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_priorityFormatCheck0",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_priorityFormatAppend0",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "setVariable_priorityFormatSection1",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_priorityFormatCheck1",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_priorityFormatAppend1",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "setVariable_priorityFormatSection2",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_priorityFormatCheck2",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_priorityFormatAppend2",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "setVariable_priorityFormatSection3",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_priorityFormatCheck3",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_priorityFormatAppend3",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "setVariable_priorityFormatSection4",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_priorityFormatCheck4",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_priorityFormatAppend4",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "setVariable_priorityFormatSection5",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_priorityFormatCheck5",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_priorityFormatAppend5",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "setVariable_priorityFormatSection6",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_priorityFormatCheck6",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_priorityFormatAppend6",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "conditionGroup_priorityFormatRetry",
+          "kind": "ConditionGroup",
+          "variable": null
+        },
+        {
+          "id": "setVariable_priorityFormatRetryIncrement",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度様式再試行回数"
+        },
+        {
+          "id": "goto_priorityFormatRetry",
+          "kind": "GotoAction",
+          "variable": null
+        },
+        {
+          "id": "conditionGroup_priorityFormatAccepted",
+          "kind": "ConditionGroup",
+          "variable": null
+        },
+        {
+          "id": "setVariable_priorityFormatUseAssembled",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度判定結果"
+        }
+      ],
+      "removed": []
+    },
+    {
+      "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",
+      "changed": [],
+      "added": [],
+      "removed": []
+    }
+  ],
+  "yaml_files": {
+    "1-マニュアル関連入口_optimized.yaml": {
+      "lines": 2600,
+      "sha256": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec"
+    },
+    "3-9-緊急保安業務エージェント_optimized.yaml": {
+      "lines": 1829,
+      "sha256": "fcdb064b82d9cdbb7e051ec844565cedef6b2c9542dbd543b0a24e6388370c3b"
+    },
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": {
+      "lines": 521,
+      "sha256": "b1499bbc0fabd019875936c0b6eef1717bd5fed777c8b352f75bb38155ae89a5"
+    }
+  },
+  "scope": "Scalar format guard executed offline; routing/AI safety decisions in Studio NOT_RUN",
+  "full_yaml_blocks_match": true
+}

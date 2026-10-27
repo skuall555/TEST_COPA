@@ -56,5 +56,6 @@
       "lines": 521
     }
   },
-  "full_yaml_blocks_match": true
+  "full_yaml_blocks_match": true,
+  "artifact_scope": "Historical 7b4724b snapshot; latest sources in continuity_manifest.json"
 }

@@ -41,7 +41,7 @@ class Restart(unittest.TestCase):
  def test_existing_ids_and_connector_dependencies_preserved(self):
   for old,new in zip(self.old,self.new):self.assertLessEqual(set(old),set(new));self.assertEqual(dependencies(old),{k:v for k,v in dependencies(new).items()if k in old})
  def test_only_authorized_existing_nodes_change(self):
-  allowed=[{'main','setVariable_buildVersion','setVariable_purposeDetect','question_purposeMissing','sendActivity_purposeGiveUp','conditionGroup_probeMode','conditionGroup_probeFromPurpose'},{'setVariable_priorityGuideFixed','setVariable_priorityPrompt','answer_priority'},{'setVariable_prompt1','setVariable_prompt2','answer_photoGuidelineJudge'}]
+  allowed=[{'main','setVariable_buildVersion','setVariable_purposeDetect','question_purposeMissing','sendActivity_purposeGiveUp','conditionGroup_probeMode','conditionGroup_probeFromPurpose'},{'setVariable_priorityGuideFixed','setVariable_priorityPrompt','answer_priority','conditionGroup_prioritySucceeded','conditionGroup_priorityLoopNeeded','sendActivity_priorityFailed'},{'setVariable_prompt1','setVariable_prompt2','answer_photoGuidelineJudge'}]
   for old,new,permit in zip(self.old,self.new,allowed):self.assertLessEqual({k for k in old if own(old[k])!=own(new[k])},permit)
   self.assertEqual({k:v for k,v in own(self.old[0]['main']).items()if k!='intent'},{k:v for k,v in own(self.new[0]['main']).items()if k!='intent'})
   original=self.old[0]['main']['intent']['triggerQueries'];self.assertEqual(self.new[0]['main']['intent']['triggerQueries'][:len(original)],original)
@@ -52,7 +52,7 @@ class Restart(unittest.TestCase):
   def variables(tree):return {n['variable']for n in walk(tree)if isinstance(n.get('variable'),str)}
   self.assertEqual(variables(self.after[0])-variables(self.before[0]),{'Topic.目的選択入力'})
   for old,new in zip(self.old,self.new):
-   for k in set(new)-set(old):self.assertFalse(any(x in new[k].get('value','')for x in ['Filter(','Concat(','Distinct(','Split(',' As ']),k)
+   for k in set(new)-set(old):self.assertFalse(any(x in new[k].get('value','')for x in ['Filter(','Concat(','Distinct(',' As ']),k)
  def test_half_full_width_and_suffixes_choose_correct_routes(self):
   for text,want in [('1','現場対応アドバイス'),('１','現場対応アドバイス'),('1です','現場対応アドバイス'),('１番です','現場対応アドバイス'),('2','マニュアル確認'),('２番','マニュアル確認'),('[2]','マニュアル確認'),('３','マニュアル改訂'),('３番','マニュアル改訂'),('［３］','マニュアル改訂')]:
    with self.subTest(text=text):

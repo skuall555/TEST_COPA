@@ -299,7 +299,26 @@
       {
         "id": "answer_priority",
         "fields": [
-          "additionalInstructions"
+          "additionalInstructions",
+          "userInput"
+        ]
+      },
+      {
+        "id": "conditionGroup_prioritySucceeded",
+        "fields": [
+          "conditions"
+        ]
+      },
+      {
+        "id": "conditionGroup_priorityLoopNeeded",
+        "fields": [
+          "conditions"
+        ]
+      },
+      {
+        "id": "sendActivity_priorityFailed",
+        "fields": [
+          "activity"
         ]
       },
       {
@@ -328,6 +347,36 @@
       }
     ],
     "added": [
+      "setVariable_priorityFormatRetryInit",
+      "setVariable_priorityFormatRaw",
+      "setVariable_priorityFormatAssembleInit",
+      "setVariable_priorityFormatEnvelope",
+      "setVariable_priorityFormatSection0",
+      "setVariable_priorityFormatCheck0",
+      "setVariable_priorityFormatAppend0",
+      "setVariable_priorityFormatSection1",
+      "setVariable_priorityFormatCheck1",
+      "setVariable_priorityFormatAppend1",
+      "setVariable_priorityFormatSection2",
+      "setVariable_priorityFormatCheck2",
+      "setVariable_priorityFormatAppend2",
+      "setVariable_priorityFormatSection3",
+      "setVariable_priorityFormatCheck3",
+      "setVariable_priorityFormatAppend3",
+      "setVariable_priorityFormatSection4",
+      "setVariable_priorityFormatCheck4",
+      "setVariable_priorityFormatAppend4",
+      "setVariable_priorityFormatSection5",
+      "setVariable_priorityFormatCheck5",
+      "setVariable_priorityFormatAppend5",
+      "setVariable_priorityFormatSection6",
+      "setVariable_priorityFormatCheck6",
+      "setVariable_priorityFormatAppend6",
+      "conditionGroup_priorityFormatRetry",
+      "setVariable_priorityFormatRetryIncrement",
+      "goto_priorityFormatRetry",
+      "conditionGroup_priorityFormatAccepted",
+      "setVariable_priorityFormatUseAssembled",
       "conditionGroup_priorityDebugOnly"
     ]
   },

@@ -1,5 +1,5 @@
 """Native scalar checks. Requires .NET 8 SDK; downloads fixed NuGet dependencies to /tmp only."""
-import argparse,hashlib,io,json,subprocess,urllib.request,zipfile
+import argparse,hashlib,io,json,subprocess,urllib.request,zipfile,sys
 from pathlib import Path
 import yaml
 HERE=Path(__file__).resolve().parent;R=HERE.parents[1]
@@ -30,7 +30,7 @@ def main():
   before={n['id']:n for n in walk(old)if 'id'in n and 'kind'in n};after={n['id']:n for n in walk(new)if 'id'in n and 'kind'in n};indexes.append(after)
   for ident,n in after.items():
    prior=before.get(ident,{})
-   if n['kind']=='SetVariable'and n.get('value')!=prior.get('value'):expressions.append({'id':ident,'expression':n['value'][1:],'expected':'String'})
+   if n['kind']=='SetVariable'and n.get('value')!=prior.get('value'):expressions.append({'id':ident,'expression':n['value'][1:],'expected':'Number'if n.get('variable')=='Topic.優先度様式再試行回数'else 'String'})
    if n['kind']=='AnswerQuestionWithAI'and n.get('userInput')!=prior.get('userInput'):expressions.append({'id':ident+'Input','expression':n['userInput'][1:],'expected':'String'})
    if n['kind']=='ConditionGroup':
     previous_conditions={c['id']:c['condition']for c in prior.get('conditions',[])}
@@ -43,8 +43,17 @@ def main():
  for text in ['0','4','9','1と2','２ではない','2ですか？','マニュアルを確認したい','1番でお願いします','']:
   cases.append({'input':text,'expected':''})
  data={'expressions':expressions,'normalize':entry['setVariable_normalizePurposeNumber']['value'][1:],'choose':entry['setVariable_purposeFromNumber']['value'][1:],'cases':cases}
+ sys.path.insert(0,str(HERE.parent))
+ from continuity_build import validator,HEADINGS
+ good='\n\n'.join('【'+h+'】\n'+('└未完了あり'if i==4 else '└消防・警察への要請：未実施　根拠：継続警報と換気不能'if i==1 else '└なし'if i in (2,3)else '└報告された事実を保持')for i,h in enumerate(HEADINGS))
+ bad=[good.replace('【確認したいこと】','【確認事項】'),good+'\n独自の追記',good.replace('└消防・警察への要請：未実施','└消防・警察への要請：高'),good.replace('└報告された事実を保持','本文の箇条書きなし',1),good.replace('└未完了あり','└全て対応済み または └未完了あり'),good+'\n【確認したいこと】\n└追加質問',good.replace('【初動措置　優先度：高】','【初動措置　優先度：低】'),good.replace('└なし','└なし\n【追加見出し】',1),'', '【危険度判定：極めて高】\n広範囲に拡散']
+ data['formatSteps']=[{'variable':n['variable'][6:],'expression':n['value'][1:]}for n in validator()if n['kind']=='SetVariable']
+ data['formatCases']=[{'name':'valid','text':good,'accept':True},{'name':'valid CRLF','text':good.replace('\n','\r\n'),'accept':True},{'name':'quoted completion outside status','text':good.replace('└報告された事実を保持','└「全て対応済みではない」と報告',1),'accept':True},{'name':'completed high measures','text':good.replace('：未実施','：対応済み').replace('└未完了あり','└全て対応済み'),'accept':True,'expectWait':False}]+[{'name':'malformed '+str(i),'text':s,'accept':False}for i,s in enumerate(bad)]
+ conversation=(R/'originals/20261027_様式逸脱_会話全文.txt').read_text()
+ data['formatCases'].append({'name':'actual reported format drift','text':conversation.rsplit('ボット の発言:\n',1)[1],'accept':False})
+ field=indexes[1];data['completion']=field['conditionGroup_priorityLoopNeeded']['conditions'][0]['condition'][1:]
  inp=build/'input.json';inp.write_text(json.dumps(data,ensure_ascii=False));out=subprocess.run([str(dotnet),str(build/'check.dll'),str(inp)],check=True,capture_output=True,text=True)
  result=json.loads(out.stdout);result['source_sha256']=hashes;(HERE/'results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
- print('Native SDK:',len(result['checks']),'expression checks,',len(result['runs']),'number parsing cases')
- if any(not x['success']for x in result['checks']+result['runs']):raise SystemExit(1)
+ print('Native SDK:',len(result['checks']),'expression checks,',len(result['runs']),'number parsing cases,',len(result['formats']),'format pipeline cases')
+ if any(not x['success']for x in result['checks']+result['runs']+result['formats']):raise SystemExit(1)
 if __name__=='__main__':main()

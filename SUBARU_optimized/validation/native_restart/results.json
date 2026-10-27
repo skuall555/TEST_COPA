@@ -111,6 +111,198 @@
       "errors": []
     },
     {
+      "id": "setVariable_priorityFormatRetryInit",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "answer_priorityInput",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatRaw",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatAssembleInit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatEnvelope",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatSection0",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatCheck0",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatAppend0",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatSection1",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatCheck1",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatAppend1",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatSection2",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatCheck2",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatAppend2",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatSection3",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatCheck3",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatAppend3",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatSection4",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatCheck4",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatAppend4",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatSection5",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatCheck5",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatAppend5",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatSection6",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatCheck6",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatAppend6",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityFormatRetry_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatRetryIncrement",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_priorityFormatAccepted_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatUseAssembled",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_prioritySucceeded",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "conditionItem_priorityLoopNeeded",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
       "id": "setVariable_prompt1",
       "success": true,
       "type": "String",
@@ -350,9 +542,116 @@
       "result": ""
     }
   ],
+  "formats": [
+    {
+      "name": "valid",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "status": "合格"
+    },
+    {
+      "name": "valid CRLF",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "status": "合格"
+    },
+    {
+      "name": "quoted completion outside status",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "status": "合格"
+    },
+    {
+      "name": "completed high measures",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": false,
+      "status": "合格"
+    },
+    {
+      "name": "malformed 0",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 1",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 2",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 3",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 4",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 5",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 6",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 7",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 8",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "malformed 9",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    },
+    {
+      "name": "actual reported format drift",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "status": "不合格"
+    }
+  ],
   "source_sha256": {
     "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
-    "3-9-緊急保安業務エージェント_optimized.yaml": "6d2d8ae337d94ccdb0747040ca08c2c3a19e12f5d6d4f9550c81eb236acf5821",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "fcdb064b82d9cdbb7e051ec844565cedef6b2c9542dbd543b0a24e6388370c3b",
     "4-9-画像分析エージェント_緊急保安_optimized.yaml": "b1499bbc0fabd019875936c0b6eef1717bd5fed777c8b352f75bb38155ae89a5"
   }
 }

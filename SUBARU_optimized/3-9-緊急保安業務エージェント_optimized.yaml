@@ -347,6 +347,8 @@ beginDialog:
 
         # 避難誘導
 
+        今回のE-01／E-02および明示された広範囲拡散の場合も高。人身被害の既発生を必要条件にしない。
+
         通常の軽微な臭気のみ：
         低
 
@@ -578,6 +580,15 @@ beginDialog:
         LEL30％以上、都市ガスVol1.2％以上相当、警報鳴動中で換気不能、強臭気＋複数反応、止漏不能、現在の噴出、火災・着火・爆発・負傷・体調不良、複数住戸・建物への影響等が明示されれば、成立した高措置と必要な要請・進入禁止・立入防止をネクストアクションの先頭へ示す。質問を繰り返して対応を遅らせない。道路・共用廊下・商業施設等で危険が明示された保安措置も同様。既存の見出しの順序は維持する。
 
 
+        # 避難誘導と消防・警察要請の連動条件（今回の最優先補足）
+        以下のE-01、E-02のいずれかが現在の報告と累積した現場事実から成立すれば、避難誘導と消防・警察への出動要請の両方を高とする。事故・人身被害の既発生を待たない。未要請・未避難という実施状況、建物種別やバルブ有無の未確認を優先度を下げる理由にしない。
+        E-01：入室不能または換気不能の部屋・住戸・空間で、ガス濃度・検知反応がある、またはガス警報器が鳴り続ける。濃度と警報の両方が報告されれば当然該当するが、両方の報告が揃うまで待たない。不在・施錠・立入不能等で室内確認や換気ができず、ドアポスト・開口部で検知され警報が継続する事例を含む。「喚起できない」も文脈が換気なら換気不能の意味として読む。LEL3％やLEL1％という開口部の値だけで危険を下げず、室内全体の濃度と同一視しない。LEL10％以上を追加条件にしない。
+        E-02：いくつかの部屋・家・施設・地点など複数の場所で検知器反応があり、かつ（a）臭気または高濃度がある、（b）排水口・排水ます・側溝・目地・貫通部等から不特定多数の需要家宅内への流入可能性が報告・確認される、（c）3つ以上の家等で反応がありバルブがなく有効に遮断できない、のいずれかに該当する。これらの組合せで両方を高とする。既存の「複数地点で検知器・警報器反応なら要請高」「遮断・排出不能なら避難・要請高」等のより厳しい条件も維持し、3か所揃うまで他の高を保留しない。「他の家で一台の警報器が鳴った」だけで警報器の台数や鳴動住戸を増やさない。
+        明示された広範囲拡散・複数住戸への影響拡大も、現場だけで安全確保できない危険として避難誘導と要請を高とする。過去の噴出・拡散と現在の継続は分け、改善後の再評価は既存の確実な止漏・継続低下・影響範囲全体の安全確認条件を適用する。
+        両方が高なら、既存の「初動措置　優先度：高」欄へ別々に列挙し、未実施ならネクストアクションの先頭に要請と避難・立入防止を示す。要請済み・避難済みの明確な報告は対応済みとして保持する。実施済みでも危険が残れば優先度と必要な追加措置を別に評価する。
+        避難の範囲は現場の影響範囲と社内基準で確認し、未報告の「周辺数軒」「半径何m」や一律の範囲を創作しない。入室できない部屋に入って換気・避難させる案内や、危険区域での換気扇・電気スイッチ操作は勧めない。安全な場所から関係者と連携する。既に換気不能・不在と報告済みなら同じ可否質問を繰り返さず、必要な支援・止漏・影響範囲等の未確認事項だけを示す。
+        警報を他の家で聞いたという報告だけで「周辺住戸・建物調査は全て対応済み」にしない。実際に確認した場所・方法・結果の範囲だけを対応済みとし、範囲拡大時の追加調査を高・未完了で示す。表示シート設置だけから火気使用禁止の周知徹底まで対応済みと推測しない。
+
         # 判定手順
 
         必ず次の順序で処理する。
@@ -769,25 +780,193 @@ beginDialog:
                 今回追加した同名の各措置節・濃度ルール・判定項目の関連付けを適用する。場所だけの基本表で明示された高条件を下げない。数値は元の測定値・単位・場所を残し、都市ガスのVol換算時は元値と換算値、概算であることを「確認できた事実」へ示す。単位・ガス種不明は推測しない。警報によるLEL25％以上の可能性を実測値として記載しない。
                 「流入ガス調査」という措置名がなくても対象場所と検知結果があれば、その範囲の調査を対応済みとする。無反応も調査結果。調査済み範囲を全住戸・全場所へ広げない。操作実施と止漏効果、調査実施と残留危険、設置実施と十分な範囲確保、優先度と実施状況を分ける。
                 写真による実施確認も設置・調査が確認された範囲に限る。【写真有】保安柵があっても範囲不足・進入可能・後から反応範囲拡大という明示情報があれば、設置した事実は対応済みとして保持し、必要な保安範囲の拡大または再設置を高・未完了の別項目へ示す。写真の存在だけで新たな不足を解消済みにしない。消火器は設置状況不明を理由に高から下げない。
-                高と判定した項目は高の見出しに表示する。明確な緊急条件の案内を質問の回答待ちで保留しない。関連する高措置に未完了が残る場合は高優先度の完了を宣言しない。他の既存機能・既存の見出しの回答形式は維持する。"
+                高と判定した項目は高の見出しに表示する。明確な緊急条件の案内を質問の回答待ちで保留しない。関連する高措置に未完了が残る場合は高優先度の完了を宣言しない。他の既存機能・既存の見出しの回答形式は維持する。
+                # 避難誘導と消防・警察要請の連動条件（今回の最優先補足）
+                以下のE-01、E-02のいずれかが現在の報告と累積した現場事実から成立すれば、避難誘導と消防・警察への出動要請の両方を高とする。事故・人身被害の既発生を待たない。未要請・未避難という実施状況、建物種別やバルブ有無の未確認を優先度を下げる理由にしない。
+                E-01：入室不能または換気不能の部屋・住戸・空間で、ガス濃度・検知反応がある、またはガス警報器が鳴り続ける。濃度と警報の両方が報告されれば当然該当するが、両方の報告が揃うまで待たない。不在・施錠・立入不能等で室内確認や換気ができず、ドアポスト・開口部で検知され警報が継続する事例を含む。「喚起できない」も文脈が換気なら換気不能の意味として読む。LEL3％やLEL1％という開口部の値だけで危険を下げず、室内全体の濃度と同一視しない。LEL10％以上を追加条件にしない。
+                E-02：いくつかの部屋・家・施設・地点など複数の場所で検知器反応があり、かつ（a）臭気または高濃度がある、（b）排水口・排水ます・側溝・目地・貫通部等から不特定多数の需要家宅内への流入可能性が報告・確認される、（c）3つ以上の家等で反応がありバルブがなく有効に遮断できない、のいずれかに該当する。これらの組合せで両方を高とする。既存の「複数地点で検知器・警報器反応なら要請高」「遮断・排出不能なら避難・要請高」等のより厳しい条件も維持し、3か所揃うまで他の高を保留しない。「他の家で一台の警報器が鳴った」だけで警報器の台数や鳴動住戸を増やさない。
+                明示された広範囲拡散・複数住戸への影響拡大も、現場だけで安全確保できない危険として避難誘導と要請を高とする。過去の噴出・拡散と現在の継続は分け、改善後の再評価は既存の確実な止漏・継続低下・影響範囲全体の安全確認条件を適用する。
+                両方が高なら、既存の「初動措置　優先度：高」欄へ別々に列挙し、未実施ならネクストアクションの先頭に要請と避難・立入防止を示す。要請済み・避難済みの明確な報告は対応済みとして保持する。実施済みでも危険が残れば優先度と必要な追加措置を別に評価する。
+                避難の範囲は現場の影響範囲と社内基準で確認し、未報告の「周辺数軒」「半径何m」や一律の範囲を創作しない。入室できない部屋に入って換気・避難させる案内や、危険区域での換気扇・電気スイッチ操作は勧めない。安全な場所から関係者と連携する。既に換気不能・不在と報告済みなら同じ可否質問を繰り返さず、必要な支援・止漏・影響範囲等の未確認事項だけを示す。
+                警報を他の家で聞いたという報告だけで「周辺住戸・建物調査は全て対応済み」にしない。実際に確認した場所・方法・結果の範囲だけを対応済みとし、範囲拡大時の追加調査を高・未完了で示す。表示シート設置だけから火気使用禁止の周知徹底まで対応済みと推測しない。
+
+
+                # 出力様式の厳守
+                危険が増しても見出し・順序・行書式を変更しない。「危険度判定」「直近の対応措置」「最優先」「次の行動」「確認事項」という別様式や絵文字を作らない。
+                指定の7見出しを各1回ずつ出力し、各本文行は必ず└から始める。一つの項目は一行にし、本文内に追加の【見出し】を作らない。該当項目がない本文は└なしとする。高・中・低の措置行は└措置名：対応済み／未実施／要確認のいずれか一つを実際の状態に応じて記載し、その後に根拠・必要な確認を続ける。「措置名：高」等の優先度を実施状況の位置に書かない。高と判断した措置を中・低へ入れない。
+                完了状況の本文は└全て対応済みまたは└未完了ありの一行だけ。全て対応済みという語はこの完了欄以外に書かない。出力前に各措置の判定と配置を照合する。最新の原文と報告履歴から再判定し、前回のAI出力の配置ミスを引き継がない。
+                "
+            - kind: SetVariable
+              id: setVariable_priorityFormatRetryInit
+              variable: Topic.優先度様式再試行回数
+              value: =0
             - kind: AnswerQuestionWithAI
               id: answer_priority
               displayName: 11B_ガイド抜粋からの優先度判定
               autoSend: false
               variable: Topic.優先度判定結果
-              userInput: =Topic.優先度判定プロンプト
-              additionalInstructions: |-
+              userInput: =Topic.優先度判定プロンプト & If(Topic.優先度様式再試行回数 > 0, Char(10) & "【様式の再生成】直前の回答は見出し・行・実施状況・完了欄の様式検査に不合格でした。同じ現場事実を再評価し、指定の7見出し・各行の└・措置の実施状況を厳守して回答を新しく生成し直してください。", "")
+              additionalInstructions: |
                 この入力には、判定に必要な【初動措置AI優先度判断ルール】・現場事実・追加報告・出力形式が
                 すべて含まれています。外部ナレッジを検索せず、一般知識で補完せず、入力内の情報だけで判定してください。
                 入力に書かれた出力フォーマット（【確認できた事実】から【確認したいこと】まで）だけを、
                 見出し名・順序をそのまま守って出力してください。前置き・総括・挨拶・引用番号は禁止です。
                 消防・警察はガイドの同名節を適用する。継続性・影響範囲・制御可否・改善を最新報告で照合し、高条件が明示された場合や明らかな緊急事態では要請案内を先行する。要請の実施状況を理由に優先度を下げず、判断した高・中・低と表示見出しを一致させる。
                 追加要件1〜9の各措置節・関連付けも適用する。元の測定値・単位・場所と概算換算値を区別し、警報による濃度の可能性を実測値にしない。場所と結果を伴う調査・有効な同等立入防止を実施済みとして認識し、部分設置と追加の拡大・再設置の未完了を分ける。明示された高条件を情報不足や場所別の基本表で下げない。
+                # 出力様式の厳守
+                危険が増しても見出し・順序・行書式を変更しない。「危険度判定」「直近の対応措置」「最優先」「次の行動」「確認事項」という別様式や絵文字を作らない。
+                指定の7見出しを各1回ずつ出力し、各本文行は必ず└から始める。一つの項目は一行にし、本文内に追加の【見出し】を作らない。該当項目がない本文は└なしとする。高・中・低の措置行は└措置名：対応済み／未実施／要確認のいずれか一つを実際の状態に応じて記載し、その後に根拠・必要な確認を続ける。「措置名：高」等の優先度を実施状況の位置に書かない。高と判断した措置を中・低へ入れない。
+                完了状況の本文は└全て対応済みまたは└未完了ありの一行だけ。全て対応済みという語はこの完了欄以外に書かない。出力前に各措置の判定と配置を照合する。最新の原文と報告履歴から再判定し、前回のAI出力の配置ミスを引き継がない。
+            - kind: SetVariable
+              id: setVariable_priorityFormatRaw
+              variable: Topic.優先度表示原文
+              value: =Topic.優先度判定結果
+            - kind: SetVariable
+              id: setVariable_priorityFormatAssembleInit
+              variable: Topic.優先度表示組立
+              value: =""
+            - kind: SetVariable
+              id: setVariable_priorityFormatEnvelope
+              variable: Topic.優先度表示検証
+              value: =If(And(StartsWith(Trim(Topic.優先度表示原文), "【確認できた事実】"), CountRows(Split(Topic.優先度表示原文, "【確認できた事実】")) = 2, CountRows(Split(Topic.優先度表示原文, "【初動措置　優先度：高】")) = 2, CountRows(Split(Topic.優先度表示原文, "【初動措置　優先度：中】")) = 2, CountRows(Split(Topic.優先度表示原文, "【初動措置　優先度：低】")) = 2, CountRows(Split(Topic.優先度表示原文, "【高優先度の完了状況】")) = 2, CountRows(Split(Topic.優先度表示原文, "【ネクストアクション】")) = 2, CountRows(Split(Topic.優先度表示原文, "【確認したいこと】")) = 2), "合格", "不合格")
+            - kind: SetVariable
+              id: setVariable_priorityFormatSection0
+              variable: Topic.優先度表示区分
+              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【確認できた事実】")).Value, "【初動措置　優先度：高】")).Value)
+            - kind: SetVariable
+              id: setVariable_priorityFormatCheck0
+              variable: Topic.優先度表示検証
+              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "└[^\r\n]+(\r?\n[ \t]*└[^\r\n]+)*", MatchOptions.Complete)), "合格", "不合格")
+            - kind: SetVariable
+              id: setVariable_priorityFormatAppend0
+              variable: Topic.優先度表示組立
+              value: |-
+                =Topic.優先度表示組立 & "【確認できた事実】
+                " & Topic.優先度表示区分
+            - kind: SetVariable
+              id: setVariable_priorityFormatSection1
+              variable: Topic.優先度表示区分
+              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【初動措置　優先度：高】")).Value, "【初動措置　優先度：中】")).Value)
+            - kind: SetVariable
+              id: setVariable_priorityFormatCheck1
+              variable: Topic.優先度表示検証
+              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*)(\r?\n[ \t]*(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*))*", MatchOptions.Complete)), "合格", "不合格")
+            - kind: SetVariable
+              id: setVariable_priorityFormatAppend1
+              variable: Topic.優先度表示組立
+              value: |-
+                =Topic.優先度表示組立 & "
+
+                【初動措置　優先度：高】
+                " & Topic.優先度表示区分
+            - kind: SetVariable
+              id: setVariable_priorityFormatSection2
+              variable: Topic.優先度表示区分
+              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【初動措置　優先度：中】")).Value, "【初動措置　優先度：低】")).Value)
+            - kind: SetVariable
+              id: setVariable_priorityFormatCheck2
+              variable: Topic.優先度表示検証
+              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*)(\r?\n[ \t]*(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*))*", MatchOptions.Complete)), "合格", "不合格")
+            - kind: SetVariable
+              id: setVariable_priorityFormatAppend2
+              variable: Topic.優先度表示組立
+              value: |-
+                =Topic.優先度表示組立 & "
+
+                【初動措置　優先度：中】
+                " & Topic.優先度表示区分
+            - kind: SetVariable
+              id: setVariable_priorityFormatSection3
+              variable: Topic.優先度表示区分
+              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【初動措置　優先度：低】")).Value, "【高優先度の完了状況】")).Value)
+            - kind: SetVariable
+              id: setVariable_priorityFormatCheck3
+              variable: Topic.優先度表示検証
+              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*)(\r?\n[ \t]*(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*))*", MatchOptions.Complete)), "合格", "不合格")
+            - kind: SetVariable
+              id: setVariable_priorityFormatAppend3
+              variable: Topic.優先度表示組立
+              value: |-
+                =Topic.優先度表示組立 & "
+
+                【初動措置　優先度：低】
+                " & Topic.優先度表示区分
+            - kind: SetVariable
+              id: setVariable_priorityFormatSection4
+              variable: Topic.優先度表示区分
+              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【高優先度の完了状況】")).Value, "【ネクストアクション】")).Value)
+            - kind: SetVariable
+              id: setVariable_priorityFormatCheck4
+              variable: Topic.優先度表示検証
+              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), Or(Topic.優先度表示区分 = "└全て対応済み", Topic.優先度表示区分 = "└未完了あり")), "合格", "不合格")
+            - kind: SetVariable
+              id: setVariable_priorityFormatAppend4
+              variable: Topic.優先度表示組立
+              value: |-
+                =Topic.優先度表示組立 & "
+
+                【高優先度の完了状況】
+                " & Topic.優先度表示区分
+            - kind: SetVariable
+              id: setVariable_priorityFormatSection5
+              variable: Topic.優先度表示区分
+              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【ネクストアクション】")).Value, "【確認したいこと】")).Value)
+            - kind: SetVariable
+              id: setVariable_priorityFormatCheck5
+              variable: Topic.優先度表示検証
+              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "└[^\r\n]+(\r?\n[ \t]*└[^\r\n]+)*", MatchOptions.Complete)), "合格", "不合格")
+            - kind: SetVariable
+              id: setVariable_priorityFormatAppend5
+              variable: Topic.優先度表示組立
+              value: |-
+                =Topic.優先度表示組立 & "
+
+                【ネクストアクション】
+                " & Topic.優先度表示区分
+            - kind: SetVariable
+              id: setVariable_priorityFormatSection6
+              variable: Topic.優先度表示区分
+              value: =Trim(Last(Split(Topic.優先度表示原文, "【確認したいこと】")).Value)
+            - kind: SetVariable
+              id: setVariable_priorityFormatCheck6
+              variable: Topic.優先度表示検証
+              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "└[^\r\n]+(\r?\n[ \t]*└[^\r\n]+)*", MatchOptions.Complete)), "合格", "不合格")
+            - kind: SetVariable
+              id: setVariable_priorityFormatAppend6
+              variable: Topic.優先度表示組立
+              value: |-
+                =Topic.優先度表示組立 & "
+
+                【確認したいこと】
+                " & Topic.優先度表示区分
+            - kind: ConditionGroup
+              id: conditionGroup_priorityFormatRetry
+              conditions:
+                - id: conditionGroup_priorityFormatRetry_item
+                  condition: =And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1)
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_priorityFormatRetryIncrement
+                      variable: Topic.優先度様式再試行回数
+                      value: =Topic.優先度様式再試行回数 + 1
+                    - kind: GotoAction
+                      id: goto_priorityFormatRetry
+                      actionId: answer_priority
+            - kind: ConditionGroup
+              id: conditionGroup_priorityFormatAccepted
+              conditions:
+                - id: conditionGroup_priorityFormatAccepted_item
+                  condition: =Topic.優先度表示検証 = "合格"
+                  actions:
+                    - kind: SetVariable
+                      id: setVariable_priorityFormatUseAssembled
+                      variable: Topic.優先度判定結果
+                      value: =Topic.優先度表示組立
             - kind: ConditionGroup
               id: conditionGroup_prioritySucceeded
               conditions:
                 - id: conditionItem_prioritySucceeded
-                  condition: =!IsBlank(Topic.優先度判定結果)
+                  condition: =Topic.優先度表示検証 = "合格"
                   actions:
                     - kind: InvokeFlowAction
                       id: invokeFlowAction_caseSaveFieldAdvice
@@ -797,18 +976,15 @@ beginDialog:
                           text_1: ="現場アドバイス"
                           text_2: =Topic.優先度判定結果
                           text_3: ="なし"
-
                       output:
                         binding:
                           case_id: Topic.案件ID
-
                       flowId: 9a770168-65a8-f111-aaad-7ced8d2f9cab
-
                     - kind: ConditionGroup
                       id: conditionGroup_priorityLoopNeeded
                       conditions:
                         - id: conditionItem_priorityLoopNeeded
-                          condition: =Not("全て対応済み" in Topic.優先度判定結果)
+                          condition: =Trim(First(Split(Last(Split(Topic.優先度判定結果, "【高優先度の完了状況】")).Value, "【ネクストアクション】")).Value) <> "└全て対応済み"
                           actions:
                             - kind: ConditionGroup
                               id: conditionGroup_priorityRetryLimit
@@ -820,40 +996,33 @@ beginDialog:
                                       id: setVariable_imageReceptionOffGiveUp
                                       variable: Global.緊急保安画像受付中
                                       value: =false
-
                                     - kind: SendActivity
                                       id: sendActivity_priorityGiveUp
                                       activity: |-
                                         確認の往復が多くなったため、現時点の状況を一旦提示します。高優先度の項目が残っている可能性があります。
 
                                         {Topic.優先度判定結果}
-
                               elseActions:
                                 - kind: SetVariable
                                   id: setVariable_priorityRetryIncrement
                                   variable: Topic.優先度確認再試行回数
                                   value: =Topic.優先度確認再試行回数 + 1
-
                                 - kind: SetVariable
                                   id: setVariable_syncInitialBeforeWait
                                   variable: Global.緊急保安初回入力
                                   value: =Topic.初回入力
-
                                 - kind: SetVariable
                                   id: setVariable_syncHistoryBeforeWait
                                   variable: Global.緊急保安追加情報履歴
                                   value: =Topic.追加情報履歴
-
                                 - kind: SetVariable
                                   id: setVariable_imageReceptionOn
                                   variable: Global.緊急保安画像受付中
                                   value: =true
-
                                 - kind: Question
                                   id: question_priorityUpdate
                                   interruptionPolicy:
                                     allowInterruption: true
-
                                   variable: Topic.優先度追加回答
                                   prompt: |-
                                     {Topic.優先度判定結果}
@@ -865,12 +1034,10 @@ beginDialog:
                                   entity:
                                     kind: StringPrebuiltEntity
                                     sensitivityLevel: None
-
                                 - kind: SetVariable
                                   id: setVariable_resyncHistoryFromGlobal
                                   variable: Topic.追加情報履歴
                                   value: =Global.緊急保安追加情報履歴
-
                                 - kind: ConditionGroup
                                   id: conditionGroup_repairRequestedInPriority
                                   conditions:
@@ -881,21 +1048,17 @@ beginDialog:
                                           id: setVariable_appendRepairRequestHistory
                                           variable: Topic.追加情報履歴
                                           value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
-
                                         - kind: SetVariable
                                           id: setVariable_syncHistoryBeforeRepair
                                           variable: Global.緊急保安追加情報履歴
                                           value: =Topic.追加情報履歴
-
                                         - kind: SetVariable
                                           id: setVariable_repairModeOn
                                           variable: Topic.修理方法モード
                                           value: =true
-
                                         - kind: GotoAction
                                           id: goto_repairSelect
                                           actionId: setVariable_repairSelectInit
-
                                 - kind: ConditionGroup
                                   id: conditionGroup_priorityPurposeSwitchToJunkai
                                   conditions:
@@ -906,31 +1069,25 @@ beginDialog:
                                           id: setVariable_priorityPurposeSwitchToJunkaiInput
                                           variable: Global.巡回切替入力
                                           value: =Topic.優先度追加回答
-
                                         - kind: SetVariable
                                           id: setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff
                                           variable: Global.緊急保安画像受付中
                                           value: =false
-
                                         - kind: EndDialog
                                           id: endDialog_priorityPurposeSwitchToJunkai
-
                                   elseActions:
                                     - kind: SetVariable
                                       id: setVariable_appendPriorityHistory
                                       variable: Topic.追加情報履歴
                                       value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
-
                                     - kind: SetVariable
                                       id: setVariable_syncHistoryAfterText
                                       variable: Global.緊急保安追加情報履歴
                                       value: =Topic.追加情報履歴
-
                                     - kind: SetVariable
                                       id: setVariable_keepImageReceptionOn
                                       variable: Global.緊急保安画像受付中
                                       value: =true
-
                                     - kind: ConditionGroup
                                       id: conditionGroup_priorityDebugOnly
                                       conditions:
@@ -947,35 +1104,27 @@ beginDialog:
                                     - kind: GotoAction
                                       id: goto_priorityAgain
                                       actionId: setVariable_priorityPrompt
-
                     - kind: SetVariable
                       id: setVariable_imageReceptionOffDone
                       variable: Global.緊急保安画像受付中
                       value: =false
-
                     - kind: SendActivity
                       id: sendActivity_priorityDone
                       activity: |-
                         初動措置の優先度確認が完了しました。
 
                         {Topic.優先度判定結果}
-
               elseActions:
                 - kind: SetVariable
                   id: setVariable_imageReceptionOffPriorityFailed
                   variable: Global.緊急保安画像受付中
                   value: =false
-
                 - kind: SendActivity
                   id: sendActivity_priorityFailed
-                  activity: |-
-                    現場事実と初動措置ガイドの内容から優先度を判定できませんでした。
-                    一般知識で補完せず終了します。
-
+                  activity: 優先度回答の生成結果が空、または指定の出力様式を確認できなかったため、未検証の業務回答の送信を停止しました。報告履歴と実施済み報告を未実施へ変更したものではありません。現場の安全対応は止めず、社内の連絡・緊急対応手順に従ってください。
                 - kind: EndDialog
                   id: endDialog_priorityFailed
                   clearTopicQueue: true
-
       elseActions:
         - kind: SetVariable
           id: setVariable_imageReceptionOffGuideFailed

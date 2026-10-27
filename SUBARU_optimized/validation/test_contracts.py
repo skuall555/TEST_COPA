@@ -22,7 +22,7 @@ class Contracts(unittest.TestCase):
  def test_priority_changes_are_limited_to_authorized_sections(self):
   old=self.a[1]['setVariable_priorityGuideFixed']['value'];new=self.b[1]['setVariable_priorityGuideFixed']['value']
   self.assertEqual(old.split('# 全現場共通で基本的に「高」')[0],new.split('# 今回追加する現場事実の整理')[0])
-  for start,end in [('# 窓等の開放・換気','# メーターガス栓閉止'),('# 避難誘導','# 周辺住戸・建物調査'),('# マンホール蓋開放・換気','# 場所別の基本判定')]:
+  for start,end in [('# 窓等の開放・換気','# メーターガス栓閉止'),('# マンホール蓋開放・換気','# 場所別の基本判定')]:
    self.assertEqual(old[old.index(start):old.index(end)],new[new.index(start):new.index(end)])
  def test_rankers_unchanged(self):
   for suffix in ['Fit','Directness','Certainty','Consensus']:
