@@ -44,16 +44,43 @@ def main():
   cases.append({'input':text,'expected':''})
  data={'expressions':expressions,'normalize':entry['setVariable_normalizePurposeNumber']['value'][1:],'choose':entry['setVariable_purposeFromNumber']['value'][1:],'cases':cases}
  sys.path.insert(0,str(HERE.parent))
- from continuity_build import validator,HEADINGS
- good='\n\n'.join('【'+h+'】\n'+('└未完了あり'if i==4 else '└消防・警察への要請：未実施　根拠：継続警報と換気不能'if i==1 else '└なし'if i in (2,3)else '└報告された事実を保持')for i,h in enumerate(HEADINGS))
- bad=[good.replace('【確認したいこと】','【確認事項】'),good+'\n独自の追記',good.replace('└消防・警察への要請：未実施','└消防・警察への要請：高'),good.replace('└報告された事実を保持','本文の箇条書きなし',1),good.replace('└未完了あり','└全て対応済み または └未完了あり'),good+'\n【確認したいこと】\n└追加質問',good.replace('【初動措置　優先度：高】','【初動措置　優先度：低】'),good.replace('└なし','└なし\n【追加見出し】',1),'', '【危険度判定：極めて高】\n広範囲に拡散']
- data['formatSteps']=[{'variable':n['variable'][6:],'expression':n['value'][1:]}for n in validator()if n['kind']=='SetVariable']
- data['formatCases']=[{'name':'valid','text':good,'accept':True},{'name':'valid CRLF','text':good.replace('\n','\r\n'),'accept':True},{'name':'quoted completion outside status','text':good.replace('└報告された事実を保持','└「全て対応済みではない」と報告',1),'accept':True},{'name':'completed high measures','text':good.replace('：未実施','：対応済み').replace('└未完了あり','└全て対応済み'),'accept':True,'expectWait':False}]+[{'name':'malformed '+str(i),'text':s,'accept':False}for i,s in enumerate(bad)]
+ from itemized_build import validator,MEASURES,STRING_VARS
+ from image_features_build import ITEMS
+ data['stringVariables']=STRING_VARS+['特徴_'+name for _,name in ITEMS]+['画像特徴カタログ']
+ def wire(overrides=None,emergency='通常|両方を高に連動させる条件は今回の試験では指定しない',check='判断に必要な報告は確認できています。提示した未完了の作業を進めてください。'):
+  overrides=overrides or {};parts=['[[FACTS]]└報告済みの事実を保持[[/FACTS]]','[[EMERGENCY]]'+emergency+'[[/EMERGENCY]]']
+  for i,(code,name)in enumerate(MEASURES):
+   priority,status,reason=overrides.get(code,('高','未実施','入力された基本措置の根拠')if i==0 else ('中','要確認','必要な対象情報が未確認')if i<13 else ('対象外','対象外','今回の事実では対象でない'))
+   parts.append('[['+code+']]'+priority+'|'+status+'|'+reason+'[[/'+code+']]')
+  return '\n'.join(parts+['[[NEXT]]└提示した高優先度の措置を進める[[/NEXT]]','[[CHECK]]'+check+'[[/CHECK]]'])
+ good=wire();format_cases=[]
+ def add(name,text,accept=True,**kwargs):format_cases.append(dict(name=name,text=text,accept=accept,**kwargs))
+ add('valid scalar protocol',good)
+ add('CRLF protocol',good.replace('\n','\r\n'))
+ for priority,bucket in [('高','high'),('中','middle'),('低','low')]:
+  add('police '+priority,wire({'P11':(priority,'未実施','この措置の優先度を'+priority+'と判定')}),expectBucket=bucket,expectLabel='消防・警察への要請')
+ add('emergency forces both high despite low per-row values',wire({'P11':('低','未実施','元の行は低'), 'P12':('低','要確認','元の行は低')},emergency='高|入室不能の部屋で検知と警報が継続'),expectBucket='high',expectLabel='消防・警察への要請',expectEvacHigh=True)
+ add('performed drain survey stays done',wire({'P05':('高','対応済み','排水口の調査実施済み'), 'P20':('高','未実施','未入室の別室は追加調査が必要')}),expectBucket='high',expectLabel='流入ガス・滞留ガスの検知器調査：対応済み')
+ add('CHECK paragraph',wire(check='入室不能の部屋で検知されているため、要請と避難は高です。追加回答を待たず提示した作業を進めてください。上流遮断の方法を確認するため建物種別を教えてください。'),expectCheckPrefix='入室不能')
+ add('completed high measures',wire({'P01':('高','対応済み','実施済み報告あり')}),expectWait=False)
+ add('completion words in facts do not finish',good.replace('└報告済みの事実を保持','└全て対応済みではないと報告'))
+ for name,text in [('wrong priority',good.replace('[[P11]]中|','[[P11]]最優先|')),('priority used as status',good.replace('[[P11]]中|要確認|','[[P11]]高|高|')),('extra delimiter',good.replace('入力された基本措置の根拠','根拠|余分')),('duplicate code',good+'\n[[P11]]高|未実施|追加[[/P11]]'),('missing row',good.replace('[[P12]]中|要確認|必要な対象情報が未確認[[/P12]]','')),('empty reason',good.replace('入力された基本措置の根拠','')),('unknown block',good.replace('[[NEXT]]','[[UNKNOWN]]余分[[/UNKNOWN]]\n[[NEXT]]')),('old 7-heading free text','【確認できた事実】\n└臭気あり'),('empty',''),('question list',wire(check='└建物種別は何か'))]:add(name,text,False)
  conversation=(R/'originals/20261027_様式逸脱_会話全文.txt').read_text()
- data['formatCases'].append({'name':'actual reported format drift','text':conversation.rsplit('ボット の発言:\n',1)[1],'accept':False})
+ add('reported free-form drift',conversation.rsplit('ボット の発言:\n',1)[1],False)
+ field=indexes[1];steps=[]
+ for n in validator():
+  if n['kind']=='SetVariable':
+   assert field[n['id']]['value']==n['value']
+   steps.append({'variable':n['variable'][6:],'expression':field[n['id']]['value'][1:]})
+ data['formatSteps']=steps;data['formatCases']=format_cases
+ image=indexes[2]
+ image_ids=['setVariable_imageFeature'+code for code,_ in ITEMS]+['setVariable_imageFeatureCatalog','setVariable_prompt1','setVariable_prompt2']
+ data['imageSteps']=[{'variable':image[ident]['variable'][6:],'expression':image[ident]['value'][1:]}for ident in image_ids]
+ data['imageContext']=image['invokeAIBuilderModelAction_imageFacts']['input']['binding']['ContextText'][1:]
+ data['featureSources']=[(R/'image_features'/(code+'_'+name+'.md')).read_text()for code,name in ITEMS]
  field=indexes[1];data['completion']=field['conditionGroup_priorityLoopNeeded']['conditions'][0]['condition'][1:]
  inp=build/'input.json';inp.write_text(json.dumps(data,ensure_ascii=False));out=subprocess.run([str(dotnet),str(build/'check.dll'),str(inp)],check=True,capture_output=True,text=True)
  result=json.loads(out.stdout);result['source_sha256']=hashes;(HERE/'results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
- print('Native SDK:',len(result['checks']),'expression checks,',len(result['runs']),'number parsing cases,',len(result['formats']),'format pipeline cases')
- if any(not x['success']for x in result['checks']+result['runs']+result['formats']):raise SystemExit(1)
+ print('Native SDK:',len(result['checks']),'expression checks,',len(result['runs']),'number parsing cases,',len(result['formats']),'itemized pipeline cases; image feature wiring:',result['imageFeatures']['success'])
+ if any(not x['success']for x in result['checks']+result['runs']+result['formats'])or not result['imageFeatures']['success']:raise SystemExit(1)
 if __name__=='__main__':main()

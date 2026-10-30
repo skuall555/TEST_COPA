@@ -14,7 +14,7 @@ class Additional(unittest.TestCase):
   changed={k for k in self.old if own(self.old[k])!=own(self.new[k])}
   self.assertEqual(changed,{'setVariable_priorityGuideFixed','setVariable_priorityPrompt','answer_priority','conditionGroup_prioritySucceeded','conditionGroup_priorityLoopNeeded','sendActivity_priorityFailed'})
  def test_entry_and_images_byte_identical(self):
-  for name in [FILES[0],FILES[2]]:self.assertEqual(prior(name),(R/name).read_text())
+  self.assertEqual(prior(FILES[0]),(R/FILES[0]).read_text())
   self.assertTrue((R/FILES[3]).read_text().startswith(prior(FILES[3])))
  def test_connector_questions_and_manual_repair_nodes_unchanged(self):
   for k,n in self.old.items():
@@ -23,7 +23,8 @@ class Additional(unittest.TestCase):
   added=[n for k,n in self.new.items()if k not in self.old]
   writes={n['variable']:n['value']for n in reversed(added)if n['kind']=='SetVariable'}
   existing={n.get('variable')for n in self.old.values()}
-  self.assertEqual(set(writes)-existing,{'Topic.優先度表示原文','Topic.優先度表示組立','Topic.優先度表示検証','Topic.優先度表示区分','Topic.優先度様式再試行回数'})
+  for variable,expression in writes.items():
+   if variable not in existing and variable!='Topic.優先度表示原文':self.assertTrue(expression.startswith('="')or expression=='=0',variable)
   self.assertEqual(writes['Topic.優先度様式再試行回数'],'=0')
   self.assertFalse(any('Filter('in n.get('value','')or 'Concat('in n.get('value','')for n in added))
  def test_retry_does_not_reinitialize_counter(self):

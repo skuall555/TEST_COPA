@@ -194,5 +194,6 @@
     }
   },
   "scope": "Scalar format guard executed offline; routing/AI safety decisions in Studio NOT_RUN",
-  "full_yaml_blocks_match": true
+  "full_yaml_blocks_match": true,
+  "artifact_scope": "Historical 640af62 snapshot; latest sources in itemized_manifest.json"
 }

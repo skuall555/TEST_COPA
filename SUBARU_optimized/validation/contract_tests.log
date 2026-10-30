@@ -1,3 +1,9 @@
+test_connector_questions_and_manual_repair_nodes_unchanged (test_additional.Additional.test_connector_questions_and_manual_repair_nodes_unchanged) ... ok
+test_entry_and_images_byte_identical (test_additional.Additional.test_entry_and_images_byte_identical) ... ok
+test_new_variables_are_scalars_with_explicit_initializing_values (test_additional.Additional.test_new_variables_are_scalars_with_explicit_initializing_values) ... ok
+test_only_scoped_existing_fields_changed (test_additional.Additional.test_only_scoped_existing_fields_changed) ... ok
+test_other_safety_and_image_ownership_preserved (test_additional.Additional.test_other_safety_and_image_ownership_preserved) ... ok
+test_retry_does_not_reinitialize_counter (test_additional.Additional.test_retry_does_not_reinitialize_counter) ... ok
 test_all_existing_action_ids_preserved (test_contracts.Contracts.test_all_existing_action_ids_preserved) ... ok
 test_coverage_gates_are_conservative (test_contracts.Contracts.test_coverage_gates_are_conservative) ... ok
 test_dependencies_preserved (test_contracts.Contracts.test_dependencies_preserved) ... ok
@@ -16,6 +22,11 @@ test_rankers_unchanged (test_contracts.Contracts.test_rankers_unchanged) ... ok
 test_revise_all_row_validation (test_contracts.Contracts.test_revise_all_row_validation) ... ok
 test_revise_short_text_not_discarded (test_contracts.Contracts.test_revise_short_text_not_discarded) ... ok
 test_row_checks_have_shallow_expressions (test_contracts.Contracts.test_row_checks_have_shallow_expressions) ... ok
+test_editing_only_pocket_feature_changes_only_its_node (test_itemized_features.ItemizedFeatures.test_editing_only_pocket_feature_changes_only_its_node) ... ok
+test_image_connector_trigger_and_history_preserved (test_itemized_features.ItemizedFeatures.test_image_connector_trigger_and_history_preserved) ... ok
+test_only_obsolete_layout_parser_ids_are_retired (test_itemized_features.ItemizedFeatures.test_only_obsolete_layout_parser_ids_are_retired) ... ok
+test_retry_limit_cannot_fall_through_to_completed_phase (test_itemized_features.ItemizedFeatures.test_retry_limit_cannot_fall_through_to_completed_phase) ... ok
+test_unrelated_entry_and_global_instructions_unchanged (test_itemized_features.ItemizedFeatures.test_unrelated_entry_and_global_instructions_unchanged) ... ok
 test_clear_initial_intent_skips_menu (test_restart.Restart.test_clear_initial_intent_skips_menu) ... ok
 test_clear_natural_reply_does_not_ask_again (test_restart.Restart.test_clear_natural_reply_does_not_ask_again) ... ok
 test_clear_third_reply_is_accepted (test_restart.Restart.test_clear_third_reply_is_accepted) ... ok
@@ -35,15 +46,9 @@ test_other_safety_rules_and_human_output_format_unchanged (test_restart.Restart.
 test_questions_image_trigger_and_return_preserved (test_restart.Restart.test_questions_image_trigger_and_return_preserved) ... ok
 test_unexpected_classifier_output_is_not_an_intent (test_restart.Restart.test_unexpected_classifier_output_is_not_an_intent) ... ok
 test_unrelated_manual_nodes_identical (test_restart.Restart.test_unrelated_manual_nodes_identical) ... ok
-test_connector_questions_and_manual_repair_nodes_unchanged (test_additional.Additional.test_connector_questions_and_manual_repair_nodes_unchanged) ... ok
-test_entry_and_images_byte_identical (test_additional.Additional.test_entry_and_images_byte_identical) ... ok
-test_new_variables_are_scalars_with_explicit_initializing_values (test_additional.Additional.test_new_variables_are_scalars_with_explicit_initializing_values) ... ok
-test_only_scoped_existing_fields_changed (test_additional.Additional.test_only_scoped_existing_fields_changed) ... ok
-test_other_safety_and_image_ownership_preserved (test_additional.Additional.test_other_safety_and_image_ownership_preserved) ... ok
-test_retry_does_not_reinitialize_counter (test_additional.Additional.test_retry_does_not_reinitialize_counter) ... ok
 
 ----------------------------------------------------------------------
-Ran 43 tests in 0.890s
+Ran 48 tests in 1.702s
 
 OK
 1-マニュアル関連入口_optimized.yaml PASS new variable candidates: []

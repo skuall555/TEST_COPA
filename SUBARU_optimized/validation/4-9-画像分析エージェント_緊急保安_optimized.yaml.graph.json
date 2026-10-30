@@ -1,6 +1,42 @@
 {
   "main": [],
   "setVariable_debugMode": [
+    "setVariable_imageFeature01"
+  ],
+  "setVariable_imageFeature01": [
+    "setVariable_imageFeature02"
+  ],
+  "setVariable_imageFeature02": [
+    "setVariable_imageFeature03"
+  ],
+  "setVariable_imageFeature03": [
+    "setVariable_imageFeature04"
+  ],
+  "setVariable_imageFeature04": [
+    "setVariable_imageFeature05"
+  ],
+  "setVariable_imageFeature05": [
+    "setVariable_imageFeature06"
+  ],
+  "setVariable_imageFeature06": [
+    "setVariable_imageFeature07"
+  ],
+  "setVariable_imageFeature07": [
+    "setVariable_imageFeature08"
+  ],
+  "setVariable_imageFeature08": [
+    "setVariable_imageFeature09"
+  ],
+  "setVariable_imageFeature09": [
+    "setVariable_imageFeature10"
+  ],
+  "setVariable_imageFeature10": [
+    "setVariable_imageFeature11"
+  ],
+  "setVariable_imageFeature11": [
+    "setVariable_imageFeatureCatalog"
+  ],
+  "setVariable_imageFeatureCatalog": [
     "setVariable_prompt1"
   ],
   "setVariable_prompt1": [

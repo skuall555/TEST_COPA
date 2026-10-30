@@ -1,0 +1,1725 @@
+{
+  "base_commit": "640af62021dbb4c5bc45917cf7b1f264ab40e655",
+  "branch": "codex/subaru-restart-61e0c4a-20261027",
+  "changes": [
+    {
+      "file": "1-マニュアル関連入口_optimized.yaml",
+      "changed": [],
+      "added": [],
+      "retired_ids": [],
+      "new_variables": []
+    },
+    {
+      "file": "3-9-緊急保安業務エージェント_optimized.yaml",
+      "changed": [
+        {
+          "id": "setVariable_priorityGuideFixed",
+          "fields": [
+            "value"
+          ]
+        },
+        {
+          "id": "setVariable_priorityPrompt",
+          "fields": [
+            "value"
+          ]
+        },
+        {
+          "id": "answer_priority",
+          "fields": [
+            "userInput",
+            "additionalInstructions"
+          ]
+        },
+        {
+          "id": "setVariable_priorityFormatEnvelope",
+          "fields": [
+            "value"
+          ]
+        }
+      ],
+      "added": [
+        {
+          "id": "setVariable_itemInit01",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "setVariable_itemInit02",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemInit03",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemInit04",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemInit05",
+          "kind": "SetVariable",
+          "variable": "Topic.判定事実"
+        },
+        {
+          "id": "setVariable_itemInit06",
+          "kind": "SetVariable",
+          "variable": "Topic.判定次行動"
+        },
+        {
+          "id": "setVariable_itemInit07",
+          "kind": "SetVariable",
+          "variable": "Topic.判定確認文"
+        },
+        {
+          "id": "setVariable_itemInit08",
+          "kind": "SetVariable",
+          "variable": "Topic.判定連動"
+        },
+        {
+          "id": "setVariable_itemInit09",
+          "kind": "SetVariable",
+          "variable": "Topic.判定連動理由"
+        },
+        {
+          "id": "setVariable_itemInit10",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemInit11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemInit12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemInit13",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemInit14",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemInit15",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemInit16",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemInit17",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemInit18",
+          "kind": "SetVariable",
+          "variable": "Topic.判定要請優先度"
+        },
+        {
+          "id": "setVariable_itemInit19",
+          "kind": "SetVariable",
+          "variable": "Topic.判定要請状態"
+        },
+        {
+          "id": "setVariable_itemInit20",
+          "kind": "SetVariable",
+          "variable": "Topic.判定避難状態"
+        },
+        {
+          "id": "setVariable_itemRemainingInit",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemSectionFACTS",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemUniqueFACTS",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemRemoveFACTS",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemBodyFACTS",
+          "kind": "SetVariable",
+          "variable": "Topic.判定事実"
+        },
+        {
+          "id": "setVariable_itemBodyValidFACTS",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemSectionEMERGENCY",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemUniqueEMERGENCY",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemRemoveEMERGENCY",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemEmergency",
+          "kind": "SetVariable",
+          "variable": "Topic.判定連動"
+        },
+        {
+          "id": "setVariable_itemEmergencyReason",
+          "kind": "SetVariable",
+          "variable": "Topic.判定連動理由"
+        },
+        {
+          "id": "setVariable_itemEmergencyValid",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemSectionNEXT",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemUniqueNEXT",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemRemoveNEXT",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemBodyNEXT",
+          "kind": "SetVariable",
+          "variable": "Topic.判定次行動"
+        },
+        {
+          "id": "setVariable_itemBodyValidNEXT",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemSectionCHECK",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemUniqueCHECK",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemRemoveCHECK",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemBodyCHECK",
+          "kind": "SetVariable",
+          "variable": "Topic.判定確認文"
+        },
+        {
+          "id": "setVariable_itemBodyValidCHECK",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemRawP01",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP01",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP01",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP01",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP01",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP01",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP01",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP01High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP01Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP01Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP01",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP02",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP02",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP02",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP02",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP02",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP02",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP02",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP02High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP02Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP02Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP02",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP03",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP03",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP03",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP03",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP03",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP03",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP03",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP03High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP03Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP03Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP03",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP04",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP04",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP04",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP04",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP04",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP04",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP04",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP04High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP04Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP04Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP04",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP05",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP05",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP05",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP05",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP05",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP05",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP05",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP05High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP05Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP05Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP05",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP06",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP06",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP06",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP06",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP06",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP06",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP06",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP06High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP06Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP06Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP06",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP07",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP07",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP07",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP07",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP07",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP07",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP07",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP07High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP07Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP07Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP07",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP08",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP08",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP08",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP08",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP08",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP08",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP08",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP08High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP08Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP08Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP08",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP09",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP09",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP09",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP09",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP09",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP09",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP09",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP09High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP09Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP09Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP09",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP10",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP10",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP10",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP10",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP10",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP10",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP10",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP10High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP10Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP10Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP10",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP11",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP11",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLinkP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemLinkReasonP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemStoreStatusP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定要請状態"
+        },
+        {
+          "id": "setVariable_itemStoreRequestPriority",
+          "kind": "SetVariable",
+          "variable": "Topic.判定要請優先度"
+        },
+        {
+          "id": "setVariable_itemLineP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP11High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP11Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP11Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP11",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP12",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP12",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLinkP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemLinkReasonP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemStoreStatusP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定避難状態"
+        },
+        {
+          "id": "setVariable_itemLineP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP12High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP12Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP12Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP12",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP13",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP13",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP13",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP13",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP13",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP13",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP13",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP13High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP13Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP13Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP13",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP14",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP14",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP14",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP14",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP14",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP14",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP14",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP14High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP14Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP14Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP14",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP15",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP15",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP15",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP15",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP15",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP15",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP15",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP15High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP15Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP15Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP15",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP16",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP16",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP16",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP16",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP16",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP16",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP16",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP16High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP16Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP16Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP16",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP17",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP17",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP17",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP17",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP17",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP17",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP17",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP17High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP17Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP17Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP17",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP18",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP18",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP18",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP18",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP18",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP18",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP18",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP18High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP18Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP18Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP18",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP19",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP19",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP19",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP19",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP19",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP19",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP19",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP19High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP19Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP19Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP19",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP20",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP20",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP20",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP20",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP20",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP20",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP20",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP20High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP20Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP20Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP20",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP21",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP21",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP21",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP21",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP21",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP21",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP21",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP21High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP21Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP21Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP21",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemRawP22",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示区分"
+        },
+        {
+          "id": "setVariable_itemRemoveP22",
+          "kind": "SetVariable",
+          "variable": "Topic.判定残余"
+        },
+        {
+          "id": "setVariable_itemPriorityP22",
+          "kind": "SetVariable",
+          "variable": "Topic.判定優先度"
+        },
+        {
+          "id": "setVariable_itemStatusP22",
+          "kind": "SetVariable",
+          "variable": "Topic.判定状態"
+        },
+        {
+          "id": "setVariable_itemReasonP22",
+          "kind": "SetVariable",
+          "variable": "Topic.判定根拠"
+        },
+        {
+          "id": "setVariable_itemValidP22",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemLineP22",
+          "kind": "SetVariable",
+          "variable": "Topic.判定表示行"
+        },
+        {
+          "id": "setVariable_itemBucketP22High",
+          "kind": "SetVariable",
+          "variable": "Topic.判定高欄"
+        },
+        {
+          "id": "setVariable_itemBucketP22Medium",
+          "kind": "SetVariable",
+          "variable": "Topic.判定中欄"
+        },
+        {
+          "id": "setVariable_itemBucketP22Low",
+          "kind": "SetVariable",
+          "variable": "Topic.判定低欄"
+        },
+        {
+          "id": "setVariable_itemIncompleteP22",
+          "kind": "SetVariable",
+          "variable": "Topic.判定未完了"
+        },
+        {
+          "id": "setVariable_itemNoRemainder",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示検証"
+        },
+        {
+          "id": "setVariable_itemUrgentEvacuation",
+          "kind": "SetVariable",
+          "variable": "Topic.判定次行動"
+        },
+        {
+          "id": "setVariable_itemUrgentRequest",
+          "kind": "SetVariable",
+          "variable": "Topic.判定次行動"
+        },
+        {
+          "id": "setVariable_itemRender",
+          "kind": "SetVariable",
+          "variable": "Topic.優先度表示組立"
+        },
+        {
+          "id": "endDialog_priorityRetryLimit",
+          "kind": "EndDialog",
+          "variable": null
+        }
+      ],
+      "retired_ids": [
+        "setVariable_priorityFormatAppend0",
+        "setVariable_priorityFormatAppend1",
+        "setVariable_priorityFormatAppend2",
+        "setVariable_priorityFormatAppend3",
+        "setVariable_priorityFormatAppend4",
+        "setVariable_priorityFormatAppend5",
+        "setVariable_priorityFormatAppend6",
+        "setVariable_priorityFormatAssembleInit",
+        "setVariable_priorityFormatCheck0",
+        "setVariable_priorityFormatCheck1",
+        "setVariable_priorityFormatCheck2",
+        "setVariable_priorityFormatCheck3",
+        "setVariable_priorityFormatCheck4",
+        "setVariable_priorityFormatCheck5",
+        "setVariable_priorityFormatCheck6",
+        "setVariable_priorityFormatSection0",
+        "setVariable_priorityFormatSection1",
+        "setVariable_priorityFormatSection2",
+        "setVariable_priorityFormatSection3",
+        "setVariable_priorityFormatSection4",
+        "setVariable_priorityFormatSection5",
+        "setVariable_priorityFormatSection6"
+      ],
+      "new_variables": [
+        "Topic.判定中欄",
+        "Topic.判定事実",
+        "Topic.判定低欄",
+        "Topic.判定優先度",
+        "Topic.判定未完了",
+        "Topic.判定根拠",
+        "Topic.判定次行動",
+        "Topic.判定残余",
+        "Topic.判定状態",
+        "Topic.判定確認文",
+        "Topic.判定表示行",
+        "Topic.判定要請優先度",
+        "Topic.判定要請状態",
+        "Topic.判定連動",
+        "Topic.判定連動理由",
+        "Topic.判定避難状態",
+        "Topic.判定高欄"
+      ]
+    },
+    {
+      "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",
+      "changed": [
+        {
+          "id": "setVariable_prompt1",
+          "fields": [
+            "value"
+          ]
+        },
+        {
+          "id": "setVariable_prompt2",
+          "fields": [
+            "value"
+          ]
+        }
+      ],
+      "added": [
+        {
+          "id": "setVariable_imageFeature01",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_火気厳禁表示シート"
+        },
+        {
+          "id": "setVariable_imageFeature02",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_ポケット警報器"
+        },
+        {
+          "id": "setVariable_imageFeature03",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_可燃性ガス検知器と排水口調査"
+        },
+        {
+          "id": "setVariable_imageFeature04",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_消火器"
+        },
+        {
+          "id": "setVariable_imageFeature05",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_メーターガス栓"
+        },
+        {
+          "id": "setVariable_imageFeature06",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_分岐バルブ等"
+        },
+        {
+          "id": "setVariable_imageFeature07",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_窓扉と換気"
+        },
+        {
+          "id": "setVariable_imageFeature08",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_濃度表示"
+        },
+        {
+          "id": "setVariable_imageFeature09",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_保安柵等"
+        },
+        {
+          "id": "setVariable_imageFeature10",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_消防警察等"
+        },
+        {
+          "id": "setVariable_imageFeature11",
+          "kind": "SetVariable",
+          "variable": "Topic.特徴_既存ホワイトシート"
+        },
+        {
+          "id": "setVariable_imageFeatureCatalog",
+          "kind": "SetVariable",
+          "variable": "Topic.画像特徴カタログ"
+        }
+      ],
+      "retired_ids": [],
+      "new_variables": [
+        "Topic.特徴_ポケット警報器",
+        "Topic.特徴_メーターガス栓",
+        "Topic.特徴_保安柵等",
+        "Topic.特徴_分岐バルブ等",
+        "Topic.特徴_可燃性ガス検知器と排水口調査",
+        "Topic.特徴_既存ホワイトシート",
+        "Topic.特徴_消火器",
+        "Topic.特徴_消防警察等",
+        "Topic.特徴_濃度表示",
+        "Topic.特徴_火気厳禁表示シート",
+        "Topic.特徴_窓扉と換気",
+        "Topic.画像特徴カタログ"
+      ]
+    }
+  ],
+  "yaml_files": {
+    "1-マニュアル関連入口_optimized.yaml": {
+      "lines": 2600,
+      "sha256": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec"
+    },
+    "3-9-緊急保安業務エージェント_optimized.yaml": {
+      "lines": 2926,
+      "sha256": "17c14260a057b48bf9dbbcf5add84360160e6e010b032e55017e20f1f1b696d7"
+    },
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": {
+      "lines": 540,
+      "sha256": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529"
+    }
+  },
+  "feature_sources": {
+    "01_火気厳禁表示シート.md": {
+      "variable": "Topic.特徴_火気厳禁表示シート",
+      "sha256": "9d423b993bfa4c1fedc50f2375362f9fe218b382b1f3f8983cb65d17edcad840"
+    },
+    "02_ポケット警報器.md": {
+      "variable": "Topic.特徴_ポケット警報器",
+      "sha256": "21f16f461c3d3415e77848940edbde6f22c073c528cce1f70c3372c3ab1a2184"
+    },
+    "03_可燃性ガス検知器と排水口調査.md": {
+      "variable": "Topic.特徴_可燃性ガス検知器と排水口調査",
+      "sha256": "dba9c9d00f7aa0a1d955c443ea56d88d027f133b3532586030f99e5a01c9c246"
+    },
+    "04_消火器.md": {
+      "variable": "Topic.特徴_消火器",
+      "sha256": "839c9d91e2560af53dd4c6ae6a9724a86a0907420eb299a9cbe4f060fdc02e65"
+    },
+    "05_メーターガス栓.md": {
+      "variable": "Topic.特徴_メーターガス栓",
+      "sha256": "abf96999bb344bb55a92657eafe406827ca5e0117641e116a1021c04cc604757"
+    },
+    "06_分岐バルブ等.md": {
+      "variable": "Topic.特徴_分岐バルブ等",
+      "sha256": "852c3798c81a6cb2c5af0344f41125499c194673cd4c2061ed3e71f7a3b46d4a"
+    },
+    "07_窓扉と換気.md": {
+      "variable": "Topic.特徴_窓扉と換気",
+      "sha256": "c490970b59aebae7123aedc9799b1459d62c106c0bc58711ba1063ae8b5821e0"
+    },
+    "08_濃度表示.md": {
+      "variable": "Topic.特徴_濃度表示",
+      "sha256": "a136a518bb83380de055f58234f2dada8464fbcf14228483978e7948d1a42587"
+    },
+    "09_保安柵等.md": {
+      "variable": "Topic.特徴_保安柵等",
+      "sha256": "199b059af55fb716642ea64c8cbbd219ac6575eb4637ba2080b67ac7c3dab083"
+    },
+    "10_消防警察等.md": {
+      "variable": "Topic.特徴_消防警察等",
+      "sha256": "d5a7c1ee89ccbc4f845214331aa9f7c48d7e2eec48ba4ada70b73a708623b659"
+    },
+    "11_既存ホワイトシート.md": {
+      "variable": "Topic.特徴_既存ホワイトシート",
+      "sha256": "a5318887c8bda85d718116f6ac1f27d1bd15570f353224695a0e8117843d9b79"
+    }
+  },
+  "runtime_cases_not_run": 31,
+  "scope": "Native scalar execution and prompt wiring; Studio and image/AI model accuracy NOT_RUN",
+  "full_yaml_blocks_match": true
+}

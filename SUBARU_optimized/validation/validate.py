@@ -102,9 +102,13 @@ def formula_balance(d):
      if not stack or stack.pop()!=('(' if c==')'else '['):errors.append(n['id']);break
    if stack:errors.append(n['id'])
  return sorted(set(errors))
+original_docs={name:yaml.load((R/'originals'/name).read_text(),Loader=Strict) for name,_ in PAIRS}
+exemplar_fields={}
+for original in original_docs.values():
+ for node in flat(original).values():exemplar_fields.setdefault(node['kind'],set()).update(node)
 report={'scope':'静的検証のみ。Copilot Studio読込・Power Fx実行・実ナレッジ・性能は未検証','files':[]};changes=[]
 for old,new in PAIRS:
- a=yaml.load((R/'originals'/old).read_text(),Loader=Strict);b=yaml.load((R/new).read_text(),Loader=Strict)
+ a=original_docs[old];b=yaml.load((R/new).read_text(),Loader=Strict)
  ai,bi=flat(a),flat(b); ids=[n['id'] for n in walk(b) if 'id'in n]
  duplicate=[k for k,c in collections.Counter(ids).items() if c>1]
  broken=[k for k,n in bi.items() if n.get('kind')=='GotoAction' and n['actionId'] not in bi]
@@ -115,9 +119,8 @@ for old,new in PAIRS:
   if n.get('kind')=='SearchAndSummarizeContent':assert n['autoSend'] is False and n['applyModelKnowledgeSetting'] is False
   if n.get('kind')=='SearchKnowledgeSources':assert 'result'in n and 'userInput'in n and 'variable' not in n
   if k not in ai:
-   exemplars=[v for old_name,_ in PAIRS for v in flat(yaml.safe_load((R/'originals'/old_name).read_text())).values() if v['kind']==n['kind']]
-   assert exemplars,('new kind',n['kind'])
-   allowed=set().union(*(set(v) for v in exemplars))
+   assert n['kind']in exemplar_fields,('new kind',n['kind'])
+   allowed=exemplar_fields[n['kind']]
    assert set(n)<=allowed,('new node properties',k,set(n)-allowed)
  assert not formula_balance(b),formula_balance(b)
  aw,_=dataflow(a);bw,edges=dataflow(b)

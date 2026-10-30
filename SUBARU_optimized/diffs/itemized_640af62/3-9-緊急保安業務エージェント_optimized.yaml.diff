@@ -1,0 +1,1475 @@
+--- 640af62/3-9-緊急保安業務エージェント_optimized.yaml
++++ itemized_20261030/3-9-緊急保安業務エージェント_optimized.yaml
+@@ -652,35 +652,8 @@
+         不足している内容について具体的な確認質問を出す。
+ 
+ 
+-        # 出力フォーマット
+-        必ず以下の見出し名・順序だけで回答してください。見出しの言い換えは禁止です。
+-        回答本文の前後に説明文・総括文・挨拶を追加しないでください。
+-        各項目は必ず「└」で開始してください。
+-
+-        【確認できた事実】
+-        └（ユーザー入力・追加履歴から明示的に確認できた事実）
+-
+-        【初動措置　優先度：高】
+-        └（措置名）：対応済み／未実施　根拠：（入力事実とルール）
+-
+-        【初動措置　優先度：中】
+-        └（措置名）：対応済み／未実施／要確認　根拠：（入力事実とルール）　確認事項：（必要な場合のみ）
+-
+-        【初動措置　優先度：低】
+-        └（措置名）：対応済み／未実施／要確認　根拠：（入力事実とルール）
+-
+-        【高優先度の完了状況】
+-        └全て対応済み
+-        または
+-        └未完了あり
+-
+-        【ネクストアクション】
+-        └（未実施の高優先度措置を最優先。高が全て対応済みなら次に確認・実施すべき事項）
+-        └（複数あれば必要数）
+-
+-        【確認したいこと】
+-        └（追加確認が必要な事項を質問形式で記載）
+-        └確認不要なら「なし」
++        # ユーザーへの表示
++        高・中・低の見出しと完了欄はYAMLが組み立てる。モデルは末尾の内部出力契約に従って返す。
+ 
+         # 禁止事項
+ 
+@@ -757,22 +730,6 @@
+                 # 判定に必要な情報が不足している場合
+                 憶測で優先度・状況を決めず、不足している情報を質問として返してください。
+ 
+-                # 出力フォーマット（このフォーマット以外は出力しないこと）
+-                【確認できた事実】
+-                └（ユーザー入力・追加履歴から明示的に確認できた事実）
+-                【初動措置　優先度：高】
+-                └（措置名）：対応済み／未実施　根拠：（入力事実とルール）
+-                【初動措置　優先度：中】
+-                └（措置名）：対応済み／未実施／要確認　根拠：（入力事実とルール）　確認事項：（必要な場合のみ）
+-                【初動措置　優先度：低】
+-                └（措置名）：対応済み／未実施／要確認　根拠：（入力事実とルール）
+-                【高優先度の完了状況】
+-                └全て対応済み または └未完了あり
+-                【ネクストアクション】
+-                └（未実施の高優先度措置を最優先。高が全て対応済みなら次に確認・実施すべき事項）
+-                【確認したいこと】
+-                └（追加確認が必要な事項。確認不要なら「なし」）
+-                回答本文の前後に説明文・総括文・挨拶を追加しないこと。
+                 # 今回の消防・警察ルールの適用
+                 消防・警察への要請はガイドの同名節と判定順序の補足で評価し、過去と現在、停止操作と実際の止漏効果、優先度と要請の実施状況を区別する。未要請を低の理由にしない。高と判断した要請は高の見出しへ置く。明らかな緊急事態では質問の回答待ちで要請案内を遅らせない。既に報告された情報を繰り返し質問しない。
+                 他の処理・既存の8見出しの回答形式は維持する。
+@@ -791,10 +748,71 @@
+                 警報を他の家で聞いたという報告だけで「周辺住戸・建物調査は全て対応済み」にしない。実際に確認した場所・方法・結果の範囲だけを対応済みとし、範囲拡大時の追加調査を高・未完了で示す。表示シート設置だけから火気使用禁止の周知徹底まで対応済みと推測しない。
+ 
+ 
+-                # 出力様式の厳守
+-                危険が増しても見出し・順序・行書式を変更しない。「危険度判定」「直近の対応措置」「最優先」「次の行動」「確認事項」という別様式や絵文字を作らない。
+-                指定の7見出しを各1回ずつ出力し、各本文行は必ず└から始める。一つの項目は一行にし、本文内に追加の【見出し】を作らない。該当項目がない本文は└なしとする。高・中・低の措置行は└措置名：対応済み／未実施／要確認のいずれか一つを実際の状態に応じて記載し、その後に根拠・必要な確認を続ける。「措置名：高」等の優先度を実施状況の位置に書かない。高と判断した措置を中・低へ入れない。
+-                完了状況の本文は└全て対応済みまたは└未完了ありの一行だけ。全て対応済みという語はこの完了欄以外に書かない。出力前に各措置の判定と配置を照合する。最新の原文と報告履歴から再判定し、前回のAI出力の配置ミスを引き継がない。
++
++                # 今回の内部出力契約（従来の見出し指定より優先）
++                ユーザー用の高・中・低の見出しをあなたが作文しない。措置ごとに一つの優先度・実施状況・根拠を返し、YAMLがその優先度だけを使って表示欄を決める。
++                以下のブロックを各1回、順番どおり出力する。コードブロック、前置き、見出し、追加マーカーは禁止。本文には区切り文字の半角縦棒|や[[、]]、【、】を含めない。行内の情報を勝手に省略せず、入力事実以外は作らない。
++                [[FACTS]]確認できた事実を└から始まる行で記載[[/FACTS]]
++                [[EMERGENCY]]高または通常|E-01／E-02・現状の危険条件・再評価の根拠[[/EMERGENCY]]
++                [[P01]]高|未実施|根拠となる対象・事実・条件[[/P01]]
++                [[P02]]高|未実施|根拠となる対象・事実・条件[[/P02]]
++                [[P03]]高|未実施|根拠となる対象・事実・条件[[/P03]]
++                [[P04]]高|未実施|根拠となる対象・事実・条件[[/P04]]
++                [[P05]]高|未実施|根拠となる対象・事実・条件[[/P05]]
++                [[P06]]高|未実施|根拠となる対象・事実・条件[[/P06]]
++                [[P07]]高|未実施|根拠となる対象・事実・条件[[/P07]]
++                [[P08]]高|未実施|根拠となる対象・事実・条件[[/P08]]
++                [[P09]]高|未実施|根拠となる対象・事実・条件[[/P09]]
++                [[P10]]高|未実施|根拠となる対象・事実・条件[[/P10]]
++                [[P11]]高|未実施|根拠となる対象・事実・条件[[/P11]]
++                [[P12]]高|未実施|根拠となる対象・事実・条件[[/P12]]
++                [[P13]]高|未実施|根拠となる対象・事実・条件[[/P13]]
++                [[P14]]対象外|対象外|今回必要でない理由[[/P14]]
++                [[P15]]対象外|対象外|今回必要でない理由[[/P15]]
++                [[P16]]対象外|対象外|今回必要でない理由[[/P16]]
++                [[P17]]対象外|対象外|今回必要でない理由[[/P17]]
++                [[P18]]対象外|対象外|今回必要でない理由[[/P18]]
++                [[P19]]対象外|対象外|今回必要でない理由[[/P19]]
++                [[P20]]対象外|対象外|今回必要でない理由[[/P20]]
++                [[P21]]対象外|対象外|今回必要でない理由[[/P21]]
++                [[P22]]対象外|対象外|今回必要でない理由[[/P22]]
++                [[NEXT]]必要な次の行動を└から始まる行で記載[[/NEXT]]
++                [[CHECK]]判断に必要な情報と理由を、利用者への自然な文章で記載[[/CHECK]]
++
++                上の行は書式例であり、優先度・状態・根拠を今回の現場事実とガイドに応じた値に置き換える。優先度は高／中／低、状態は対応済み／未実施／要確認の一つずつ。P14〜P22だけは今回必要なければ対象外|対象外を許す。未知の設備や未確認の実施状況はないと決めつけない。根拠は必須。根拠に「高と判断」等と書く場合は優先度も高にする。
++                EMERGENCYはE-01／E-02・広範囲拡散・遮断排出不能などにより避難と消防警察の両方を高とする場合に高、それ以外を通常とする。高ならYAMLがP11・P12を高に統一する。通常は両措置が不要・低という意味ではなく、それぞれのガイド条件で判断する。
++                措置コードと名称：
++                P01：火気使用禁止の徹底
++                P02：電気スイッチ等の操作禁止
++                P03：火気厳禁表示シート
++                P04：ポケット警報器等の設置
++                P05：流入ガス・滞留ガスの検知器調査
++                P06：換気
++                P07：メーターガス栓閉止
++                P08：分岐バルブ・引込管ガス遮断装置等
++                P09：消火器設置
++                P10：周辺住戸・建物調査
++                P11：消防・警察への要請
++                P12：避難誘導
++                P13：保安柵または同等措置
++                P14：高濃度ガス識別検知器による濃度確認（必要時のみ。不要なら対象外）
++                P15：進入禁止措置（必要時のみ。不要なら対象外）
++                P16：保安範囲の拡大または再設置（必要時のみ。不要なら対象外）
++                P17：マンホール蓋開放・換気（必要時のみ。不要なら対象外）
++                P18：救護・専門対応（必要時のみ。不要なら対象外）
++                P19：空気呼吸器等の確認（必要時のみ。不要なら対象外）
++                P20：未確認範囲の追加検知器調査（必要時のみ。不要なら対象外）
++                P21：周辺調査の拡大・再調査（必要時のみ。不要なら対象外）
++                P22：追加対象の供給遮断（必要時のみ。不要なら対象外）
++
++                # 実施済みと範囲・効果
++                排水口や玄関隙間等の検知結果があれば、その場所のP05は対応済み。全域が未確認という理由で既に行った調査を未実施へ戻さない。残る調査はP20に対象場所を明記して別に示す。P10も実際の調査範囲だけを対応済みとし、必要な追加範囲はP21へ示す。メーター閉止済みは対象を明記してP07で保持し、別の部屋・設備への追加遮断はP22で示す。
++                画像に写っていないことは未実施の証拠ではない。明確なユーザー報告を画像の不鮮明さで取り消さず、実施状況不明なら要確認と明示する。設置済みの写真や報告の対象範囲を勝手に他室へ広げない。
++                屋外から臭気が入るため窓を閉めたという報告は、換気を試みた事実と流入防止の閉止措置を保持する。単なる未実施に書き戻さず、漏えい源・流入方向を照合し、その窓からの換気継続を無条件に勧めない。未入室の別室の換気不能と、通報宅で実施した窓操作は別の対象として扱う。
++
++                # CHECKは説明文にする
++                質問の羅列や「建物種別は何か」の箇条書きにしない。①どの情報が未確認か、②その情報でどの判断が変わるか、③危険条件が成立する場合に何が高になるか、④何を教えてほしいかを、既報を繰り返さず必要な点だけ自然な文章で伝える。
++                既に高と判断できる事項を判断不能に戻さず「この状況から避難と要請は高です。追加回答を待たず提示した措置を進めてください。上流遮断の方法を確認するため…を教えてください」のように、結論と残る確認を分ける。判断に必要な報告が十分なら「優先度を判断するための情報は確認できています。追加の報告を待たず、提示した未完了の高優先度の作業を進めてください」と案内する。作業自体が未完了なのに安全確認完了としない。
+                 "
+             - kind: SetVariable
+               id: setVariable_priorityFormatRetryInit
+@@ -805,140 +823,1216 @@
+               displayName: 11B_ガイド抜粋からの優先度判定
+               autoSend: false
+               variable: Topic.優先度判定結果
+-              userInput: =Topic.優先度判定プロンプト & If(Topic.優先度様式再試行回数 > 0, Char(10) & "【様式の再生成】直前の回答は見出し・行・実施状況・完了欄の様式検査に不合格でした。同じ現場事実を再評価し、指定の7見出し・各行の└・措置の実施状況を厳守して回答を新しく生成し直してください。", "")
+-              additionalInstructions: |
+-                この入力には、判定に必要な【初動措置AI優先度判断ルール】・現場事実・追加報告・出力形式が
+-                すべて含まれています。外部ナレッジを検索せず、一般知識で補完せず、入力内の情報だけで判定してください。
+-                入力に書かれた出力フォーマット（【確認できた事実】から【確認したいこと】まで）だけを、
+-                見出し名・順序をそのまま守って出力してください。前置き・総括・挨拶・引用番号は禁止です。
+-                消防・警察はガイドの同名節を適用する。継続性・影響範囲・制御可否・改善を最新報告で照合し、高条件が明示された場合や明らかな緊急事態では要請案内を先行する。要請の実施状況を理由に優先度を下げず、判断した高・中・低と表示見出しを一致させる。
+-                追加要件1〜9の各措置節・関連付けも適用する。元の測定値・単位・場所と概算換算値を区別し、警報による濃度の可能性を実測値にしない。場所と結果を伴う調査・有効な同等立入防止を実施済みとして認識し、部分設置と追加の拡大・再設置の未完了を分ける。明示された高条件を情報不足や場所別の基本表で下げない。
+-                # 出力様式の厳守
+-                危険が増しても見出し・順序・行書式を変更しない。「危険度判定」「直近の対応措置」「最優先」「次の行動」「確認事項」という別様式や絵文字を作らない。
+-                指定の7見出しを各1回ずつ出力し、各本文行は必ず└から始める。一つの項目は一行にし、本文内に追加の【見出し】を作らない。該当項目がない本文は└なしとする。高・中・低の措置行は└措置名：対応済み／未実施／要確認のいずれか一つを実際の状態に応じて記載し、その後に根拠・必要な確認を続ける。「措置名：高」等の優先度を実施状況の位置に書かない。高と判断した措置を中・低へ入れない。
+-                完了状況の本文は└全て対応済みまたは└未完了ありの一行だけ。全て対応済みという語はこの完了欄以外に書かない。出力前に各措置の判定と配置を照合する。最新の原文と報告履歴から再判定し、前回のAI出力の配置ミスを引き継がない。
++              userInput: =Topic.優先度判定プロンプト & If(Topic.優先度様式再試行回数 > 0, Char(10) & "前回は内部ブロック形式が不正でした。指定コードの優先度・状態・根拠を正しい内部形式で生成し直してください。", "")
++              additionalInstructions: 固定ガイドと現場事実だけを根拠にする。末尾の内部出力契約に厳密に従い、ユーザー用見出しは出力しない。各措置の優先度は一つだけ、状態・根拠とは別に返す。CHECKは理由と判断への影響が伝わる文章にする。実施済みの範囲と追加作業、換気を試みた事実と流入防止の閉窓を区別する。
+             - kind: SetVariable
+               id: setVariable_priorityFormatRaw
+               variable: Topic.優先度表示原文
+               value: =Topic.優先度判定結果
+             - kind: SetVariable
+-              id: setVariable_priorityFormatAssembleInit
++              id: setVariable_itemInit01
+               variable: Topic.優先度表示組立
+               value: =""
+             - kind: SetVariable
++              id: setVariable_itemInit02
++              variable: Topic.優先度表示検証
++              value: ="合格"
++            - kind: SetVariable
++              id: setVariable_itemInit03
++              variable: Topic.優先度表示区分
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit04
++              variable: Topic.判定残余
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit05
++              variable: Topic.判定事実
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit06
++              variable: Topic.判定次行動
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit07
++              variable: Topic.判定確認文
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit08
++              variable: Topic.判定連動
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit09
++              variable: Topic.判定連動理由
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit10
++              variable: Topic.判定高欄
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit11
++              variable: Topic.判定中欄
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit12
++              variable: Topic.判定低欄
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit13
++              variable: Topic.判定未完了
++              value: ="なし"
++            - kind: SetVariable
++              id: setVariable_itemInit14
++              variable: Topic.判定優先度
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit15
++              variable: Topic.判定状態
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit16
++              variable: Topic.判定根拠
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit17
++              variable: Topic.判定表示行
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit18
++              variable: Topic.判定要請優先度
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit19
++              variable: Topic.判定要請状態
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemInit20
++              variable: Topic.判定避難状態
++              value: =""
++            - kind: SetVariable
++              id: setVariable_itemRemainingInit
++              variable: Topic.判定残余
++              value: =Topic.優先度表示原文
++            - kind: SetVariable
+               id: setVariable_priorityFormatEnvelope
+               variable: Topic.優先度表示検証
+-              value: =If(And(StartsWith(Trim(Topic.優先度表示原文), "【確認できた事実】"), CountRows(Split(Topic.優先度表示原文, "【確認できた事実】")) = 2, CountRows(Split(Topic.優先度表示原文, "【初動措置　優先度：高】")) = 2, CountRows(Split(Topic.優先度表示原文, "【初動措置　優先度：中】")) = 2, CountRows(Split(Topic.優先度表示原文, "【初動措置　優先度：低】")) = 2, CountRows(Split(Topic.優先度表示原文, "【高優先度の完了状況】")) = 2, CountRows(Split(Topic.優先度表示原文, "【ネクストアクション】")) = 2, CountRows(Split(Topic.優先度表示原文, "【確認したいこと】")) = 2), "合格", "不合格")
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatSection0
++              value: =If(And(Topic.優先度表示検証 = "合格", And(StartsWith(Trim(Topic.優先度表示原文), "[[FACTS]]"), EndsWith(Trim(Topic.優先度表示原文), "[[/CHECK]]"))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemSectionFACTS
+               variable: Topic.優先度表示区分
+-              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【確認できた事実】")).Value, "【初動措置　優先度：高】")).Value)
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatCheck0
+-              variable: Topic.優先度表示検証
+-              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "└[^\r\n]+(\r?\n[ \t]*└[^\r\n]+)*", MatchOptions.Complete)), "合格", "不合格")
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatAppend0
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[FACTS]]")).Value, "[[/FACTS]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemUniqueFACTS
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(CountRows(Split(Topic.優先度表示原文, "[[FACTS]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/FACTS]]")) = 2)), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemRemoveFACTS
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[FACTS]]" & Topic.優先度表示区分 & "[[/FACTS]]", "")
++            - kind: SetVariable
++              id: setVariable_itemBodyFACTS
++              variable: Topic.判定事実
++              value: =Trim(Topic.優先度表示区分)
++            - kind: SetVariable
++              id: setVariable_itemBodyValidFACTS
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(Len(Topic.判定事実) > 0, Not("[[" in Topic.判定事実), Not("【" in Topic.判定事実), StartsWith(Topic.判定事実, "└"))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemSectionEMERGENCY
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[EMERGENCY]]")).Value, "[[/EMERGENCY]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemUniqueEMERGENCY
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(CountRows(Split(Topic.優先度表示原文, "[[EMERGENCY]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/EMERGENCY]]")) = 2)), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemRemoveEMERGENCY
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[EMERGENCY]]" & Topic.優先度表示区分 & "[[/EMERGENCY]]", "")
++            - kind: SetVariable
++              id: setVariable_itemEmergency
++              variable: Topic.判定連動
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemEmergencyReason
++              variable: Topic.判定連動理由
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemEmergencyValid
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(CountRows(Split(Topic.優先度表示区分, "|")) = 2, Or(Topic.判定連動 = "高", Topic.判定連動 = "通常"), Len(Topic.判定連動理由) > 0, Not("[[" in Topic.判定連動理由), Not("【" in Topic.判定連動理由))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemSectionNEXT
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[NEXT]]")).Value, "[[/NEXT]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemUniqueNEXT
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(CountRows(Split(Topic.優先度表示原文, "[[NEXT]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/NEXT]]")) = 2)), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemRemoveNEXT
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[NEXT]]" & Topic.優先度表示区分 & "[[/NEXT]]", "")
++            - kind: SetVariable
++              id: setVariable_itemBodyNEXT
++              variable: Topic.判定次行動
++              value: =Trim(Topic.優先度表示区分)
++            - kind: SetVariable
++              id: setVariable_itemBodyValidNEXT
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(Len(Topic.判定次行動) > 0, Not("[[" in Topic.判定次行動), Not("【" in Topic.判定次行動), StartsWith(Topic.判定次行動, "└"))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemSectionCHECK
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[CHECK]]")).Value, "[[/CHECK]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemUniqueCHECK
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(CountRows(Split(Topic.優先度表示原文, "[[CHECK]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/CHECK]]")) = 2)), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemRemoveCHECK
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[CHECK]]" & Topic.優先度表示区分 & "[[/CHECK]]", "")
++            - kind: SetVariable
++              id: setVariable_itemBodyCHECK
++              variable: Topic.判定確認文
++              value: =Trim(Topic.優先度表示区分)
++            - kind: SetVariable
++              id: setVariable_itemBodyValidCHECK
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(Len(Topic.判定確認文) > 0, Not("[[" in Topic.判定確認文), Not("【" in Topic.判定確認文), And(Topic.判定確認文 <> "なし", Not(StartsWith(Topic.判定確認文, "└")), Not(StartsWith(Topic.判定確認文, "・")), Not(StartsWith(Topic.判定確認文, "-"))))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemRawP01
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P01]]")).Value, "[[/P01]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP01
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P01]]" & Topic.優先度表示区分 & "[[/P01]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP01
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP01
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP01
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP01
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P01]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P01]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP01
++              variable: Topic.判定表示行
++              value: ="└火気使用禁止の徹底：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP01High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP01Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP01Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP01
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP02
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P02]]")).Value, "[[/P02]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP02
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P02]]" & Topic.優先度表示区分 & "[[/P02]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP02
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP02
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP02
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP02
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P02]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P02]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP02
++              variable: Topic.判定表示行
++              value: ="└電気スイッチ等の操作禁止：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP02High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP02Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP02Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP02
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP03
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P03]]")).Value, "[[/P03]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP03
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P03]]" & Topic.優先度表示区分 & "[[/P03]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP03
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP03
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP03
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP03
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P03]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P03]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP03
++              variable: Topic.判定表示行
++              value: ="└火気厳禁表示シート：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP03High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP03Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP03Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP03
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP04
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P04]]")).Value, "[[/P04]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP04
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P04]]" & Topic.優先度表示区分 & "[[/P04]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP04
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP04
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP04
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP04
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P04]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P04]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP04
++              variable: Topic.判定表示行
++              value: ="└ポケット警報器等の設置：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP04High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP04Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP04Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP04
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP05
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P05]]")).Value, "[[/P05]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP05
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P05]]" & Topic.優先度表示区分 & "[[/P05]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP05
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP05
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP05
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP05
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P05]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P05]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP05
++              variable: Topic.判定表示行
++              value: ="└流入ガス・滞留ガスの検知器調査：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP05High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP05Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP05Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP05
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP06
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P06]]")).Value, "[[/P06]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP06
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P06]]" & Topic.優先度表示区分 & "[[/P06]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP06
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP06
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP06
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP06
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P06]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P06]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP06
++              variable: Topic.判定表示行
++              value: ="└換気：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP06High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP06Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP06Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP06
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP07
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P07]]")).Value, "[[/P07]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP07
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P07]]" & Topic.優先度表示区分 & "[[/P07]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP07
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP07
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP07
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP07
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P07]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P07]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP07
++              variable: Topic.判定表示行
++              value: ="└メーターガス栓閉止：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP07High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP07Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP07Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP07
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP08
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P08]]")).Value, "[[/P08]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP08
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P08]]" & Topic.優先度表示区分 & "[[/P08]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP08
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP08
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP08
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP08
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P08]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P08]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP08
++              variable: Topic.判定表示行
++              value: ="└分岐バルブ・引込管ガス遮断装置等：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP08High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP08Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP08Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP08
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP09
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P09]]")).Value, "[[/P09]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP09
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P09]]" & Topic.優先度表示区分 & "[[/P09]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP09
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP09
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP09
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP09
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P09]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P09]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP09
++              variable: Topic.判定表示行
++              value: ="└消火器設置：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP09High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP09Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP09Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP09
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP10
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P10]]")).Value, "[[/P10]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP10
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P10]]" & Topic.優先度表示区分 & "[[/P10]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP10
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP10
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP10
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP10
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P10]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P10]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP10
++              variable: Topic.判定表示行
++              value: ="└周辺住戸・建物調査：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP10High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP10Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP10Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP10
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP11
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P11]]")).Value, "[[/P11]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP11
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P11]]" & Topic.優先度表示区分 & "[[/P11]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP11
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP11
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP11
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP11
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P11]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P11]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLinkP11
++              variable: Topic.判定優先度
++              value: =If(Topic.判定連動 = "高", "高", Topic.判定優先度)
++            - kind: SetVariable
++              id: setVariable_itemLinkReasonP11
++              variable: Topic.判定根拠
++              value: =If(Topic.判定連動 = "高", Topic.判定連動理由, Topic.判定根拠)
++            - kind: SetVariable
++              id: setVariable_itemStoreStatusP11
++              variable: Topic.判定要請状態
++              value: =Topic.判定状態
++            - kind: SetVariable
++              id: setVariable_itemStoreRequestPriority
++              variable: Topic.判定要請優先度
++              value: =Topic.判定優先度
++            - kind: SetVariable
++              id: setVariable_itemLineP11
++              variable: Topic.判定表示行
++              value: ="└消防・警察への要請：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP11High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP11Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP11Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP11
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP12
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P12]]")).Value, "[[/P12]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP12
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P12]]" & Topic.優先度表示区分 & "[[/P12]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP12
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP12
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP12
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP12
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P12]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P12]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLinkP12
++              variable: Topic.判定優先度
++              value: =If(Topic.判定連動 = "高", "高", Topic.判定優先度)
++            - kind: SetVariable
++              id: setVariable_itemLinkReasonP12
++              variable: Topic.判定根拠
++              value: =If(Topic.判定連動 = "高", Topic.判定連動理由, Topic.判定根拠)
++            - kind: SetVariable
++              id: setVariable_itemStoreStatusP12
++              variable: Topic.判定避難状態
++              value: =Topic.判定状態
++            - kind: SetVariable
++              id: setVariable_itemLineP12
++              variable: Topic.判定表示行
++              value: ="└避難誘導：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP12High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP12Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP12Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP12
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP13
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P13]]")).Value, "[[/P13]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP13
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P13]]" & Topic.優先度表示区分 & "[[/P13]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP13
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP13
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP13
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP13
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P13]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P13]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP13
++              variable: Topic.判定表示行
++              value: ="└保安柵または同等措置：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP13High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP13Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP13Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP13
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP14
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P14]]")).Value, "[[/P14]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP14
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P14]]" & Topic.優先度表示区分 & "[[/P14]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP14
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP14
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP14
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP14
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P14]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P14]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP14
++              variable: Topic.判定表示行
++              value: ="└高濃度ガス識別検知器による濃度確認：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP14High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP14Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP14Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP14
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP15
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P15]]")).Value, "[[/P15]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP15
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P15]]" & Topic.優先度表示区分 & "[[/P15]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP15
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP15
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP15
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP15
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P15]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P15]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP15
++              variable: Topic.判定表示行
++              value: ="└進入禁止措置：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP15High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP15Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP15Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP15
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP16
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P16]]")).Value, "[[/P16]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP16
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P16]]" & Topic.優先度表示区分 & "[[/P16]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP16
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP16
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP16
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP16
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P16]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P16]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP16
++              variable: Topic.判定表示行
++              value: ="└保安範囲の拡大または再設置：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP16High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP16Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP16Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP16
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP17
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P17]]")).Value, "[[/P17]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP17
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P17]]" & Topic.優先度表示区分 & "[[/P17]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP17
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP17
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP17
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP17
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P17]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P17]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP17
++              variable: Topic.判定表示行
++              value: ="└マンホール蓋開放・換気：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP17High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP17Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP17Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP17
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP18
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P18]]")).Value, "[[/P18]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP18
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P18]]" & Topic.優先度表示区分 & "[[/P18]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP18
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP18
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP18
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP18
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P18]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P18]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP18
++              variable: Topic.判定表示行
++              value: ="└救護・専門対応：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP18High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP18Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP18Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP18
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP19
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P19]]")).Value, "[[/P19]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP19
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P19]]" & Topic.優先度表示区分 & "[[/P19]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP19
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP19
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP19
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP19
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P19]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P19]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP19
++              variable: Topic.判定表示行
++              value: ="└空気呼吸器等の確認：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP19High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP19Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP19Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP19
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP20
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P20]]")).Value, "[[/P20]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP20
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P20]]" & Topic.優先度表示区分 & "[[/P20]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP20
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP20
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP20
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP20
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P20]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P20]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP20
++              variable: Topic.判定表示行
++              value: ="└未確認範囲の追加検知器調査：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP20High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP20Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP20Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP20
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP21
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P21]]")).Value, "[[/P21]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP21
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P21]]" & Topic.優先度表示区分 & "[[/P21]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP21
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP21
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP21
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP21
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P21]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P21]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP21
++              variable: Topic.判定表示行
++              value: ="└周辺調査の拡大・再調査：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP21High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP21Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP21Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP21
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemRawP22
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[P22]]")).Value, "[[/P22]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemRemoveP22
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[P22]]" & Topic.優先度表示区分 & "[[/P22]]", "")
++            - kind: SetVariable
++              id: setVariable_itemPriorityP22
++              variable: Topic.判定優先度
++              value: =Trim(First(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemStatusP22
++              variable: Topic.判定状態
++              value: =Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)
++            - kind: SetVariable
++              id: setVariable_itemReasonP22
++              variable: Topic.判定根拠
++              value: =Trim(Last(Split(Topic.優先度表示区分, "|")).Value)
++            - kind: SetVariable
++              id: setVariable_itemValidP22
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", And(And(CountRows(Split(Topic.優先度表示原文, "[[P22]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P22]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(Topic.判定優先度 = "高", Topic.判定優先度 = "中", Topic.判定優先度 = "低"), Or(Topic.判定状態 = "対応済み", Topic.判定状態 = "未実施", Topic.判定状態 = "要確認")), And(Topic.判定優先度 = "対象外", Topic.判定状態 = "対象外")), Len(Topic.判定根拠) > 0, Not("[[" in Topic.判定根拠), Not("【" in Topic.判定根拠))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemLineP22
++              variable: Topic.判定表示行
++              value: ="└追加対象の供給遮断：" & Topic.判定状態 & "　根拠：" & Topic.判定根拠
++            - kind: SetVariable
++              id: setVariable_itemBucketP22High
++              variable: Topic.判定高欄
++              value: =If(Topic.判定優先度 = "高", Topic.判定高欄 & If(IsBlank(Topic.判定高欄), "", Char(10)) & Topic.判定表示行, Topic.判定高欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP22Medium
++              variable: Topic.判定中欄
++              value: =If(Topic.判定優先度 = "中", Topic.判定中欄 & If(IsBlank(Topic.判定中欄), "", Char(10)) & Topic.判定表示行, Topic.判定中欄)
++            - kind: SetVariable
++              id: setVariable_itemBucketP22Low
++              variable: Topic.判定低欄
++              value: =If(Topic.判定優先度 = "低", Topic.判定低欄 & If(IsBlank(Topic.判定低欄), "", Char(10)) & Topic.判定表示行, Topic.判定低欄)
++            - kind: SetVariable
++              id: setVariable_itemIncompleteP22
++              variable: Topic.判定未完了
++              value: =If(And(Topic.判定優先度 = "高", Topic.判定状態 <> "対応済み"), "あり", Topic.判定未完了)
++            - kind: SetVariable
++              id: setVariable_itemNoRemainder
++              variable: Topic.優先度表示検証
++              value: =If(And(Topic.優先度表示検証 = "合格", IsBlank(Trim(Topic.判定残余))), "合格", "不合格")
++            - kind: SetVariable
++              id: setVariable_itemUrgentEvacuation
++              variable: Topic.判定次行動
++              value: =If(And(Topic.判定連動 = "高", Topic.判定避難状態 <> "対応済み"), "└避難誘導の実施状況を確認し、未対応の範囲は安全な場所から関係者と連携して優先的に対応してください。" & Char(10) & Topic.判定次行動, Topic.判定次行動)
++            - kind: SetVariable
++              id: setVariable_itemUrgentRequest
++              variable: Topic.判定次行動
++              value: =If(And(Topic.判定要請優先度 = "高", Topic.判定要請状態 <> "対応済み"), "└消防・警察への出動要請の実施状況を確認し、未要請なら追加回答を待たず要請を優先してください。" & Char(10) & Topic.判定次行動, Topic.判定次行動)
++            - kind: SetVariable
++              id: setVariable_itemRender
+               variable: Topic.優先度表示組立
+               value: |-
+-                =Topic.優先度表示組立 & "【確認できた事実】
+-                " & Topic.優先度表示区分
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatSection1
+-              variable: Topic.優先度表示区分
+-              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【初動措置　優先度：高】")).Value, "【初動措置　優先度：中】")).Value)
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatCheck1
+-              variable: Topic.優先度表示検証
+-              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*)(\r?\n[ \t]*(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*))*", MatchOptions.Complete)), "合格", "不合格")
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatAppend1
+-              variable: Topic.優先度表示組立
+-              value: |-
+-                =Topic.優先度表示組立 & "
++                ="【確認できた事実】
++                " & Topic.判定事実 & "
+ 
+                 【初動措置　優先度：高】
+-                " & Topic.優先度表示区分
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatSection2
+-              variable: Topic.優先度表示区分
+-              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【初動措置　優先度：中】")).Value, "【初動措置　優先度：低】")).Value)
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatCheck2
+-              variable: Topic.優先度表示検証
+-              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*)(\r?\n[ \t]*(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*))*", MatchOptions.Complete)), "合格", "不合格")
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatAppend2
+-              variable: Topic.優先度表示組立
+-              value: |-
+-                =Topic.優先度表示組立 & "
++                " & If(IsBlank(Topic.判定高欄), "└なし", Topic.判定高欄) & "
+ 
+                 【初動措置　優先度：中】
+-                " & Topic.優先度表示区分
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatSection3
+-              variable: Topic.優先度表示区分
+-              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【初動措置　優先度：低】")).Value, "【高優先度の完了状況】")).Value)
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatCheck3
+-              variable: Topic.優先度表示検証
+-              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*)(\r?\n[ \t]*(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*))*", MatchOptions.Complete)), "合格", "不合格")
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatAppend3
+-              variable: Topic.優先度表示組立
+-              value: |-
+-                =Topic.優先度表示組立 & "
++                " & If(IsBlank(Topic.判定中欄), "└なし", Topic.判定中欄) & "
+ 
+                 【初動措置　優先度：低】
+-                " & Topic.優先度表示区分
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatSection4
+-              variable: Topic.優先度表示区分
+-              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【高優先度の完了状況】")).Value, "【ネクストアクション】")).Value)
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatCheck4
+-              variable: Topic.優先度表示検証
+-              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), Or(Topic.優先度表示区分 = "└全て対応済み", Topic.優先度表示区分 = "└未完了あり")), "合格", "不合格")
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatAppend4
+-              variable: Topic.優先度表示組立
+-              value: |-
+-                =Topic.優先度表示組立 & "
++                " & If(IsBlank(Topic.判定低欄), "└なし", Topic.判定低欄) & "
+ 
+                 【高優先度の完了状況】
+-                " & Topic.優先度表示区分
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatSection5
+-              variable: Topic.優先度表示区分
+-              value: =Trim(First(Split(Last(Split(Topic.優先度表示原文, "【ネクストアクション】")).Value, "【確認したいこと】")).Value)
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatCheck5
+-              variable: Topic.優先度表示検証
+-              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "└[^\r\n]+(\r?\n[ \t]*└[^\r\n]+)*", MatchOptions.Complete)), "合格", "不合格")
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatAppend5
+-              variable: Topic.優先度表示組立
+-              value: |-
+-                =Topic.優先度表示組立 & "
++                " & If(Topic.判定未完了 = "あり", "└未完了あり", "└全て対応済み") & "
+ 
+                 【ネクストアクション】
+-                " & Topic.優先度表示区分
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatSection6
+-              variable: Topic.優先度表示区分
+-              value: =Trim(Last(Split(Topic.優先度表示原文, "【確認したいこと】")).Value)
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatCheck6
+-              variable: Topic.優先度表示検証
+-              value: =If(And(Topic.優先度表示検証 = "合格", Not("【" in Topic.優先度表示区分), IsMatch(Topic.優先度表示区分, "└[^\r\n]+(\r?\n[ \t]*└[^\r\n]+)*", MatchOptions.Complete)), "合格", "不合格")
+-            - kind: SetVariable
+-              id: setVariable_priorityFormatAppend6
+-              variable: Topic.優先度表示組立
+-              value: |-
+-                =Topic.優先度表示組立 & "
++                " & Topic.判定次行動 & "
+ 
+                 【確認したいこと】
+-                " & Topic.優先度表示区分
++                " & Topic.判定確認文
+             - kind: ConditionGroup
+               id: conditionGroup_priorityFormatRetry
+               conditions:
+@@ -1002,6 +2096,9 @@
+                                         確認の往復が多くなったため、現時点の状況を一旦提示します。高優先度の項目が残っている可能性があります。
+ 
+                                         {Topic.優先度判定結果}
++                                    - kind: EndDialog
++                                      id: endDialog_priorityRetryLimit
++                                      clearTopicQueue: true
+                               elseActions:
+                                 - kind: SetVariable
+                                   id: setVariable_priorityRetryIncrement

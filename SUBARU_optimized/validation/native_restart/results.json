@@ -129,7 +129,127 @@
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatAssembleInit",
+      "id": "setVariable_itemInit01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemInit20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemainingInit",
       "success": true,
       "type": "String",
       "errors": []
@@ -141,127 +261,1645 @@
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatSection0",
+      "id": "setVariable_itemSectionFACTS",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatCheck0",
+      "id": "setVariable_itemUniqueFACTS",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatAppend0",
+      "id": "setVariable_itemRemoveFACTS",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatSection1",
+      "id": "setVariable_itemBodyFACTS",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatCheck1",
+      "id": "setVariable_itemBodyValidFACTS",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatAppend1",
+      "id": "setVariable_itemSectionEMERGENCY",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatSection2",
+      "id": "setVariable_itemUniqueEMERGENCY",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatCheck2",
+      "id": "setVariable_itemRemoveEMERGENCY",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatAppend2",
+      "id": "setVariable_itemEmergency",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatSection3",
+      "id": "setVariable_itemEmergencyReason",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatCheck3",
+      "id": "setVariable_itemEmergencyValid",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatAppend3",
+      "id": "setVariable_itemSectionNEXT",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatSection4",
+      "id": "setVariable_itemUniqueNEXT",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatCheck4",
+      "id": "setVariable_itemRemoveNEXT",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatAppend4",
+      "id": "setVariable_itemBodyNEXT",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatSection5",
+      "id": "setVariable_itemBodyValidNEXT",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatCheck5",
+      "id": "setVariable_itemSectionCHECK",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatAppend5",
+      "id": "setVariable_itemUniqueCHECK",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatSection6",
+      "id": "setVariable_itemRemoveCHECK",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatCheck6",
+      "id": "setVariable_itemBodyCHECK",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_priorityFormatAppend6",
+      "id": "setVariable_itemBodyValidCHECK",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP01High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP01Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP01Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP02High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP02Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP02Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP03High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP03Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP03Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP04High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP04Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP04Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP05High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP05Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP05Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP06High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP06Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP06Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP07High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP07Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP07Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP08High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP08Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP08Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP09High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP09Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP09Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP10High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP10Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP10Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLinkP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLinkReasonP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStoreStatusP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStoreRequestPriority",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP11High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP11Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP11Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLinkP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLinkReasonP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStoreStatusP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP12High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP12Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP12Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP13High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP13Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP13Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP14High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP14Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP14Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP15High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP15Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP15Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP16High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP16Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP16Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP17High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP17Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP17Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP18High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP18Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP18Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP19High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP19Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP19Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP20High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP20Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP20Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP21High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP21Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP21Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRawP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP22High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP22Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP22Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemNoRemainder",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemUrgentEvacuation",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemUrgentRequest",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRender",
       "success": true,
       "type": "String",
       "errors": []
@@ -300,6 +1938,78 @@
       "id": "conditionItem_priorityLoopNeeded",
       "success": true,
       "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeature11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageFeatureCatalog",
+      "success": true,
+      "type": "String",
       "errors": []
     },
     {
@@ -544,24 +2254,67 @@
   ],
   "formats": [
     {
-      "name": "valid",
+      "name": "valid scalar protocol",
       "success": true,
       "accepted": true,
       "keepsWaiting": true,
+      "placement": true,
       "status": "合格"
     },
     {
-      "name": "valid CRLF",
+      "name": "CRLF protocol",
       "success": true,
       "accepted": true,
       "keepsWaiting": true,
+      "placement": true,
       "status": "合格"
     },
     {
-      "name": "quoted completion outside status",
+      "name": "police 高",
       "success": true,
       "accepted": true,
       "keepsWaiting": true,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "police 中",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "police 低",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "emergency forces both high despite low per-row values",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "performed drain survey stays done",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "CHECK paragraph",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
       "status": "合格"
     },
     {
@@ -569,89 +2322,160 @@
       "success": true,
       "accepted": true,
       "keepsWaiting": false,
+      "placement": true,
       "status": "合格"
     },
     {
-      "name": "malformed 0",
+      "name": "completion words in facts do not finish",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "wrong priority",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 1",
+      "name": "priority used as status",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 2",
+      "name": "extra delimiter",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 3",
+      "name": "duplicate code",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 4",
+      "name": "missing row",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 5",
+      "name": "empty reason",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 6",
+      "name": "unknown block",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 7",
+      "name": "old 7-heading free text",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 8",
+      "name": "empty",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "malformed 9",
+      "name": "question list",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     },
     {
-      "name": "actual reported format drift",
+      "name": "reported free-form drift",
       "success": true,
       "accepted": false,
       "keepsWaiting": true,
+      "placement": true,
       "status": "不合格"
     }
   ],
+  "imageFeatures": {
+    "success": true,
+    "count": 11,
+    "items": [
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      },
+      {
+        "first": true,
+        "second": true
+      }
+    ],
+    "scope": "Prompt assembly only; no image or AI model executed"
+  },
   "source_sha256": {
     "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
-    "3-9-緊急保安業務エージェント_optimized.yaml": "fcdb064b82d9cdbb7e051ec844565cedef6b2c9542dbd543b0a24e6388370c3b",
-    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "b1499bbc0fabd019875936c0b6eef1717bd5fed777c8b352f75bb38155ae89a5"
+    "3-9-緊急保安業務エージェント_optimized.yaml": "17c14260a057b48bf9dbbcf5add84360160e6e010b032e55017e20f1f1b696d7",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529"
   }
 }

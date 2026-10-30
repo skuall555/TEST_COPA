@@ -15,6 +15,8 @@ class Program {
   topic=topic.Add("目的再試行回数",FormulaType.Number);
   foreach(var name in new[]{"優先度表示原文","優先度表示組立","優先度表示検証","優先度表示区分","優先度判定結果"})topic=topic.Add(name,FormulaType.String);
   topic=topic.Add("優先度様式再試行回数",FormulaType.Number);
+  var existingNames=new HashSet<string>(new[]{"初回入力","追加情報履歴","目的回答","目的分野","目的選択入力","対象フォルダ","実行バージョン","優先度ガイド取得結果","優先度判定プロンプト","第1段プロンプト","第2段プロンプト","優先度表示原文","優先度表示組立","優先度表示検証","優先度表示区分","優先度判定結果"});
+  foreach(var item in root.GetProperty("stringVariables").EnumerateArray())if(existingNames.Add(item.GetString()!))topic=topic.Add(item.GetString()!,FormulaType.String);
   var scope=RecordType.Empty().Add("Topic",topic);var checks=new List<object>();
   foreach(var item in root.GetProperty("expressions").EnumerateArray()){
    var result=engine.Check(item.GetProperty("expression").GetString()!,scope,options);
@@ -43,8 +45,27 @@ class Program {
     keepsWaiting=engine.Eval(root.GetProperty("completion").GetString()!,context,options) is BooleanValue flag&&flag.Value;
    }
    bool expectedWait=!item.TryGetProperty("expectWait",out var waitValue)||waitValue.GetBoolean();
-   formats.Add(new{name=item.GetProperty("name").GetString(),success=accepted==item.GetProperty("accept").GetBoolean()&&keepsWaiting==expectedWait,accepted,keepsWaiting,status=state["優先度表示検証"].ToObject()});
+   bool placement=true;
+   string Get(string key)=>state.TryGetValue(key,out var value)&&value is StringValue str?str.Value:"";
+   if(accepted&&item.TryGetProperty("expectBucket",out var bucket)){
+    var map=new Dictionary<string,string>{{"high","判定高欄"},{"middle","判定中欄"},{"low","判定低欄"}};
+    var label=item.GetProperty("expectLabel").GetString()!;
+    placement=map.All(x=>Get(x.Value).Contains(label)==(x.Key==bucket.GetString()));
+   }
+   if(accepted&&item.TryGetProperty("expectEvacHigh",out var evac)&&evac.GetBoolean())placement&=Get("判定高欄").Contains("避難誘導");
+   if(accepted&&item.TryGetProperty("expectCheckPrefix",out var prefix))placement&=Get("判定確認文").StartsWith(prefix.GetString()!);
+   formats.Add(new{name=item.GetProperty("name").GetString(),success=accepted==item.GetProperty("accept").GetBoolean()&&keepsWaiting==expectedWait&&placement,accepted,keepsWaiting,placement,status=state["優先度表示検証"].ToObject()});
   }
-  Console.WriteLine(JsonSerializer.Serialize(new{package="Microsoft.PowerFx.Interpreter 1.8.1",scope="Standalone SDK, not the Studio host; no live model",checks,runs,formats},new JsonSerializerOptions{WriteIndented=true}));
+  var imageState=new Dictionary<string,FormulaValue>{{"画像同時テキスト",FormulaValue.New("写真です")}};
+  foreach(var step in root.GetProperty("imageSteps").EnumerateArray()){
+   var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(imageState.Select(x=>new NamedValue(x.Key,x.Value)))));
+   imageState[step.GetProperty("variable").GetString()!]=engine.Eval(step.GetProperty("expression").GetString()!,context,options);
+  }
+  var imageContext=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(imageState.Select(x=>new NamedValue(x.Key,x.Value)))));
+  var firstPrompt=engine.Eval(root.GetProperty("imageContext").GetString()!,imageContext,options) as StringValue;
+  var secondPrompt=imageState["第2段プロンプト"] as StringValue;
+  var featureResults=root.GetProperty("featureSources").EnumerateArray().Select(x=>new{first=firstPrompt?.Value.Contains(x.GetString()!)==true,second=secondPrompt?.Value.Contains(x.GetString()!)==true}).ToArray();
+  var imageFeatures=new{success=featureResults.All(x=>x.first&&x.second),count=featureResults.Length,items=featureResults,scope="Prompt assembly only; no image or AI model executed"};
+  Console.WriteLine(JsonSerializer.Serialize(new{package="Microsoft.PowerFx.Interpreter 1.8.1",scope="Standalone SDK, not the Studio host; no live model",checks,runs,formats,imageFeatures},new JsonSerializerOptions{WriteIndented=true}));
  }
 }

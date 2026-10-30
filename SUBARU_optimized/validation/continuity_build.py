@@ -29,24 +29,8 @@ def extract(index):
     if index==6:return 'Trim(Last(Split(Topic.優先度表示原文, '+q(head)+')).Value)'
     return 'Trim(First(Split(Last(Split(Topic.優先度表示原文, '+q(head)+')).Value, '+q('【'+HEADINGS[index+1]+'】')+')).Value)'
 def validator():
-    result=[setv('setVariable_priorityFormatRaw','Topic.優先度表示原文','=Topic.優先度判定結果'),setv('setVariable_priorityFormatAssembleInit','Topic.優先度表示組立','=""')]
-    checks=['StartsWith(Trim(Topic.優先度表示原文), '+q('【'+HEADINGS[0]+'】')+')']+['CountRows(Split(Topic.優先度表示原文, '+q('【'+h+'】')+')) = 2'for h in HEADINGS]
-    result.append(setv('setVariable_priorityFormatEnvelope','Topic.優先度表示検証','=If(And('+', '.join(checks)+'), "合格", "不合格")'))
-    for i,head in enumerate(HEADINGS):
-        section='Topic.優先度表示区分'
-        if i==4:shape='Or('+section+' = "└全て対応済み", '+section+' = "└未完了あり")'
-        else:
-            line=r'└[^\r\n]+'if i not in (1,2,3)else r'(└なし|└[^：\r\n]+：(対応済み|未実施|要確認)[^\r\n]*)'
-            shape='IsMatch('+section+', '+q(line+r'(\r?\n[ \t]*'+line+r')*')+', MatchOptions.Complete)'
-        result.extend([
-            setv('setVariable_priorityFormatSection'+str(i),'Topic.優先度表示区分','='+extract(i)),
-            setv('setVariable_priorityFormatCheck'+str(i),'Topic.優先度表示検証','=If(And(Topic.優先度表示検証 = "合格", Not("【" in '+section+'), '+shape+'), "合格", "不合格")'),
-            setv('setVariable_priorityFormatAppend'+str(i),'Topic.優先度表示組立','=Topic.優先度表示組立 & '+q(('\n\n'if i else '')+'【'+head+'】\n')+' & '+section),
-        ])
-    retry=[setv('setVariable_priorityFormatRetryIncrement','Topic.優先度様式再試行回数','=Topic.優先度様式再試行回数 + 1'),{'kind':'GotoAction','id':'goto_priorityFormatRetry','actionId':'answer_priority'}]
-    result.append(cg('conditionGroup_priorityFormatRetry','=And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1)',retry))
-    result.append(cg('conditionGroup_priorityFormatAccepted','=Topic.優先度表示検証 = "合格"',[setv('setVariable_priorityFormatUseAssembled','Topic.優先度判定結果','=Topic.優先度表示組立')]))
-    return result
+    from itemized_build import validator as current_validator
+    return current_validator()
 def apply(field,instructions):
     def guide(n):
         s=n['value'][2:-1].replace('""','"')
