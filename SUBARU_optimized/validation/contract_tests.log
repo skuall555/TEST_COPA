@@ -22,6 +22,10 @@ test_rankers_unchanged (test_contracts.Contracts.test_rankers_unchanged) ... ok
 test_revise_all_row_validation (test_contracts.Contracts.test_revise_all_row_validation) ... ok
 test_revise_short_text_not_discarded (test_contracts.Contracts.test_revise_short_text_not_discarded) ... ok
 test_row_checks_have_shallow_expressions (test_contracts.Contracts.test_row_checks_have_shallow_expressions) ... ok
+test_added_nodes_only_parse_validate_and_render_pressure_measure (test_field_concepts.FieldConcepts.test_added_nodes_only_parse_validate_and_render_pressure_measure) ... ok
+test_concepts_reach_guide_and_ai_input_before_internal_contract (test_field_concepts.FieldConcepts.test_concepts_reach_guide_and_ai_input_before_internal_contract) ... ok
+test_entry_image_and_global_instruction_are_byte_identical (test_field_concepts.FieldConcepts.test_entry_image_and_global_instruction_are_byte_identical) ... ok
+test_existing_nodes_change_only_three_prompt_fields (test_field_concepts.FieldConcepts.test_existing_nodes_change_only_three_prompt_fields) ... ok
 test_editing_only_pocket_feature_changes_only_its_node (test_itemized_features.ItemizedFeatures.test_editing_only_pocket_feature_changes_only_its_node) ... ok
 test_image_connector_trigger_and_history_preserved (test_itemized_features.ItemizedFeatures.test_image_connector_trigger_and_history_preserved) ... ok
 test_only_obsolete_layout_parser_ids_are_retired (test_itemized_features.ItemizedFeatures.test_only_obsolete_layout_parser_ids_are_retired) ... ok
@@ -48,7 +52,7 @@ test_unexpected_classifier_output_is_not_an_intent (test_restart.Restart.test_un
 test_unrelated_manual_nodes_identical (test_restart.Restart.test_unrelated_manual_nodes_identical) ... ok
 
 ----------------------------------------------------------------------
-Ran 48 tests in 1.702s
+Ran 52 tests in 2.386s
 
 OK
 1-マニュアル関連入口_optimized.yaml PASS new variable candidates: []

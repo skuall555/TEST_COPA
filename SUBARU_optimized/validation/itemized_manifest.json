@@ -1721,5 +1721,7 @@
   },
   "runtime_cases_not_run": 31,
   "scope": "Native scalar execution and prompt wiring; Studio and image/AI model accuracy NOT_RUN",
-  "full_yaml_blocks_match": true
+  "full_yaml_blocks_match": true,
+  "historical_release": "ae67e12",
+  "latest_manifest": "field_concepts_manifest.json"
 }

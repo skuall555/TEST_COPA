@@ -1,0 +1,41 @@
+{
+  "base_commit": "ae67e129b5b2c8469d5f70f58c3c719393ef535f",
+  "source": "field_concepts/01_調査遮断供給支障.md",
+  "source_sha256": "c24a946660a6f11a67b8b453bc53cecccd17a8a24e070ccfcd269f1a7d544e27",
+  "original_attachment": "originals/20261030_調査遮断供給支障_追加概念.txt",
+  "original_attachment_sha256": "c264927021e35b9089f166fdc99f6e0136787d4503fe602ad3d4628cc8e3df7b",
+  "files": {
+    "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "d5fe8853ae02dd620ec420e4ff3843bf23d2bf4bd632362df1cc11c11f11fe7c",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529",
+    "SUBARU_エージェント指示_optimized.txt": "7fa9192d03dcff9ea53b5ef480e50b948fb784f4c8ea583f63550e7ad816603c"
+  },
+  "changed_existing_action_ids": [
+    "setVariable_priorityGuideFixed",
+    "setVariable_priorityPrompt",
+    "answer_priority"
+  ],
+  "added_action_ids": [
+    "setVariable_itemBucketP23High",
+    "setVariable_itemBucketP23Low",
+    "setVariable_itemBucketP23Medium",
+    "setVariable_itemIncompleteP23",
+    "setVariable_itemLineP23",
+    "setVariable_itemPriorityP23",
+    "setVariable_itemRawP23",
+    "setVariable_itemReasonP23",
+    "setVariable_itemRemoveP23",
+    "setVariable_itemStatusP23",
+    "setVariable_itemValidP23"
+  ],
+  "removed_action_ids": [],
+  "new_variables": [],
+  "unchanged_entry_image_instructions": true,
+  "unittest_count": 52,
+  "native_expression_checks": 348,
+  "native_number_cases": 45,
+  "native_pipeline_cases": 26,
+  "native_image_features": true,
+  "Studio_cases_NOT_RUN": 32,
+  "full_yaml_blocks_match": true
+}

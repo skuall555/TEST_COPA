@@ -1881,6 +1881,72 @@
       "errors": []
     },
     {
+      "id": "setVariable_itemRawP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemRemoveP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemPriorityP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemStatusP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemReasonP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemValidP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemLineP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP23High",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP23Medium",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemBucketP23Low",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_itemIncompleteP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "setVariable_itemNoRemainder",
       "success": true,
       "type": "String",
@@ -2318,6 +2384,46 @@
       "status": "合格"
     },
     {
+      "name": "pressure checks high and pending block completion",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "completed pressure checks permit completion",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": false,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "no supply issue keeps pressure measure out of display",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": false,
+      "placement": true,
+      "status": "合格"
+    },
+    {
+      "name": "missing pressure code is rejected",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "placement": true,
+      "status": "不合格"
+    },
+    {
+      "name": "unknown emergency judgement uses provisional middle with explicit reason",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "status": "合格"
+    },
+    {
       "name": "completed high measures",
       "success": true,
       "accepted": true,
@@ -2475,7 +2581,7 @@
   },
   "source_sha256": {
     "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
-    "3-9-緊急保安業務エージェント_optimized.yaml": "17c14260a057b48bf9dbbcf5add84360160e6e010b032e55017e20f1f1b696d7",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "d5fe8853ae02dd620ec420e4ff3843bf23d2bf4bd632362df1cc11c11f11fe7c",
     "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529"
   }
 }

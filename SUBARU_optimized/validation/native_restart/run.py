@@ -62,6 +62,12 @@ def main():
  add('emergency forces both high despite low per-row values',wire({'P11':('低','未実施','元の行は低'), 'P12':('低','要確認','元の行は低')},emergency='高|入室不能の部屋で検知と警報が継続'),expectBucket='high',expectLabel='消防・警察への要請',expectEvacHigh=True)
  add('performed drain survey stays done',wire({'P05':('高','対応済み','排水口の調査実施済み'), 'P20':('高','未実施','未入室の別室は追加調査が必要')}),expectBucket='high',expectLabel='流入ガス・滞留ガスの検知器調査：対応済み')
  add('CHECK paragraph',wire(check='入室不能の部屋で検知されているため、要請と避難は高です。追加回答を待たず提示した作業を進めてください。上流遮断の方法を確認するため建物種別を教えてください。'),expectCheckPrefix='入室不能')
+ # Pressure is an optional item, but if high and incomplete it must block completion.
+ add('pressure checks high and pending block completion',wire({'P01':('高','対応済み','実施済み報告あり'),'P23':('高','要確認','ガスが出ず圧力と表示の確認が未報告')}),expectBucket='high',expectLabel='圧力・供給支障の確認と調査：要確認',expectWait=True)
+ add('completed pressure checks permit completion',wire({'P01':('高','対応済み','実施済み報告あり'),'P23':('高','対応済み','必要な初期確認と対象調査が完了と報告')}),expectBucket='high',expectLabel='圧力・供給支障の確認と調査：対応済み',expectWait=False)
+ add('no supply issue keeps pressure measure out of display',wire({'P01':('高','対応済み','実施済み報告あり')}),expectWait=False)
+ add('missing pressure code is rejected',good.replace('[[P23]]対象外|対象外|今回の事実では対象でない[[/P23]]',''),False)
+ add('unknown emergency judgement uses provisional middle with explicit reason',wire({'P11':('中','要確認','判定保留・追加確認が必要。現在の臭気と実反応が未確認')}),expectBucket='middle',expectLabel='消防・警察への要請：要確認')
  add('completed high measures',wire({'P01':('高','対応済み','実施済み報告あり')}),expectWait=False)
  add('completion words in facts do not finish',good.replace('└報告済みの事実を保持','└全て対応済みではないと報告'))
  for name,text in [('wrong priority',good.replace('[[P11]]中|','[[P11]]最優先|')),('priority used as status',good.replace('[[P11]]中|要確認|','[[P11]]高|高|')),('extra delimiter',good.replace('入力された基本措置の根拠','根拠|余分')),('duplicate code',good+'\n[[P11]]高|未実施|追加[[/P11]]'),('missing row',good.replace('[[P12]]中|要確認|必要な対象情報が未確認[[/P12]]','')),('empty reason',good.replace('入力された基本措置の根拠','')),('unknown block',good.replace('[[NEXT]]','[[UNKNOWN]]余分[[/UNKNOWN]]\n[[NEXT]]')),('old 7-heading free text','【確認できた事実】\n└臭気あり'),('empty',''),('question list',wire(check='└建物種別は何か'))]:add(name,text,False)
