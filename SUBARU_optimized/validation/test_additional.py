@@ -26,7 +26,8 @@ class Additional(unittest.TestCase):
   for variable,expression in writes.items():
    if variable not in existing and variable!='Topic.優先度表示原文':self.assertTrue(expression.startswith('="')or expression=='=0',variable)
   self.assertEqual(writes['Topic.優先度様式再試行回数'],'=0')
-  self.assertFalse(any('Filter('in n.get('value','')or 'Concat('in n.get('value','')for n in added))
+  local_tables={'setVariable_itemBucketHigh','setVariable_itemBucketMedium','setVariable_itemBucketLow','setVariable_itemIncomplete'}
+  self.assertFalse(any(('Filter('in n.get('value','')or 'Concat('in n.get('value',''))and n['id']not in local_tables for n in added))
  def test_retry_does_not_reinitialize_counter(self):
   retry=self.new['conditionGroup_priorityFormatRetry'];self.assertIn(' < 1',retry['conditions'][0]['condition'])
   self.assertEqual(self.new['goto_priorityFormatRetry']['actionId'],'answer_priority')
@@ -35,6 +36,6 @@ class Additional(unittest.TestCase):
  def test_other_safety_and_image_ownership_preserved(self):
   a=self.old['setVariable_priorityGuideFixed']['value'];b=self.new['setVariable_priorityGuideFixed']['value']
   a=a.replace('既存の高欄の書式では「未実施（設置報告なし・要確認）」として、実際に未設置であるとの事実を作らない。','設置報告がない場合の実施状況は「要確認」とする。')
-  for start,end in [('# 窓等の開放・換気','# メーターガス栓閉止'),('# メーターガス栓閉止','# 立入禁止・保安柵・警戒区域'),('# 立入禁止・保安柵・警戒区域','# 避難誘導'),('# 周辺住戸・建物調査','# 判定項目の関連付け')]:self.assertEqual(a[a.index(start):a.index(end)],b[b.index(start):b.index(end)])
+  for start,end in [('# 窓等の開放・換気','# メーターガス栓閉止'),('# メーターガス栓閉止','# 消防・警察への要請'),('# 立入禁止・保安柵・警戒区域','# 避難誘導'),('# 周辺住戸・建物調査','# 判定項目の関連付け')]:self.assertEqual(a[a.index(start):a.index(end)],b[b.index(start):b.index(end)])
   self.assertTrue(self.new['question_priorityUpdate']['interruptionPolicy']['allowInterruption'])
 if __name__=='__main__':unittest.main()

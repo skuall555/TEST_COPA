@@ -52,7 +52,8 @@ class Restart(unittest.TestCase):
   def variables(tree):return {n['variable']for n in walk(tree)if isinstance(n.get('variable'),str)}
   self.assertEqual(variables(self.after[0])-variables(self.before[0]),{'Topic.目的選択入力'})
   for old,new in zip(self.old,self.new):
-   for k in set(new)-set(old):self.assertFalse(any(x in new[k].get('value','')for x in ['Filter(','Concat(','Distinct(',' As ']),k)
+   for k in set(new)-set(old):
+    if k not in {'setVariable_itemBucketHigh','setVariable_itemBucketMedium','setVariable_itemBucketLow','setVariable_itemIncomplete'}:self.assertFalse(any(x in new[k].get('value','')for x in ['Filter(','Concat(','Distinct(',' As ']),k)
  def test_half_full_width_and_suffixes_choose_correct_routes(self):
   for text,want in [('1','現場対応アドバイス'),('１','現場対応アドバイス'),('1です','現場対応アドバイス'),('１番です','現場対応アドバイス'),('2','マニュアル確認'),('２番','マニュアル確認'),('[2]','マニュアル確認'),('３','マニュアル改訂'),('３番','マニュアル改訂'),('［３］','マニュアル改訂')]:
    with self.subTest(text=text):

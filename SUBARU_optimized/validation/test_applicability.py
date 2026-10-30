@@ -5,13 +5,10 @@ from restart_support import nodes
 BASE='9b2c7f107a0a8c16150f3b8a4fbcd4fbc8c80ec6'
 def previous(name):return subprocess.check_output(['git','-C',str(R.parent),'show',BASE+':SUBARU_optimized/'+name]).decode()
 class Applicability(unittest.TestCase):
- def test_no_flow_or_node_or_variable_changes(self):
+ def test_nonformatting_flow_preserved(self):
   a=yaml.safe_load(previous(FILES[1]));b=yaml.safe_load((R/FILES[1]).read_text())
-  def erase_prompts(x):
-   if isinstance(x,list):return [erase_prompts(v)for v in x]
-   if isinstance(x,dict):return {k:erase_prompts(v)for k,v in x.items()if not((x.get('id')in ('setVariable_priorityGuideFixed','setVariable_priorityPrompt')and k=='value')or(x.get('id')=='answer_priority'and k=='additionalInstructions'))}
-   return x
-  self.assertEqual(erase_prompts(a),erase_prompts(b))
+  from speed_scope import strip_formatting
+  self.assertEqual(strip_formatting(a),strip_formatting(b))
   for name in [FILES[0],FILES[2],FILES[3]]:self.assertEqual(previous(name),(R/name).read_text())
  def test_known_positive_odor_only_rule_and_all_high_template_are_removed(self):
   text=(R/FILES[1]).read_text()

@@ -54,8 +54,32 @@ class Program {
    }
    if(accepted&&item.TryGetProperty("expectEvacHigh",out var evac)&&evac.GetBoolean())placement&=Get("判定高欄").Contains("避難誘導");
    if(accepted&&item.TryGetProperty("expectCheckPrefix",out var prefix))placement&=Get("判定確認文").StartsWith(prefix.GetString()!);
-   formats.Add(new{name=item.GetProperty("name").GetString(),success=accepted==item.GetProperty("accept").GetBoolean()&&keepsWaiting==expectedWait&&placement,accepted,keepsWaiting,placement,status=state["優先度表示検証"].ToObject()});
+   bool previousMatches=true;
+   if(item.TryGetProperty("comparePrevious",out var comparePrevious)&&comparePrevious.GetBoolean()){
+    var previousState=new Dictionary<string,FormulaValue>{{"優先度判定結果",FormulaValue.New(item.GetProperty("text").GetString()!)}};
+    foreach(var step in root.GetProperty("previousFormatSteps").EnumerateArray()){
+     var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(previousState.Select(x=>new NamedValue(x.Key,x.Value)))));
+     previousState[step.GetProperty("variable").GetString()!]=engine.Eval(step.GetProperty("expression").GetString()!,context,options);
+    }
+    bool previousAccepted=previousState["優先度表示検証"] is StringValue previousStatus&&previousStatus.Value=="合格";
+    previousMatches=previousAccepted==accepted&&(!accepted||((StringValue)previousState["優先度表示組立"]).Value==Get("優先度表示組立"));
+   }
+   formats.Add(new{name=item.GetProperty("name").GetString(),success=accepted==item.GetProperty("accept").GetBoolean()&&keepsWaiting==expectedWait&&placement&&previousMatches,accepted,keepsWaiting,placement,previousMatches,status=state["優先度表示検証"].ToObject()});
   }
+  var fieldPromptItems=new List<object>();bool fieldPromptSuccess=true;
+  foreach(var item in root.GetProperty("fieldPrompts").EnumerateArray()){
+   var guide=engine.Eval(item.GetProperty("guide").GetString()!,options:options)as StringValue;
+   var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(new NamedValue("優先度ガイド取得結果",guide!),new NamedValue("初回入力",FormulaValue.New("浴室で臭気あり")),new NamedValue("追加情報履歴",FormulaValue.New("")))));
+   var prompt=engine.Eval(item.GetProperty("prompt").GetString()!,context,options)as StringValue;
+   var concept=root.GetProperty("fieldConceptSource").GetString()!;
+   int copies=prompt==null?0:(prompt.Value.Length-prompt.Value.Replace(concept,"").Length)/concept.Length;
+   bool isCurrent=item.GetProperty("name").GetString()=="current";
+   bool success=prompt!=null&&(!isCurrent||copies==1);
+   fieldPromptSuccess&=success;
+   fieldPromptItems.Add(new{name=item.GetProperty("name").GetString(),success,characters=prompt?.Value.Length,conceptCopies=copies,conceptHeadingCopies=prompt==null?0:prompt.Value.Split("# 現場調査・遮断・供給支障の追加概念",StringSplitOptions.None).Length-1});
+  }
+  var fieldPrompts=new{success=fieldPromptSuccess,items=fieldPromptItems,scope="Evaluated prompt assembly; character counts are not model tokens or latency"};
+
   var imageState=new Dictionary<string,FormulaValue>{{"画像同時テキスト",FormulaValue.New("写真です")}};
   foreach(var step in root.GetProperty("imageSteps").EnumerateArray()){
    var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(imageState.Select(x=>new NamedValue(x.Key,x.Value)))));
@@ -66,6 +90,6 @@ class Program {
   var secondPrompt=imageState["第2段プロンプト"] as StringValue;
   var featureResults=root.GetProperty("featureSources").EnumerateArray().Select(x=>new{first=firstPrompt?.Value.Contains(x.GetString()!)==true,second=secondPrompt?.Value.Contains(x.GetString()!)==true}).ToArray();
   var imageFeatures=new{success=featureResults.All(x=>x.first&&x.second),count=featureResults.Length,items=featureResults,scope="Prompt assembly only; no image or AI model executed"};
-  Console.WriteLine(JsonSerializer.Serialize(new{package="Microsoft.PowerFx.Interpreter 1.8.1",scope="Standalone SDK, not the Studio host; no live model",checks,runs,formats,imageFeatures},new JsonSerializerOptions{WriteIndented=true}));
+  Console.WriteLine(JsonSerializer.Serialize(new{package="Microsoft.PowerFx.Interpreter 1.8.1",scope="Standalone SDK, not the Studio host; no live model",checks,runs,formats,imageFeatures,fieldPrompts},new JsonSerializerOptions{WriteIndented=true}));
  }
 }

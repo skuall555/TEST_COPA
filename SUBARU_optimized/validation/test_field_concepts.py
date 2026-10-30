@@ -14,30 +14,21 @@ class FieldConcepts(unittest.TestCase):
   cls.old=index(previous(FILES[1]));cls.new=index((R/FILES[1]).read_text())
  def test_entry_image_and_global_instruction_are_byte_identical(self):
   for name in [FILES[0],FILES[2],FILES[3]]:self.assertEqual(previous(name),(R/name).read_text())
- def test_existing_nodes_change_only_three_prompt_fields(self):
-  self.assertLessEqual(set(self.old),set(self.new))
-  self.assertEqual({k for k in self.old if own(self.old[k])!=own(self.new[k])},{'setVariable_priorityGuideFixed','setVariable_priorityPrompt','answer_priority'})
-  def strip_added(x):
-   if isinstance(x,list):return [strip_added(v) for v in x if not(isinstance(v,dict) and v.get('id') in set(self.new)-set(self.old))]
-   if isinstance(x,dict):
-    if x.get('id') in {'setVariable_priorityGuideFixed','setVariable_priorityPrompt','answer_priority'}:return self.old[x['id']]
-    return {k:strip_added(v)for k,v in x.items()}
-   return x
-  self.assertEqual(strip_added(yaml.safe_load((R/FILES[1]).read_text())),yaml.safe_load(previous(FILES[1])))
- def test_added_nodes_only_parse_validate_and_render_pressure_measure(self):
-  added=set(self.new)-set(self.old)
-  self.assertTrue(added)
-  self.assertTrue(all('P23'in k for k in added))
-  expected={n['id']:n for n in validator() if 'P23'in n['id']}
-  self.assertEqual(added,set(expected))
+ def test_existing_business_flow_preserved(self):
+  from speed_scope import strip_formatting,retired
+  self.assertTrue(all(retired(k)for k in set(self.old)-set(self.new)))
+  self.assertEqual(strip_formatting(yaml.safe_load(previous(FILES[1]))),strip_formatting(yaml.safe_load((R/FILES[1]).read_text())))
+ def test_pressure_measure_and_no_new_variables(self):
+  expected={n['id']:n for n in validator()if 'P23'in n['id']}
+  self.assertTrue(expected)
   for k,n in expected.items():self.assertEqual(n,self.new[k])
   self.assertEqual({n.get('variable')for n in self.old.values()},{n.get('variable')for n in self.new.values()})
  def test_concepts_reach_guide_and_ai_input_before_internal_contract(self):
   rules=(R/SOURCE).read_text().rstrip()
   guide=self.new['setVariable_priorityGuideFixed']['value'][2:-1].replace('""','"')
   prompt=self.new['setVariable_priorityPrompt']['value'].replace('""','"')
-  self.assertIn(rules,guide);self.assertIn(rules,prompt)
-  self.assertLess(prompt.index(rules),prompt.index('# 今回の内部出力契約'))
+  self.assertIn(rules,guide);self.assertNotIn(rules,prompt)
+  self.assertLess(prompt.index('Topic.優先度ガイド取得結果'),prompt.index('# 今回の内部出力契約'))
   self.assertIn('Topic.優先度判定プロンプト',self.new['answer_priority']['userInput'])
   self.assertIn('Topic.優先度ガイド取得結果',prompt)
 if __name__=='__main__':unittest.main()

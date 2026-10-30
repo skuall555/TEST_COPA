@@ -399,24 +399,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP01",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP01",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP01",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP01",
       "success": true,
       "type": "String",
@@ -424,30 +406,6 @@
     },
     {
       "id": "setVariable_itemLineP01",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP01High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP01Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP01Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP01",
       "success": true,
       "type": "String",
       "errors": []
@@ -465,24 +423,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP02",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP02",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP02",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP02",
       "success": true,
       "type": "String",
@@ -490,30 +430,6 @@
     },
     {
       "id": "setVariable_itemLineP02",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP02High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP02Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP02Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP02",
       "success": true,
       "type": "String",
       "errors": []
@@ -531,24 +447,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP03",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP03",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP03",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP03",
       "success": true,
       "type": "String",
@@ -556,30 +454,6 @@
     },
     {
       "id": "setVariable_itemLineP03",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP03High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP03Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP03Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP03",
       "success": true,
       "type": "String",
       "errors": []
@@ -597,24 +471,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP04",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP04",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP04",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP04",
       "success": true,
       "type": "String",
@@ -622,30 +478,6 @@
     },
     {
       "id": "setVariable_itemLineP04",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP04High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP04Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP04Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP04",
       "success": true,
       "type": "String",
       "errors": []
@@ -663,24 +495,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP05",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP05",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP05",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP05",
       "success": true,
       "type": "String",
@@ -688,30 +502,6 @@
     },
     {
       "id": "setVariable_itemLineP05",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP05High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP05Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP05Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP05",
       "success": true,
       "type": "String",
       "errors": []
@@ -729,24 +519,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP06",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP06",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP06",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP06",
       "success": true,
       "type": "String",
@@ -754,30 +526,6 @@
     },
     {
       "id": "setVariable_itemLineP06",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP06High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP06Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP06Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP06",
       "success": true,
       "type": "String",
       "errors": []
@@ -795,24 +543,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP07",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP07",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP07",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP07",
       "success": true,
       "type": "String",
@@ -820,30 +550,6 @@
     },
     {
       "id": "setVariable_itemLineP07",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP07High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP07Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP07Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP07",
       "success": true,
       "type": "String",
       "errors": []
@@ -861,24 +567,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP08",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP08",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP08",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP08",
       "success": true,
       "type": "String",
@@ -886,30 +574,6 @@
     },
     {
       "id": "setVariable_itemLineP08",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP08High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP08Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP08Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP08",
       "success": true,
       "type": "String",
       "errors": []
@@ -927,24 +591,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP09",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP09",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP09",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP09",
       "success": true,
       "type": "String",
@@ -952,30 +598,6 @@
     },
     {
       "id": "setVariable_itemLineP09",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP09High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP09Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP09Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP09",
       "success": true,
       "type": "String",
       "errors": []
@@ -993,24 +615,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP10",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP10",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP10",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP10",
       "success": true,
       "type": "String",
@@ -1018,30 +622,6 @@
     },
     {
       "id": "setVariable_itemLineP10",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP10High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP10Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP10Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP10",
       "success": true,
       "type": "String",
       "errors": []
@@ -1059,37 +639,7 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP11",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP11",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP11",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP11",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemLinkP11",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemLinkReasonP11",
       "success": true,
       "type": "String",
       "errors": []
@@ -1113,30 +663,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP11High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP11Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP11Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP11",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP12",
       "success": true,
       "type": "String",
@@ -1149,37 +675,7 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemPriorityP12",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP12",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP12",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemValidP12",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemLinkP12",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemLinkReasonP12",
       "success": true,
       "type": "String",
       "errors": []
@@ -1197,30 +693,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP12High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP12Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP12Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP12",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP13",
       "success": true,
       "type": "String",
@@ -1228,24 +700,6 @@
     },
     {
       "id": "setVariable_itemRemoveP13",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP13",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP13",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP13",
       "success": true,
       "type": "String",
       "errors": []
@@ -1263,30 +717,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP13High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP13Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP13Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP13",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP14",
       "success": true,
       "type": "String",
@@ -1294,24 +724,6 @@
     },
     {
       "id": "setVariable_itemRemoveP14",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP14",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP14",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP14",
       "success": true,
       "type": "String",
       "errors": []
@@ -1329,30 +741,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP14High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP14Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP14Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP14",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP15",
       "success": true,
       "type": "String",
@@ -1360,24 +748,6 @@
     },
     {
       "id": "setVariable_itemRemoveP15",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP15",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP15",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP15",
       "success": true,
       "type": "String",
       "errors": []
@@ -1395,30 +765,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP15High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP15Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP15Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP15",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP16",
       "success": true,
       "type": "String",
@@ -1426,24 +772,6 @@
     },
     {
       "id": "setVariable_itemRemoveP16",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP16",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP16",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP16",
       "success": true,
       "type": "String",
       "errors": []
@@ -1461,30 +789,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP16High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP16Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP16Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP16",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP17",
       "success": true,
       "type": "String",
@@ -1492,24 +796,6 @@
     },
     {
       "id": "setVariable_itemRemoveP17",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP17",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP17",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP17",
       "success": true,
       "type": "String",
       "errors": []
@@ -1527,30 +813,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP17High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP17Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP17Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP17",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP18",
       "success": true,
       "type": "String",
@@ -1558,24 +820,6 @@
     },
     {
       "id": "setVariable_itemRemoveP18",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP18",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP18",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP18",
       "success": true,
       "type": "String",
       "errors": []
@@ -1593,30 +837,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP18High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP18Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP18Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP18",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP19",
       "success": true,
       "type": "String",
@@ -1624,24 +844,6 @@
     },
     {
       "id": "setVariable_itemRemoveP19",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP19",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP19",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP19",
       "success": true,
       "type": "String",
       "errors": []
@@ -1659,30 +861,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP19High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP19Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP19Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP19",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP20",
       "success": true,
       "type": "String",
@@ -1690,24 +868,6 @@
     },
     {
       "id": "setVariable_itemRemoveP20",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP20",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP20",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP20",
       "success": true,
       "type": "String",
       "errors": []
@@ -1725,30 +885,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP20High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP20Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP20Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP20",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP21",
       "success": true,
       "type": "String",
@@ -1756,24 +892,6 @@
     },
     {
       "id": "setVariable_itemRemoveP21",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP21",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP21",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP21",
       "success": true,
       "type": "String",
       "errors": []
@@ -1791,30 +909,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP21High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP21Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP21Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP21",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP22",
       "success": true,
       "type": "String",
@@ -1822,24 +916,6 @@
     },
     {
       "id": "setVariable_itemRemoveP22",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP22",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP22",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP22",
       "success": true,
       "type": "String",
       "errors": []
@@ -1857,30 +933,6 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP22High",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP22Medium",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemBucketP22Low",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemIncompleteP22",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
       "id": "setVariable_itemRawP23",
       "success": true,
       "type": "String",
@@ -1888,24 +940,6 @@
     },
     {
       "id": "setVariable_itemRemoveP23",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemPriorityP23",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemStatusP23",
-      "success": true,
-      "type": "String",
-      "errors": []
-    },
-    {
-      "id": "setVariable_itemReasonP23",
       "success": true,
       "type": "String",
       "errors": []
@@ -1923,25 +957,25 @@
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP23High",
+      "id": "setVariable_itemBucketHigh",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP23Medium",
+      "id": "setVariable_itemBucketMedium",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_itemBucketP23Low",
+      "id": "setVariable_itemBucketLow",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "setVariable_itemIncompleteP23",
+      "id": "setVariable_itemIncomplete",
       "success": true,
       "type": "String",
       "errors": []
@@ -2325,6 +1359,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2333,6 +1368,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2341,6 +1377,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2349,6 +1386,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2357,6 +1395,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2365,6 +1404,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2373,6 +1413,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2381,6 +1422,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2389,6 +1431,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2397,6 +1440,7 @@
       "accepted": true,
       "keepsWaiting": false,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2405,22 +1449,25 @@
       "accepted": true,
       "keepsWaiting": false,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
-      "name": "missing pressure code is rejected",
-      "success": true,
-      "accepted": false,
-      "keepsWaiting": true,
-      "placement": true,
-      "status": "不合格"
-    },
-    {
-      "name": "unknown emergency judgement uses provisional middle with explicit reason",
+      "name": "optional pressure code may be omitted",
       "success": true,
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "reported caution warrants middle with explicit reason",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2429,6 +1476,7 @@
       "accepted": true,
       "keepsWaiting": false,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2437,6 +1485,7 @@
       "accepted": true,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "合格"
     },
     {
@@ -2445,6 +1494,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2453,6 +1503,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2461,6 +1512,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2469,6 +1521,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2477,6 +1530,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2485,6 +1539,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2493,6 +1548,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2501,6 +1557,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2509,6 +1566,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2517,6 +1575,7 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
     },
     {
@@ -2525,7 +1584,53 @@
       "accepted": false,
       "keepsWaiting": true,
       "placement": true,
+      "previousMatches": true,
       "status": "不合格"
+    },
+    {
+      "name": "all optional measures omitted",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "duplicate optional pressure code",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "不合格"
+    },
+    {
+      "name": "orphan optional end marker",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "不合格"
+    },
+    {
+      "name": "internal row separator injection rejected",
+      "success": true,
+      "accepted": false,
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "不合格"
+    },
+    {
+      "name": "ordinary initial report with low request",
+      "success": true,
+      "accepted": true,
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
     }
   ],
   "imageFeatures": {
@@ -2579,9 +1684,29 @@
     ],
     "scope": "Prompt assembly only; no image or AI model executed"
   },
+  "fieldPrompts": {
+    "success": true,
+    "items": [
+      {
+        "name": "previous",
+        "success": true,
+        "characters": 33138,
+        "conceptCopies": 0,
+        "conceptHeadingCopies": 2
+      },
+      {
+        "name": "current",
+        "success": true,
+        "characters": 23917,
+        "conceptCopies": 1,
+        "conceptHeadingCopies": 1
+      }
+    ],
+    "scope": "Evaluated prompt assembly; character counts are not model tokens or latency"
+  },
   "source_sha256": {
     "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
-    "3-9-緊急保安業務エージェント_optimized.yaml": "cfc4f8e48d85c29ffcbfcf7296c9ebdd213b8108e33aeeb9f8c09f4b647a37fa",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "0af280cfdeac88bec5ea0bd27d6e3418e0ecce2c1dd8fe82ab029ae1c66d4fd8",
     "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529"
   }
 }

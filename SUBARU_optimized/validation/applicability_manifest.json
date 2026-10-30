@@ -23,5 +23,7 @@
   "native_number_cases": 45,
   "native_pipeline_cases": 26,
   "native_image_features": true,
-  "Studio_cases_NOT_RUN": 40
+  "Studio_cases_NOT_RUN": 40,
+  "historical_release": "67165f8",
+  "latest_manifest": "speed_initial_manifest.json"
 }

@@ -180,354 +180,129 @@
     "setVariable_itemRemoveP01"
   ],
   "setVariable_itemRemoveP01": [
-    "setVariable_itemPriorityP01"
-  ],
-  "setVariable_itemPriorityP01": [
-    "setVariable_itemStatusP01"
-  ],
-  "setVariable_itemStatusP01": [
-    "setVariable_itemReasonP01"
-  ],
-  "setVariable_itemReasonP01": [
     "setVariable_itemValidP01"
   ],
   "setVariable_itemValidP01": [
     "setVariable_itemLineP01"
   ],
   "setVariable_itemLineP01": [
-    "setVariable_itemBucketP01High"
-  ],
-  "setVariable_itemBucketP01High": [
-    "setVariable_itemBucketP01Medium"
-  ],
-  "setVariable_itemBucketP01Medium": [
-    "setVariable_itemBucketP01Low"
-  ],
-  "setVariable_itemBucketP01Low": [
-    "setVariable_itemIncompleteP01"
-  ],
-  "setVariable_itemIncompleteP01": [
     "setVariable_itemRawP02"
   ],
   "setVariable_itemRawP02": [
     "setVariable_itemRemoveP02"
   ],
   "setVariable_itemRemoveP02": [
-    "setVariable_itemPriorityP02"
-  ],
-  "setVariable_itemPriorityP02": [
-    "setVariable_itemStatusP02"
-  ],
-  "setVariable_itemStatusP02": [
-    "setVariable_itemReasonP02"
-  ],
-  "setVariable_itemReasonP02": [
     "setVariable_itemValidP02"
   ],
   "setVariable_itemValidP02": [
     "setVariable_itemLineP02"
   ],
   "setVariable_itemLineP02": [
-    "setVariable_itemBucketP02High"
-  ],
-  "setVariable_itemBucketP02High": [
-    "setVariable_itemBucketP02Medium"
-  ],
-  "setVariable_itemBucketP02Medium": [
-    "setVariable_itemBucketP02Low"
-  ],
-  "setVariable_itemBucketP02Low": [
-    "setVariable_itemIncompleteP02"
-  ],
-  "setVariable_itemIncompleteP02": [
     "setVariable_itemRawP03"
   ],
   "setVariable_itemRawP03": [
     "setVariable_itemRemoveP03"
   ],
   "setVariable_itemRemoveP03": [
-    "setVariable_itemPriorityP03"
-  ],
-  "setVariable_itemPriorityP03": [
-    "setVariable_itemStatusP03"
-  ],
-  "setVariable_itemStatusP03": [
-    "setVariable_itemReasonP03"
-  ],
-  "setVariable_itemReasonP03": [
     "setVariable_itemValidP03"
   ],
   "setVariable_itemValidP03": [
     "setVariable_itemLineP03"
   ],
   "setVariable_itemLineP03": [
-    "setVariable_itemBucketP03High"
-  ],
-  "setVariable_itemBucketP03High": [
-    "setVariable_itemBucketP03Medium"
-  ],
-  "setVariable_itemBucketP03Medium": [
-    "setVariable_itemBucketP03Low"
-  ],
-  "setVariable_itemBucketP03Low": [
-    "setVariable_itemIncompleteP03"
-  ],
-  "setVariable_itemIncompleteP03": [
     "setVariable_itemRawP04"
   ],
   "setVariable_itemRawP04": [
     "setVariable_itemRemoveP04"
   ],
   "setVariable_itemRemoveP04": [
-    "setVariable_itemPriorityP04"
-  ],
-  "setVariable_itemPriorityP04": [
-    "setVariable_itemStatusP04"
-  ],
-  "setVariable_itemStatusP04": [
-    "setVariable_itemReasonP04"
-  ],
-  "setVariable_itemReasonP04": [
     "setVariable_itemValidP04"
   ],
   "setVariable_itemValidP04": [
     "setVariable_itemLineP04"
   ],
   "setVariable_itemLineP04": [
-    "setVariable_itemBucketP04High"
-  ],
-  "setVariable_itemBucketP04High": [
-    "setVariable_itemBucketP04Medium"
-  ],
-  "setVariable_itemBucketP04Medium": [
-    "setVariable_itemBucketP04Low"
-  ],
-  "setVariable_itemBucketP04Low": [
-    "setVariable_itemIncompleteP04"
-  ],
-  "setVariable_itemIncompleteP04": [
     "setVariable_itemRawP05"
   ],
   "setVariable_itemRawP05": [
     "setVariable_itemRemoveP05"
   ],
   "setVariable_itemRemoveP05": [
-    "setVariable_itemPriorityP05"
-  ],
-  "setVariable_itemPriorityP05": [
-    "setVariable_itemStatusP05"
-  ],
-  "setVariable_itemStatusP05": [
-    "setVariable_itemReasonP05"
-  ],
-  "setVariable_itemReasonP05": [
     "setVariable_itemValidP05"
   ],
   "setVariable_itemValidP05": [
     "setVariable_itemLineP05"
   ],
   "setVariable_itemLineP05": [
-    "setVariable_itemBucketP05High"
-  ],
-  "setVariable_itemBucketP05High": [
-    "setVariable_itemBucketP05Medium"
-  ],
-  "setVariable_itemBucketP05Medium": [
-    "setVariable_itemBucketP05Low"
-  ],
-  "setVariable_itemBucketP05Low": [
-    "setVariable_itemIncompleteP05"
-  ],
-  "setVariable_itemIncompleteP05": [
     "setVariable_itemRawP06"
   ],
   "setVariable_itemRawP06": [
     "setVariable_itemRemoveP06"
   ],
   "setVariable_itemRemoveP06": [
-    "setVariable_itemPriorityP06"
-  ],
-  "setVariable_itemPriorityP06": [
-    "setVariable_itemStatusP06"
-  ],
-  "setVariable_itemStatusP06": [
-    "setVariable_itemReasonP06"
-  ],
-  "setVariable_itemReasonP06": [
     "setVariable_itemValidP06"
   ],
   "setVariable_itemValidP06": [
     "setVariable_itemLineP06"
   ],
   "setVariable_itemLineP06": [
-    "setVariable_itemBucketP06High"
-  ],
-  "setVariable_itemBucketP06High": [
-    "setVariable_itemBucketP06Medium"
-  ],
-  "setVariable_itemBucketP06Medium": [
-    "setVariable_itemBucketP06Low"
-  ],
-  "setVariable_itemBucketP06Low": [
-    "setVariable_itemIncompleteP06"
-  ],
-  "setVariable_itemIncompleteP06": [
     "setVariable_itemRawP07"
   ],
   "setVariable_itemRawP07": [
     "setVariable_itemRemoveP07"
   ],
   "setVariable_itemRemoveP07": [
-    "setVariable_itemPriorityP07"
-  ],
-  "setVariable_itemPriorityP07": [
-    "setVariable_itemStatusP07"
-  ],
-  "setVariable_itemStatusP07": [
-    "setVariable_itemReasonP07"
-  ],
-  "setVariable_itemReasonP07": [
     "setVariable_itemValidP07"
   ],
   "setVariable_itemValidP07": [
     "setVariable_itemLineP07"
   ],
   "setVariable_itemLineP07": [
-    "setVariable_itemBucketP07High"
-  ],
-  "setVariable_itemBucketP07High": [
-    "setVariable_itemBucketP07Medium"
-  ],
-  "setVariable_itemBucketP07Medium": [
-    "setVariable_itemBucketP07Low"
-  ],
-  "setVariable_itemBucketP07Low": [
-    "setVariable_itemIncompleteP07"
-  ],
-  "setVariable_itemIncompleteP07": [
     "setVariable_itemRawP08"
   ],
   "setVariable_itemRawP08": [
     "setVariable_itemRemoveP08"
   ],
   "setVariable_itemRemoveP08": [
-    "setVariable_itemPriorityP08"
-  ],
-  "setVariable_itemPriorityP08": [
-    "setVariable_itemStatusP08"
-  ],
-  "setVariable_itemStatusP08": [
-    "setVariable_itemReasonP08"
-  ],
-  "setVariable_itemReasonP08": [
     "setVariable_itemValidP08"
   ],
   "setVariable_itemValidP08": [
     "setVariable_itemLineP08"
   ],
   "setVariable_itemLineP08": [
-    "setVariable_itemBucketP08High"
-  ],
-  "setVariable_itemBucketP08High": [
-    "setVariable_itemBucketP08Medium"
-  ],
-  "setVariable_itemBucketP08Medium": [
-    "setVariable_itemBucketP08Low"
-  ],
-  "setVariable_itemBucketP08Low": [
-    "setVariable_itemIncompleteP08"
-  ],
-  "setVariable_itemIncompleteP08": [
     "setVariable_itemRawP09"
   ],
   "setVariable_itemRawP09": [
     "setVariable_itemRemoveP09"
   ],
   "setVariable_itemRemoveP09": [
-    "setVariable_itemPriorityP09"
-  ],
-  "setVariable_itemPriorityP09": [
-    "setVariable_itemStatusP09"
-  ],
-  "setVariable_itemStatusP09": [
-    "setVariable_itemReasonP09"
-  ],
-  "setVariable_itemReasonP09": [
     "setVariable_itemValidP09"
   ],
   "setVariable_itemValidP09": [
     "setVariable_itemLineP09"
   ],
   "setVariable_itemLineP09": [
-    "setVariable_itemBucketP09High"
-  ],
-  "setVariable_itemBucketP09High": [
-    "setVariable_itemBucketP09Medium"
-  ],
-  "setVariable_itemBucketP09Medium": [
-    "setVariable_itemBucketP09Low"
-  ],
-  "setVariable_itemBucketP09Low": [
-    "setVariable_itemIncompleteP09"
-  ],
-  "setVariable_itemIncompleteP09": [
     "setVariable_itemRawP10"
   ],
   "setVariable_itemRawP10": [
     "setVariable_itemRemoveP10"
   ],
   "setVariable_itemRemoveP10": [
-    "setVariable_itemPriorityP10"
-  ],
-  "setVariable_itemPriorityP10": [
-    "setVariable_itemStatusP10"
-  ],
-  "setVariable_itemStatusP10": [
-    "setVariable_itemReasonP10"
-  ],
-  "setVariable_itemReasonP10": [
     "setVariable_itemValidP10"
   ],
   "setVariable_itemValidP10": [
     "setVariable_itemLineP10"
   ],
   "setVariable_itemLineP10": [
-    "setVariable_itemBucketP10High"
-  ],
-  "setVariable_itemBucketP10High": [
-    "setVariable_itemBucketP10Medium"
-  ],
-  "setVariable_itemBucketP10Medium": [
-    "setVariable_itemBucketP10Low"
-  ],
-  "setVariable_itemBucketP10Low": [
-    "setVariable_itemIncompleteP10"
-  ],
-  "setVariable_itemIncompleteP10": [
     "setVariable_itemRawP11"
   ],
   "setVariable_itemRawP11": [
     "setVariable_itemRemoveP11"
   ],
   "setVariable_itemRemoveP11": [
-    "setVariable_itemPriorityP11"
-  ],
-  "setVariable_itemPriorityP11": [
-    "setVariable_itemStatusP11"
-  ],
-  "setVariable_itemStatusP11": [
-    "setVariable_itemReasonP11"
-  ],
-  "setVariable_itemReasonP11": [
     "setVariable_itemValidP11"
   ],
   "setVariable_itemValidP11": [
-    "setVariable_itemLinkP11"
-  ],
-  "setVariable_itemLinkP11": [
-    "setVariable_itemLinkReasonP11"
-  ],
-  "setVariable_itemLinkReasonP11": [
     "setVariable_itemStoreStatusP11"
   ],
   "setVariable_itemStoreStatusP11": [
@@ -537,423 +312,165 @@
     "setVariable_itemLineP11"
   ],
   "setVariable_itemLineP11": [
-    "setVariable_itemBucketP11High"
-  ],
-  "setVariable_itemBucketP11High": [
-    "setVariable_itemBucketP11Medium"
-  ],
-  "setVariable_itemBucketP11Medium": [
-    "setVariable_itemBucketP11Low"
-  ],
-  "setVariable_itemBucketP11Low": [
-    "setVariable_itemIncompleteP11"
-  ],
-  "setVariable_itemIncompleteP11": [
     "setVariable_itemRawP12"
   ],
   "setVariable_itemRawP12": [
     "setVariable_itemRemoveP12"
   ],
   "setVariable_itemRemoveP12": [
-    "setVariable_itemPriorityP12"
-  ],
-  "setVariable_itemPriorityP12": [
-    "setVariable_itemStatusP12"
-  ],
-  "setVariable_itemStatusP12": [
-    "setVariable_itemReasonP12"
-  ],
-  "setVariable_itemReasonP12": [
     "setVariable_itemValidP12"
   ],
   "setVariable_itemValidP12": [
-    "setVariable_itemLinkP12"
-  ],
-  "setVariable_itemLinkP12": [
-    "setVariable_itemLinkReasonP12"
-  ],
-  "setVariable_itemLinkReasonP12": [
     "setVariable_itemStoreStatusP12"
   ],
   "setVariable_itemStoreStatusP12": [
     "setVariable_itemLineP12"
   ],
   "setVariable_itemLineP12": [
-    "setVariable_itemBucketP12High"
-  ],
-  "setVariable_itemBucketP12High": [
-    "setVariable_itemBucketP12Medium"
-  ],
-  "setVariable_itemBucketP12Medium": [
-    "setVariable_itemBucketP12Low"
-  ],
-  "setVariable_itemBucketP12Low": [
-    "setVariable_itemIncompleteP12"
-  ],
-  "setVariable_itemIncompleteP12": [
     "setVariable_itemRawP13"
   ],
   "setVariable_itemRawP13": [
     "setVariable_itemRemoveP13"
   ],
   "setVariable_itemRemoveP13": [
-    "setVariable_itemPriorityP13"
-  ],
-  "setVariable_itemPriorityP13": [
-    "setVariable_itemStatusP13"
-  ],
-  "setVariable_itemStatusP13": [
-    "setVariable_itemReasonP13"
-  ],
-  "setVariable_itemReasonP13": [
     "setVariable_itemValidP13"
   ],
   "setVariable_itemValidP13": [
     "setVariable_itemLineP13"
   ],
   "setVariable_itemLineP13": [
-    "setVariable_itemBucketP13High"
-  ],
-  "setVariable_itemBucketP13High": [
-    "setVariable_itemBucketP13Medium"
-  ],
-  "setVariable_itemBucketP13Medium": [
-    "setVariable_itemBucketP13Low"
-  ],
-  "setVariable_itemBucketP13Low": [
-    "setVariable_itemIncompleteP13"
-  ],
-  "setVariable_itemIncompleteP13": [
     "setVariable_itemRawP14"
   ],
   "setVariable_itemRawP14": [
     "setVariable_itemRemoveP14"
   ],
   "setVariable_itemRemoveP14": [
-    "setVariable_itemPriorityP14"
-  ],
-  "setVariable_itemPriorityP14": [
-    "setVariable_itemStatusP14"
-  ],
-  "setVariable_itemStatusP14": [
-    "setVariable_itemReasonP14"
-  ],
-  "setVariable_itemReasonP14": [
     "setVariable_itemValidP14"
   ],
   "setVariable_itemValidP14": [
     "setVariable_itemLineP14"
   ],
   "setVariable_itemLineP14": [
-    "setVariable_itemBucketP14High"
-  ],
-  "setVariable_itemBucketP14High": [
-    "setVariable_itemBucketP14Medium"
-  ],
-  "setVariable_itemBucketP14Medium": [
-    "setVariable_itemBucketP14Low"
-  ],
-  "setVariable_itemBucketP14Low": [
-    "setVariable_itemIncompleteP14"
-  ],
-  "setVariable_itemIncompleteP14": [
     "setVariable_itemRawP15"
   ],
   "setVariable_itemRawP15": [
     "setVariable_itemRemoveP15"
   ],
   "setVariable_itemRemoveP15": [
-    "setVariable_itemPriorityP15"
-  ],
-  "setVariable_itemPriorityP15": [
-    "setVariable_itemStatusP15"
-  ],
-  "setVariable_itemStatusP15": [
-    "setVariable_itemReasonP15"
-  ],
-  "setVariable_itemReasonP15": [
     "setVariable_itemValidP15"
   ],
   "setVariable_itemValidP15": [
     "setVariable_itemLineP15"
   ],
   "setVariable_itemLineP15": [
-    "setVariable_itemBucketP15High"
-  ],
-  "setVariable_itemBucketP15High": [
-    "setVariable_itemBucketP15Medium"
-  ],
-  "setVariable_itemBucketP15Medium": [
-    "setVariable_itemBucketP15Low"
-  ],
-  "setVariable_itemBucketP15Low": [
-    "setVariable_itemIncompleteP15"
-  ],
-  "setVariable_itemIncompleteP15": [
     "setVariable_itemRawP16"
   ],
   "setVariable_itemRawP16": [
     "setVariable_itemRemoveP16"
   ],
   "setVariable_itemRemoveP16": [
-    "setVariable_itemPriorityP16"
-  ],
-  "setVariable_itemPriorityP16": [
-    "setVariable_itemStatusP16"
-  ],
-  "setVariable_itemStatusP16": [
-    "setVariable_itemReasonP16"
-  ],
-  "setVariable_itemReasonP16": [
     "setVariable_itemValidP16"
   ],
   "setVariable_itemValidP16": [
     "setVariable_itemLineP16"
   ],
   "setVariable_itemLineP16": [
-    "setVariable_itemBucketP16High"
-  ],
-  "setVariable_itemBucketP16High": [
-    "setVariable_itemBucketP16Medium"
-  ],
-  "setVariable_itemBucketP16Medium": [
-    "setVariable_itemBucketP16Low"
-  ],
-  "setVariable_itemBucketP16Low": [
-    "setVariable_itemIncompleteP16"
-  ],
-  "setVariable_itemIncompleteP16": [
     "setVariable_itemRawP17"
   ],
   "setVariable_itemRawP17": [
     "setVariable_itemRemoveP17"
   ],
   "setVariable_itemRemoveP17": [
-    "setVariable_itemPriorityP17"
-  ],
-  "setVariable_itemPriorityP17": [
-    "setVariable_itemStatusP17"
-  ],
-  "setVariable_itemStatusP17": [
-    "setVariable_itemReasonP17"
-  ],
-  "setVariable_itemReasonP17": [
     "setVariable_itemValidP17"
   ],
   "setVariable_itemValidP17": [
     "setVariable_itemLineP17"
   ],
   "setVariable_itemLineP17": [
-    "setVariable_itemBucketP17High"
-  ],
-  "setVariable_itemBucketP17High": [
-    "setVariable_itemBucketP17Medium"
-  ],
-  "setVariable_itemBucketP17Medium": [
-    "setVariable_itemBucketP17Low"
-  ],
-  "setVariable_itemBucketP17Low": [
-    "setVariable_itemIncompleteP17"
-  ],
-  "setVariable_itemIncompleteP17": [
     "setVariable_itemRawP18"
   ],
   "setVariable_itemRawP18": [
     "setVariable_itemRemoveP18"
   ],
   "setVariable_itemRemoveP18": [
-    "setVariable_itemPriorityP18"
-  ],
-  "setVariable_itemPriorityP18": [
-    "setVariable_itemStatusP18"
-  ],
-  "setVariable_itemStatusP18": [
-    "setVariable_itemReasonP18"
-  ],
-  "setVariable_itemReasonP18": [
     "setVariable_itemValidP18"
   ],
   "setVariable_itemValidP18": [
     "setVariable_itemLineP18"
   ],
   "setVariable_itemLineP18": [
-    "setVariable_itemBucketP18High"
-  ],
-  "setVariable_itemBucketP18High": [
-    "setVariable_itemBucketP18Medium"
-  ],
-  "setVariable_itemBucketP18Medium": [
-    "setVariable_itemBucketP18Low"
-  ],
-  "setVariable_itemBucketP18Low": [
-    "setVariable_itemIncompleteP18"
-  ],
-  "setVariable_itemIncompleteP18": [
     "setVariable_itemRawP19"
   ],
   "setVariable_itemRawP19": [
     "setVariable_itemRemoveP19"
   ],
   "setVariable_itemRemoveP19": [
-    "setVariable_itemPriorityP19"
-  ],
-  "setVariable_itemPriorityP19": [
-    "setVariable_itemStatusP19"
-  ],
-  "setVariable_itemStatusP19": [
-    "setVariable_itemReasonP19"
-  ],
-  "setVariable_itemReasonP19": [
     "setVariable_itemValidP19"
   ],
   "setVariable_itemValidP19": [
     "setVariable_itemLineP19"
   ],
   "setVariable_itemLineP19": [
-    "setVariable_itemBucketP19High"
-  ],
-  "setVariable_itemBucketP19High": [
-    "setVariable_itemBucketP19Medium"
-  ],
-  "setVariable_itemBucketP19Medium": [
-    "setVariable_itemBucketP19Low"
-  ],
-  "setVariable_itemBucketP19Low": [
-    "setVariable_itemIncompleteP19"
-  ],
-  "setVariable_itemIncompleteP19": [
     "setVariable_itemRawP20"
   ],
   "setVariable_itemRawP20": [
     "setVariable_itemRemoveP20"
   ],
   "setVariable_itemRemoveP20": [
-    "setVariable_itemPriorityP20"
-  ],
-  "setVariable_itemPriorityP20": [
-    "setVariable_itemStatusP20"
-  ],
-  "setVariable_itemStatusP20": [
-    "setVariable_itemReasonP20"
-  ],
-  "setVariable_itemReasonP20": [
     "setVariable_itemValidP20"
   ],
   "setVariable_itemValidP20": [
     "setVariable_itemLineP20"
   ],
   "setVariable_itemLineP20": [
-    "setVariable_itemBucketP20High"
-  ],
-  "setVariable_itemBucketP20High": [
-    "setVariable_itemBucketP20Medium"
-  ],
-  "setVariable_itemBucketP20Medium": [
-    "setVariable_itemBucketP20Low"
-  ],
-  "setVariable_itemBucketP20Low": [
-    "setVariable_itemIncompleteP20"
-  ],
-  "setVariable_itemIncompleteP20": [
     "setVariable_itemRawP21"
   ],
   "setVariable_itemRawP21": [
     "setVariable_itemRemoveP21"
   ],
   "setVariable_itemRemoveP21": [
-    "setVariable_itemPriorityP21"
-  ],
-  "setVariable_itemPriorityP21": [
-    "setVariable_itemStatusP21"
-  ],
-  "setVariable_itemStatusP21": [
-    "setVariable_itemReasonP21"
-  ],
-  "setVariable_itemReasonP21": [
     "setVariable_itemValidP21"
   ],
   "setVariable_itemValidP21": [
     "setVariable_itemLineP21"
   ],
   "setVariable_itemLineP21": [
-    "setVariable_itemBucketP21High"
-  ],
-  "setVariable_itemBucketP21High": [
-    "setVariable_itemBucketP21Medium"
-  ],
-  "setVariable_itemBucketP21Medium": [
-    "setVariable_itemBucketP21Low"
-  ],
-  "setVariable_itemBucketP21Low": [
-    "setVariable_itemIncompleteP21"
-  ],
-  "setVariable_itemIncompleteP21": [
     "setVariable_itemRawP22"
   ],
   "setVariable_itemRawP22": [
     "setVariable_itemRemoveP22"
   ],
   "setVariable_itemRemoveP22": [
-    "setVariable_itemPriorityP22"
-  ],
-  "setVariable_itemPriorityP22": [
-    "setVariable_itemStatusP22"
-  ],
-  "setVariable_itemStatusP22": [
-    "setVariable_itemReasonP22"
-  ],
-  "setVariable_itemReasonP22": [
     "setVariable_itemValidP22"
   ],
   "setVariable_itemValidP22": [
     "setVariable_itemLineP22"
   ],
   "setVariable_itemLineP22": [
-    "setVariable_itemBucketP22High"
-  ],
-  "setVariable_itemBucketP22High": [
-    "setVariable_itemBucketP22Medium"
-  ],
-  "setVariable_itemBucketP22Medium": [
-    "setVariable_itemBucketP22Low"
-  ],
-  "setVariable_itemBucketP22Low": [
-    "setVariable_itemIncompleteP22"
-  ],
-  "setVariable_itemIncompleteP22": [
     "setVariable_itemRawP23"
   ],
   "setVariable_itemRawP23": [
     "setVariable_itemRemoveP23"
   ],
   "setVariable_itemRemoveP23": [
-    "setVariable_itemPriorityP23"
-  ],
-  "setVariable_itemPriorityP23": [
-    "setVariable_itemStatusP23"
-  ],
-  "setVariable_itemStatusP23": [
-    "setVariable_itemReasonP23"
-  ],
-  "setVariable_itemReasonP23": [
     "setVariable_itemValidP23"
   ],
   "setVariable_itemValidP23": [
     "setVariable_itemLineP23"
   ],
   "setVariable_itemLineP23": [
-    "setVariable_itemBucketP23High"
+    "setVariable_itemBucketHigh"
   ],
-  "setVariable_itemBucketP23High": [
-    "setVariable_itemBucketP23Medium"
+  "setVariable_itemBucketHigh": [
+    "setVariable_itemBucketMedium"
   ],
-  "setVariable_itemBucketP23Medium": [
-    "setVariable_itemBucketP23Low"
+  "setVariable_itemBucketMedium": [
+    "setVariable_itemBucketLow"
   ],
-  "setVariable_itemBucketP23Low": [
-    "setVariable_itemIncompleteP23"
+  "setVariable_itemBucketLow": [
+    "setVariable_itemIncomplete"
   ],
-  "setVariable_itemIncompleteP23": [
+  "setVariable_itemIncomplete": [
     "setVariable_itemNoRemainder"
   ],
   "setVariable_itemNoRemainder": [

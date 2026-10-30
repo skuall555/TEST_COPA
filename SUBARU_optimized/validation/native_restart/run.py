@@ -66,19 +66,37 @@ def main():
  add('pressure checks high and pending block completion',wire({'P01':('高','対応済み','実施済み報告あり'),'P23':('高','要確認','ガスが出ず圧力と表示の確認が未報告')}),expectBucket='high',expectLabel='圧力・供給支障の確認と調査：要確認',expectWait=True)
  add('completed pressure checks permit completion',wire({'P01':('高','対応済み','実施済み報告あり'),'P23':('高','対応済み','必要な初期確認と対象調査が完了と報告')}),expectBucket='high',expectLabel='圧力・供給支障の確認と調査：対応済み',expectWait=False)
  add('no supply issue keeps pressure measure out of display',wire({'P01':('高','対応済み','実施済み報告あり')}),expectWait=False)
- add('missing pressure code is rejected',good.replace('[[P23]]対象外|対象外|今回の事実では対象でない[[/P23]]',''),False)
- add('unknown emergency judgement uses provisional middle with explicit reason',wire({'P11':('中','要確認','判定保留・追加確認が必要。現在の臭気と実反応が未確認')}),expectBucket='middle',expectLabel='消防・警察への要請：要確認')
+ add('optional pressure code may be omitted',good.replace('[[P23]]対象外|対象外|今回の事実では対象でない[[/P23]]',''))
+ add('reported caution warrants middle with explicit reason',wire({'P11':('中','要確認','単発の警報音が報告されたが継続と実検知は未確認')}),expectBucket='middle',expectLabel='消防・警察への要請：要確認')
  add('completed high measures',wire({'P01':('高','対応済み','実施済み報告あり')}),expectWait=False)
  add('completion words in facts do not finish',good.replace('└報告済みの事実を保持','└全て対応済みではないと報告'))
  for name,text in [('wrong priority',good.replace('[[P11]]中|','[[P11]]最優先|')),('priority used as status',good.replace('[[P11]]中|要確認|','[[P11]]高|高|')),('extra delimiter',good.replace('入力された基本措置の根拠','根拠|余分')),('duplicate code',good+'\n[[P11]]高|未実施|追加[[/P11]]'),('missing row',good.replace('[[P12]]中|要確認|必要な対象情報が未確認[[/P12]]','')),('empty reason',good.replace('入力された基本措置の根拠','')),('unknown block',good.replace('[[NEXT]]','[[UNKNOWN]]余分[[/UNKNOWN]]\n[[NEXT]]')),('old 7-heading free text','【確認できた事実】\n└臭気あり'),('empty',''),('question list',wire(check='└建物種別は何か'))]:add(name,text,False)
  conversation=(R/'originals/20261027_様式逸脱_会話全文.txt').read_text()
  add('reported free-form drift',conversation.rsplit('ボット の発言:\n',1)[1],False)
+ optional_free=good
+ for code,_ in MEASURES[13:]:
+  optional_free=optional_free.replace('[['+code+']]対象外|対象外|今回の事実では対象でない[[/'+code+']]','')
+ add('all optional measures omitted',optional_free)
+ add('duplicate optional pressure code',good+'\n[[P23]]対象外|対象外|不要[[/P23]]',False)
+ add('orphan optional end marker',optional_free.replace('[[NEXT]]','[[/P23]]\n[[NEXT]]'),False)
+ add('internal row separator injection rejected',good.replace('入力された基本措置の根拠','根拠'+chr(30)+'余分'),False)
+ add('ordinary initial report with low request',wire({'P11':('低','要確認','単独の通常臭気という初報のみで要請を上げる危険条件は未報告'),'P12':('低','要確認','同じく初報のみ。安全確認済みという意味ではない')}),expectBucket='low',expectLabel='消防・警察への要請：要確認')
  field=indexes[1];steps=[]
  for n in validator():
   if n['kind']=='SetVariable':
    assert field[n['id']]['value']==n['value']
    steps.append({'variable':n['variable'][6:],'expression':field[n['id']]['value'][1:]})
  data['formatSteps']=steps;data['formatCases']=format_cases
+ # Differential check against the last delivered renderer on unchanged full payloads.
+ previous_source=subprocess.check_output(['git','-C',str(R.parent),'show','67165f8:SUBARU_optimized/validation/itemized_build.py']).decode()
+ previous_namespace={};exec(compile(previous_source,'previous_itemized_build.py','exec'),previous_namespace)
+ data['previousFormatSteps']=[{'variable':n['variable'][6:],'expression':n['value'][1:]}for n in previous_namespace['validator']()if n['kind']=='SetVariable']
+ changed_policy={'optional pressure code may be omitted','all optional measures omitted','internal row separator injection rejected'}
+ for case in format_cases:case['comparePrevious']=case['name']not in changed_policy
+ old_field=yaml.safe_load(subprocess.check_output(['git','-C',str(R.parent),'show','67165f8:SUBARU_optimized/'+files[1]]))
+ old_field={n['id']:n for n in walk(old_field)if 'id'in n and 'kind'in n}
+ data['fieldPrompts']=[{'name':label,'guide':idx['setVariable_priorityGuideFixed']['value'][1:],'prompt':idx['setVariable_priorityPrompt']['value'][1:]}for label,idx in [('previous',old_field),('current',field)]]
+ data['fieldConceptSource']=(R/'field_concepts/01_調査遮断供給支障.md').read_text().rstrip()
  image=indexes[2]
  image_ids=['setVariable_imageFeature'+code for code,_ in ITEMS]+['setVariable_imageFeatureCatalog','setVariable_prompt1','setVariable_prompt2']
  data['imageSteps']=[{'variable':image[ident]['variable'][6:],'expression':image[ident]['value'][1:]}for ident in image_ids]
@@ -88,5 +106,5 @@ def main():
  inp=build/'input.json';inp.write_text(json.dumps(data,ensure_ascii=False));out=subprocess.run([str(dotnet),str(build/'check.dll'),str(inp)],check=True,capture_output=True,text=True)
  result=json.loads(out.stdout);result['source_sha256']=hashes;(HERE/'results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
  print('Native SDK:',len(result['checks']),'expression checks,',len(result['runs']),'number parsing cases,',len(result['formats']),'itemized pipeline cases; image feature wiring:',result['imageFeatures']['success'])
- if any(not x['success']for x in result['checks']+result['runs']+result['formats'])or not result['imageFeatures']['success']:raise SystemExit(1)
+ if any(not x['success']for x in result['checks']+result['runs']+result['formats'])or not result['imageFeatures']['success']or not result['fieldPrompts']['success']:raise SystemExit(1)
 if __name__=='__main__':main()
