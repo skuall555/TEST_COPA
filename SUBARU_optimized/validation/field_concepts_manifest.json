@@ -37,5 +37,7 @@
   "native_pipeline_cases": 26,
   "native_image_features": true,
   "Studio_cases_NOT_RUN": 32,
-  "full_yaml_blocks_match": true
+  "full_yaml_blocks_match": true,
+  "historical_release": "9b2c7f1",
+  "latest_manifest": "applicability_manifest.json"
 }

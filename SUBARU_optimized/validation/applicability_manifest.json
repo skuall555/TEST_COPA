@@ -1,0 +1,27 @@
+{
+  "base_commit": "9b2c7f107a0a8c16150f3b8a4fbcd4fbc8c80ec6",
+  "source": "field_concepts/01_調査遮断供給支障.md",
+  "source_sha256": "1be4a60a371038ac0c4ba236f4ffc4ca7184476c3bd656c4b9cdbc8bb3d60f18",
+  "files": {
+    "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "cfc4f8e48d85c29ffcbfcf7296c9ebdd213b8108e33aeeb9f8c09f4b647a37fa",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529",
+    "SUBARU_エージェント指示_optimized.txt": "7fa9192d03dcff9ea53b5ef480e50b948fb784f4c8ea583f63550e7ad816603c"
+  },
+  "changed_existing_action_ids": [
+    "setVariable_priorityGuideFixed",
+    "setVariable_priorityPrompt",
+    "answer_priority"
+  ],
+  "added_action_ids": [],
+  "removed_action_ids": [],
+  "new_variables": [],
+  "full_yaml_blocks_match": true,
+  "unchanged_entry_image_instructions": true,
+  "unittest_count": 55,
+  "native_expression_checks": 348,
+  "native_number_cases": 45,
+  "native_pipeline_cases": 26,
+  "native_image_features": true,
+  "Studio_cases_NOT_RUN": 40
+}

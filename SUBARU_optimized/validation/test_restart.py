@@ -93,7 +93,7 @@ class Restart(unittest.TestCase):
  def test_image_specs_are_verbatim_and_not_photo_facts(self):
   s=self.new[2]['setVariable_prompt1']['value'];p=self.new[2]['setVariable_imageFeature02']['value'];d=self.new[2]['setVariable_imageFeature03']['value'];self.assertIn(POCKET_ILLUSTRATION,p);self.assertIn(DETECTOR_ILLUSTRATION,d);self.assertIn('観察事実ではない',p);self.assertIn('Topic.画像特徴カタログ',s);self.assertNotIn('置いてあるだけならポケット警報器',p)
  def test_other_safety_rules_and_human_output_format_unchanged(self):
-  a=self.old[1]['setVariable_priorityGuideFixed']['value'];b=self.new[1]['setVariable_priorityGuideFixed']['value'];self.assertEqual(a[a.index('# 最重要'):a.index('# 出力フォーマット')],b[b.index('# 最重要'):b.index('# ユーザーへの表示')]);self.assertIn('LEL1％',b);self.assertIn('一時的な反応消失',b);self.assertIn('未要請だから低',b)
+  a=self.old[1]['setVariable_priorityGuideFixed']['value'];b=self.new[1]['setVariable_priorityGuideFixed']['value'];a=a.replace('対応済みか未実施かを必ず明示する。','対応済み／未実施／要確認のいずれかを、報告された実施状況に応じて明示する。').replace('高優先度項目が1つでも未実施の場合、','高優先度項目が1つでも未実施または要確認の場合、');self.assertEqual(a[a.index('# 最重要'):a.index('# 出力フォーマット')],b[b.index('# 最重要'):b.index('# ユーザーへの表示')]);self.assertIn('LEL1％',b);self.assertIn('一時的な反応消失',b);self.assertIn('未要請だから低',b)
  def test_new_control_expressions_short_and_shallow(self):
   for old,new in zip(self.old,self.new):
    for k in set(new)-set(old):

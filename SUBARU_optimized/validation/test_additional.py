@@ -34,6 +34,7 @@ class Additional(unittest.TestCase):
   self.assertEqual(self.new['conditionGroup_prioritySucceeded']['conditions'][0]['condition'],'=Topic.優先度表示検証 = "合格"')
  def test_other_safety_and_image_ownership_preserved(self):
   a=self.old['setVariable_priorityGuideFixed']['value'];b=self.new['setVariable_priorityGuideFixed']['value']
+  a=a.replace('既存の高欄の書式では「未実施（設置報告なし・要確認）」として、実際に未設置であるとの事実を作らない。','設置報告がない場合の実施状況は「要確認」とする。')
   for start,end in [('# 窓等の開放・換気','# メーターガス栓閉止'),('# メーターガス栓閉止','# 立入禁止・保安柵・警戒区域'),('# 立入禁止・保安柵・警戒区域','# 避難誘導'),('# 周辺住戸・建物調査','# 判定項目の関連付け')]:self.assertEqual(a[a.index(start):a.index(end)],b[b.index(start):b.index(end)])
   self.assertTrue(self.new['question_priorityUpdate']['interruptionPolicy']['allowInterruption'])
 if __name__=='__main__':unittest.main()
