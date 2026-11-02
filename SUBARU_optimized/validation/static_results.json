@@ -72,7 +72,7 @@
     {
       "file": "3-9-緊急保安業務エージェント_optimized.yaml",
       "yaml": "PASS (duplicate keys rejected)",
-      "unique_ids": 320,
+      "unique_ids": 324,
       "broken_goto": [],
       "removed_ids": [],
       "dependencies": "UNCHANGED",
@@ -108,7 +108,7 @@
       },
       "node_counts_after": {
         "OnRedirect": 1,
-        "SetVariable": 214,
+        "SetVariable": 218,
         "ConditionGroup": 26,
         "GotoAction": 9,
         "AnswerQuestionWithAI": 3,
@@ -118,7 +118,7 @@
         "Question": 4,
         "SearchAndSummarizeContent": 4
       },
-      "sha256": "4bb1b16692e8d95c297a5131cbeb892d2c77d3c57b38273b1cf9252869a1c97e"
+      "sha256": "6a8eff881aecb9f21062210b10e2eb2b808cbfd0bf4d03b73a7021eb0133ea36"
     },
     {
       "file": "4-9-画像分析エージェント_緊急保安_optimized.yaml",

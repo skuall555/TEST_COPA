@@ -29,7 +29,7 @@ class ItemizedFeatures(unittest.TestCase):
   a=index(old(FILES[1]));b=index((R/FILES[1]).read_text())
   retired=set(a)-set(b)
   self.assertTrue(retired)
-  self.assertTrue(all(re.fullmatch(r'setVariable_priorityFormat(?:AssembleInit|Section[0-6]|Check[0-6]|Append[0-6])',k)for k in retired))
+  self.assertTrue(all(re.fullmatch(r'setVariable_priorityFormat(?:AssembleInit|Section[0-6]|Check[0-6]|Append[0-6])',k)or k in {'conditionGroup_priorityFormatRetry','setVariable_priorityFormatRetryIncrement','goto_priorityFormatRetry'}for k in retired))
   for k,n in a.items():
    if n['kind']in ('Question','InvokeFlowAction','BeginDialog','SearchKnowledgeSources','SearchAndSummarizeContent'):self.assertEqual(own(n),own(b[k]),k)
  def test_retry_limit_cannot_fall_through_to_completed_phase(self):

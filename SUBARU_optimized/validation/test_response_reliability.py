@@ -11,8 +11,19 @@ class ResponseReliability(unittest.TestCase):
   n=ix(R/FILES[1]);self.assertEqual(n['conditionGroup_prioritySucceeded']['conditions'][0]['condition'],'=Topic.優先度表示検証 = "合格"')
   for stage in ['Gate','Wait','Failed']:
    self.assertEqual(n['setVariable_priority'+stage+'Snapshot']['variable'],'Topic.優先度経路診断')
-  self.assertIn('Topic.優先度表示検証',n['answer_priority']['userInput']);self.assertIn('Topic.優先度判定結果',n['answer_priority']['userInput'])
+  self.assertEqual(n['answer_priority']['userInput'],'=Topic.優先度判定プロンプト')
   self.assertEqual(n['setVariable_priorityPreviousResultInit']['value'],'=""')
+ def test_priority_cannot_cycle_back_to_ai_without_waiting_for_a_user(self):
+  from validate import dataflow
+  doc=yaml.safe_load((R/FILES[1]).read_text());n=ix(R/FILES[1]);_,edges=dataflow(doc)
+  seen=set();pending=list(edges['answer_priority'])
+  while pending:
+   ident=pending.pop()
+   self.assertNotEqual(ident,'answer_priority','Automatic priority AI cycle remains')
+   if ident in seen or n[ident]['kind']in ('Question','EndDialog'):continue
+   seen.add(ident);pending.extend(edges[ident])
+  self.assertNotIn('goto_priorityFormatRetry',n)
+  self.assertEqual(n['goto_priorityInvalidEmergency']['actionId'],'setVariable_priorityGateSnapshot')
  def test_binding_keeps_redirect_and_retry_targets_and_copies_text(self):
   # UUIDs here are fixtures only; generated test files are removed, never deployed.
   with tempfile.TemporaryDirectory()as td:

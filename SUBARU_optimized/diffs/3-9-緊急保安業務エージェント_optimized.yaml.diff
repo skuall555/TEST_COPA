@@ -608,7 +608,7 @@
      - kind: ConditionGroup
        id: conditionGroup_priorityGuideRetrieveSucceeded
        conditions:
-@@ -624,95 +130,741 @@
+@@ -624,96 +130,753 @@
                id: setVariable_priorityPrompt
                variable: Topic.優先度判定プロンプト
                value: |-
@@ -693,8 +693,9 @@
 +                # 今回の内部出力契約（従来の見出し指定より優先）
 +                ユーザー用の高・中・低の見出しをあなたが作文しない。措置ごとに一つの優先度・実施状況・根拠を返し、YAMLがその優先度だけを使って表示欄を決める。
 +                FACTS・EMERGENCY・P01〜P13・NEXT・CHECKを各1回、順番どおり出力する。P14〜P23は今回必要な項目だけ各1回、P13とNEXTの間に出力し、不要ならブロック自体を省略する。コードブロック、前置き、見出し、追加マーカーは禁止。本文には区切り文字の半角縦棒|や[[、]]、【、】を含めない。行内の情報を勝手に省略せず、入力事実以外は作らない。
++                EMERGENCYの判定語は高または通常だけ。必ず語の直後に半角の縦棒|を1つ入れ、「通常|理由」または「高|理由」の形式にする。
 +                [[FACTS]]確認できた事実を└から始まる行で記載[[/FACTS]]
-+                [[EMERGENCY]]高または通常|E-01／E-02・現状の危険条件・再評価の根拠[[/EMERGENCY]]
++                [[EMERGENCY]]判定語|理由[[/EMERGENCY]]
 +                [[P01]]優先度|実施状況|対象事実とこの措置の成立条件[[/P01]]
 +                [[P02]]優先度|実施状況|対象事実とこの措置の成立条件[[/P02]]
 +                [[P03]]優先度|実施状況|対象事実とこの措置の成立条件[[/P03]]
@@ -759,22 +760,27 @@
 +              id: setVariable_priorityPreviousCheckInit
 +              variable: Topic.優先度表示検証
 +              value: =""
++            - kind: SetVariable
++              id: setVariable_priorityBeforeAISnapshot
++              variable: Topic.優先度経路診断
++              value: ="subaru-text-20261102-v2|stage=beforeAI|inputChars=" & Text(Len(Topic.優先度判定プロンプト))
              - kind: AnswerQuestionWithAI
                id: answer_priority
                displayName: 11B_ガイド抜粋からの優先度判定
                autoSend: false
                variable: Topic.優先度判定結果
--              userInput: =Topic.優先度判定プロンプト
+               userInput: =Topic.優先度判定プロンプト
 -              additionalInstructions: |-
 -                この入力には、判定に必要な【初動措置AI優先度判断ルール】・現場事実・追加報告・出力形式が
 -                すべて含まれています。外部ナレッジを検索せず、一般知識で補完せず、入力内の情報だけで判定してください。
 -                入力に書かれた出力フォーマット（【確認できた事実】から【確認したいこと】まで）だけを、
 -                見出し名・順序をそのまま守って出力してください。前置き・総括・挨拶・引用番号は禁止です。
 -
-+              userInput: |-
-+                =Topic.優先度判定プロンプト & If(Topic.優先度様式再試行回数 > 0, Char(10) & "前回の判定内容を保持し、次の失敗箇所だけを修復してください。
-+                失敗箇所：" & Topic.優先度表示検証 & Char(10) & "前回の原文：" & Topic.優先度判定結果 & Char(10) & "必須コード欠落や形式だけを修復し、未報告の事実や実施状況を作らない。", "")
 +              additionalInstructions: 固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。
++            - kind: SetVariable
++              id: setVariable_priorityAfterAISnapshot
++              variable: Topic.優先度経路診断
++              value: ="subaru-text-20261102-v2|stage=afterAI|outputChars=" & Text(Len(Topic.優先度判定結果))
 +            - kind: SetVariable
 +              id: setVariable_priorityFormatRaw
 +              variable: Topic.優先度表示原文
@@ -908,6 +914,10 @@
 +              variable: Topic.判定残余
 +              value: =Substitute(Topic.判定残余, "[[EMERGENCY]]" & Topic.優先度表示区分 & "[[/EMERGENCY]]", "")
 +            - kind: SetVariable
++              id: setVariable_itemEmergencyNormalize
++              variable: Topic.優先度表示区分
++              value: '=With({bodyText: Trim(Substitute(Substitute(Substitute(Substitute(Topic.優先度表示区分, "｜", "|"), Char(13), " "), Char(10), " "), Char(9), " "))}, If("|" in bodyText, bodyText, If(Or(StartsWith(bodyText, "通常 "), StartsWith(bodyText, "通常　")), "通常|" & Trim(Mid(bodyText, 3)), If(Or(StartsWith(bodyText, "高 "), StartsWith(bodyText, "高　")), "高|" & Trim(Mid(bodyText, 2)), bodyText))))'
++            - kind: SetVariable
 +              id: setVariable_itemEmergency
 +              variable: Topic.判定連動
 +              value: =Trim(First(Split(Substitute(Topic.優先度表示区分, "｜", "|"), "|")).Value)
@@ -919,6 +929,15 @@
 +              id: setVariable_itemEmergencyValid
 +              variable: Topic.優先度表示検証
 +              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(CountRows(Split(Substitute(Topic.優先度表示区分, "｜", "|"), "|")) = 2, Or(Topic.判定連動 = "高", Topic.判定連動 = "通常"), Len(Topic.判定連動理由) > 0, Not("[[" in Topic.判定連動理由), Not("【" in Topic.判定連動理由)), "合格", "不合格:itemEmergencyValid"))
++            - kind: ConditionGroup
++              id: conditionGroup_itemEmergencyInvalid
++              conditions:
++                - id: conditionGroup_itemEmergencyInvalid_item
++                  condition: =Topic.優先度表示検証 <> "合格"
++                  actions:
++                    - kind: GotoAction
++                      id: goto_priorityInvalidEmergency
++                      actionId: setVariable_priorityGateSnapshot
 +            - kind: SetVariable
 +              id: setVariable_itemSectionNEXT
 +              variable: Topic.優先度表示区分
@@ -1392,19 +1411,6 @@
 +                【確認したいこと】
 +                " & Topic.判定確認文
 +            - kind: ConditionGroup
-+              id: conditionGroup_priorityFormatRetry
-+              conditions:
-+                - id: conditionGroup_priorityFormatRetry_item
-+                  condition: =And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1, Len(Topic.優先度表示原文) > 0)
-+                  actions:
-+                    - kind: SetVariable
-+                      id: setVariable_priorityFormatRetryIncrement
-+                      variable: Topic.優先度様式再試行回数
-+                      value: =Topic.優先度様式再試行回数 + 1
-+                    - kind: GotoAction
-+                      id: goto_priorityFormatRetry
-+                      actionId: answer_priority
-+            - kind: ConditionGroup
 +              id: conditionGroup_priorityFormatAccepted
 +              conditions:
 +                - id: conditionGroup_priorityFormatAccepted_item
@@ -1417,7 +1423,7 @@
 +            - kind: SetVariable
 +              id: setVariable_priorityGateSnapshot
 +              variable: Topic.優先度経路診断
-+              value: ="subaru-text-20261102-v1|stage=gate|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
++              value: ="subaru-text-20261102-v2|stage=gate|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
              - kind: ConditionGroup
                id: conditionGroup_prioritySucceeded
                conditions:
@@ -1425,9 +1431,14 @@
 -                  condition: =!IsBlank(Topic.優先度判定結果)
 +                  condition: =Topic.優先度表示検証 = "合格"
                    actions:
++                    - kind: SetVariable
++                      id: setVariable_priorityBeforeSaveSnapshot
++                      variable: Topic.優先度経路診断
++                      value: ="subaru-text-20261102-v2|stage=beforeCaseSave|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
                      - kind: InvokeFlowAction
                        id: invokeFlowAction_caseSaveFieldAdvice
-@@ -722,18 +874,15 @@
+                       input:
+@@ -722,18 +885,19 @@
                            text_1: ="現場アドバイス"
                            text_2: =Topic.優先度判定結果
                            text_3: ="なし"
@@ -1438,6 +1449,10 @@
 -
                        flowId: 9a770168-65a8-f111-aaad-7ced8d2f9cab
 -
++                    - kind: SetVariable
++                      id: setVariable_priorityAfterSaveSnapshot
++                      variable: Topic.優先度経路診断
++                      value: ="subaru-text-20261102-v2|stage=afterCaseSave|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
                      - kind: ConditionGroup
                        id: conditionGroup_priorityLoopNeeded
                        conditions:
@@ -1447,7 +1462,7 @@
                            actions:
                              - kind: ConditionGroup
                                id: conditionGroup_priorityRetryLimit
-@@ -745,40 +894,40 @@
+@@ -745,40 +909,40 @@
                                        id: setVariable_imageReceptionOffGiveUp
                                        variable: Global.緊急保安画像受付中
                                        value: =false
@@ -1486,7 +1501,7 @@
 +                                - kind: SetVariable
 +                                  id: setVariable_priorityWaitSnapshot
 +                                  variable: Topic.優先度経路診断
-+                                  value: ="subaru-text-20261102-v1|stage=wait|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
++                                  value: ="subaru-text-20261102-v2|stage=wait|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
                                  - kind: Question
                                    id: question_priorityUpdate
                                    interruptionPolicy:
@@ -1495,7 +1510,7 @@
                                    variable: Topic.優先度追加回答
                                    prompt: |-
                                      {Topic.優先度判定結果}
-@@ -790,12 +939,10 @@
+@@ -790,12 +954,10 @@
                                    entity:
                                      kind: StringPrebuiltEntity
                                      sensitivityLevel: None
@@ -1508,7 +1523,7 @@
                                  - kind: ConditionGroup
                                    id: conditionGroup_repairRequestedInPriority
                                    conditions:
-@@ -806,21 +953,17 @@
+@@ -806,21 +968,17 @@
                                            id: setVariable_appendRepairRequestHistory
                                            variable: Topic.追加情報履歴
                                            value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
@@ -1530,7 +1545,7 @@
                                  - kind: ConditionGroup
                                    id: conditionGroup_priorityPurposeSwitchToJunkai
                                    conditions:
-@@ -831,71 +974,66 @@
+@@ -831,71 +989,66 @@
                                            id: setVariable_priorityPurposeSwitchToJunkaiInput
                                            variable: Global.巡回切替入力
                                            value: =Topic.優先度追加回答
@@ -1605,7 +1620,7 @@
 +                - kind: SetVariable
 +                  id: setVariable_priorityFailedSnapshot
 +                  variable: Topic.優先度経路診断
-+                  value: ="subaru-text-20261102-v1|stage=failed|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
++                  value: ="subaru-text-20261102-v2|stage=failed|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
                  - kind: SendActivity
                    id: sendActivity_priorityFailed
 -                  activity: |-
@@ -1620,7 +1635,7 @@
        elseActions:
          - kind: SetVariable
            id: setVariable_imageReceptionOffGuideFailed
-@@ -936,8 +1074,7 @@
+@@ -936,8 +1089,7 @@
              - kind: SetVariable
                id: setVariable_repairKnownPipe
                variable: Topic.確定管種
@@ -1630,7 +1645,7 @@
              - kind: SetVariable
                id: setVariable_repairKnownSize
                variable: Topic.確定口径
-@@ -1077,7 +1214,7 @@
+@@ -1077,7 +1229,7 @@
                  最後に必ず [0] それ以外 の行を入れてください。
                  ユーザーへの質問は書かないでください。情報が足りなくても候補を出してください。
                  前置き・総括・引用番号・URLは一切出力しないでください。
@@ -1639,7 +1654,7 @@
              - kind: ConditionGroup
                id: conditionGroup_repairCandidatesFound
                conditions:
-@@ -1278,8 +1415,7 @@
+@@ -1278,8 +1430,7 @@
  
                          - kind: GotoAction
                            id: goto_repairChoiceAgain
@@ -1649,7 +1664,7 @@
                elseActions:
                  - kind: SendActivity
                    id: sendActivity_repairNoCandidate
-@@ -1503,7 +1639,7 @@
+@@ -1503,7 +1654,7 @@
                        id: conditionGroup_repairVerified
                        conditions:
                          - id: conditionItem_repairVerified
@@ -1658,7 +1673,7 @@
                            actions:
                              - kind: SendActivity
                                id: sendActivity_repairResult
-@@ -1511,10 +1647,8 @@
+@@ -1511,10 +1662,8 @@
                                  {Topic.修理指示結果}
  
                                  お疲れさまでした。安全確保を最優先に、落ち着いて対応してください。
@@ -1669,7 +1684,7 @@
                        elseActions:
                          - kind: ConditionGroup
                            id: conditionGroup_repairRetryLimit
-@@ -1528,27 +1662,22 @@
+@@ -1528,27 +1677,22 @@
                                      現時点で考えられる修理方法をお伝えします（十分に絞り込めていない可能性があります）。安全確保を最優先に対応してください。
  
                                      {Topic.修理指示結果}
@@ -1698,7 +1713,7 @@
                              - kind: ConditionGroup
                                id: conditionGroup_repairPurposeSwitchToJunkai
                                conditions:
-@@ -1559,25 +1688,20 @@
+@@ -1559,25 +1703,20 @@
                                        id: setVariable_repairPurposeSwitchToJunkaiInput
                                        variable: Global.巡回切替入力
                                        value: =Topic.修理追加回答

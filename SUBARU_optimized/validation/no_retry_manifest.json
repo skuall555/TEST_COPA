@@ -1,0 +1,47 @@
+{
+  "base_commit": "2ba669466e0bfaf4d51e40989930cc3eb4ab65f6",
+  "files": {
+    "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "6a8eff881aecb9f21062210b10e2eb2b808cbfd0bf4d03b73a7021eb0133ea36",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529",
+    "SUBARU_エージェント指示_optimized.txt": "7fa9192d03dcff9ea53b5ef480e50b948fb784f4c8ea583f63550e7ad816603c"
+  },
+  "added_action_ids": [
+    "conditionGroup_itemEmergencyInvalid",
+    "goto_priorityInvalidEmergency",
+    "setVariable_itemEmergencyNormalize",
+    "setVariable_priorityAfterAISnapshot",
+    "setVariable_priorityAfterSaveSnapshot",
+    "setVariable_priorityBeforeAISnapshot",
+    "setVariable_priorityBeforeSaveSnapshot"
+  ],
+  "retired_automatic_repair_action_ids": [
+    "conditionGroup_priorityFormatRetry",
+    "goto_priorityFormatRetry",
+    "setVariable_priorityFormatRetryIncrement"
+  ],
+  "new_variables": [],
+  "entry_image_instructions_byte_identical": true,
+  "full_yaml_blocks_match": true,
+  "reported_missing_separator_replay": {
+    "name": "reported missing EMERGENCY separator",
+    "success": true,
+    "accepted": true,
+    "gateAccepted": true,
+    "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=1395|displayChars=1239|retry=0",
+    "keepsWaiting": true,
+    "placement": true,
+    "previousMatches": true,
+    "previousAccepted": false,
+    "status": "合格"
+  },
+  "autonomous_priority_ai_cycle": "NONE before next Question/EndDialog",
+  "diagnostic_version": "subaru-text-20261102-v2",
+  "unittest_count": 61,
+  "native_expression_checks": 197,
+  "native_number_cases": 45,
+  "native_pipeline_cases": 46,
+  "Studio_cases_NOT_RUN": 54,
+  "Studio_two_hour_wait_NOT_REPRODUCED": true,
+  "external_call_duration_NOT_BOUNDED": true
+}

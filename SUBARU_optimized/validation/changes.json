@@ -299,8 +299,7 @@
       {
         "id": "answer_priority",
         "fields": [
-          "additionalInstructions",
-          "userInput"
+          "additionalInstructions"
         ]
       },
       {
@@ -350,6 +349,8 @@
       "setVariable_priorityFormatRetryInit",
       "setVariable_priorityPreviousResultInit",
       "setVariable_priorityPreviousCheckInit",
+      "setVariable_priorityBeforeAISnapshot",
+      "setVariable_priorityAfterAISnapshot",
       "setVariable_priorityFormatRaw",
       "setVariable_priorityFormatUnwrap",
       "setVariable_itemInit01",
@@ -383,9 +384,12 @@
       "setVariable_itemSectionEMERGENCY",
       "setVariable_itemUniqueEMERGENCY",
       "setVariable_itemRemoveEMERGENCY",
+      "setVariable_itemEmergencyNormalize",
       "setVariable_itemEmergency",
       "setVariable_itemEmergencyReason",
       "setVariable_itemEmergencyValid",
+      "conditionGroup_itemEmergencyInvalid",
+      "goto_priorityInvalidEmergency",
       "setVariable_itemSectionNEXT",
       "setVariable_itemUniqueNEXT",
       "setVariable_itemRemoveNEXT",
@@ -499,12 +503,11 @@
       "setVariable_itemUrgentEvacuation",
       "setVariable_itemUrgentRequest",
       "setVariable_itemRender",
-      "conditionGroup_priorityFormatRetry",
-      "setVariable_priorityFormatRetryIncrement",
-      "goto_priorityFormatRetry",
       "conditionGroup_priorityFormatAccepted",
       "setVariable_priorityFormatUseAssembled",
       "setVariable_priorityGateSnapshot",
+      "setVariable_priorityBeforeSaveSnapshot",
+      "setVariable_priorityAfterSaveSnapshot",
       "endDialog_priorityRetryLimit",
       "setVariable_priorityWaitSnapshot",
       "conditionGroup_priorityDebugOnly",

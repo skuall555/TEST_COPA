@@ -37,6 +37,10 @@ class Program {
    foreach(var step in root.GetProperty("formatSteps").EnumerateArray()){
     var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(state.Select(x=>new NamedValue(x.Key,x.Value)))));
     state[step.GetProperty("variable").GetString()!]=engine.Eval(step.GetProperty("expression").GetString()!,context,options);
+    if(step.TryGetProperty("id",out var stepId)&&stepId.GetString()==root.GetProperty("earlyStopAfter").GetString()){
+     var stopContext=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(state.Select(x=>new NamedValue(x.Key,x.Value)))));
+     if(engine.Eval(root.GetProperty("earlyStopCondition").GetString()!,stopContext,options)is BooleanValue stop&&stop.Value)break;
+    }
    }
    bool accepted=state["優先度表示検証"] is StringValue status&&status.Value=="合格";
    bool keepsWaiting=true;
@@ -58,17 +62,18 @@ class Program {
    }
    if(accepted&&item.TryGetProperty("expectEvacHigh",out var evac)&&evac.GetBoolean())placement&=Get("判定高欄").Contains("避難誘導");
    if(accepted&&item.TryGetProperty("expectCheckPrefix",out var prefix))placement&=Get("判定確認文").StartsWith(prefix.GetString()!);
-   bool previousMatches=true;
-   if(item.TryGetProperty("comparePrevious",out var comparePrevious)&&comparePrevious.GetBoolean()){
+   bool previousMatches=true;bool? previousAcceptedRecorded=null;
+   if((item.TryGetProperty("comparePrevious",out var comparePrevious)&&comparePrevious.GetBoolean())||item.TryGetProperty("expectPreviousAccept",out _)){
     var previousState=new Dictionary<string,FormulaValue>{{"優先度判定結果",FormulaValue.New(item.GetProperty("text").GetString()!)}};
     foreach(var step in root.GetProperty("previousFormatSteps").EnumerateArray()){
      var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(previousState.Select(x=>new NamedValue(x.Key,x.Value)))));
      previousState[step.GetProperty("variable").GetString()!]=engine.Eval(step.GetProperty("expression").GetString()!,context,options);
     }
     bool previousAccepted=previousState["優先度表示検証"] is StringValue previousStatus&&previousStatus.Value=="合格";
-    previousMatches=previousAccepted==accepted&&(!accepted||((StringValue)previousState["優先度表示組立"]).Value==Get("優先度表示組立"));
+    previousAcceptedRecorded=previousAccepted;
+    previousMatches=item.TryGetProperty("expectPreviousAccept",out var previousExpected)?previousAccepted==previousExpected.GetBoolean():previousAccepted==accepted&&(!accepted||((StringValue)previousState["優先度表示組立"]).Value==Get("優先度表示組立"));
    }
-   formats.Add(new{name=item.GetProperty("name").GetString(),success=accepted==item.GetProperty("accept").GetBoolean()&&keepsWaiting==expectedWait&&placement&&previousMatches&&gateAccepted==accepted&&statusMatches&&gateDiagnostic!=null,accepted,gateAccepted,diagnostic=gateDiagnostic?.Value,keepsWaiting,placement,previousMatches,status=state["優先度表示検証"].ToObject()});
+   formats.Add(new{name=item.GetProperty("name").GetString(),success=accepted==item.GetProperty("accept").GetBoolean()&&keepsWaiting==expectedWait&&placement&&previousMatches&&gateAccepted==accepted&&statusMatches&&gateDiagnostic!=null,accepted,gateAccepted,diagnostic=gateDiagnostic?.Value,keepsWaiting,placement,previousMatches,previousAccepted=previousAcceptedRecorded,status=state["優先度表示検証"].ToObject()});
   }
   var retryGates=new List<object>();
   foreach(var item in root.GetProperty("retryCases").EnumerateArray()){

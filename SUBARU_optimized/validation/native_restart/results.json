@@ -129,7 +129,13 @@
       "errors": []
     },
     {
-      "id": "answer_priorityInput",
+      "id": "setVariable_priorityBeforeAISnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityAfterAISnapshot",
       "success": true,
       "type": "String",
       "errors": []
@@ -333,6 +339,12 @@
       "errors": []
     },
     {
+      "id": "setVariable_itemEmergencyNormalize",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "setVariable_itemEmergency",
       "success": true,
       "type": "String",
@@ -348,6 +360,12 @@
       "id": "setVariable_itemEmergencyValid",
       "success": true,
       "type": "String",
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_itemEmergencyInvalid_item",
+      "success": true,
+      "type": "Boolean",
       "errors": []
     },
     {
@@ -1029,18 +1047,6 @@
       "errors": []
     },
     {
-      "id": "conditionGroup_priorityFormatRetry_item",
-      "success": true,
-      "type": "Boolean",
-      "errors": []
-    },
-    {
-      "id": "setVariable_priorityFormatRetryIncrement",
-      "success": true,
-      "type": "Number",
-      "errors": []
-    },
-    {
       "id": "conditionGroup_priorityFormatAccepted_item",
       "success": true,
       "type": "Boolean",
@@ -1062,6 +1068,18 @@
       "id": "conditionItem_prioritySucceeded",
       "success": true,
       "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityBeforeSaveSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityAfterSaveSnapshot",
+      "success": true,
+      "type": "String",
       "errors": []
     },
     {
@@ -1400,10 +1418,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1411,10 +1430,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1422,10 +1442,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=969|displayChars=610|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=969|displayChars=610|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1433,10 +1454,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=969|displayChars=562|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=969|displayChars=562|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1444,10 +1466,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=969|displayChars=558|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=969|displayChars=558|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1455,10 +1478,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=945|displayChars=669|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=945|displayChars=669|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1466,10 +1490,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=597|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=597|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1477,10 +1502,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=1008|displayChars=601|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=1008|displayChars=601|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1488,10 +1514,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=597|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=597|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1499,10 +1526,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=969|displayChars=600|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=969|displayChars=600|retry=0",
       "keepsWaiting": false,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1510,10 +1538,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=964|displayChars=558|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=964|displayChars=558|retry=0",
       "keepsWaiting": false,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1521,10 +1550,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=932|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=932|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "合格"
     },
     {
@@ -1532,10 +1562,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=979|displayChars=572|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=979|displayChars=572|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1543,10 +1574,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=964|displayChars=558|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=964|displayChars=558|retry=0",
       "keepsWaiting": false,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1554,10 +1586,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=970|displayChars=563|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=970|displayChars=563|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1565,10 +1598,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP11|rawChars=969|displayChars=530|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemValidP11|rawChars=969|displayChars=530|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemValidP11"
     },
     {
@@ -1576,10 +1610,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP11|rawChars=965|displayChars=606|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemValidP11|rawChars=965|displayChars=606|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemValidP11"
     },
     {
@@ -1587,10 +1622,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP01|rawChars=960|displayChars=550|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemValidP01|rawChars=960|displayChars=550|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemValidP01"
     },
     {
@@ -1598,10 +1634,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=991|displayChars=599|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=991|displayChars=0|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:priorityFormatEnvelope"
     },
     {
@@ -1609,10 +1646,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP12|rawChars=935|displayChars=535|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemValidP12|rawChars=935|displayChars=535|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemValidP12"
     },
     {
@@ -1620,10 +1658,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP01|rawChars=955|displayChars=548|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemValidP01|rawChars=955|displayChars=548|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemValidP01"
     },
     {
@@ -1631,10 +1670,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemNoRemainder|rawChars=993|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemNoRemainder|rawChars=993|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemNoRemainder"
     },
     {
@@ -1642,10 +1682,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=15|displayChars=156|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=15|displayChars=0|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:priorityFormatEnvelope"
     },
     {
@@ -1653,10 +1694,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatHasContent|rawChars=0|displayChars=111|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:priorityFormatHasContent|rawChars=0|displayChars=0|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:priorityFormatHasContent"
     },
     {
@@ -1664,10 +1706,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemBodyValidCHECK|rawChars=938|displayChars=531|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemBodyValidCHECK|rawChars=938|displayChars=531|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemBodyValidCHECK"
     },
     {
@@ -1675,10 +1718,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=959|displayChars=2988|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=959|displayChars=0|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:priorityFormatEnvelope"
     },
     {
@@ -1686,10 +1730,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=617|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=617|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "合格"
     },
     {
@@ -1697,10 +1742,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=993|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=993|displayChars=0|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:priorityFormatEnvelope"
     },
     {
@@ -1708,10 +1754,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP23|rawChars=626|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemValidP23|rawChars=626|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemValidP23"
     },
     {
@@ -1719,10 +1766,11 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=960|displayChars=550|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=960|displayChars=0|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "不合格:priorityFormatEnvelope"
     },
     {
@@ -1730,10 +1778,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=997|displayChars=586|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=997|displayChars=586|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1741,10 +1790,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=1414|displayChars=1275|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=1414|displayChars=1275|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": true,
       "status": "合格"
     },
     {
@@ -1752,10 +1802,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "合格"
     },
     {
@@ -1763,10 +1814,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "合格"
     },
     {
@@ -1774,10 +1826,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=966|displayChars=559|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=966|displayChars=559|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "合格"
     },
     {
@@ -1785,10 +1838,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=968|displayChars=561|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=968|displayChars=561|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "合格"
     },
     {
@@ -1796,10 +1850,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=965|displayChars=558|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=965|displayChars=558|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "合格"
     },
     {
@@ -1807,10 +1862,11 @@
       "success": true,
       "accepted": true,
       "gateAccepted": true,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": null,
       "status": "合格"
     },
     {
@@ -1818,11 +1874,96 @@
       "success": true,
       "accepted": false,
       "gateAccepted": false,
-      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP07|rawChars=970|displayChars=563|retry=0",
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemValidP07|rawChars=970|displayChars=563|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
+      "previousAccepted": false,
       "status": "不合格:itemValidP07"
+    },
+    {
+      "name": "reported missing EMERGENCY separator",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=1395|displayChars=1239|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "previousAccepted": false,
+      "status": "合格"
+    },
+    {
+      "name": "normal verdict and reason separated by space",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "previousAccepted": null,
+      "status": "合格"
+    },
+    {
+      "name": "high verdict and reason separated by fullwidth space",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=941|displayChars=669|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "previousAccepted": null,
+      "status": "合格"
+    },
+    {
+      "name": "emergency newline separator",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "previousAccepted": null,
+      "status": "合格"
+    },
+    {
+      "name": "emergency ambiguous negation rejected",
+      "success": true,
+      "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemEmergencyValid|rawChars=970|displayChars=0|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "previousAccepted": false,
+      "status": "不合格:itemEmergencyValid"
+    },
+    {
+      "name": "emergency unknown word rejected",
+      "success": true,
+      "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemEmergencyValid|rawChars=967|displayChars=0|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "previousAccepted": false,
+      "status": "不合格:itemEmergencyValid"
+    },
+    {
+      "name": "emergency no reason rejected",
+      "success": true,
+      "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v2|stage=gate|validation=不合格:itemEmergencyValid|rawChars=941|displayChars=0|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "previousAccepted": false,
+      "status": "不合格:itemEmergencyValid"
     }
   ],
   "imageFeatures": {
@@ -1882,49 +2023,24 @@
       {
         "name": "previous",
         "success": true,
-        "characters": 23917,
-        "conceptCopies": 0,
-        "conceptHeadingCopies": 1
+        "characters": 8387,
+        "conceptCopies": 1,
+        "conceptHeadingCopies": 0
       },
       {
         "name": "current",
         "success": true,
-        "characters": 8387,
+        "characters": 8428,
         "conceptCopies": 1,
         "conceptHeadingCopies": 0
       }
     ],
     "scope": "Evaluated prompt assembly; character counts are not model tokens or latency"
   },
-  "retryGates": [
-    {
-      "success": true,
-      "raw": "",
-      "count": 0,
-      "result": false
-    },
-    {
-      "success": true,
-      "raw": "bad",
-      "count": 0,
-      "result": true
-    },
-    {
-      "success": true,
-      "raw": "bad",
-      "count": 1,
-      "result": false
-    },
-    {
-      "success": true,
-      "raw": "valid",
-      "count": 0,
-      "result": false
-    }
-  ],
+  "retryGates": [],
   "source_sha256": {
     "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
-    "3-9-緊急保安業務エージェント_optimized.yaml": "4bb1b16692e8d95c297a5131cbeb892d2c77d3c57b38273b1cf9252869a1c97e",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "6a8eff881aecb9f21062210b10e2eb2b808cbfd0bf4d03b73a7021eb0133ea36",
     "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529"
   }
 }

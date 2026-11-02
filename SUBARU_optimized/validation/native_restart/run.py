@@ -90,27 +90,38 @@ def main():
  add('bracketed prose normalized inside structured blocks',good.replace('入力された基本措置の根拠','報告の【臭気】を確認'))
  add('list bullet style normalized',good.replace('└','・'))
  add('ambiguous status still rejected',wire({'P07':('高','実施済みかもしれない','明確な報告なし')}),False)
+ add('reported missing EMERGENCY separator',(R/'originals/20261102_追加報告_EMERGENCY区切り欠落.txt').read_text().strip(),expectBucket='high',expectLabel='メーターガス栓閉止：対応済み')
+ add('normal verdict and reason separated by space',good.replace('通常|','通常 '))
+ add('high verdict and reason separated by fullwidth space',wire({'P11':('低','未実施','元の行'),'P12':('低','要確認','元の行')},emergency='高　入室不能で検知反応と継続警報あり'),expectBucket='high',expectLabel='消防・警察への要請',expectEvacHigh=True)
+ add('emergency newline separator',good.replace('通常|','通常\n'))
+ add('emergency ambiguous negation rejected',good.replace('通常|','高ではない '),False)
+ add('emergency unknown word rejected',good.replace('通常|','不明 '),False)
+ add('emergency no reason rejected',good.replace('通常|両方を高に連動させる条件は今回の試験では指定しない','通常'),False)
  field=indexes[1];steps=[]
  for n in validator():
   if n['kind']=='SetVariable':
    assert field[n['id']]['value']==n['value']
-   steps.append({'variable':n['variable'][6:],'expression':field[n['id']]['value'][1:]})
+   steps.append({'id':n['id'],'variable':n['variable'][6:],'expression':field[n['id']]['value'][1:]})
  data['formatSteps']=steps;data['formatCases']=format_cases
+ data['earlyStopAfter']='setVariable_itemEmergencyValid'
+ data['earlyStopCondition']=field['conditionGroup_itemEmergencyInvalid']['conditions'][0]['condition'][1:]
  data['successGate']=field['conditionGroup_prioritySucceeded']['conditions'][0]['condition'][1:]
- data['retryGate']=field['conditionGroup_priorityFormatRetry']['conditions'][0]['condition'][1:]
+ data['retryGate']='false'
  data['gateDiagnostic']=field['setVariable_priorityGateSnapshot']['value'][1:]
- data['retryCases']=[{'raw':'','status':'不合格:priorityFormatHasContent','count':0,'expected':False},{'raw':'bad','status':'不合格:itemValidP07','count':0,'expected':True},{'raw':'bad','status':'不合格:itemValidP07','count':1,'expected':False},{'raw':'valid','status':'合格','count':0,'expected':False}]
+ data['retryCases']=[] # No automatic AI repair path remains in the deployed topic.
  for case in format_cases:
   if case['name']=='empty':case['expectStatus']='不合格:priorityFormatHasContent'
   elif case['name']=='wrong priority':case['expectStatus']='不合格:itemValidP11'
   elif case['name']=='missing row':case['expectStatus']='不合格:itemValidP12'
  # Differential check against the last delivered renderer on unchanged full payloads.
- previous_source=subprocess.check_output(['git','-C',str(R.parent),'show','11682e9:SUBARU_optimized/validation/itemized_build.py']).decode()
+ previous_source=subprocess.check_output(['git','-C',str(R.parent),'show','2ba6694:SUBARU_optimized/validation/itemized_build.py']).decode()
  previous_namespace={};exec(compile(previous_source,'previous_itemized_build.py','exec'),previous_namespace)
  data['previousFormatSteps']=[{'variable':n['variable'][6:],'expression':n['value'][1:]}for n in previous_namespace['validator']()if n['kind']=='SetVariable']
- changed_policy={'optional pressure code may be omitted','all optional measures omitted','internal row separator injection rejected','single outer text fence normalized','fullwidth field separators normalized','performed status alias normalized','unknown status alias normalized','bracketed prose normalized inside structured blocks','list bullet style normalized'}
- for case in format_cases:case['comparePrevious']=case['name']not in changed_policy
- old_field=yaml.safe_load(subprocess.check_output(['git','-C',str(R.parent),'show','11682e9:SUBARU_optimized/'+files[1]]))
+ changed_policy={'optional pressure code may be omitted','all optional measures omitted','internal row separator injection rejected','single outer text fence normalized','fullwidth field separators normalized','performed status alias normalized','unknown status alias normalized','bracketed prose normalized inside structured blocks','list bullet style normalized','reported missing EMERGENCY separator','normal verdict and reason separated by space','high verdict and reason separated by fullwidth space','emergency newline separator'}
+ for case in format_cases:
+  case['comparePrevious']=case['name']not in changed_policy
+  if case['name']=='reported missing EMERGENCY separator':case['expectPreviousAccept']=False
+ old_field=yaml.safe_load(subprocess.check_output(['git','-C',str(R.parent),'show','2ba6694:SUBARU_optimized/'+files[1]]))
  old_field={n['id']:n for n in walk(old_field)if 'id'in n and 'kind'in n}
  data['fieldPrompts']=[{'name':label,'guide':idx['setVariable_priorityGuideFixed']['value'][1:],'prompt':idx['setVariable_priorityPrompt']['value'][1:]}for label,idx in [('previous',old_field),('current',field)]]
  data['fieldConceptSource']=(R/'runtime_prompts/01_緊急保安_判定ルール.md').read_text().rstrip()

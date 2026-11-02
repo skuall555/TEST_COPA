@@ -28,10 +28,9 @@ class Additional(unittest.TestCase):
   self.assertEqual(writes['Topic.優先度様式再試行回数'],'=0')
   local_tables={'setVariable_itemBucketHigh','setVariable_itemBucketMedium','setVariable_itemBucketLow','setVariable_itemIncomplete'}
   self.assertFalse(any(('Filter('in n.get('value','')or 'Concat('in n.get('value',''))and n['id']not in local_tables for n in added))
- def test_retry_does_not_reinitialize_counter(self):
-  retry=self.new['conditionGroup_priorityFormatRetry'];self.assertIn(' < 1',retry['conditions'][0]['condition'])
-  self.assertEqual(self.new['goto_priorityFormatRetry']['actionId'],'answer_priority')
-  self.assertEqual(self.new['setVariable_priorityFormatRetryIncrement']['value'],'=Topic.優先度様式再試行回数 + 1')
+ def test_no_autonomous_format_retry_and_success_guard_retained(self):
+  for ident in ['conditionGroup_priorityFormatRetry','goto_priorityFormatRetry','setVariable_priorityFormatRetryIncrement']:self.assertNotIn(ident,self.new)
+  self.assertEqual(self.new['setVariable_priorityFormatRetryInit']['value'],'=0')
   self.assertEqual(self.new['conditionGroup_prioritySucceeded']['conditions'][0]['condition'],'=Topic.優先度表示検証 = "合格"')
  def test_other_safety_and_image_ownership_preserved(self):
   self.assertEqual(own(self.old['question_priorityUpdate']),own(self.new['question_priorityUpdate']))

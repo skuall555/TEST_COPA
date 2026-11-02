@@ -60,5 +60,7 @@
   "Studio_stop_NOT_REPRODUCED": true,
   "Studio_latency_NOT_MEASURED": true,
   "knowledge_message_source_NOT_IDENTIFIED": true,
-  "search_free_binding_requires_actual_model_ids": true
+  "search_free_binding_requires_actual_model_ids": true,
+  "historical_release": "2ba6694",
+  "latest_manifest": "no_retry_manifest.json"
 }

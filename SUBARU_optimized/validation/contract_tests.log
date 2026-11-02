@@ -1,9 +1,9 @@
 test_connector_questions_and_manual_repair_nodes_unchanged (test_additional.Additional.test_connector_questions_and_manual_repair_nodes_unchanged) ... ok
 test_entry_and_images_byte_identical (test_additional.Additional.test_entry_and_images_byte_identical) ... ok
 test_new_variables_are_scalars_with_explicit_initializing_values (test_additional.Additional.test_new_variables_are_scalars_with_explicit_initializing_values) ... ok
+test_no_autonomous_format_retry_and_success_guard_retained (test_additional.Additional.test_no_autonomous_format_retry_and_success_guard_retained) ... ok
 test_only_scoped_existing_fields_changed (test_additional.Additional.test_only_scoped_existing_fields_changed) ... ok
 test_other_safety_and_image_ownership_preserved (test_additional.Additional.test_other_safety_and_image_ownership_preserved) ... ok
-test_retry_does_not_reinitialize_counter (test_additional.Additional.test_retry_does_not_reinitialize_counter) ... ok
 test_known_positive_odor_only_rule_and_all_high_template_are_removed (test_applicability.Applicability.test_known_positive_odor_only_rule_and_all_high_template_are_removed) ... ok
 test_nonformatting_flow_preserved (test_applicability.Applicability.test_nonformatting_flow_preserved) ... ok
 test_old_missing_report_means_not_done_instructions_are_removed (test_applicability.Applicability.test_old_missing_report_means_not_done_instructions_are_removed) ... ok
@@ -36,6 +36,7 @@ test_retry_limit_cannot_fall_through_to_completed_phase (test_itemized_features.
 test_unrelated_entry_and_global_instructions_unchanged (test_itemized_features.ItemizedFeatures.test_unrelated_entry_and_global_instructions_unchanged) ... ok
 test_binding_keeps_redirect_and_retry_targets_and_copies_text (test_response_reliability.ResponseReliability.test_binding_keeps_redirect_and_retry_targets_and_copies_text) ... ok
 test_binding_rejects_placeholder_identifiers (test_response_reliability.ResponseReliability.test_binding_rejects_placeholder_identifiers) ... ok
+test_priority_cannot_cycle_back_to_ai_without_waiting_for_a_user (test_response_reliability.ResponseReliability.test_priority_cannot_cycle_back_to_ai_without_waiting_for_a_user) ... ok
 test_success_gate_has_one_unambiguous_condition_and_diagnostics (test_response_reliability.ResponseReliability.test_success_gate_has_one_unambiguous_condition_and_diagnostics) ... ok
 test_clear_initial_intent_skips_menu (test_restart.Restart.test_clear_initial_intent_skips_menu) ... ok
 test_clear_natural_reply_does_not_ask_again (test_restart.Restart.test_clear_natural_reply_does_not_ask_again) ... ok
@@ -60,7 +61,7 @@ test_business_flow_and_variables_preserved_only_generated_steps_retired (test_sp
 test_formatter_step_budget_and_prompt_duplication (test_speed_and_initial.SpeedAndInitial.test_formatter_step_budget_and_prompt_duplication) ... ok
 
 ----------------------------------------------------------------------
-Ran 60 tests in 3.308s
+Ran 61 tests in 3.873s
 
 OK
 1-マニュアル関連入口_optimized.yaml PASS new variable candidates: []

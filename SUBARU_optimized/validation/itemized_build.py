@@ -23,8 +23,9 @@ def protocol():
     return '''# 今回の内部出力契約（従来の見出し指定より優先）
 ユーザー用の高・中・低の見出しをあなたが作文しない。措置ごとに一つの優先度・実施状況・根拠を返し、YAMLがその優先度だけを使って表示欄を決める。
 FACTS・EMERGENCY・P01〜P13・NEXT・CHECKを各1回、順番どおり出力する。P14〜P23は今回必要な項目だけ各1回、P13とNEXTの間に出力し、不要ならブロック自体を省略する。コードブロック、前置き、見出し、追加マーカーは禁止。本文には区切り文字の半角縦棒|や[[、]]、【、】を含めない。行内の情報を勝手に省略せず、入力事実以外は作らない。
+EMERGENCYの判定語は高または通常だけ。必ず語の直後に半角の縦棒|を1つ入れ、「通常|理由」または「高|理由」の形式にする。
 [[FACTS]]確認できた事実を└から始まる行で記載[[/FACTS]]
-[[EMERGENCY]]高または通常|E-01／E-02・現状の危険条件・再評価の根拠[[/EMERGENCY]]
+[[EMERGENCY]]判定語|理由[[/EMERGENCY]]
 '''+rows+'''
 [[NEXT]]必要な次の行動を└から始まる行で記載[[/NEXT]]
 [[CHECK]]判断に必要な情報と理由を、利用者への自然な文章で記載[[/CHECK]]
@@ -54,7 +55,9 @@ def validator():
     for tag,var in [('FACTS','判定事実'),('EMERGENCY','判定連動'),('NEXT','判定次行動'),('CHECK','判定確認文')]:
         out += [setv('setVariable_itemSection'+tag,'Topic.優先度表示区分','='+get(tag)),check('setVariable_itemUnique'+tag,unique(tag)),remove(tag)]
         if tag=='EMERGENCY':
+            out.append(setv('setVariable_itemEmergencyNormalize','Topic.優先度表示区分','=With({bodyText: Trim(Substitute(Substitute(Substitute(Substitute(Topic.優先度表示区分, "｜", "|"), Char(13), " "), Char(10), " "), Char(9), " "))}, If("|" in bodyText, bodyText, If(Or(StartsWith(bodyText, "通常 "), StartsWith(bodyText, "通常　")), "通常|" & Trim(Mid(bodyText, 3)), If(Or(StartsWith(bodyText, "高 "), StartsWith(bodyText, "高　")), "高|" & Trim(Mid(bodyText, 2)), bodyText))))'))
             out += [setv('setVariable_itemEmergency','Topic.判定連動','=Trim(First(Split(Substitute(Topic.優先度表示区分, "｜", "|"), "|")).Value)'),setv('setVariable_itemEmergencyReason','Topic.判定連動理由','='+prose('Trim(Last(Split(Substitute(Topic.優先度表示区分, "｜", "|"), "|")).Value)')),check('setVariable_itemEmergencyValid','And(CountRows(Split(Substitute(Topic.優先度表示区分, "｜", "|"), "|")) = 2, Or(Topic.判定連動 = "高", Topic.判定連動 = "通常"), Len(Topic.判定連動理由) > 0, Not("[[" in Topic.判定連動理由), Not("【" in Topic.判定連動理由))')]
+            out.append(cg('conditionGroup_itemEmergencyInvalid','=Topic.優先度表示検証 <> "合格"',[{'kind':'GotoAction','id':'goto_priorityInvalidEmergency','actionId':'setVariable_priorityGateSnapshot'}]))
         else:
             body=prose('Trim(Topic.優先度表示区分)')
             if tag in ('FACTS','NEXT'):
@@ -92,7 +95,6 @@ def validator():
     for label,var in [('初動措置　優先度：高','判定高欄'),('初動措置　優先度：中','判定中欄'),('初動措置　優先度：低','判定低欄')]:expr+=' & '+q('\n\n【'+label+'】\n')+' & If(IsBlank(Topic.'+var+'), "└なし", Topic.'+var+')'
     expr+=' & '+q('\n\n【高優先度の完了状況】\n')+' & If(Topic.判定未完了 = "あり", "└未完了あり", "└全て対応済み") & '+q('\n\n【ネクストアクション】\n')+' & Topic.判定次行動 & '+q('\n\n【確認したいこと】\n')+' & Topic.判定確認文'
     out.append(setv('setVariable_itemRender','Topic.優先度表示組立','='+expr))
-    out.append(cg('conditionGroup_priorityFormatRetry','=And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1, Len(Topic.優先度表示原文) > 0)',[setv('setVariable_priorityFormatRetryIncrement','Topic.優先度様式再試行回数','=Topic.優先度様式再試行回数 + 1'),{'kind':'GotoAction','id':'goto_priorityFormatRetry','actionId':'answer_priority'}]))
     out.append(cg('conditionGroup_priorityFormatAccepted','=Topic.優先度表示検証 = "合格"',[setv('setVariable_priorityFormatUseAssembled','Topic.優先度判定結果','=Topic.優先度表示組立')]))
     return out
 def apply(field):
@@ -110,7 +112,7 @@ def apply(field):
         a=s.index('# 出力様式の厳守');s=s[:a]+'"'
         n['value']=s[:-1]+'\n'+contract.replace('"','""')+'"'
     def answer(n):
-        n['userInput']='=Topic.優先度判定プロンプト & If(Topic.優先度様式再試行回数 > 0, Char(10) & "前回の判定内容を保持し、次の失敗箇所だけを修復してください。\n失敗箇所：" & Topic.優先度表示検証 & Char(10) & "前回の原文：" & Topic.優先度判定結果 & Char(10) & "必須コード欠落や形式だけを修復し、未報告の事実や実施状況を作らない。", "")'
+        n['userInput']='=Topic.優先度判定プロンプト'
         n['additionalInstructions']='固定ガイドと現場事実だけを根拠にする。末尾の内部出力契約に厳密に従い、ユーザー用見出しは出力しない。各措置の優先度は一つだけ、状態・根拠とは別に返す。CHECKは理由と判断への影響が伝わる文章にする。実施済みの範囲と追加作業、換気を試みた事実と流入防止の閉窓を区別する。'
     def limit(n):
         n['conditions'][0]['actions'].append({'kind':'EndDialog','id':'endDialog_priorityRetryLimit','clearTopicQueue':True})

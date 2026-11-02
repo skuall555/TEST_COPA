@@ -45,9 +45,15 @@
     "setVariable_priorityPreviousCheckInit"
   ],
   "setVariable_priorityPreviousCheckInit": [
+    "setVariable_priorityBeforeAISnapshot"
+  ],
+  "setVariable_priorityBeforeAISnapshot": [
     "answer_priority"
   ],
   "answer_priority": [
+    "setVariable_priorityAfterAISnapshot"
+  ],
+  "setVariable_priorityAfterAISnapshot": [
     "setVariable_priorityFormatRaw"
   ],
   "setVariable_priorityFormatRaw": [
@@ -147,6 +153,9 @@
     "setVariable_itemRemoveEMERGENCY"
   ],
   "setVariable_itemRemoveEMERGENCY": [
+    "setVariable_itemEmergencyNormalize"
+  ],
+  "setVariable_itemEmergencyNormalize": [
     "setVariable_itemEmergency"
   ],
   "setVariable_itemEmergency": [
@@ -156,7 +165,14 @@
     "setVariable_itemEmergencyValid"
   ],
   "setVariable_itemEmergencyValid": [
+    "conditionGroup_itemEmergencyInvalid"
+  ],
+  "conditionGroup_itemEmergencyInvalid": [
+    "goto_priorityInvalidEmergency",
     "setVariable_itemSectionNEXT"
+  ],
+  "goto_priorityInvalidEmergency": [
+    "setVariable_priorityGateSnapshot"
   ],
   "setVariable_itemSectionNEXT": [
     "setVariable_itemUniqueNEXT"
@@ -495,17 +511,7 @@
     "setVariable_itemRender"
   ],
   "setVariable_itemRender": [
-    "conditionGroup_priorityFormatRetry"
-  ],
-  "conditionGroup_priorityFormatRetry": [
-    "conditionGroup_priorityFormatAccepted",
-    "setVariable_priorityFormatRetryIncrement"
-  ],
-  "setVariable_priorityFormatRetryIncrement": [
-    "goto_priorityFormatRetry"
-  ],
-  "goto_priorityFormatRetry": [
-    "answer_priority"
+    "conditionGroup_priorityFormatAccepted"
   ],
   "conditionGroup_priorityFormatAccepted": [
     "setVariable_priorityFormatUseAssembled",
@@ -518,10 +524,16 @@
     "conditionGroup_prioritySucceeded"
   ],
   "conditionGroup_prioritySucceeded": [
-    "invokeFlowAction_caseSaveFieldAdvice",
-    "setVariable_imageReceptionOffPriorityFailed"
+    "setVariable_imageReceptionOffPriorityFailed",
+    "setVariable_priorityBeforeSaveSnapshot"
+  ],
+  "setVariable_priorityBeforeSaveSnapshot": [
+    "invokeFlowAction_caseSaveFieldAdvice"
   ],
   "invokeFlowAction_caseSaveFieldAdvice": [
+    "setVariable_priorityAfterSaveSnapshot"
+  ],
+  "setVariable_priorityAfterSaveSnapshot": [
     "conditionGroup_priorityLoopNeeded"
   ],
   "conditionGroup_priorityLoopNeeded": [
