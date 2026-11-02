@@ -33,7 +33,7 @@ class Program {
   }
   var formats=new List<object>();
   foreach(var item in root.GetProperty("formatCases").EnumerateArray()){
-   var state=new Dictionary<string,FormulaValue>{{"優先度判定結果",FormulaValue.New(item.GetProperty("text").GetString()!)}};
+   var state=new Dictionary<string,FormulaValue>{{"優先度判定結果",FormulaValue.New(item.GetProperty("text").GetString()!)},{"優先度様式再試行回数",FormulaValue.New(0d)}};
    foreach(var step in root.GetProperty("formatSteps").EnumerateArray()){
     var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(state.Select(x=>new NamedValue(x.Key,x.Value)))));
     state[step.GetProperty("variable").GetString()!]=engine.Eval(step.GetProperty("expression").GetString()!,context,options);
@@ -44,6 +44,10 @@ class Program {
     var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(new NamedValue("優先度判定結果",state["優先度表示組立"]))));
     keepsWaiting=engine.Eval(root.GetProperty("completion").GetString()!,context,options) is BooleanValue flag&&flag.Value;
    }
+   var gateContext=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(state.Select(x=>new NamedValue(x.Key,x.Value)))));
+   bool gateAccepted=engine.Eval(root.GetProperty("successGate").GetString()!,gateContext,options)is BooleanValue gateResult&&gateResult.Value;
+   var gateDiagnostic=engine.Eval(root.GetProperty("gateDiagnostic").GetString()!,gateContext,options)as StringValue;
+   bool statusMatches=!item.TryGetProperty("expectStatus",out var expectedStatus)||Get("優先度表示検証")==expectedStatus.GetString();
    bool expectedWait=!item.TryGetProperty("expectWait",out var waitValue)||waitValue.GetBoolean();
    bool placement=true;
    string Get(string key)=>state.TryGetValue(key,out var value)&&value is StringValue str?str.Value:"";
@@ -64,7 +68,13 @@ class Program {
     bool previousAccepted=previousState["優先度表示検証"] is StringValue previousStatus&&previousStatus.Value=="合格";
     previousMatches=previousAccepted==accepted&&(!accepted||((StringValue)previousState["優先度表示組立"]).Value==Get("優先度表示組立"));
    }
-   formats.Add(new{name=item.GetProperty("name").GetString(),success=accepted==item.GetProperty("accept").GetBoolean()&&keepsWaiting==expectedWait&&placement&&previousMatches,accepted,keepsWaiting,placement,previousMatches,status=state["優先度表示検証"].ToObject()});
+   formats.Add(new{name=item.GetProperty("name").GetString(),success=accepted==item.GetProperty("accept").GetBoolean()&&keepsWaiting==expectedWait&&placement&&previousMatches&&gateAccepted==accepted&&statusMatches&&gateDiagnostic!=null,accepted,gateAccepted,diagnostic=gateDiagnostic?.Value,keepsWaiting,placement,previousMatches,status=state["優先度表示検証"].ToObject()});
+  }
+  var retryGates=new List<object>();
+  foreach(var item in root.GetProperty("retryCases").EnumerateArray()){
+   var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(new NamedValue("優先度判定結果",FormulaValue.New(item.GetProperty("raw").GetString()!)),new NamedValue("優先度表示検証",FormulaValue.New(item.GetProperty("status").GetString()!)),new NamedValue("優先度様式再試行回数",FormulaValue.New(item.GetProperty("count").GetDouble())))));
+   var actual=engine.Eval(root.GetProperty("retryGate").GetString()!,context,options)as BooleanValue;
+   retryGates.Add(new{success=actual!=null&&actual.Value==item.GetProperty("expected").GetBoolean(),raw=item.GetProperty("raw").GetString(),count=item.GetProperty("count").GetInt32(),result=actual?.Value});
   }
   var fieldPromptItems=new List<object>();bool fieldPromptSuccess=true;
   foreach(var item in root.GetProperty("fieldPrompts").EnumerateArray()){
@@ -90,6 +100,6 @@ class Program {
   var secondPrompt=imageState["第2段プロンプト"] as StringValue;
   var featureResults=root.GetProperty("featureSources").EnumerateArray().Select(x=>new{first=firstPrompt?.Value.Contains(x.GetString()!)==true,second=secondPrompt?.Value.Contains(x.GetString()!)==true}).ToArray();
   var imageFeatures=new{success=featureResults.All(x=>x.first&&x.second),count=featureResults.Length,items=featureResults,scope="Prompt assembly only; no image or AI model executed"};
-  Console.WriteLine(JsonSerializer.Serialize(new{package="Microsoft.PowerFx.Interpreter 1.8.1",scope="Standalone SDK, not the Studio host; no live model",checks,runs,formats,imageFeatures,fieldPrompts},new JsonSerializerOptions{WriteIndented=true}));
+  Console.WriteLine(JsonSerializer.Serialize(new{package="Microsoft.PowerFx.Interpreter 1.8.1",scope="Standalone SDK, not the Studio host; no live model",checks,runs,formats,imageFeatures,fieldPrompts,retryGates},new JsonSerializerOptions{WriteIndented=true}));
  }
 }

@@ -93,8 +93,10 @@ class Restart(unittest.TestCase):
   for k in ['setVariable_appendImageResultToGlobalHistory','setVariable_globalDone','setVariable_globalCheck']:self.assertEqual(self.old[2][k],self.new[2][k])
  def test_image_specs_are_verbatim_and_not_photo_facts(self):
   s=self.new[2]['setVariable_prompt1']['value'];p=self.new[2]['setVariable_imageFeature02']['value'];d=self.new[2]['setVariable_imageFeature03']['value'];self.assertIn(POCKET_ILLUSTRATION,p);self.assertIn(DETECTOR_ILLUSTRATION,d);self.assertIn('観察事実ではない',p);self.assertIn('Topic.画像特徴カタログ',s);self.assertNotIn('置いてあるだけならポケット警報器',p)
- def test_other_safety_rules_and_human_output_format_unchanged(self):
-  a=self.old[1]['setVariable_priorityGuideFixed']['value'];b=self.new[1]['setVariable_priorityGuideFixed']['value'];a=a.replace('対応済みか未実施かを必ず明示する。','対応済み／未実施／要確認のいずれかを、報告された実施状況に応じて明示する。').replace('高優先度項目が1つでも未実施の場合、','高優先度項目が1つでも未実施または要確認の場合、');self.assertEqual(a[a.index('# 最重要'):a.index('# 出力フォーマット')],b[b.index('# 最重要'):b.index('# ユーザーへの表示')]);self.assertIn('LEL1％',b);self.assertIn('一時的な反応消失',b);self.assertIn('未要請だから低',b)
+ def test_completion_wait_control_and_output_headers_preserved(self):
+  self.assertEqual(self.new[1]['conditionGroup_priorityLoopNeeded']['conditions'][0]['condition'],'=Trim(First(Split(Last(Split(Topic.優先度判定結果, "【高優先度の完了状況】")).Value, "【ネクストアクション】")).Value) <> "└全て対応済み"')
+  s=self.new[1]['setVariable_itemRender']['value']
+  for h in ['確認できた事実','初動措置　優先度：高','初動措置　優先度：中','初動措置　優先度：低','高優先度の完了状況','ネクストアクション','確認したいこと']:self.assertEqual(s.count('【'+h+'】'),1)
  def test_new_control_expressions_short_and_shallow(self):
   for old,new in zip(self.old,self.new):
    for k in set(new)-set(old):

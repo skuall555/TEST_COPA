@@ -117,6 +117,18 @@
       "errors": []
     },
     {
+      "id": "setVariable_priorityPreviousResultInit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityPreviousCheckInit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "answer_priorityInput",
       "success": true,
       "type": "String",
@@ -124,6 +136,12 @@
     },
     {
       "id": "setVariable_priorityFormatRaw",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatUnwrap",
       "success": true,
       "type": "String",
       "errors": []
@@ -250,6 +268,12 @@
     },
     {
       "id": "setVariable_itemRemainingInit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFormatHasContent",
       "success": true,
       "type": "String",
       "errors": []
@@ -1029,6 +1053,12 @@
       "errors": []
     },
     {
+      "id": "setVariable_priorityGateSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "conditionItem_prioritySucceeded",
       "success": true,
       "type": "Boolean",
@@ -1038,6 +1068,18 @@
       "id": "conditionItem_priorityLoopNeeded",
       "success": true,
       "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityWaitSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "setVariable_priorityFailedSnapshot",
+      "success": true,
+      "type": "String",
       "errors": []
     },
     {
@@ -1357,6 +1399,8 @@
       "name": "valid scalar protocol",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1366,6 +1410,8 @@
       "name": "CRLF protocol",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1375,6 +1421,8 @@
       "name": "police 高",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=969|displayChars=610|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1384,6 +1432,8 @@
       "name": "police 中",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=969|displayChars=562|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1393,6 +1443,8 @@
       "name": "police 低",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=969|displayChars=558|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1402,6 +1454,8 @@
       "name": "emergency forces both high despite low per-row values",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=945|displayChars=669|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1411,6 +1465,8 @@
       "name": "performed drain survey stays done",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=597|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1420,6 +1476,8 @@
       "name": "CHECK paragraph",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=1008|displayChars=601|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1429,6 +1487,8 @@
       "name": "pressure checks high and pending block completion",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=597|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1438,6 +1498,8 @@
       "name": "completed pressure checks permit completion",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=969|displayChars=600|retry=0",
       "keepsWaiting": false,
       "placement": true,
       "previousMatches": true,
@@ -1447,6 +1509,8 @@
       "name": "no supply issue keeps pressure measure out of display",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=964|displayChars=558|retry=0",
       "keepsWaiting": false,
       "placement": true,
       "previousMatches": true,
@@ -1456,6 +1520,8 @@
       "name": "optional pressure code may be omitted",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=932|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1465,6 +1531,8 @@
       "name": "reported caution warrants middle with explicit reason",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=979|displayChars=572|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1474,6 +1542,8 @@
       "name": "completed high measures",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=964|displayChars=558|retry=0",
       "keepsWaiting": false,
       "placement": true,
       "previousMatches": true,
@@ -1483,6 +1553,8 @@
       "name": "completion words in facts do not finish",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=970|displayChars=563|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1492,105 +1564,129 @@
       "name": "wrong priority",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP11|rawChars=969|displayChars=530|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:itemValidP11"
     },
     {
       "name": "priority used as status",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP11|rawChars=965|displayChars=606|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:itemValidP11"
     },
     {
       "name": "extra delimiter",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP01|rawChars=960|displayChars=550|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:itemValidP01"
     },
     {
       "name": "duplicate code",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=991|displayChars=599|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:priorityFormatEnvelope"
     },
     {
       "name": "missing row",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP12|rawChars=935|displayChars=535|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:itemValidP12"
     },
     {
       "name": "empty reason",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP01|rawChars=955|displayChars=548|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:itemValidP01"
     },
     {
       "name": "unknown block",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemNoRemainder|rawChars=993|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:itemNoRemainder"
     },
     {
       "name": "old 7-heading free text",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=15|displayChars=156|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:priorityFormatEnvelope"
     },
     {
       "name": "empty",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatHasContent|rawChars=0|displayChars=111|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:priorityFormatHasContent"
     },
     {
       "name": "question list",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemBodyValidCHECK|rawChars=938|displayChars=531|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:itemBodyValidCHECK"
     },
     {
       "name": "reported free-form drift",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=959|displayChars=2988|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:priorityFormatEnvelope"
     },
     {
       "name": "all optional measures omitted",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=617|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
@@ -1600,37 +1696,133 @@
       "name": "duplicate optional pressure code",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=993|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:priorityFormatEnvelope"
     },
     {
       "name": "orphan optional end marker",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP23|rawChars=626|displayChars=560|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:itemValidP23"
     },
     {
       "name": "internal row separator injection rejected",
       "success": true,
       "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:priorityFormatEnvelope|rawChars=960|displayChars=550|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
-      "status": "不合格"
+      "status": "不合格:priorityFormatEnvelope"
     },
     {
       "name": "ordinary initial report with low request",
       "success": true,
       "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=997|displayChars=586|retry=0",
       "keepsWaiting": true,
       "placement": true,
       "previousMatches": true,
       "status": "合格"
+    },
+    {
+      "name": "reported 20261102 raw protocol already valid",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=1414|displayChars=1275|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "single outer text fence normalized",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "fullwidth field separators normalized",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "performed status alias normalized",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=966|displayChars=559|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "unknown status alias normalized",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=968|displayChars=561|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "bracketed prose normalized inside structured blocks",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=965|displayChars=558|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "list bullet style normalized",
+      "success": true,
+      "accepted": true,
+      "gateAccepted": true,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=967|displayChars=560|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "合格"
+    },
+    {
+      "name": "ambiguous status still rejected",
+      "success": true,
+      "accepted": false,
+      "gateAccepted": false,
+      "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=不合格:itemValidP07|rawChars=970|displayChars=563|retry=0",
+      "keepsWaiting": true,
+      "placement": true,
+      "previousMatches": true,
+      "status": "不合格:itemValidP07"
     }
   ],
   "imageFeatures": {
@@ -1690,23 +1882,49 @@
       {
         "name": "previous",
         "success": true,
-        "characters": 33138,
+        "characters": 23917,
         "conceptCopies": 0,
-        "conceptHeadingCopies": 2
+        "conceptHeadingCopies": 1
       },
       {
         "name": "current",
         "success": true,
-        "characters": 23917,
+        "characters": 8387,
         "conceptCopies": 1,
-        "conceptHeadingCopies": 1
+        "conceptHeadingCopies": 0
       }
     ],
     "scope": "Evaluated prompt assembly; character counts are not model tokens or latency"
   },
+  "retryGates": [
+    {
+      "success": true,
+      "raw": "",
+      "count": 0,
+      "result": false
+    },
+    {
+      "success": true,
+      "raw": "bad",
+      "count": 0,
+      "result": true
+    },
+    {
+      "success": true,
+      "raw": "bad",
+      "count": 1,
+      "result": false
+    },
+    {
+      "success": true,
+      "raw": "valid",
+      "count": 0,
+      "result": false
+    }
+  ],
   "source_sha256": {
     "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
-    "3-9-緊急保安業務エージェント_optimized.yaml": "0af280cfdeac88bec5ea0bd27d6e3418e0ecce2c1dd8fe82ab029ae1c66d4fd8",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "37d73a5a202c72081aeddbd02d29d8ec50d898c230d671bebd73899a76681a1f",
     "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529"
   }
 }

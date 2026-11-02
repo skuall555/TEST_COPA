@@ -7,8 +7,16 @@ def q(s):return '"'+s.replace('"','""')+'"'
 def lit(s):return '='+q(s)
 def get(tag):return 'First(Split(Last(Split(Topic.優先度表示原文, '+q('[['+tag+']]')+')).Value, '+q('[[/'+tag+']]')+')).Value'
 def unique(tag):return 'And(CountRows(Split(Topic.優先度表示原文, '+q('[['+tag+']]')+')) = 2, CountRows(Split(Topic.優先度表示原文, '+q('[[/'+tag+']]')+')) = 2)'
-def check(ident,expr):return setv(ident,'Topic.優先度表示検証','=If(And(Topic.優先度表示検証 = "合格", '+expr+'), "合格", "不合格")')
-def remove(tag):return setv('setVariable_itemRemove'+tag,'Topic.判定残余','=Substitute(Topic.判定残余, '+q('[['+tag+']]')+' & Topic.優先度表示区分 & '+q('[[/'+tag+']]')+', "")')
+def check(ident,expr):
+    # Keep the first failed check for the maker and for the one bounded repair call.
+    label=ident.removeprefix('setVariable_')
+    return setv(ident,'Topic.優先度表示検証','=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If('+expr+', "合格", '+q('不合格:'+label)+'))')
+def remove(tag):
+    payload=get(tag)if tag.startswith('P')and tag[1:].isdigit()else 'Topic.優先度表示区分'
+    return setv('setVariable_itemRemove'+tag,'Topic.判定残余','=Substitute(Topic.判定残余, '+q('[['+tag+']]')+' & '+payload+' & '+q('[[/'+tag+']]')+', "")')
+def status(expr):
+    return 'Switch('+expr+', "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", '+expr+')'
+def prose(expr):return 'Substitute(Substitute('+expr+', "【", "（"), "】", "）")'
 def protocol():
     rows='\n'.join('[['+code+']]'+'優先度|実施状況|対象事実とこの措置の成立条件'+'[[/'+code+']]'for i,(code,_)in enumerate(MEASURES[:13]))
     names='\n'.join(code+'：'+name+('（必要時のみ。不要なら対象外）'if i>=13 else '')for i,(code,name)in enumerate(MEASURES))
@@ -36,24 +44,29 @@ EMERGENCYはE-01／E-02・広範囲拡散・遮断排出不能などにより避
 既に高と判断できる事項を判断不能に戻さず「この状況から避難と要請は高です。追加回答を待たず提示した措置を進めてください。上流遮断の方法を確認するため…を教えてください」のように、結論と残る確認を分ける。判断に必要な報告が十分なら「優先度を判断するための情報は確認できています。追加の報告を待たず、提示した未完了の高優先度の作業を進めてください」と案内する。作業自体が未完了なのに安全確認完了としない。
 '''
 def validator():
-    out=[setv('setVariable_priorityFormatRaw','Topic.優先度表示原文','=Topic.優先度判定結果')]
+    out=[setv('setVariable_priorityFormatRaw','Topic.優先度表示原文','=Trim(Substitute(Topic.優先度判定結果, Char(13) & Char(10), Char(10)))'),
+         setv('setVariable_priorityFormatUnwrap','Topic.優先度表示原文','=With({rawText: Topic.優先度表示原文}, If(And(Or(StartsWith(rawText, "```" & Char(10)), StartsWith(rawText, "```text" & Char(10)), StartsWith(rawText, "```plaintext" & Char(10))), EndsWith(rawText, "```")), Trim(Mid(rawText, Find(Char(10), rawText) + 1, Len(rawText) - Find(Char(10), rawText) - 3)), rawText))')]
     for index,var in enumerate(STRING_VARS):
         if var!='優先度表示原文':out.append(setv('setVariable_itemInit'+str(index).zfill(2),'Topic.'+var,lit('合格'if var=='優先度表示検証'else 'なし'if var=='判定未完了'else '')))
     out.append(setv('setVariable_itemRemainingInit','Topic.判定残余','=Topic.優先度表示原文'))
+    out.append(check('setVariable_priorityFormatHasContent','Len(Topic.優先度表示原文) > 0'))
     out.append(check('setVariable_priorityFormatEnvelope','And(StartsWith(Trim(Topic.優先度表示原文), "[[FACTS]]"), EndsWith(Trim(Topic.優先度表示原文), "[[/CHECK]]"), Not(Char(30) in Topic.優先度表示原文))'))
     for tag,var in [('FACTS','判定事実'),('EMERGENCY','判定連動'),('NEXT','判定次行動'),('CHECK','判定確認文')]:
         out += [setv('setVariable_itemSection'+tag,'Topic.優先度表示区分','='+get(tag)),check('setVariable_itemUnique'+tag,unique(tag)),remove(tag)]
         if tag=='EMERGENCY':
-            out += [setv('setVariable_itemEmergency','Topic.判定連動','=Trim(First(Split(Topic.優先度表示区分, "|")).Value)'),setv('setVariable_itemEmergencyReason','Topic.判定連動理由','=Trim(Last(Split(Topic.優先度表示区分, "|")).Value)'),check('setVariable_itemEmergencyValid','And(CountRows(Split(Topic.優先度表示区分, "|")) = 2, Or(Topic.判定連動 = "高", Topic.判定連動 = "通常"), Len(Topic.判定連動理由) > 0, Not("[[" in Topic.判定連動理由), Not("【" in Topic.判定連動理由))')]
+            out += [setv('setVariable_itemEmergency','Topic.判定連動','=Trim(First(Split(Substitute(Topic.優先度表示区分, "｜", "|"), "|")).Value)'),setv('setVariable_itemEmergencyReason','Topic.判定連動理由','='+prose('Trim(Last(Split(Substitute(Topic.優先度表示区分, "｜", "|"), "|")).Value)')),check('setVariable_itemEmergencyValid','And(CountRows(Split(Substitute(Topic.優先度表示区分, "｜", "|"), "|")) = 2, Or(Topic.判定連動 = "高", Topic.判定連動 = "通常"), Len(Topic.判定連動理由) > 0, Not("[[" in Topic.判定連動理由), Not("【" in Topic.判定連動理由))')]
         else:
-            out.append(setv('setVariable_itemBody'+tag,'Topic.'+var,'=Trim(Topic.優先度表示区分)'))
+            body=prose('Trim(Topic.優先度表示区分)')
+            if tag in ('FACTS','NEXT'):
+                body='With({bodyText: '+body+'}, Substitute(Substitute(If(StartsWith(bodyText, "・"), "└" & Mid(bodyText, 2), If(StartsWith(bodyText, "- "), "└" & Mid(bodyText, 3), bodyText)), Char(10) & "・", Char(10) & "└"), Char(10) & "- ", Char(10) & "└"))'
+            out.append(setv('setVariable_itemBody'+tag,'Topic.'+var,'='+body))
             shape='StartsWith(Topic.'+var+', "└")'if tag!='CHECK'else 'And(Topic.'+var+' <> "なし", Not(StartsWith(Topic.'+var+', "└")), Not(StartsWith(Topic.'+var+', "・")), Not(StartsWith(Topic.'+var+', "-")))'
             out.append(check('setVariable_itemBodyValid'+tag,'And(Len(Topic.'+var+') > 0, Not("[[" in Topic.'+var+'), Not("【" in Topic.'+var+'), '+shape+')'))
     for i,(code,name)in enumerate(MEASURES):
         raw=get(code)
         if i>=13:raw='If(Not('+q('[['+code+']]')+' in Topic.優先度表示原文), "", '+raw+')'
-        out += [setv('setVariable_itemRaw'+code,'Topic.優先度表示区分','='+raw),remove(code)]
-        fields='{itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), itemReason: Trim(Last(Split(Topic.優先度表示区分, "|")).Value)}'
+        out += [setv('setVariable_itemRaw'+code,'Topic.優先度表示区分','=Substitute('+raw+', "｜", "|")'),remove(code)]
+        fields='{itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: '+status('Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)')+', itemReason: '+prose('Trim(Last(Split(Topic.優先度表示区分, "|")).Value)')+'}'
         valid='And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認"))'
         if i>=13:valid='Or('+valid+', And(itemPriority = "対象外", itemStatus = "対象外"))'
         valid='And('+unique(code)+', CountRows(Split(Topic.優先度表示区分, "|")) = 3, '+valid+', Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))'
@@ -63,7 +76,7 @@ def validator():
         priority='If(Topic.判定連動 = "高", "高", itemPriority)'if linked else 'itemPriority'
         reason='If(Topic.判定連動 = "高", Topic.判定連動理由, itemReason)'if linked else 'itemReason'
         if linked:
-            out.append(setv('setVariable_itemStoreStatus'+code,'Topic.判定要請状態'if code=='P11'else 'Topic.判定避難状態','=Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)'))
+            out.append(setv('setVariable_itemStoreStatus'+code,'Topic.判定要請状態'if code=='P11'else 'Topic.判定避難状態','='+status('Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)')))
             if code=='P11':out.append(setv('setVariable_itemStoreRequestPriority','Topic.判定要請優先度','=With('+fields+', '+priority+')'))
         line='Topic.判定表示行 & '+priority+' & "|" & itemStatus & "|" & '+q('└'+name+'：')+' & itemStatus & "　根拠：" & '+reason+' & Char(30)'
         out.append(setv('setVariable_itemLine'+code,'Topic.判定表示行','=With('+fields+', If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, '+line+'))'))
@@ -79,7 +92,7 @@ def validator():
     for label,var in [('初動措置　優先度：高','判定高欄'),('初動措置　優先度：中','判定中欄'),('初動措置　優先度：低','判定低欄')]:expr+=' & '+q('\n\n【'+label+'】\n')+' & If(IsBlank(Topic.'+var+'), "└なし", Topic.'+var+')'
     expr+=' & '+q('\n\n【高優先度の完了状況】\n')+' & If(Topic.判定未完了 = "あり", "└未完了あり", "└全て対応済み") & '+q('\n\n【ネクストアクション】\n')+' & Topic.判定次行動 & '+q('\n\n【確認したいこと】\n')+' & Topic.判定確認文'
     out.append(setv('setVariable_itemRender','Topic.優先度表示組立','='+expr))
-    out.append(cg('conditionGroup_priorityFormatRetry','=And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1)',[setv('setVariable_priorityFormatRetryIncrement','Topic.優先度様式再試行回数','=Topic.優先度様式再試行回数 + 1'),{'kind':'GotoAction','id':'goto_priorityFormatRetry','actionId':'answer_priority'}]))
+    out.append(cg('conditionGroup_priorityFormatRetry','=And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1, Not(IsBlank(Trim(Topic.優先度判定結果))))',[setv('setVariable_priorityFormatRetryIncrement','Topic.優先度様式再試行回数','=Topic.優先度様式再試行回数 + 1'),{'kind':'GotoAction','id':'goto_priorityFormatRetry','actionId':'answer_priority'}]))
     out.append(cg('conditionGroup_priorityFormatAccepted','=Topic.優先度表示検証 = "合格"',[setv('setVariable_priorityFormatUseAssembled','Topic.優先度判定結果','=Topic.優先度表示組立')]))
     return out
 def apply(field):
@@ -97,7 +110,7 @@ def apply(field):
         a=s.index('# 出力様式の厳守');s=s[:a]+'"'
         n['value']=s[:-1]+'\n'+contract.replace('"','""')+'"'
     def answer(n):
-        n['userInput']='=Topic.優先度判定プロンプト & If(Topic.優先度様式再試行回数 > 0, Char(10) & "前回は内部ブロック形式が不正でした。指定コードの優先度・状態・根拠を正しい内部形式で生成し直してください。", "")'
+        n['userInput']='=Topic.優先度判定プロンプト & If(Topic.優先度様式再試行回数 > 0, Char(10) & "前回の判定内容を保持し、次の失敗箇所だけを修復してください。\n失敗箇所：" & Topic.優先度表示検証 & Char(10) & "前回の原文：" & Topic.優先度判定結果 & Char(10) & "必須コード欠落や形式だけを修復し、未報告の事実や実施状況を作らない。", "")'
         n['additionalInstructions']='固定ガイドと現場事実だけを根拠にする。末尾の内部出力契約に厳密に従い、ユーザー用見出しは出力しない。各措置の優先度は一つだけ、状態・根拠とは別に返す。CHECKは理由と判断への影響が伝わる文章にする。実施済みの範囲と追加作業、換気を試みた事実と流入防止の閉窓を区別する。'
     def limit(n):
         n['conditions'][0]['actions'].append({'kind':'EndDialog','id':'endDialog_priorityRetryLimit','clearTopicQueue':True})

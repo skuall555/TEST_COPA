@@ -2,7 +2,7 @@
 import subprocess,unittest,yaml
 from restart_build import R,FILES
 from restart_support import nodes
-from field_concepts_build import SOURCE
+from response_reliability_build import SOURCE
 from itemized_build import validator
 BASE='ae67e129b5b2c8469d5f70f58c3c719393ef535f'
 def previous(name):return subprocess.check_output(['git','-C',str(R.parent),'show',BASE+':SUBARU_optimized/'+name]).decode()
@@ -22,7 +22,7 @@ class FieldConcepts(unittest.TestCase):
   expected={n['id']:n for n in validator()if 'P23'in n['id']}
   self.assertTrue(expected)
   for k,n in expected.items():self.assertEqual(n,self.new[k])
-  self.assertEqual({n.get('variable')for n in self.old.values()},{n.get('variable')for n in self.new.values()})
+  self.assertEqual({n.get('variable')for n in self.new.values()}-{n.get('variable')for n in self.old.values()},{'Topic.優先度経路診断'})
  def test_concepts_reach_guide_and_ai_input_before_internal_contract(self):
   rules=(R/SOURCE).read_text().rstrip()
   guide=self.new['setVariable_priorityGuideFixed']['value'][2:-1].replace('""','"')

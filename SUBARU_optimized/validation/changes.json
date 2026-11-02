@@ -348,7 +348,10 @@
     ],
     "added": [
       "setVariable_priorityFormatRetryInit",
+      "setVariable_priorityPreviousResultInit",
+      "setVariable_priorityPreviousCheckInit",
       "setVariable_priorityFormatRaw",
+      "setVariable_priorityFormatUnwrap",
       "setVariable_itemInit01",
       "setVariable_itemInit02",
       "setVariable_itemInit03",
@@ -370,6 +373,7 @@
       "setVariable_itemInit19",
       "setVariable_itemInit20",
       "setVariable_itemRemainingInit",
+      "setVariable_priorityFormatHasContent",
       "setVariable_priorityFormatEnvelope",
       "setVariable_itemSectionFACTS",
       "setVariable_itemUniqueFACTS",
@@ -500,8 +504,11 @@
       "goto_priorityFormatRetry",
       "conditionGroup_priorityFormatAccepted",
       "setVariable_priorityFormatUseAssembled",
+      "setVariable_priorityGateSnapshot",
       "endDialog_priorityRetryLimit",
-      "conditionGroup_priorityDebugOnly"
+      "setVariable_priorityWaitSnapshot",
+      "conditionGroup_priorityDebugOnly",
+      "setVariable_priorityFailedSnapshot"
     ]
   },
   {

@@ -39,12 +39,21 @@
     "setVariable_priorityFormatRetryInit"
   ],
   "setVariable_priorityFormatRetryInit": [
+    "setVariable_priorityPreviousResultInit"
+  ],
+  "setVariable_priorityPreviousResultInit": [
+    "setVariable_priorityPreviousCheckInit"
+  ],
+  "setVariable_priorityPreviousCheckInit": [
     "answer_priority"
   ],
   "answer_priority": [
     "setVariable_priorityFormatRaw"
   ],
   "setVariable_priorityFormatRaw": [
+    "setVariable_priorityFormatUnwrap"
+  ],
+  "setVariable_priorityFormatUnwrap": [
     "setVariable_itemInit01"
   ],
   "setVariable_itemInit01": [
@@ -108,6 +117,9 @@
     "setVariable_itemRemainingInit"
   ],
   "setVariable_itemRemainingInit": [
+    "setVariable_priorityFormatHasContent"
+  ],
+  "setVariable_priorityFormatHasContent": [
     "setVariable_priorityFormatEnvelope"
   ],
   "setVariable_priorityFormatEnvelope": [
@@ -496,10 +508,13 @@
     "answer_priority"
   ],
   "conditionGroup_priorityFormatAccepted": [
-    "conditionGroup_prioritySucceeded",
-    "setVariable_priorityFormatUseAssembled"
+    "setVariable_priorityFormatUseAssembled",
+    "setVariable_priorityGateSnapshot"
   ],
   "setVariable_priorityFormatUseAssembled": [
+    "setVariable_priorityGateSnapshot"
+  ],
+  "setVariable_priorityGateSnapshot": [
     "conditionGroup_prioritySucceeded"
   ],
   "conditionGroup_prioritySucceeded": [
@@ -534,6 +549,9 @@
     "setVariable_imageReceptionOn"
   ],
   "setVariable_imageReceptionOn": [
+    "setVariable_priorityWaitSnapshot"
+  ],
+  "setVariable_priorityWaitSnapshot": [
     "question_priorityUpdate"
   ],
   "question_priorityUpdate": [
@@ -595,6 +613,9 @@
     "setVariable_repairSelectInit"
   ],
   "setVariable_imageReceptionOffPriorityFailed": [
+    "setVariable_priorityFailedSnapshot"
+  ],
+  "setVariable_priorityFailedSnapshot": [
     "sendActivity_priorityFailed"
   ],
   "sendActivity_priorityFailed": [

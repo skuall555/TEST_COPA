@@ -209,5 +209,7 @@
   "native_number_cases": 45,
   "native_pipeline_cases": 31,
   "Studio_cases_NOT_RUN": 44,
-  "Studio_latency_NOT_MEASURED": true
+  "Studio_latency_NOT_MEASURED": true,
+  "historical_release": "11682e9",
+  "latest_manifest": "response_reliability_manifest.json"
 }

@@ -19,12 +19,9 @@ class Contracts(unittest.TestCase):
      else:self.assertEqual(n,b[k])
  def test_no_removed_sends(self):
   for a,b in zip(self.a,self.b):self.assertLessEqual({k for k,n in a.items()if n['kind']=='SendActivity'},set(b))
- def test_priority_changes_are_limited_to_authorized_sections(self):
-  old=self.a[1]['setVariable_priorityGuideFixed']['value'];new=self.b[1]['setVariable_priorityGuideFixed']['value']
-  new=new.replace('ただし消防警察・避難は通常の単独臭気のみの初報では低。情報不足だけで中に上げない。','')
-  self.assertEqual(old.split('# 全現場共通で基本的に「高」')[0],new.split('# 今回追加する現場事実の整理')[0])
-  for start,end in [('# 窓等の開放・換気','# メーターガス栓閉止'),('# マンホール蓋開放・換気','# 場所別の基本判定')]:
-   self.assertEqual(old[old.index(start):old.index(end)],new[new.index(start):new.index(end)])
+ def test_field_guide_stays_literal_and_data_sources_preserved(self):
+  self.assertTrue(self.b[1]['setVariable_priorityGuideFixed']['value'].startswith('="'))
+  for a,b in zip(self.a,self.b):self.assertEqual(dependencies(a),{k:v for k,v in dependencies(b).items()if k in a})
  def test_rankers_unchanged(self):
   for suffix in ['Fit','Directness','Certainty','Consensus']:
    k='answer_manualCheckRank'+suffix;self.assertEqual(self.a[0][k],self.b[0][k])

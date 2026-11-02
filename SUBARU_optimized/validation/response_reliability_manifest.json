@@ -1,0 +1,64 @@
+{
+  "base_commit": "11682e9bd5effefcb5755562b663008793dd6f46",
+  "runtime_rule_source": "runtime_prompts/01_緊急保安_判定ルール.md",
+  "runtime_rule_sha256": "8cccb723d91f4dc212aa6993f890f087c4978744940c64366858f7b0b555acec",
+  "files": {
+    "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "37d73a5a202c72081aeddbd02d29d8ec50d898c230d671bebd73899a76681a1f",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529",
+    "SUBARU_エージェント指示_optimized.txt": "7fa9192d03dcff9ea53b5ef480e50b948fb784f4c8ea583f63550e7ad816603c"
+  },
+  "new_variables": [
+    "Topic.優先度経路診断 (String)"
+  ],
+  "added_action_ids": [
+    "setVariable_priorityFailedSnapshot",
+    "setVariable_priorityFormatHasContent",
+    "setVariable_priorityFormatUnwrap",
+    "setVariable_priorityGateSnapshot",
+    "setVariable_priorityPreviousCheckInit",
+    "setVariable_priorityPreviousResultInit",
+    "setVariable_priorityWaitSnapshot"
+  ],
+  "retired_action_ids": [],
+  "entry_image_instructions_byte_identical": true,
+  "business_flow_preserved_except_bounded_repair_policy": true,
+  "full_yaml_blocks_match": true,
+  "field_prompt_assembly": {
+    "previous": {
+      "name": "previous",
+      "success": true,
+      "characters": 23917,
+      "conceptCopies": 0,
+      "conceptHeadingCopies": 1
+    },
+    "current": {
+      "name": "current",
+      "success": true,
+      "characters": 8387,
+      "conceptCopies": 1,
+      "conceptHeadingCopies": 0
+    }
+  },
+  "user_raw_replay": {
+    "name": "reported 20261102 raw protocol already valid",
+    "success": true,
+    "accepted": true,
+    "gateAccepted": true,
+    "diagnostic": "subaru-text-20261102-v1|stage=gate|validation=合格|rawChars=1414|displayChars=1275|retry=0",
+    "keepsWaiting": true,
+    "placement": true,
+    "previousMatches": true,
+    "status": "合格"
+  },
+  "unittest_count": 60,
+  "native_expression_checks": 194,
+  "native_number_cases": 45,
+  "native_pipeline_cases": 39,
+  "native_retry_cases": 4,
+  "Studio_cases_NOT_RUN": 50,
+  "Studio_stop_NOT_REPRODUCED": true,
+  "Studio_latency_NOT_MEASURED": true,
+  "knowledge_message_source_NOT_IDENTIFIED": true,
+  "search_free_binding_requires_actual_model_ids": true
+}
