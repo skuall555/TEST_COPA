@@ -1,0 +1,11 @@
+--- ee4edd5/3-9-緊急保安業務エージェント_optimized.yaml
++++ retry_guard/3-9-緊急保安業務エージェント_optimized.yaml
+@@ -837,7 +837,7 @@
+               id: conditionGroup_priorityFormatRetry
+               conditions:
+                 - id: conditionGroup_priorityFormatRetry_item
+-                  condition: =And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1, Not(IsBlank(Trim(Topic.優先度判定結果))))
++                  condition: =And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1, Len(Topic.優先度表示原文) > 0)
+                   actions:
+                     - kind: SetVariable
+                       id: setVariable_priorityFormatRetryIncrement

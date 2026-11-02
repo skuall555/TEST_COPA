@@ -60,7 +60,7 @@ test_business_flow_and_variables_preserved_only_generated_steps_retired (test_sp
 test_formatter_step_budget_and_prompt_duplication (test_speed_and_initial.SpeedAndInitial.test_formatter_step_budget_and_prompt_duplication) ... ok
 
 ----------------------------------------------------------------------
-Ran 60 tests in 3.502s
+Ran 60 tests in 3.308s
 
 OK
 1-マニュアル関連入口_optimized.yaml PASS new variable candidates: []

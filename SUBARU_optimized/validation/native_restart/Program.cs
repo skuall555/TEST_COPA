@@ -72,7 +72,7 @@ class Program {
   }
   var retryGates=new List<object>();
   foreach(var item in root.GetProperty("retryCases").EnumerateArray()){
-   var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(new NamedValue("優先度判定結果",FormulaValue.New(item.GetProperty("raw").GetString()!)),new NamedValue("優先度表示検証",FormulaValue.New(item.GetProperty("status").GetString()!)),new NamedValue("優先度様式再試行回数",FormulaValue.New(item.GetProperty("count").GetDouble())))));
+   var context=FormulaValue.NewRecordFromFields(new NamedValue("Topic",FormulaValue.NewRecordFromFields(new NamedValue("優先度判定結果",FormulaValue.New(item.GetProperty("raw").GetString()!)),new NamedValue("優先度表示原文",FormulaValue.New(item.GetProperty("raw").GetString()!.Trim())),new NamedValue("優先度表示検証",FormulaValue.New(item.GetProperty("status").GetString()!)),new NamedValue("優先度様式再試行回数",FormulaValue.New(item.GetProperty("count").GetDouble())))));
    var actual=engine.Eval(root.GetProperty("retryGate").GetString()!,context,options)as BooleanValue;
    retryGates.Add(new{success=actual!=null&&actual.Value==item.GetProperty("expected").GetBoolean(),raw=item.GetProperty("raw").GetString(),count=item.GetProperty("count").GetInt32(),result=actual?.Value});
   }

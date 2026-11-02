@@ -92,7 +92,7 @@ def validator():
     for label,var in [('初動措置　優先度：高','判定高欄'),('初動措置　優先度：中','判定中欄'),('初動措置　優先度：低','判定低欄')]:expr+=' & '+q('\n\n【'+label+'】\n')+' & If(IsBlank(Topic.'+var+'), "└なし", Topic.'+var+')'
     expr+=' & '+q('\n\n【高優先度の完了状況】\n')+' & If(Topic.判定未完了 = "あり", "└未完了あり", "└全て対応済み") & '+q('\n\n【ネクストアクション】\n')+' & Topic.判定次行動 & '+q('\n\n【確認したいこと】\n')+' & Topic.判定確認文'
     out.append(setv('setVariable_itemRender','Topic.優先度表示組立','='+expr))
-    out.append(cg('conditionGroup_priorityFormatRetry','=And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1, Not(IsBlank(Trim(Topic.優先度判定結果))))',[setv('setVariable_priorityFormatRetryIncrement','Topic.優先度様式再試行回数','=Topic.優先度様式再試行回数 + 1'),{'kind':'GotoAction','id':'goto_priorityFormatRetry','actionId':'answer_priority'}]))
+    out.append(cg('conditionGroup_priorityFormatRetry','=And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1, Len(Topic.優先度表示原文) > 0)',[setv('setVariable_priorityFormatRetryIncrement','Topic.優先度様式再試行回数','=Topic.優先度様式再試行回数 + 1'),{'kind':'GotoAction','id':'goto_priorityFormatRetry','actionId':'answer_priority'}]))
     out.append(cg('conditionGroup_priorityFormatAccepted','=Topic.優先度表示検証 = "合格"',[setv('setVariable_priorityFormatUseAssembled','Topic.優先度判定結果','=Topic.優先度表示組立')]))
     return out
 def apply(field):
