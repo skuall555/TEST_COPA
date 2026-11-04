@@ -1,0 +1,28 @@
+test_cases_and_owners_do_not_mix (test_flow.SharePointAdapter.test_cases_and_owners_do_not_mix) ... ok
+test_duplicate_uses_saved_canonical_text (test_flow.SharePointAdapter.test_duplicate_uses_saved_canonical_text) ... ok
+test_failure_never_claims_saved (test_flow.SharePointAdapter.test_failure_never_claims_saved) ... ok
+test_filter_escapes_quotes (test_flow.SharePointAdapter.test_filter_escapes_quotes) ... ok
+test_first_field_keeps_legacy_bytes_and_teams_sections (test_flow.SharePointAdapter.test_first_field_keeps_legacy_bytes_and_teams_sections) ... ok
+test_invalid_snapshot_or_headers_not_saved (test_flow.SharePointAdapter.test_invalid_snapshot_or_headers_not_saved) ... ok
+test_load_returns_latest_field_not_repair (test_flow.SharePointAdapter.test_load_returns_latest_field_not_repair) ... ok
+test_missing_identity_or_unverified_schema_blocks_generation (test_flow.SharePointAdapter.test_missing_identity_or_unverified_schema_blocks_generation) ... ok
+test_old_record_without_snapshot_is_not_no_change (test_flow.SharePointAdapter.test_old_record_without_snapshot_is_not_no_change) ... ok
+test_repair_text_is_exact_and_does_not_overwrite_legacy (test_flow.SharePointAdapter.test_repair_text_is_exact_and_does_not_overwrite_legacy) ... ok
+test_second_field_compares_priority_not_words (test_flow.SharePointAdapter.test_second_field_compares_priority_not_words) ... ok
+test_state_change_and_missing_item_are_separate (test_flow.SharePointAdapter.test_state_change_and_missing_item_are_separate) ... ok
+test_unfilled_real_configuration_cannot_generate_flow (test_flow.SharePointAdapter.test_unfilled_real_configuration_cannot_generate_flow) ... ok
+test_binding_only_in_separate_output (test_topics.TopicCompatibility.test_binding_only_in_separate_output) ... ok
+test_image_invokes_existing_agent_and_terminates_before_question (test_topics.TopicCompatibility.test_image_invokes_existing_agent_and_terminates_before_question) ... ok
+test_image_model_and_feature_definitions_unchanged (test_topics.TopicCompatibility.test_image_model_and_feature_definitions_unchanged) ... ok
+test_legacy_renderer_and_save_contract_unchanged (test_topics.TopicCompatibility.test_legacy_renderer_and_save_contract_unchanged) ... ok
+test_manual_knowledge_actions_unchanged (test_topics.TopicCompatibility.test_manual_knowledge_actions_unchanged) ... ok
+test_new_case_clears_facts_and_comparison (test_topics.TopicCompatibility.test_new_case_clears_facts_and_comparison) ... ok
+test_patch_solution_keeps_identity_and_metadata (test_topics.TopicCompatibility.test_patch_solution_keeps_identity_and_metadata) ... ok
+test_repair_saved_and_displayed_same_variable (test_topics.TopicCompatibility.test_repair_saved_and_displayed_same_variable) ... ok
+test_source_matches_pinned_audit (test_topics.TopicCompatibility.test_source_matches_pinned_audit) ... ok
+test_yaml_ids_and_gotos (test_topics.TopicCompatibility.test_yaml_ids_and_gotos) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 5.676s
+
+OK

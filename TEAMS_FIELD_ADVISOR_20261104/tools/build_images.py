@@ -1,0 +1,21 @@
+"""Process a bounded image batch and invoke the same field topic in one-shot mode."""
+from pathlib import Path
+from yaml_edit import edit,setv,cg
+from build_topics import ROOT,FILES,lit,go,append_actions,FIELD_DIALOG
+
+def build():
+ p=ROOT/'topics'/FILES[2]
+ def initialize(n):
+  new_scope=[setv('setVariable_teamsPhotoCaseKey','Global.TeamsCaseKey','=Text(GUID())'),setv('setVariable_teamsPhotoCaseOwner','Global.TeamsCaseOwner','=System.User.Id'),setv('setVariable_teamsPhotoInitial','Global.緊急保安初回入力','=If(IsBlank(System.Activity.Text), "現場画像の報告（場所・現場状況は未確認）", System.Activity.Text)'),setv('setVariable_teamsPhotoHistory','Global.緊急保安追加情報履歴','=""'),setv('setVariable_teamsPhotoPrevious','Global.TeamsLastFieldSnapshot','=""'),setv('setVariable_teamsPhotoPreviousId','Global.TeamsLastCaseId','=""'),setv('setVariable_teamsPhotoSequence','Global.TeamsFieldReportCount','=0')]
+  return [n,setv('setVariable_teamsPhotoIndex','Topic.画像添付番号','=1'),setv('setVariable_teamsPhotoLimit','Topic.画像処理上限','=Min(CountRows(System.Activity.Attachments), 5)'),setv('setVariable_teamsPhotoCount','Topic.画像処理枚数','=0'),setv('setVariable_teamsPhotoErrors','Topic.画像処理注意','=""'),cg('conditionGroup_teamsPhotoNewScope','=Or(IsBlank(Global.TeamsCaseKey), Global.TeamsCaseOwner <> System.User.Id, StartsWith(Trim(System.Activity.Text), "新しい案件"), StartsWith(Trim(System.Activity.Text), "別案件"))',new_scope)]
+ def attachment(n):n['value']=n['value'].replace('First(System.Activity.Attachments)','Index(System.Activity.Attachments, Topic.画像添付番号)')
+ def invoke(n):n['input']['binding']['ImageInput']=n['input']['binding']['ImageInput'].replace('First(System.Activity.Attachments)','Index(System.Activity.Attachments, Topic.画像添付番号)')
+ def unsupported(n):return setv(n['id'],'Topic.画像処理注意','=Topic.画像処理注意 & Char(10) & "・" & Topic.画像ファイル名 & If(Or("download.info" in Topic.画像MIME, "reference" in Topic.画像MIME), "：Teamsの添付参照情報のみで画像の実データを確認できません。画像として解析した扱いにはしません。", "：PNG/JPEGの画像データとして読み取れませんでした。")')
+ def counted(n):return setv(n['id'],'Topic.画像処理枚数','=Topic.画像処理枚数 + 1')
+ p.write_text(edit(p,{'setVariable_debugMode':initialize,'setVariable_attachmentName':attachment,'setVariable_attachmentContentType':attachment,'invokeAIBuilderModelAction_imageFacts':invoke,'sendActivity_unsupportedImageType':unsupported,'endDialog_unsupportedImageType':lambda n:go(n['id'],'setVariable_teamsPhotoNext'),'sendActivity_analysisResult':counted,'endDialog_afterRestartEmergency':lambda n:go(n['id'],'setVariable_teamsPhotoNext')}))
+ # Match any image attachment, including a Teams metadata-only reference, not just First().
+ s=p.read_text();a=s.index('  condition:');b=s.index('\n',a)
+ s=s[:a]+'  condition: =CountRows(Filter(System.Activity.Attachments, Or(StartsWith(Lower(ContentType), "image/"), EndsWith(Lower(Name), ".png"), EndsWith(Lower(Name), ".jpg"), EndsWith(Lower(Name), ".jpeg"), EndsWith(Lower(Name), ".heic"), EndsWith(Lower(Name), ".webp")))) > 0'+s[b:];p.write_text(s)
+ append_actions(p,[setv('setVariable_teamsPhotoNext','Topic.画像添付番号','=Topic.画像添付番号 + 1'),cg('conditionGroup_teamsPhotoMore','=Topic.画像添付番号 <= Topic.画像処理上限',[go('goto_teamsPhotoMore','setVariable_attachmentName')]),cg('conditionGroup_teamsPhotoOverLimit','=CountRows(System.Activity.Attachments) > 5',[setv('setVariable_teamsPhotoLimitWarning','Topic.画像処理注意','=Topic.画像処理注意 & Char(10) & "・1投稿の処理上限は5件です。6件目以降は解析していません。残りを別の投稿で送ってください。"')]),cg('conditionGroup_teamsPhotoWarnings','=Not(IsBlank(Trim(Topic.画像処理注意)))',[setv('setVariable_teamsPhotoWarningHistory','Global.緊急保安追加情報履歴','=Global.緊急保安追加情報履歴 & Char(10) & "【要確認】" & Topic.画像処理注意')]),cg('conditionGroup_teamsPhotoNone','=Topic.画像処理枚数 = 0',[{'kind':'SendActivity','id':'sendActivity_teamsPhotoNone','activity':'画像を解析できていません。\n{Topic.画像処理注意}\n\n画像の受渡し設定を確認するか、現場状況を文章で送ってください。写真から実施済みとは判定していません。'},{'kind':'EndDialog','id':'endDialog_teamsPhotoNone'}]),setv('setVariable_teamsPhotoResumeFlag','Global.TeamsImageResume','="はい"'),{'kind':'BeginDialog','id':'beginDialog_teamsPhotoSingleAdvice','input':{'binding':{'初回入力':'=Global.緊急保安初回入力','追加情報履歴':'=Global.緊急保安追加情報履歴','判定応答方式':'="画像単発"'}},'dialog':FIELD_DIALOG},{'kind':'EndDialog','id':'endDialog_teamsPhotoBatch'}])
+ print('Built bounded batch image handling and single-shot advice; actual Teams bytes need tenant validation')
+if __name__=='__main__':build()

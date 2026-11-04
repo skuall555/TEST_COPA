@@ -1,0 +1,22 @@
+{
+  "site_url": null,
+  "list_id": null,
+  "flow_id": null,
+  "connection_reference_logical_name": null,
+  "storage_mode": "UNVERIFIED",
+  "identity_binding_verified": false,
+  "powerapps_repair_filter_verified": false,
+  "field_map": {
+    "case_id": null,
+    "event_key": null,
+    "owner_key": null,
+    "record_type": null,
+    "legacy_text": null,
+    "repair_text": null,
+    "current_snapshot": null,
+    "facts_history": null,
+    "teams_text": null
+  },
+  "record_type_values": {"field_advice": null, "repair_guidance": null},
+  "static_fields": {}
+}

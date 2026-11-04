@@ -1,0 +1,9 @@
+{
+  "zip_sha256": "7ba185ef1ac2cf42f19a1ab0fe2b0b6ba8d1befb2bd7675577313b6b14f95b52",
+  "files": 51,
+  "extraction": "PASS",
+  "independent_rebuild_identical_topics": "PASS",
+  "unit_tests": "23 PASS",
+  "network_or_tenant_used": false,
+  "kind": "source_bundle_not_microsoft_solution"
+}

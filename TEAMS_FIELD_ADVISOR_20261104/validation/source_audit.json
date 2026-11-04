@@ -1,0 +1,111 @@
+{
+  "base_commit": "4fa63fbcfc1ccf39d063276d9999a5ffb3166132",
+  "source_sha256": {
+    "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "6a8eff881aecb9f21062210b10e2eb2b808cbfd0bf4d03b73a7021eb0133ea36",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529"
+  },
+  "flows": [
+    {
+      "topic": "1-マニュアル関連入口_optimized.yaml",
+      "node": "invokeFlowAction_manualCheckIndexAll",
+      "flow_id": "6aacd644-41a8-f111-aaad-7ced8d2f9cab",
+      "input": {},
+      "output": {
+        "binding": {
+          "document_index_text": "Topic.確認文書Index全件"
+        }
+      }
+    },
+    {
+      "topic": "1-マニュアル関連入口_optimized.yaml",
+      "node": "invokeFlowAction_caseSaveManualCheckEveryResult",
+      "flow_id": "9a770168-65a8-f111-aaad-7ced8d2f9cab",
+      "input": {
+        "binding": {
+          "text": "=System.Conversation.Id",
+          "text_1": "=\"マニュアル確認\"",
+          "text_2": "=Topic.確認結果",
+          "text_3": "=\"自動選定\""
+        }
+      },
+      "output": {
+        "binding": {
+          "case_id": "Topic.案件ID"
+        }
+      }
+    },
+    {
+      "topic": "1-マニュアル関連入口_optimized.yaml",
+      "node": "invokeFlowAction_manualReviseIndexAll",
+      "flow_id": "6aacd644-41a8-f111-aaad-7ced8d2f9cab",
+      "input": {},
+      "output": {
+        "binding": {
+          "document_index_text": "Topic.改訂文書Index全件"
+        }
+      }
+    },
+    {
+      "topic": "1-マニュアル関連入口_optimized.yaml",
+      "node": "invokeFlowAction_caseSaveManualRevision",
+      "flow_id": "9a770168-65a8-f111-aaad-7ced8d2f9cab",
+      "input": {
+        "binding": {
+          "text": "=System.Conversation.Id",
+          "text_1": "=\"マニュアル改訂\"",
+          "text_2": "=Topic.Response",
+          "text_3": "=Topic.改訂選択文書一覧"
+        }
+      },
+      "output": {
+        "binding": {
+          "case_id": "Topic.案件ID"
+        }
+      }
+    },
+    {
+      "topic": "1-マニュアル関連入口_optimized.yaml",
+      "node": "invokeFlowAction_caseSaveManualRevisionRepair",
+      "flow_id": "9a770168-65a8-f111-aaad-7ced8d2f9cab",
+      "input": {
+        "binding": {
+          "text": "=System.Conversation.Id",
+          "text_1": "=\"マニュアル改訂\"",
+          "text_2": "=Topic.Response",
+          "text_3": "=Topic.改訂選択文書一覧"
+        }
+      },
+      "output": {
+        "binding": {
+          "case_id": "Topic.案件ID"
+        }
+      }
+    },
+    {
+      "topic": "3-9-緊急保安業務エージェント_optimized.yaml",
+      "node": "invokeFlowAction_caseSaveFieldAdvice",
+      "flow_id": "9a770168-65a8-f111-aaad-7ced8d2f9cab",
+      "input": {
+        "binding": {
+          "text": "=System.Conversation.Id",
+          "text_1": "=\"現場アドバイス\"",
+          "text_2": "=Topic.優先度判定結果",
+          "text_3": "=\"なし\""
+        }
+      },
+      "output": {
+        "binding": {
+          "case_id": "Topic.案件ID"
+        }
+      }
+    }
+  ],
+  "missing": [
+    "Power Automate flow export",
+    "SharePoint list/field schema",
+    "Power Apps .msapp or formulas",
+    "Teams/M365 execution history"
+  ],
+  "tenant_access": false
+}

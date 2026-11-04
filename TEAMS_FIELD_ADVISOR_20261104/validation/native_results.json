@@ -1,0 +1,952 @@
+{
+  "package": "Microsoft.PowerFx.Interpreter 1.8.1",
+  "scope": "Standalone SDK; no tenant/Studio/model/Power Apps execution",
+  "checks": [
+    {
+      "id": "1-マニュアル関連入口_optimized.yaml:conditionGroup_teamsNewCaseAtEntry_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "1-マニュアル関連入口_optimized.yaml:setVariable_teamsEntryFieldPurpose",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "1-マニュアル関連入口_optimized.yaml:setVariable_teamsEntryFieldFolder",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsIncoming",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsMode",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsChannel",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsOwner",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsExplicitCase",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsCaseKey",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsResume",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsResumeHistory_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRestoreInitial",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRestoreHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsFreshScope_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsClearSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsClearCaseId",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsClearCount",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitScopeKey",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitScopeOwner",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitInitial",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitRepairFlag",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitPrevious",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitPreviousId",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitCompare",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitChanges",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitText",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitRepairText",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitRepairReply",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitSaveStatus",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitEventKey",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsInitialNewCase_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitialNewCaseText",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitialNewCaseIncoming",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsInitialNewCaseGlobal",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionItem_repairRequestedAtStart",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsResyncCase_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsResyncCaseKey",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsResyncInitial",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsResyncHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsResyncExplicit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsCurrentSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsPreviousSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsPreviousId",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsEventKey",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsCompareStatus",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsChanges",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRender",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsSaveUnknown",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsCacheSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsCacheCaseId",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsCacheLegacy",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsCacheReply",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsCount",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsImageOneShot_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsImageReceptionOn",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsNewCaseInField_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionItem_repairRequestedInPriority",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairResetImageFlag",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairSelectionActive",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairQuestionActive",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairChoiceImageOn",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsFieldUpdateDuringRepair_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairChoiceFieldFlag",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairChoiceModeOff",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairChoiceHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:sendActivity_repairZeroLimit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:sendActivity_repairProcedure",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:sendActivity_repairProcedureNotFound",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:sendActivity_repairNoCandidate",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionItem_repairRequestedInInvestigation",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:sendActivity_repairResult",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:sendActivity_repairBestEffort",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairQuestionText",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:invokeFlowAction_teamsSaveRepairQuestion:text",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:invokeFlowAction_teamsSaveRepairQuestion:text_1",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:invokeFlowAction_teamsSaveRepairQuestion:text_2",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:invokeFlowAction_teamsSaveRepairQuestion:text_3",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairMoreImageOn",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairQuestionSync",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsFieldUpdateDuringRepairQuestion_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairQuestionFieldFlag",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairQuestionModeOff",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairQuestionFieldHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:sendActivity_repairFailed",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:invokeFlowAction_teamsSaveRepair:text",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:invokeFlowAction_teamsSaveRepair:text_1",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:invokeFlowAction_teamsSaveRepair:text_2",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:invokeFlowAction_teamsSaveRepair:text_3",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairReception",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairHistorySync",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsNewCaseAfterRepair_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsManualAfterRepair_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsManualReturn",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairAppend",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairSync",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:conditionGroup_teamsRepairAgain_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairAgainOn",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsBackToField",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsRepairOff",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewCaseKey",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewGlobalKey",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewInitial",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewGlobalInitial",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewGlobalHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewSavedId",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewSequence",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewExplicit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "3-9-緊急保安業務エージェント_optimized.yaml:setVariable_teamsNewFieldMode",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:trigger",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoIndex",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoLimit",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoCount",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoErrors",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:conditionGroup_teamsPhotoNewScope_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoCaseKey",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoCaseOwner",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoInitial",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoPrevious",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoPreviousId",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoSequence",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_attachmentName",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_attachmentContentType",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:sendActivity_unsupportedImageType",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:sendActivity_analysisResult",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoNext",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:conditionGroup_teamsPhotoMore_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:conditionGroup_teamsPhotoOverLimit_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoLimitWarning",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:conditionGroup_teamsPhotoWarnings_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoWarningHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:conditionGroup_teamsPhotoNone_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:setVariable_teamsPhotoResumeFlag",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:beginDialog_teamsPhotoSingleAdvice:初回入力",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:beginDialog_teamsPhotoSingleAdvice:追加情報履歴",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "4-9-画像分析エージェント_緊急保安_optimized.yaml:beginDialog_teamsPhotoSingleAdvice:判定応答方式",
+      "success": true,
+      "type": "String",
+      "errors": []
+    }
+  ],
+  "renders": [
+    {
+      "name": "first report hides change section",
+      "success": true,
+      "comparison": "first",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|要確認\nP08|中|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認",
+      "output": "📍 現場アドバイス\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：報告に基づく根拠\n・電気スイッチ等の操作禁止：要確認　根拠：報告に基づく根拠\n・火気厳禁表示シート：要確認　根拠：報告に基づく根拠\n・ポケット警報器等の設置：要確認　根拠：報告に基づく根拠\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：報告に基づく根拠\n・換気：要確認　根拠：報告に基づく根拠\n・メーターガス栓閉止：要確認　根拠：報告に基づく根拠\n・消火器設置：要確認　根拠：報告に基づく根拠\n🟠 中\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：報告に基づく根拠\n・周辺住戸・建物調査：要確認　根拠：報告に基づく根拠\n・保安柵または同等措置：要確認　根拠：報告に基づく根拠\n🟢 低\n・消防・警察への要請：要確認　根拠：報告に基づく根拠\n・避難誘導：要確認　根拠：報告に基づく根拠\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    },
+    {
+      "name": "same priorities despite wording changes",
+      "success": true,
+      "comparison": "found",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|要確認\nP08|中|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認",
+      "output": "📍 現場アドバイス\n\n【① 前回報告からの変更点】\n前回から優先度の変更なし\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：別の言い回し\n・電気スイッチ等の操作禁止：要確認　根拠：別の言い回し\n・火気厳禁表示シート：要確認　根拠：別の言い回し\n・ポケット警報器等の設置：要確認　根拠：別の言い回し\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：別の言い回し\n・換気：要確認　根拠：別の言い回し\n・メーターガス栓閉止：要確認　根拠：別の言い回し\n・消火器設置：要確認　根拠：別の言い回し\n🟠 中\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：別の言い回し\n・周辺住戸・建物調査：要確認　根拠：別の言い回し\n・保安柵または同等措置：要確認　根拠：別の言い回し\n🟢 低\n・消防・警察への要請：要確認　根拠：別の言い回し\n・避難誘導：要確認　根拠：別の言い回し\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    },
+    {
+      "name": "priority rises",
+      "success": true,
+      "comparison": "found",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|要確認\nP08|高|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認",
+      "output": "📍 現場アドバイス\n\n【① 前回報告からの変更点】\n・分岐バルブ・引込管ガス遮断装置等：中 → 高\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：報告に基づく根拠\n・電気スイッチ等の操作禁止：要確認　根拠：報告に基づく根拠\n・火気厳禁表示シート：要確認　根拠：報告に基づく根拠\n・ポケット警報器等の設置：要確認　根拠：報告に基づく根拠\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：報告に基づく根拠\n・換気：要確認　根拠：報告に基づく根拠\n・メーターガス栓閉止：要確認　根拠：報告に基づく根拠\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：報告に基づく根拠\n・消火器設置：要確認　根拠：報告に基づく根拠\n🟠 中\n・周辺住戸・建物調査：要確認　根拠：報告に基づく根拠\n・保安柵または同等措置：要確認　根拠：報告に基づく根拠\n🟢 低\n・消防・警察への要請：要確認　根拠：報告に基づく根拠\n・避難誘導：要確認　根拠：報告に基づく根拠\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    },
+    {
+      "name": "state changes separately",
+      "success": true,
+      "comparison": "found",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|対応済み\nP08|中|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認",
+      "output": "📍 現場アドバイス\n\n【① 前回報告からの変更点】\n・メーターガス栓閉止：状態 要確認 → 対応済み（優先度 高 は同じ）\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：報告に基づく根拠\n・電気スイッチ等の操作禁止：要確認　根拠：報告に基づく根拠\n・火気厳禁表示シート：要確認　根拠：報告に基づく根拠\n・ポケット警報器等の設置：要確認　根拠：報告に基づく根拠\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：報告に基づく根拠\n・換気：要確認　根拠：報告に基づく根拠\n・メーターガス栓閉止：対応済み　根拠：報告に基づく根拠\n・消火器設置：要確認　根拠：報告に基づく根拠\n🟠 中\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：報告に基づく根拠\n・周辺住戸・建物調査：要確認　根拠：報告に基づく根拠\n・保安柵または同等措置：要確認　根拠：報告に基づく根拠\n🟢 低\n・消防・警察への要請：要確認　根拠：報告に基づく根拠\n・避難誘導：要確認　根拠：報告に基づく根拠\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    },
+    {
+      "name": "different case never compared",
+      "success": true,
+      "comparison": "unavailable",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|要確認\nP08|中|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認",
+      "output": "📍 現場アドバイス\n\n【① 前回報告からの変更点】\n前回比較は現在できません。別案件や未確認の過去情報とは比較していません。\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：報告に基づく根拠\n・電気スイッチ等の操作禁止：要確認　根拠：報告に基づく根拠\n・火気厳禁表示シート：要確認　根拠：報告に基づく根拠\n・ポケット警報器等の設置：要確認　根拠：報告に基づく根拠\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：報告に基づく根拠\n・換気：要確認　根拠：報告に基づく根拠\n・メーターガス栓閉止：要確認　根拠：報告に基づく根拠\n・消火器設置：要確認　根拠：報告に基づく根拠\n🟠 中\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：報告に基づく根拠\n・周辺住戸・建物調査：要確認　根拠：報告に基づく根拠\n・保安柵または同等措置：要確認　根拠：報告に基づく根拠\n🟢 低\n・消防・警察への要請：要確認　根拠：報告に基づく根拠\n・避難誘導：要確認　根拠：報告に基づく根拠\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    },
+    {
+      "name": "missing saved identity never compared",
+      "success": true,
+      "comparison": "unavailable",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|要確認\nP08|中|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認",
+      "output": "📍 現場アドバイス\n\n【① 前回報告からの変更点】\n前回比較は現在できません。別案件や未確認の過去情報とは比較していません。\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：報告に基づく根拠\n・電気スイッチ等の操作禁止：要確認　根拠：報告に基づく根拠\n・火気厳禁表示シート：要確認　根拠：報告に基づく根拠\n・ポケット警報器等の設置：要確認　根拠：報告に基づく根拠\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：報告に基づく根拠\n・換気：要確認　根拠：報告に基づく根拠\n・メーターガス栓閉止：要確認　根拠：報告に基づく根拠\n・消火器設置：要確認　根拠：報告に基づく根拠\n🟠 中\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：報告に基づく根拠\n・周辺住戸・建物調査：要確認　根拠：報告に基づく根拠\n・保安柵または同等措置：要確認　根拠：報告に基づく根拠\n🟢 低\n・消防・警察への要請：要確認　根拠：報告に基づく根拠\n・避難誘導：要確認　根拠：報告に基づく根拠\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    },
+    {
+      "name": "optional item absent is not resolved",
+      "success": true,
+      "comparison": "found",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|要確認\nP08|中|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認",
+      "output": "📍 現場アドバイス\n\n【① 前回報告からの変更点】\n・高濃度ガス識別検知器による濃度確認：今回は未判定（解消とは判定しません）\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：報告に基づく根拠\n・電気スイッチ等の操作禁止：要確認　根拠：報告に基づく根拠\n・火気厳禁表示シート：要確認　根拠：報告に基づく根拠\n・ポケット警報器等の設置：要確認　根拠：報告に基づく根拠\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：報告に基づく根拠\n・換気：要確認　根拠：報告に基づく根拠\n・メーターガス栓閉止：要確認　根拠：報告に基づく根拠\n・消火器設置：要確認　根拠：報告に基づく根拠\n🟠 中\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：報告に基づく根拠\n・周辺住戸・建物調査：要確認　根拠：報告に基づく根拠\n・保安柵または同等措置：要確認　根拠：報告に基づく根拠\n🟢 低\n・消防・警察への要請：要確認　根拠：報告に基づく根拠\n・避難誘導：要確認　根拠：報告に基づく根拠\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    },
+    {
+      "name": "new optional item",
+      "success": true,
+      "comparison": "found",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|要確認\nP08|中|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認\nP14|中|要確認",
+      "output": "📍 現場アドバイス\n\n【① 前回報告からの変更点】\n・高濃度ガス識別検知器による濃度確認：新規項目（中／要確認）\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：報告に基づく根拠\n・電気スイッチ等の操作禁止：要確認　根拠：報告に基づく根拠\n・火気厳禁表示シート：要確認　根拠：報告に基づく根拠\n・ポケット警報器等の設置：要確認　根拠：報告に基づく根拠\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：報告に基づく根拠\n・換気：要確認　根拠：報告に基づく根拠\n・メーターガス栓閉止：要確認　根拠：報告に基づく根拠\n・消火器設置：要確認　根拠：報告に基づく根拠\n🟠 中\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：報告に基づく根拠\n・周辺住戸・建物調査：要確認　根拠：報告に基づく根拠\n・保安柵または同等措置：要確認　根拠：報告に基づく根拠\n・高濃度ガス識別検知器による濃度確認：要確認　根拠：報告に基づく根拠\n🟢 低\n・消防・警察への要請：要確認　根拠：報告に基づく根拠\n・避難誘導：要確認　根拠：報告に基づく根拠\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    },
+    {
+      "name": "explicit resume without data is not a first case",
+      "success": true,
+      "comparison": "unavailable",
+      "snapshot": "P01|高|要確認\nP02|高|要確認\nP03|高|要確認\nP04|高|要確認\nP05|高|要確認\nP06|高|要確認\nP07|高|要確認\nP08|中|要確認\nP09|高|要確認\nP10|中|要確認\nP11|低|要確認\nP12|低|要確認\nP13|中|要確認",
+      "output": "📍 現場アドバイス\n\n【① 前回報告からの変更点】\n前回比較は現在できません。別案件や未確認の過去情報とは比較していません。\n\n【② 初動措置の優先度】\n🔴 高\n・火気使用禁止の徹底：要確認　根拠：報告に基づく根拠\n・電気スイッチ等の操作禁止：要確認　根拠：報告に基づく根拠\n・火気厳禁表示シート：要確認　根拠：報告に基づく根拠\n・ポケット警報器等の設置：要確認　根拠：報告に基づく根拠\n・流入ガス・滞留ガスの検知器調査：要確認　根拠：報告に基づく根拠\n・換気：要確認　根拠：報告に基づく根拠\n・メーターガス栓閉止：要確認　根拠：報告に基づく根拠\n・消火器設置：要確認　根拠：報告に基づく根拠\n🟠 中\n・分岐バルブ・引込管ガス遮断装置等：要確認　根拠：報告に基づく根拠\n・周辺住戸・建物調査：要確認　根拠：報告に基づく根拠\n・保安柵または同等措置：要確認　根拠：報告に基づく根拠\n🟢 低\n・消防・警察への要請：要確認　根拠：報告に基づく根拠\n・避難誘導：要確認　根拠：報告に基づく根拠\n\n【③ 確認したいこと】\n未確認の条件で判断が変わるため、現在の状況を教えてください。\n\n【④ ネクストアクション】\n・未完了の高優先度作業を進めてください。"
+    }
+  ],
+  "images": [
+    {
+      "name": "two actual inline inputs",
+      "success": true,
+      "inputs": [
+        "image-A",
+        "image-B"
+      ],
+      "rejected": 0,
+      "scope": "Attachment selection only; image model not executed"
+    },
+    {
+      "name": "Teams metadata not mistaken for bytes",
+      "success": true,
+      "inputs": [],
+      "rejected": 1,
+      "scope": "Attachment selection only; image model not executed"
+    },
+    {
+      "name": "mixed file order",
+      "success": true,
+      "inputs": [
+        "image-B"
+      ],
+      "rejected": 1,
+      "scope": "Attachment selection only; image model not executed"
+    },
+    {
+      "name": "bounded maximum five attachments",
+      "success": true,
+      "inputs": [
+        "image-0",
+        "image-1",
+        "image-2",
+        "image-3",
+        "image-4"
+      ],
+      "rejected": 0,
+      "scope": "Attachment selection only; image model not executed"
+    }
+  ]
+}

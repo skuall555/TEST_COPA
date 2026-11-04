@@ -1,0 +1,806 @@
+--- source/3-9-緊急保安業務エージェント_optimized.yaml
++++ topics/3-9-緊急保安業務エージェント_optimized.yaml
+@@ -18,7 +18,153 @@
+       id: setVariable_priorityRetryCount
+       variable: Topic.優先度確認再試行回数
+       value: =0
+-
++    - kind: SetVariable
++      id: setVariable_teamsIncoming
++      variable: Topic.今回受信文
++      value: =Topic.初回入力
++    - kind: SetVariable
++      id: setVariable_teamsMode
++      variable: Topic.判定応答方式
++      value: =Coalesce(Topic.判定応答方式, "通常")
++    - kind: SetVariable
++      id: setVariable_teamsChannel
++      variable: Topic.投稿チャネル
++      value: =Lower(Coalesce(System.Activity.ChannelId, "unknown"))
++    - kind: SetVariable
++      id: setVariable_teamsOwner
++      variable: Topic.案件所有者
++      value: =System.User.Id
++    - kind: SetVariable
++      id: setVariable_teamsExplicitCase
++      variable: Topic.明示案件指定
++      value: =If(StartsWith(Trim(Topic.今回受信文), "案件ID="), "あり", "なし")
++    - kind: SetVariable
++      id: setVariable_teamsCaseKey
++      variable: Topic.案件比較キー
++      value: =If(Trim(Topic.今回受信文) = "新しい案件", Text(GUID()), If(Topic.明示案件指定 = "あり", Trim(First(Split(Mid(Trim(Topic.今回受信文), 6), Char(10))).Value), If(And(Not(IsBlank(Global.TeamsCaseKey)), Global.TeamsCaseOwner = Topic.案件所有者), Global.TeamsCaseKey, Text(GUID()))))
++    - kind: SetVariable
++      id: setVariable_teamsResume
++      variable: Topic.案件継続
++      value: =If(And(Global.TeamsCaseKey = Topic.案件比較キー, Global.TeamsCaseOwner = Topic.案件所有者), "はい", "いいえ")
++    - kind: ConditionGroup
++      id: conditionGroup_teamsResumeHistory
++      conditions:
++        - id: conditionGroup_teamsResumeHistory_item
++          condition: =And(Topic.案件継続 = "はい", Topic.判定応答方式 <> "画像単発")
++          actions:
++            - kind: SetVariable
++              id: setVariable_teamsRestoreInitial
++              variable: Topic.初回入力
++              value: =Global.緊急保安初回入力
++            - kind: SetVariable
++              id: setVariable_teamsRestoreHistory
++              variable: Topic.追加情報履歴
++              value: =Global.緊急保安追加情報履歴 & Char(10) & "追加情報：" & Topic.今回受信文
++    - kind: ConditionGroup
++      id: conditionGroup_teamsFreshScope
++      conditions:
++        - id: conditionGroup_teamsFreshScope_item
++          condition: =Topic.案件継続 <> "はい"
++          actions:
++            - kind: SetVariable
++              id: setVariable_teamsClearSnapshot
++              variable: Global.TeamsLastFieldSnapshot
++              value: =""
++            - kind: SetVariable
++              id: setVariable_teamsClearCaseId
++              variable: Global.TeamsLastCaseId
++              value: =""
++            - kind: SetVariable
++              id: setVariable_teamsClearCount
++              variable: Global.TeamsFieldReportCount
++              value: =0
++    - kind: SetVariable
++      id: setVariable_teamsInitScopeKey
++      variable: Global.TeamsCaseKey
++      value: =Topic.案件比較キー
++    - kind: SetVariable
++      id: setVariable_teamsInitScopeOwner
++      variable: Global.TeamsCaseOwner
++      value: =Topic.案件所有者
++    - kind: SetVariable
++      id: setVariable_teamsInitInitial
++      variable: Global.緊急保安初回入力
++      value: =Topic.初回入力
++    - kind: SetVariable
++      id: setVariable_teamsInitHistory
++      variable: Global.緊急保安追加情報履歴
++      value: =Topic.追加情報履歴
++    - kind: SetVariable
++      id: setVariable_teamsInitRepairFlag
++      variable: Global.TeamsRepairActive
++      value: ="いいえ"
++    - kind: SetVariable
++      id: setVariable_teamsInitSnapshot
++      variable: Topic.今回現場スナップショット
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitPrevious
++      variable: Topic.前回現場スナップショット
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitPreviousId
++      variable: Topic.前回現場案件ID
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitCompare
++      variable: Topic.前回比較状態
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitChanges
++      variable: Topic.優先度変更点
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitText
++      variable: Topic.Teams現場回答
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitRepairText
++      variable: Topic.修理最終回答
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitRepairReply
++      variable: Topic.修理後入力
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitSaveStatus
++      variable: Topic.保存状態
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsInitEventKey
++      variable: Topic.投稿識別子
++      value: =""
++    - kind: ConditionGroup
++      id: conditionGroup_teamsInitialNewCase
++      conditions:
++        - id: conditionGroup_teamsInitialNewCase_item
++          condition: =Trim(Topic.今回受信文) = "新しい案件"
++          actions:
++            - kind: Question
++              id: question_teamsInitialNewCase
++              interruptionPolicy:
++                allowInterruption: true
++              variable: Topic.新規案件報告
++              prompt: 新しい案件の場所と現在の状況を入力してください。
++              entity:
++                kind: StringPrebuiltEntity
++                sensitivityLevel: None
++            - kind: SetVariable
++              id: setVariable_teamsInitialNewCaseText
++              variable: Topic.初回入力
++              value: =Topic.新規案件報告
++            - kind: SetVariable
++              id: setVariable_teamsInitialNewCaseIncoming
++              variable: Topic.今回受信文
++              value: =Topic.新規案件報告
++            - kind: SetVariable
++              id: setVariable_teamsInitialNewCaseGlobal
++              variable: Global.緊急保安初回入力
++              value: =Topic.初回入力
+     - kind: SetVariable
+       id: setVariable_repairModeInit
+       variable: Topic.修理方法モード
+@@ -28,17 +174,15 @@
+       id: conditionGroup_repairRequestedAtStart
+       conditions:
+         - id: conditionItem_repairRequestedAtStart
+-          condition: =Or("修理方法" in Topic.初回入力, "修理の方法" in Topic.初回入力, "修理手順" in Topic.初回入力, "どう直す" in Topic.初回入力, "どうやって直す" in Topic.初回入力, "復旧方法" in Topic.初回入力)
++          condition: =Or("修理方法" in Topic.今回受信文, "修理の方法" in Topic.今回受信文, "修理手順" in Topic.今回受信文, "どう直す" in Topic.今回受信文, "どうやって直す" in Topic.今回受信文, "復旧方法" in Topic.今回受信文, "修理工法" in Topic.今回受信文, "補修手順" in Topic.今回受信文, "補修方法" in Topic.今回受信文, "直し方" in Topic.今回受信文, "直す方法" in Topic.今回受信文)
+           actions:
+             - kind: SetVariable
+               id: setVariable_repairModeOnAtStart
+               variable: Topic.修理方法モード
+               value: =true
+-
+             - kind: GotoAction
+               id: goto_repairSelectAtStart
+               actionId: setVariable_repairSelectInit
+-
+     - kind: SetVariable
+       id: setVariable_syncEmergencyInitialToGlobal
+       variable: Global.緊急保安初回入力
+@@ -126,6 +270,28 @@
+         - id: conditionItem_priorityGuideRetrieveSucceeded
+           condition: =!IsBlank(Topic.優先度ガイド取得結果)
+           actions:
++            - kind: ConditionGroup
++              id: conditionGroup_teamsResyncCase
++              conditions:
++                - id: conditionGroup_teamsResyncCase_item
++                  condition: =And(Not(IsBlank(Global.TeamsCaseKey)), Global.TeamsCaseOwner = System.User.Id, Topic.案件比較キー <> Global.TeamsCaseKey)
++                  actions:
++                    - kind: SetVariable
++                      id: setVariable_teamsResyncCaseKey
++                      variable: Topic.案件比較キー
++                      value: =Global.TeamsCaseKey
++                    - kind: SetVariable
++                      id: setVariable_teamsResyncInitial
++                      variable: Topic.初回入力
++                      value: =Global.緊急保安初回入力
++                    - kind: SetVariable
++                      id: setVariable_teamsResyncHistory
++                      variable: Topic.追加情報履歴
++                      value: =Global.緊急保安追加情報履歴
++                    - kind: SetVariable
++                      id: setVariable_teamsResyncExplicit
++                      variable: Topic.明示案件指定
++                      value: ="なし"
+             - kind: SetVariable
+               id: setVariable_priorityPrompt
+               variable: Topic.優先度判定プロンプト
+@@ -877,6 +1043,22 @@
+                       id: setVariable_priorityBeforeSaveSnapshot
+                       variable: Topic.優先度経路診断
+                       value: ="subaru-text-20261102-v2|stage=beforeCaseSave|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
++                    - kind: SetVariable
++                      id: setVariable_teamsCurrentSnapshot
++                      variable: Topic.今回現場スナップショット
++                      value: '=Concat(Filter(Split(Topic.判定表示行, Char(30)), Not(IsBlank(Value))), With({parts: Split(Value, "|")}, With({labelText: Last(parts).Value}, Switch(true, StartsWith(labelText, "└火気使用禁止の徹底："), "P01", StartsWith(labelText, "└電気スイッチ等の操作禁止："), "P02", StartsWith(labelText, "└火気厳禁表示シート："), "P03", StartsWith(labelText, "└ポケット警報器等の設置："), "P04", StartsWith(labelText, "└流入ガス・滞留ガスの検知器調査："), "P05", StartsWith(labelText, "└換気："), "P06", StartsWith(labelText, "└メーターガス栓閉止："), "P07", StartsWith(labelText, "└分岐バルブ・引込管ガス遮断装置等："), "P08", StartsWith(labelText, "└消火器設置："), "P09", StartsWith(labelText, "└周辺住戸・建物調査："), "P10", StartsWith(labelText, "└消防・警察への要請："), "P11", StartsWith(labelText, "└避難誘導："), "P12", StartsWith(labelText, "└保安柵または同等措置："), "P13", StartsWith(labelText, "└高濃度ガス識別検知器による濃度確認："), "P14", StartsWith(labelText, "└進入禁止措置："), "P15", StartsWith(labelText, "└保安範囲の拡大または再設置："), "P16", StartsWith(labelText, "└マンホール蓋開放・換気："), "P17", StartsWith(labelText, "└救護・専門対応："), "P18", StartsWith(labelText, "└空気呼吸器等の確認："), "P19", StartsWith(labelText, "└未確認範囲の追加検知器調査："), "P20", StartsWith(labelText, "└周辺調査の拡大・再調査："), "P21", StartsWith(labelText, "└追加対象の供給遮断："), "P22", StartsWith(labelText, "└圧力・供給支障の確認と調査："), "P23", "") & "|" & First(parts).Value & "|" & Last(FirstN(parts, 2)).Value)), Char(10))'
++                    - kind: SetVariable
++                      id: setVariable_teamsPreviousSnapshot
++                      variable: Topic.前回現場スナップショット
++                      value: =Coalesce(Global.TeamsLastFieldSnapshot, "")
++                    - kind: SetVariable
++                      id: setVariable_teamsPreviousId
++                      variable: Topic.前回現場案件ID
++                      value: =Coalesce(Global.TeamsLastCaseId, "")
++                    - kind: SetVariable
++                      id: setVariable_teamsEventKey
++                      variable: Topic.投稿識別子
++                      value: =Topic.投稿チャネル & "|" & System.Conversation.Id & "|" & System.User.Id & "|" & System.Activity.Id & "|field_advice"
+                     - kind: InvokeFlowAction
+                       id: invokeFlowAction_caseSaveFieldAdvice
+                       input:
+@@ -889,6 +1071,57 @@
+                         binding:
+                           case_id: Topic.案件ID
+                       flowId: 9a770168-65a8-f111-aaad-7ced8d2f9cab
++                    - kind: SetVariable
++                      id: setVariable_teamsCompareStatus
++                      variable: Topic.前回比較状態
++                      value: =If(Coalesce(Global.TeamsFieldReportCount, 0) = 0, If(Topic.明示案件指定 = "あり", "unavailable", "first"), If(And(Not(IsBlank(Text(Topic.案件ID))), Text(Topic.案件ID) = Topic.前回現場案件ID), "found", "unavailable"))
++                    - kind: SetVariable
++                      id: setVariable_teamsChanges
++                      variable: Topic.優先度変更点
++                      value: '=If(Topic.前回比較状態 = "found", With({changes: Trim(Concat(Filter(Split(Topic.今回現場スナップショット, Char(10)), Not(IsBlank(Value))), With({parts: Split(Value, "|")}, With({code: First(parts).Value, priority: Last(FirstN(parts, 2)).Value, state: Last(parts).Value}, With({previous: First(Filter(Split(Topic.前回現場スナップショット, Char(10)), StartsWith(Value, code & "|"))).Value}, If(IsBlank(previous), "・" & Switch(code, "P01", "火気使用禁止の徹底", "P02", "電気スイッチ等の操作禁止", "P03", "火気厳禁表示シート", "P04", "ポケット警報器等の設置", "P05", "流入ガス・滞留ガスの検知器調査", "P06", "換気", "P07", "メーターガス栓閉止", "P08", "分岐バルブ・引込管ガス遮断装置等", "P09", "消火器設置", "P10", "周辺住戸・建物調査", "P11", "消防・警察への要請", "P12", "避難誘導", "P13", "保安柵または同等措置", "P14", "高濃度ガス識別検知器による濃度確認", "P15", "進入禁止措置", "P16", "保安範囲の拡大または再設置", "P17", "マンホール蓋開放・換気", "P18", "救護・専門対応", "P19", "空気呼吸器等の確認", "P20", "未確認範囲の追加検知器調査", "P21", "周辺調査の拡大・再調査", "P22", "追加対象の供給遮断", "P23", "圧力・供給支障の確認と調査", code) & "：" & "新規項目（" & priority & "／" & state & "）", If(priority <> Last(FirstN(Split(previous, "|"), 2)).Value, "・" & Switch(code, "P01", "火気使用禁止の徹底", "P02", "電気スイッチ等の操作禁止", "P03", "火気厳禁表示シート", "P04", "ポケット警報器等の設置", "P05", "流入ガス・滞留ガスの検知器調査", "P06", "換気", "P07", "メーターガス栓閉止", "P08", "分岐バルブ・引込管ガス遮断装置等", "P09", "消火器設置", "P10", "周辺住戸・建物調査", "P11", "消防・警察への要請", "P12", "避難誘導", "P13", "保安柵または同等措置", "P14", "高濃度ガス識別検知器による濃度確認", "P15", "進入禁止措置", "P16", "保安範囲の拡大または再設置", "P17", "マンホール蓋開放・換気", "P18", "救護・専門対応", "P19", "空気呼吸器等の確認", "P20", "未確認範囲の追加検知器調査", "P21", "周辺調査の拡大・再調査", "P22", "追加対象の供給遮断", "P23", "圧力・供給支障の確認と調査", code) & "：" & Last(FirstN(Split(previous, "|"), 2)).Value & " → " & priority, If(state <> Last(Split(previous, "|")).Value, "・" & Switch(code, "P01", "火気使用禁止の徹底", "P02", "電気スイッチ等の操作禁止", "P03", "火気厳禁表示シート", "P04", "ポケット警報器等の設置", "P05", "流入ガス・滞留ガスの検知器調査", "P06", "換気", "P07", "メーターガス栓閉止", "P08", "分岐バルブ・引込管ガス遮断装置等", "P09", "消火器設置", "P10", "周辺住戸・建物調査", "P11", "消防・警察への要請", "P12", "避難誘導", "P13", "保安柵または同等措置", "P14", "高濃度ガス識別検知器による濃度確認", "P15", "進入禁止措置", "P16", "保安範囲の拡大または再設置", "P17", "マンホール蓋開放・換気", "P18", "救護・専門対応", "P19", "空気呼吸器等の確認", "P20", "未確認範囲の追加検知器調査", "P21", "周辺調査の拡大・再調査", "P22", "追加対象の供給遮断", "P23", "圧力・供給支障の確認と調査", code) & "：" & "状態 " & Last(Split(previous, "|")).Value & " → " & state & "（優先度 " & priority & " は同じ）", "")))))), Char(10)) & Char(10) & Concat(Filter(Split(Topic.前回現場スナップショット, Char(10)), Not(IsBlank(Value))), With({code: First(Split(Value, "|")).Value}, If(IsBlank(First(Filter(Split(Topic.今回現場スナップショット, Char(10)), StartsWith(Value, code & "|"))).Value), "・" & Switch(code, "P01", "火気使用禁止の徹底", "P02", "電気スイッチ等の操作禁止", "P03", "火気厳禁表示シート", "P04", "ポケット警報器等の設置", "P05", "流入ガス・滞留ガスの検知器調査", "P06", "換気", "P07", "メーターガス栓閉止", "P08", "分岐バルブ・引込管ガス遮断装置等", "P09", "消火器設置", "P10", "周辺住戸・建物調査", "P11", "消防・警察への要請", "P12", "避難誘導", "P13", "保安柵または同等措置", "P14", "高濃度ガス識別検知器による濃度確認", "P15", "進入禁止措置", "P16", "保安範囲の拡大または再設置", "P17", "マンホール蓋開放・換気", "P18", "救護・専門対応", "P19", "空気呼吸器等の確認", "P20", "未確認範囲の追加検知器調査", "P21", "周辺調査の拡大・再調査", "P22", "追加対象の供給遮断", "P23", "圧力・供給支障の確認と調査", code) & "：" & "今回は未判定（解消とは判定しません）", "")), Char(10)))}, If(IsBlank(changes), "前回から優先度の変更なし", changes)), If(Topic.前回比較状態 = "first", "", "前回比較は現在できません。別案件や未確認の過去情報とは比較していません。"))'
++                    - kind: SetVariable
++                      id: setVariable_teamsRender
++                      variable: Topic.Teams現場回答
++                      value: ="📍 現場アドバイス" & Char(10) & If(Topic.前回比較状態 = "first", "", Char(10) & "【① 前回報告からの変更点】" & Char(10) & Topic.優先度変更点 & Char(10)) & Char(10) & "【② 初動措置の優先度】" & Char(10) & "🔴 高" & Char(10) & If(IsBlank(Topic.判定高欄), "・該当なし", Substitute(Topic.判定高欄, "└", "・")) & Char(10) & "🟠 中" & Char(10) & If(IsBlank(Topic.判定中欄), "・該当なし", Substitute(Topic.判定中欄, "└", "・")) & Char(10) & "🟢 低" & Char(10) & If(IsBlank(Topic.判定低欄), "・該当なし", Substitute(Topic.判定低欄, "└", "・")) & Char(10) & Char(10) & "【③ 確認したいこと】" & Char(10) & Topic.判定確認文 & Char(10) & Char(10) & "【④ ネクストアクション】" & Char(10) & Substitute(Topic.判定次行動, "└", "・")
++                    - kind: SetVariable
++                      id: setVariable_teamsSaveUnknown
++                      variable: Topic.保存状態
++                      value: ="既存保存フローの応答を受領。SharePoint反映は実環境で確認が必要です。"
++                    - kind: SetVariable
++                      id: setVariable_teamsCacheSnapshot
++                      variable: Global.TeamsLastFieldSnapshot
++                      value: =Topic.今回現場スナップショット
++                    - kind: SetVariable
++                      id: setVariable_teamsCacheCaseId
++                      variable: Global.TeamsLastCaseId
++                      value: =Text(Topic.案件ID)
++                    - kind: SetVariable
++                      id: setVariable_teamsCacheLegacy
++                      variable: Global.TeamsLastLegacyText
++                      value: =Topic.優先度判定結果
++                    - kind: SetVariable
++                      id: setVariable_teamsCacheReply
++                      variable: Global.TeamsLastTeamsText
++                      value: =Topic.Teams現場回答
++                    - kind: SetVariable
++                      id: setVariable_teamsCount
++                      variable: Global.TeamsFieldReportCount
++                      value: =Coalesce(Global.TeamsFieldReportCount, 0) + 1
++                    - kind: ConditionGroup
++                      id: conditionGroup_teamsImageOneShot
++                      conditions:
++                        - id: conditionGroup_teamsImageOneShot_item
++                          condition: =Topic.判定応答方式 = "画像単発"
++                          actions:
++                            - kind: SetVariable
++                              id: setVariable_teamsImageReceptionOn
++                              variable: Global.緊急保安画像受付中
++                              value: =true
++                            - kind: SendActivity
++                              id: sendActivity_teamsImageAdvice
++                              activity: '{If(Topic.投稿チャネル = "msteams", Topic.Teams現場回答, Topic.優先度判定結果)}'
++                            - kind: EndDialog
++                              id: endDialog_teamsImageOneShot
+                     - kind: SetVariable
+                       id: setVariable_priorityAfterSaveSnapshot
+                       variable: Topic.優先度経路診断
+@@ -914,7 +1147,7 @@
+                                       activity: |-
+                                         確認の往復が多くなったため、現時点の状況を一旦提示します。高優先度の項目が残っている可能性があります。
+ 
+-                                        {Topic.優先度判定結果}
++                                        {If(Topic.投稿チャネル = "msteams", Topic.Teams現場回答, Topic.優先度判定結果)}
+                                     - kind: EndDialog
+                                       id: endDialog_priorityRetryLimit
+                                       clearTopicQueue: true
+@@ -945,15 +1178,21 @@
+                                     allowInterruption: true
+                                   variable: Topic.優先度追加回答
+                                   prompt: |-
+-                                    {Topic.優先度判定結果}
+-
+-                                    対応状況や新しい現場情報があれば入力してください。
+-                                    例：「消火器設置済み」「道路上で爆発有」
+-                                    画像で報告する場合は、画像に一言（例：「消火器設置」「写真です」）を添えて送ってください。
+-                                    画像は自動で分析し、撮影要領に沿った写真があれば実施済みとして反映します。
++                                    {If(Topic.投稿チャネル = "msteams", Topic.Teams現場回答, Topic.優先度判定結果)}
++
++                                    同じ案件の追加報告や写真を送ってください。別案件は「新しい案件」と入力してください。
+                                   entity:
+                                     kind: StringPrebuiltEntity
+                                     sensitivityLevel: None
++                                - kind: ConditionGroup
++                                  id: conditionGroup_teamsNewCaseInField
++                                  conditions:
++                                    - id: conditionGroup_teamsNewCaseInField_item
++                                      condition: =Trim(Topic.優先度追加回答) = "新しい案件"
++                                      actions:
++                                        - kind: GotoAction
++                                          id: goto_teamsNewCaseInField
++                                          actionId: question_teamsNewCase
+                                 - kind: SetVariable
+                                   id: setVariable_resyncHistoryFromGlobal
+                                   variable: Topic.追加情報履歴
+@@ -962,7 +1201,7 @@
+                                   id: conditionGroup_repairRequestedInPriority
+                                   conditions:
+                                     - id: conditionItem_repairRequestedInPriority
+-                                      condition: =Or("修理方法" in Topic.優先度追加回答, "修理の方法" in Topic.優先度追加回答, "修理手順" in Topic.優先度追加回答, "どう直す" in Topic.優先度追加回答, "どうやって直す" in Topic.優先度追加回答, "復旧方法" in Topic.優先度追加回答)
++                                      condition: =Or("修理方法" in Topic.優先度追加回答, "修理の方法" in Topic.優先度追加回答, "修理手順" in Topic.優先度追加回答, "どう直す" in Topic.優先度追加回答, "どうやって直す" in Topic.優先度追加回答, "復旧方法" in Topic.優先度追加回答, "修理工法" in Topic.優先度追加回答, "補修手順" in Topic.優先度追加回答, "補修方法" in Topic.優先度追加回答, "直し方" in Topic.優先度追加回答, "直す方法" in Topic.優先度追加回答)
+                                       actions:
+                                         - kind: SetVariable
+                                           id: setVariable_appendRepairRequestHistory
+@@ -1033,7 +1272,7 @@
+                       activity: |-
+                         初動措置の優先度確認が完了しました。
+ 
+-                        {Topic.優先度判定結果}
++                        {If(Topic.投稿チャネル = "msteams", Topic.Teams現場回答, Topic.優先度判定結果)}
+               elseActions:
+                 - kind: SetVariable
+                   id: setVariable_imageReceptionOffPriorityFailed
+@@ -1069,7 +1308,14 @@
+       id: setVariable_repairSelectInit
+       variable: Topic.修理再検索回数
+       value: =0
+-
++    - kind: SetVariable
++      id: setVariable_teamsRepairResetImageFlag
++      variable: Global.TeamsImageResume
++      value: ="いいえ"
++    - kind: SetVariable
++      id: setVariable_teamsRepairSelectionActive
++      variable: Global.TeamsRepairActive
++      value: ="はい"
+     - kind: ConditionGroup
+       id: conditionGroup_repairSelectMode
+       conditions:
+@@ -1236,11 +1482,18 @@
+                 - id: conditionItem_repairCandidatesFound
+                   condition: =And(!IsBlank(Topic.修理候補結果), "[1]" in Topic.修理候補結果)
+                   actions:
++                    - kind: SetVariable
++                      id: setVariable_teamsRepairQuestionActive
++                      variable: Global.TeamsRepairActive
++                      value: ="はい"
++                    - kind: SetVariable
++                      id: setVariable_teamsRepairChoiceImageOn
++                      variable: Global.緊急保安画像受付中
++                      value: =true
+                     - kind: Question
+                       id: question_repairChoice
+                       interruptionPolicy:
+                         allowInterruption: true
+-
+                       variable: Topic.修理選択回答
+                       prompt: |-
+                         {Topic.修理候補結果}
+@@ -1251,7 +1504,27 @@
+                       entity:
+                         kind: StringPrebuiltEntity
+                         sensitivityLevel: None
+-
++                    - kind: ConditionGroup
++                      id: conditionGroup_teamsFieldUpdateDuringRepair
++                      conditions:
++                        - id: conditionGroup_teamsFieldUpdateDuringRepair_item
++                          condition: =Or(Global.TeamsImageResume = "はい", "設置済み" in Topic.修理選択回答, "閉止" in Topic.修理選択回答, "臭気" in Topic.修理選択回答, "警報" in Topic.修理選択回答, "検知" in Topic.修理選択回答, "写真" in Topic.修理選択回答)
++                          actions:
++                            - kind: SetVariable
++                              id: setVariable_teamsRepairChoiceFieldFlag
++                              variable: Global.TeamsImageResume
++                              value: ="いいえ"
++                            - kind: SetVariable
++                              id: setVariable_teamsRepairChoiceModeOff
++                              variable: Topic.修理方法モード
++                              value: =false
++                            - kind: SetVariable
++                              id: setVariable_teamsRepairChoiceHistory
++                              variable: Topic.追加情報履歴
++                              value: =Global.緊急保安追加情報履歴 & Char(10) & "追加情報：" & Topic.修理選択回答
++                            - kind: GotoAction
++                              id: goto_teamsFieldDuringRepairChoice
++                              actionId: setVariable_priorityPrompt
+                     - kind: SetVariable
+                       id: setVariable_repairChoiceNumber
+                       variable: Topic.修理選択番号
+@@ -1287,17 +1560,17 @@
+                         - id: conditionItem_repairChoiceZeroLimit
+                           condition: =Topic.修理選択番号 = "0" && Topic.修理再検索回数 >= 3
+                           actions:
+-                            - kind: SendActivity
++                            - kind: SetVariable
+                               id: sendActivity_repairZeroLimit
+-                              activity: |-
+-                                これ以上の候補をマニュアルから見つけられませんでした。
++                              variable: Topic.修理最終回答
++                              value: |-
++                                ="これ以上の候補をマニュアルから見つけられませんでした。
+                                 現場条件を変えて探し直しますので、分かる範囲で入力してください。
+ 
+-                                {Topic.確定条件一覧}
+-
+-                            - kind: EndDialog
++                                " & Topic.確定条件一覧 & Char(10) & Char(10) & "同じ案件の状況更新・写真は、そのまま送ってください。別案件は「新しい案件」と入力してください。"
++                            - kind: GotoAction
+                               id: endDialog_repairZeroLimit
+-
++                              actionId: invokeFlowAction_teamsSaveRepair
+                     - kind: SetVariable
+                       id: setVariable_repairChosenLine
+                       variable: Topic.修理選択行
+@@ -1401,26 +1674,23 @@
+                                 - id: conditionItem_repairProcedureFound
+                                   condition: =!IsBlank(Topic.修理手順結果)
+                                   actions:
+-                                    - kind: SendActivity
++                                    - kind: SetVariable
+                                       id: sendActivity_repairProcedure
+-                                      activity: |-
+-                                        {Topic.修理手順結果}
+-
+-                                        安全確保を最優先に、落ち着いて対応してください。
+-
+-                                    - kind: EndDialog
++                                      variable: Topic.修理最終回答
++                                      value: =Topic.修理手順結果 & Char(10) & Char(10) & "安全確保を最優先に、落ち着いて対応してください。" & Char(10) & Char(10) & "同じ案件の状況更新・写真は、そのまま送ってください。別案件は「新しい案件」と入力してください。"
++                                    - kind: GotoAction
+                                       id: endDialog_repairProcedureDone
+-
++                                      actionId: invokeFlowAction_teamsSaveRepair
+                               elseActions:
+-                                - kind: SendActivity
++                                - kind: SetVariable
+                                   id: sendActivity_repairProcedureNotFound
+-                                  activity: |-
+-                                    「{Topic.修理選択工法}」の作業手順を、マニュアルから見つけられませんでした。
+-                                    一般知識で補完せず終了します。工法名が分かる場合は、そのまま入力してください。
+-
+-                                - kind: EndDialog
++                                  variable: Topic.修理最終回答
++                                  value: |-
++                                    ="「" & Topic.修理選択工法 & "」の作業手順を、マニュアルから見つけられませんでした。
++                                    一般知識で補完せず終了します。工法名が分かる場合は、そのまま入力してください。" & Char(10) & Char(10) & "同じ案件の状況更新・写真は、そのまま送ってください。別案件は「新しい案件」と入力してください。"
++                                - kind: GotoAction
+                                   id: endDialog_repairProcedureNotFound
+-
++                                  actionId: invokeFlowAction_teamsSaveRepair
+                       elseActions:
+                         - kind: SendActivity
+                           id: sendActivity_repairChoiceUnresolved
+@@ -1432,20 +1702,20 @@
+                           id: goto_repairChoiceAgain
+                           actionId: question_repairChoice
+               elseActions:
+-                - kind: SendActivity
++                - kind: SetVariable
+                   id: sendActivity_repairNoCandidate
+-                  activity: |-
+-                    現場条件に合う修理方法を、マニュアルから絞り込めませんでした。
++                  variable: Topic.修理最終回答
++                  value: |-
++                    ="現場条件に合う修理方法を、マニュアルから絞り込めませんでした。
+ 
+                     把握できている条件は次のとおりです。
+-                    {Topic.確定条件一覧}
++                    " & Topic.確定条件一覧 & "
+ 
+                     未確定の項目や、漏えい量・圧力・配管形状など分かるものを入力してください。
+-                    条件を足して探し直します。
+-
+-                - kind: EndDialog
++                    条件を足して探し直します。" & Char(10) & Char(10) & "同じ案件の状況更新・写真は、そのまま送ってください。別案件は「新しい案件」と入力してください。"
++                - kind: GotoAction
+                   id: endDialog_repairNoCandidate
+-
++                  actionId: invokeFlowAction_teamsSaveRepair
+     - kind: SetVariable
+       id: setVariable_investigationRetryCount
+       variable: Topic.問診再試行回数
+@@ -1530,22 +1800,19 @@
+                               id: conditionGroup_repairRequestedInInvestigation
+                               conditions:
+                                 - id: conditionItem_repairRequestedInInvestigation
+-                                  condition: =Or("修理方法" in Topic.問診回答, "修理の方法" in Topic.問診回答, "修理手順" in Topic.問診回答, "どう直す" in Topic.問診回答, "どうやって直す" in Topic.問診回答, "復旧方法" in Topic.問診回答)
++                                  condition: =Or("修理方法" in Topic.問診回答, "修理の方法" in Topic.問診回答, "修理手順" in Topic.問診回答, "どう直す" in Topic.問診回答, "どうやって直す" in Topic.問診回答, "復旧方法" in Topic.問診回答, "修理工法" in Topic.問診回答, "補修手順" in Topic.問診回答, "補修方法" in Topic.問診回答, "直し方" in Topic.問診回答, "直す方法" in Topic.問診回答)
+                                   actions:
+                                     - kind: SetVariable
+                                       id: setVariable_appendRepairRequestFromInvestigation
+                                       variable: Topic.追加情報履歴
+                                       value: =Topic.追加情報履歴 & Char(10) & "問診回答：" & Topic.問診回答
+-
+                                     - kind: SetVariable
+                                       id: setVariable_repairModeOnFromInvestigation
+                                       variable: Topic.修理方法モード
+                                       value: =true
+-
+                                     - kind: GotoAction
+                                       id: goto_repairSelectFromInvestigation
+                                       actionId: setVariable_repairSelectInit
+-
+                             - kind: ConditionGroup
+                               id: conditionGroup_investigationPurposeSwitchToJunkai
+                               conditions:
+@@ -1656,14 +1923,13 @@
+                         - id: conditionItem_repairVerified
+                           condition: =And(And("合格" in Topic.修理指示結果, Not("不合格" in Topic.修理指示結果)), "・なし" in Topic.修理指示結果)
+                           actions:
+-                            - kind: SendActivity
++                            - kind: SetVariable
+                               id: sendActivity_repairResult
+-                              activity: |-
+-                                {Topic.修理指示結果}
+-
+-                                お疲れさまでした。安全確保を最優先に、落ち着いて対応してください。
+-                            - kind: EndDialog
++                              variable: Topic.修理最終回答
++                              value: =Topic.修理指示結果 & Char(10) & Char(10) & "お疲れさまでした。安全確保を最優先に、落ち着いて対応してください。" & Char(10) & Char(10) & "同じ案件の状況更新・写真は、そのまま送ってください。別案件は「新しい案件」と入力してください。"
++                            - kind: GotoAction
+                               id: endDialog_repairDone
++                              actionId: invokeFlowAction_teamsSaveRepair
+                       elseActions:
+                         - kind: ConditionGroup
+                           id: conditionGroup_repairRetryLimit
+@@ -1671,19 +1937,38 @@
+                             - id: conditionItem_repairRetryLimitReached
+                               condition: =Topic.修理確認再試行回数 >= 3
+                               actions:
+-                                - kind: SendActivity
++                                - kind: SetVariable
+                                   id: sendActivity_repairBestEffort
+-                                  activity: |-
+-                                    現時点で考えられる修理方法をお伝えします（十分に絞り込めていない可能性があります）。安全確保を最優先に対応してください。
+-
+-                                    {Topic.修理指示結果}
+-                                - kind: EndDialog
++                                  variable: Topic.修理最終回答
++                                  value: ="現時点で考えられる修理方法をお伝えします（十分に絞り込めていない可能性があります）。安全確保を最優先に対応してください。" & Char(10) & Char(10) & Topic.修理指示結果 & Char(10) & Char(10) & "同じ案件の状況更新・写真は、そのまま送ってください。別案件は「新しい案件」と入力してください。"
++                                - kind: GotoAction
+                                   id: endDialog_repairBestEffort
++                                  actionId: invokeFlowAction_teamsSaveRepair
+                           elseActions:
+                             - kind: SetVariable
+                               id: setVariable_repairRetryIncrement
+                               variable: Topic.修理確認再試行回数
+                               value: =Topic.修理確認再試行回数 + 1
++                            - kind: SetVariable
++                              id: setVariable_teamsRepairQuestionText
++                              variable: Topic.修理最終回答
++                              value: =Topic.修理指示結果
++                            - kind: InvokeFlowAction
++                              id: invokeFlowAction_teamsSaveRepairQuestion
++                              input:
++                                binding:
++                                  text: =System.Conversation.Id
++                                  text_1: ="マニュアル確認"
++                                  text_2: =Topic.修理最終回答
++                                  text_3: ="修理回答"
++                              output:
++                                binding:
++                                  case_id: Topic.修理記録応答ID
++                              flowId: 9a770168-65a8-f111-aaad-7ced8d2f9cab
++                            - kind: SetVariable
++                              id: setVariable_teamsRepairMoreImageOn
++                              variable: Global.緊急保安画像受付中
++                              value: =true
+                             - kind: Question
+                               id: question_repairMoreInfo
+                               interruptionPolicy:
+@@ -1693,6 +1978,31 @@
+                               entity:
+                                 kind: StringPrebuiltEntity
+                                 sensitivityLevel: None
++                            - kind: SetVariable
++                              id: setVariable_teamsRepairQuestionSync
++                              variable: Topic.追加情報履歴
++                              value: =Global.緊急保安追加情報履歴
++                            - kind: ConditionGroup
++                              id: conditionGroup_teamsFieldUpdateDuringRepairQuestion
++                              conditions:
++                                - id: conditionGroup_teamsFieldUpdateDuringRepairQuestion_item
++                                  condition: =Or(Global.TeamsImageResume = "はい", "設置済み" in Topic.修理追加回答, "閉止" in Topic.修理追加回答, "臭気" in Topic.修理追加回答, "警報" in Topic.修理追加回答, "検知" in Topic.修理追加回答, "写真" in Topic.修理追加回答)
++                                  actions:
++                                    - kind: SetVariable
++                                      id: setVariable_teamsRepairQuestionFieldFlag
++                                      variable: Global.TeamsImageResume
++                                      value: ="いいえ"
++                                    - kind: SetVariable
++                                      id: setVariable_teamsRepairQuestionModeOff
++                                      variable: Topic.修理方法モード
++                                      value: =false
++                                    - kind: SetVariable
++                                      id: setVariable_teamsRepairQuestionFieldHistory
++                                      variable: Topic.追加情報履歴
++                                      value: =Global.緊急保安追加情報履歴 & Char(10) & "追加情報：" & Topic.修理追加回答
++                                    - kind: GotoAction
++                                      id: goto_teamsFieldDuringRepairQuestion
++                                      actionId: setVariable_priorityPrompt
+                             - kind: ConditionGroup
+                               id: conditionGroup_repairPurposeSwitchToJunkai
+                               conditions:
+@@ -1718,16 +2028,15 @@
+                                   id: goto_repairAgain
+                                   actionId: setVariable_repairPrompt
+               elseActions:
+-                - kind: SendActivity
++                - kind: SetVariable
+                   id: sendActivity_repairFailed
+-                  activity: |-
+-                    02_作業要領から修理方法に関する情報を取得できませんでした。
+-                    一般知識で補完せず終了します。
+-
+-                - kind: EndDialog
++                  variable: Topic.修理最終回答
++                  value: |-
++                    ="02_作業要領から修理方法に関する情報を取得できませんでした。
++                    一般知識で補完せず終了します。" & Char(10) & Char(10) & "同じ案件の状況更新・写真は、そのまま送ってください。別案件は「新しい案件」と入力してください。"
++                - kind: GotoAction
+                   id: endDialog_repairFailed
+-                  clearTopicQueue: true
+-
++                  actionId: invokeFlowAction_teamsSaveRepair
+       elseActions:
+         - kind: SendActivity
+           id: sendActivity_noLeakFound
+@@ -1738,16 +2047,159 @@
+         - kind: EndDialog
+           id: endDialog_noLeakFound
+ 
++    - kind: EndDialog
++      id: endDialog_teamsExistingPathDone
++    - kind: InvokeFlowAction
++      id: invokeFlowAction_teamsSaveRepair
++      input:
++        binding:
++          text: =System.Conversation.Id
++          text_1: ="マニュアル確認"
++          text_2: =Topic.修理最終回答
++          text_3: ="修理回答"
++      output:
++        binding:
++          case_id: Topic.修理記録応答ID
++      flowId: 9a770168-65a8-f111-aaad-7ced8d2f9cab
++    - kind: SetVariable
++      id: setVariable_teamsRepairReception
++      variable: Global.緊急保安画像受付中
++      value: =true
++    - kind: Question
++      id: question_teamsRepairContinue
++      interruptionPolicy:
++        allowInterruption: true
++      variable: Topic.修理後入力
++      prompt: '{Topic.修理最終回答}'
++      entity:
++        kind: StringPrebuiltEntity
++        sensitivityLevel: None
++    - kind: SetVariable
++      id: setVariable_teamsRepairHistorySync
++      variable: Topic.追加情報履歴
++      value: =Global.緊急保安追加情報履歴
++    - kind: ConditionGroup
++      id: conditionGroup_teamsNewCaseAfterRepair
++      conditions:
++        - id: conditionGroup_teamsNewCaseAfterRepair_item
++          condition: =Trim(Topic.修理後入力) = "新しい案件"
++          actions:
++            - kind: GotoAction
++              id: goto_teamsNewCaseAfterRepair
++              actionId: question_teamsNewCase
++    - kind: ConditionGroup
++      id: conditionGroup_teamsManualAfterRepair
++      conditions:
++        - id: conditionGroup_teamsManualAfterRepair_item
++          condition: =Or("マニュアル確認" in Topic.修理後入力, "マニュアル改訂" in Topic.修理後入力, "マニュアル改定" in Topic.修理後入力)
++          actions:
++            - kind: SetVariable
++              id: setVariable_teamsManualReturn
++              variable: Global.巡回切替入力
++              value: =Topic.修理後入力
++            - kind: EndDialog
++              id: endDialog_teamsManualReturn
++    - kind: SetVariable
++      id: setVariable_teamsRepairAppend
++      variable: Topic.追加情報履歴
++      value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.修理後入力
++    - kind: SetVariable
++      id: setVariable_teamsRepairSync
++      variable: Global.緊急保安追加情報履歴
++      value: =Topic.追加情報履歴
++    - kind: ConditionGroup
++      id: conditionGroup_teamsRepairAgain
++      conditions:
++        - id: conditionGroup_teamsRepairAgain_item
++          condition: =Or("修理方法" in Topic.修理後入力, "補修手順" in Topic.修理後入力, "修理工法" in Topic.修理後入力)
++          actions:
++            - kind: SetVariable
++              id: setVariable_teamsRepairAgainOn
++              variable: Topic.修理方法モード
++              value: =true
++            - kind: GotoAction
++              id: goto_teamsRepairAgain
++              actionId: setVariable_repairSelectInit
++    - kind: SetVariable
++      id: setVariable_teamsBackToField
++      variable: Topic.修理方法モード
++      value: =false
++    - kind: SetVariable
++      id: setVariable_teamsRepairOff
++      variable: Global.TeamsRepairActive
++      value: ="いいえ"
++    - kind: GotoAction
++      id: goto_teamsFieldAfterRepair
++      actionId: setVariable_priorityPrompt
++    - kind: Question
++      id: question_teamsNewCase
++      interruptionPolicy:
++        allowInterruption: true
++      variable: Topic.新規案件報告
++      prompt: 新しい案件として扱います。場所と現在の状況を入力してください。
++      entity:
++        kind: StringPrebuiltEntity
++        sensitivityLevel: None
++    - kind: SetVariable
++      id: setVariable_teamsNewCaseKey
++      variable: Topic.案件比較キー
++      value: =Text(GUID())
++    - kind: SetVariable
++      id: setVariable_teamsNewGlobalKey
++      variable: Global.TeamsCaseKey
++      value: =Topic.案件比較キー
++    - kind: SetVariable
++      id: setVariable_teamsNewInitial
++      variable: Topic.初回入力
++      value: =Topic.新規案件報告
++    - kind: SetVariable
++      id: setVariable_teamsNewHistory
++      variable: Topic.追加情報履歴
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsNewGlobalInitial
++      variable: Global.緊急保安初回入力
++      value: =Topic.初回入力
++    - kind: SetVariable
++      id: setVariable_teamsNewGlobalHistory
++      variable: Global.緊急保安追加情報履歴
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsNewSnapshot
++      variable: Global.TeamsLastFieldSnapshot
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsNewSavedId
++      variable: Global.TeamsLastCaseId
++      value: =""
++    - kind: SetVariable
++      id: setVariable_teamsNewSequence
++      variable: Global.TeamsFieldReportCount
++      value: =0
++    - kind: SetVariable
++      id: setVariable_teamsNewExplicit
++      variable: Topic.明示案件指定
++      value: ="なし"
++    - kind: SetVariable
++      id: setVariable_teamsNewFieldMode
++      variable: Topic.修理方法モード
++      value: =false
++    - kind: GotoAction
++      id: goto_teamsNewCaseAdvice
++      actionId: setVariable_priorityPrompt
++
+ inputType:
+   properties:
+     初回入力:
+       displayName: 初回入力
+       description: 巡回トピックで受け取ったユーザーの最初の発話
+       type: String
+-
+     追加情報履歴:
+       displayName: 追加情報履歴
+       description: 巡回トピックまでに確認した追加情報の履歴
+       type: String
+-
+-outputType: {}+    判定応答方式:
++      displayName: 判定応答方式
++      description: 既存画像トピックの単発再判定専用。通常呼出しは省略可。
++      type: String
++outputType: {}

@@ -1,0 +1,232 @@
+--- source/4-9-画像分析エージェント_緊急保安_optimized.yaml
++++ topics/4-9-画像分析エージェント_緊急保安_optimized.yaml
+@@ -18,7 +18,7 @@
+ beginDialog:
+   kind: OnActivity
+   id: main
+-  condition: =And(Not(IsEmpty(System.Activity.Attachments)), Or(EndsWith(Lower(First(System.Activity.Attachments).Name), ".png"), EndsWith(Lower(First(System.Activity.Attachments).Name), ".jpg"), EndsWith(Lower(First(System.Activity.Attachments).Name), ".jpeg")))
++  condition: =CountRows(Filter(System.Activity.Attachments, Or(StartsWith(Lower(ContentType), "image/"), EndsWith(Lower(Name), ".png"), EndsWith(Lower(Name), ".jpg"), EndsWith(Lower(Name), ".jpeg"), EndsWith(Lower(Name), ".heic"), EndsWith(Lower(Name), ".webp")))) > 0
+   priority: -100
+   type: Message
+   actions:
+@@ -26,7 +26,56 @@
+       id: setVariable_debugMode
+       variable: Topic.デバッグ表示
+       value: =false
+-
++    - kind: SetVariable
++      id: setVariable_teamsPhotoIndex
++      variable: Topic.画像添付番号
++      value: =1
++    - kind: SetVariable
++      id: setVariable_teamsPhotoLimit
++      variable: Topic.画像処理上限
++      value: =Min(CountRows(System.Activity.Attachments), 5)
++    - kind: SetVariable
++      id: setVariable_teamsPhotoCount
++      variable: Topic.画像処理枚数
++      value: =0
++    - kind: SetVariable
++      id: setVariable_teamsPhotoErrors
++      variable: Topic.画像処理注意
++      value: =""
++    - kind: ConditionGroup
++      id: conditionGroup_teamsPhotoNewScope
++      conditions:
++        - id: conditionGroup_teamsPhotoNewScope_item
++          condition: =Or(IsBlank(Global.TeamsCaseKey), Global.TeamsCaseOwner <> System.User.Id, StartsWith(Trim(System.Activity.Text), "新しい案件"), StartsWith(Trim(System.Activity.Text), "別案件"))
++          actions:
++            - kind: SetVariable
++              id: setVariable_teamsPhotoCaseKey
++              variable: Global.TeamsCaseKey
++              value: =Text(GUID())
++            - kind: SetVariable
++              id: setVariable_teamsPhotoCaseOwner
++              variable: Global.TeamsCaseOwner
++              value: =System.User.Id
++            - kind: SetVariable
++              id: setVariable_teamsPhotoInitial
++              variable: Global.緊急保安初回入力
++              value: =If(IsBlank(System.Activity.Text), "現場画像の報告（場所・現場状況は未確認）", System.Activity.Text)
++            - kind: SetVariable
++              id: setVariable_teamsPhotoHistory
++              variable: Global.緊急保安追加情報履歴
++              value: =""
++            - kind: SetVariable
++              id: setVariable_teamsPhotoPrevious
++              variable: Global.TeamsLastFieldSnapshot
++              value: =""
++            - kind: SetVariable
++              id: setVariable_teamsPhotoPreviousId
++              variable: Global.TeamsLastCaseId
++              value: =""
++            - kind: SetVariable
++              id: setVariable_teamsPhotoSequence
++              variable: Global.TeamsFieldReportCount
++              value: =0
+     - kind: SetVariable
+       id: setVariable_imageFeature01
+       variable: Topic.特徴_火気厳禁表示シート
+@@ -248,8 +297,7 @@
+     - kind: SetVariable
+       id: setVariable_attachmentName
+       variable: Topic.画像ファイル名
+-      value: =First(System.Activity.Attachments).Name
+-
++      value: =Index(System.Activity.Attachments, Topic.画像添付番号).Name
+     - kind: SetVariable
+       id: setVariable_turnText
+       variable: Topic.画像同時テキスト
+@@ -258,8 +306,7 @@
+     - kind: SetVariable
+       id: setVariable_attachmentContentType
+       variable: Topic.画像MIME
+-      value: =Lower(First(System.Activity.Attachments).ContentType)
+-
++      value: =Lower(Index(System.Activity.Attachments, Topic.画像添付番号).ContentType)
+     - kind: SetVariable
+       id: setVariable_attachmentSupported
+       variable: Topic.画像形式対応
+@@ -285,36 +332,23 @@
+         - id: conditionItem_unsupportedImageType
+           condition: =Not(Topic.画像形式対応)
+           actions:
+-            - kind: SendActivity
++            - kind: SetVariable
+               id: sendActivity_unsupportedImageType
+-              activity: |-
+-                画像を分析できませんでした。
+-                画像分析が対応しているのは PNG・JPG・JPEG だけです。
+-
+-                受信した添付：
+-                ・ファイル名：{Topic.画像ファイル名}
+-                ・形式：{If(Len(Topic.画像MIME) = 0, "判別できませんでした", Topic.画像MIME)}
+-
+-                スクリーンショットの貼り付けや、HEIC・WebP・GIF などは判別できないことがあります。
+-                お手数ですが、PNG または JPEG のファイルとして保存し直してから送信してください。
+-                対応状況を文章で入力していただいても構いません。
+-
+-            - kind: EndDialog
++              variable: Topic.画像処理注意
++              value: =Topic.画像処理注意 & Char(10) & "・" & Topic.画像ファイル名 & If(Or("download.info" in Topic.画像MIME, "reference" in Topic.画像MIME), "：Teamsの添付参照情報のみで画像の実データを確認できません。画像として解析した扱いにはしません。", "：PNG/JPEGの画像データとして読み取れませんでした。")
++            - kind: GotoAction
+               id: endDialog_unsupportedImageType
+-
++              actionId: setVariable_teamsPhotoNext
+     - kind: InvokeAIBuilderModelAction
+       id: invokeAIBuilderModelAction_imageFacts
+       input:
+         binding:
+           ContextText: =Topic.第1段プロンプト & Char(10) & Char(10) & "【画像と同時に入力されたテキスト】" & Char(10) & If(IsBlank(Topic.画像同時テキスト), "なし", Topic.画像同時テキスト)
+-          ImageInput: =First(System.Activity.Attachments).Content
+-
++          ImageInput: =Index(System.Activity.Attachments, Topic.画像添付番号).Content
+       output:
+         binding:
+           predictionOutput: Topic.画像分析出力
+-
+       aIModelId: f51d9827-d7f9-4e75-8b7e-7f8532093578
+-
+     - kind: ConditionGroup
+       id: conditionGroup_imagePromptConnected
+       conditions:
+@@ -505,25 +539,13 @@
+               variable: Global.緊急保安画像受付中
+               value: =true
+ 
+-            - kind: SendActivity
++            - kind: SetVariable
+               id: sendActivity_analysisResult
+-              activity: |-
+-                画像を分析しました（{Topic.画像ファイル名}）。
+-
+-                【画像から分かる現場状況】
+-                {If(Topic.追加情報部 = "", "・特記なし", Topic.追加情報部)}
+-
+-                【撮影要領に基づく実施済み措置】
+-                {If(Topic.措置済み部 = "", "・なし", Topic.措置済み部)}
+-
+-                【要確認】
+-                {If(Topic.要確認部 = "", "・なし", Topic.要確認部)}
+-
+-                {If(IsBlank(Global.緊急保安初回入力), "内容は現場情報として記録しました。", "この内容を初動措置の判定へ反映します。続けて何か一言（例：「反映」）を送ってください。別の写真を続けて送っていただいても構いません。")}
+-
+-            - kind: EndDialog
++              variable: Topic.画像処理枚数
++              value: =Topic.画像処理枚数 + 1
++            - kind: GotoAction
+               id: endDialog_afterRestartEmergency
+-
++              actionId: setVariable_teamsPhotoNext
+       elseActions:
+         - kind: SendActivity
+           id: sendActivity_promptNotConnected
+@@ -536,5 +558,68 @@
+           variable: Global.緊急保安画像受付中
+           value: =true
+ 
++    - kind: SetVariable
++      id: setVariable_teamsPhotoNext
++      variable: Topic.画像添付番号
++      value: =Topic.画像添付番号 + 1
++    - kind: ConditionGroup
++      id: conditionGroup_teamsPhotoMore
++      conditions:
++        - id: conditionGroup_teamsPhotoMore_item
++          condition: =Topic.画像添付番号 <= Topic.画像処理上限
++          actions:
++            - kind: GotoAction
++              id: goto_teamsPhotoMore
++              actionId: setVariable_attachmentName
++    - kind: ConditionGroup
++      id: conditionGroup_teamsPhotoOverLimit
++      conditions:
++        - id: conditionGroup_teamsPhotoOverLimit_item
++          condition: =CountRows(System.Activity.Attachments) > 5
++          actions:
++            - kind: SetVariable
++              id: setVariable_teamsPhotoLimitWarning
++              variable: Topic.画像処理注意
++              value: =Topic.画像処理注意 & Char(10) & "・1投稿の処理上限は5件です。6件目以降は解析していません。残りを別の投稿で送ってください。"
++    - kind: ConditionGroup
++      id: conditionGroup_teamsPhotoWarnings
++      conditions:
++        - id: conditionGroup_teamsPhotoWarnings_item
++          condition: =Not(IsBlank(Trim(Topic.画像処理注意)))
++          actions:
++            - kind: SetVariable
++              id: setVariable_teamsPhotoWarningHistory
++              variable: Global.緊急保安追加情報履歴
++              value: =Global.緊急保安追加情報履歴 & Char(10) & "【要確認】" & Topic.画像処理注意
++    - kind: ConditionGroup
++      id: conditionGroup_teamsPhotoNone
++      conditions:
++        - id: conditionGroup_teamsPhotoNone_item
++          condition: =Topic.画像処理枚数 = 0
++          actions:
++            - kind: SendActivity
++              id: sendActivity_teamsPhotoNone
++              activity: |-
++                画像を解析できていません。
++                {Topic.画像処理注意}
++
++                画像の受渡し設定を確認するか、現場状況を文章で送ってください。写真から実施済みとは判定していません。
++            - kind: EndDialog
++              id: endDialog_teamsPhotoNone
++    - kind: SetVariable
++      id: setVariable_teamsPhotoResumeFlag
++      variable: Global.TeamsImageResume
++      value: ="はい"
++    - kind: BeginDialog
++      id: beginDialog_teamsPhotoSingleAdvice
++      input:
++        binding:
++          初回入力: =Global.緊急保安初回入力
++          追加情報履歴: =Global.緊急保安追加情報履歴
++          判定応答方式: ="画像単発"
++      dialog: cr88f_SUBARU_search.topic.9xY
++    - kind: EndDialog
++      id: endDialog_teamsPhotoBatch
++
+ inputType: {}
+ outputType: {}

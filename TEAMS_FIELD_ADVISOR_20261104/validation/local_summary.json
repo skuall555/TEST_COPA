@@ -1,0 +1,48 @@
+{
+  "generated_utc": "2026-11-04T03:41:41.881740+00:00",
+  "base_commit": "4fa63fbcfc1ccf39d063276d9999a5ffb3166132",
+  "tenant_acceptance": "NOT_RUN",
+  "performance": "NOT_MEASURED",
+  "native_scope": "Microsoft.PowerFx.Interpreter 1.8.1 standalone; no Studio host, model or tenant execution",
+  "wdl_scope": "Generated workflow evaluated with a test-only expression runner and mocked SharePoint connector",
+  "native": {
+    "native_results.json": {
+      "checks": {
+        "total": 140,
+        "passed": 140
+      },
+      "renders": {
+        "total": 9,
+        "passed": 9
+      },
+      "images": {
+        "total": 4,
+        "passed": 4
+      }
+    },
+    "native_bound_results.json": {
+      "checks": {
+        "total": 227,
+        "passed": 227
+      },
+      "renders": {
+        "total": 9,
+        "passed": 9
+      },
+      "images": {
+        "total": 4,
+        "passed": 4
+      }
+    }
+  },
+  "unittest": {
+    "count": 23,
+    "success": true
+  },
+  "sha256": {
+    "topics/1-マニュアル関連入口_optimized.yaml": "c13b2a4e63583af3f977136ecd59ba950376cb77625caafeb9c1058c02703903",
+    "topics/3-9-緊急保安業務エージェント_optimized.yaml": "747b668f0f033d127ef2dffb10bfd0f9d33f84ade32d0fb8d6bae2fe6eb55230",
+    "topics/4-9-画像分析エージェント_緊急保安_optimized.yaml": "263a4db9e3631839ca8a482acd280275a20de319f8b6c12ed4043d477bf7ac87",
+    "topics/エージェント指示_Teams追記.txt": "995315ec59eedc98c2364e175ba9f638c26011aba6c874f22ff6c56a7e8a1574"
+  }
+}
