@@ -1,6 +1,6 @@
 ﻿id,check,status,evidence
 A1,Teams投稿に②③④を表示。続報は①も表示,NOT_RUN,
-A2,表示の案件IDに対応するLists行が作成または更新,NOT_RUN,
-A3,同じ投稿で通知フローが起動しTeamsへカードが届く,NOT_RUN,
-A4,続報でLatestStatusが更新され、その更新でも通知が届く,NOT_RUN,
+A2,Teams新規案件で新IDと新しいLists行が作成される,NOT_RUN,
+A3,新規行の作成時だけ、既存トリガーからTeamsへ通知が届く,NOT_RUN,
+A4,既存案件の続報は同じ行を更新し、新規案件通知を追加発行しない,NOT_RUN,
 A5,既存Appsで7見出しの保存文章を引き続き表示,NOT_RUN,

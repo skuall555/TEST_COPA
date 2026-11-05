@@ -1,7 +1,7 @@
 {
   "files": 16,
-  "bytes": 124067,
-  "sha256": "c0bf536eb39d8e7e6b9ec75685692f6d28f9f4e4b5e14405b3e64a29f3d4e828",
-  "crc": "PASS",
-  "kind": "source_and_ui_runbook_not_importable_solution"
+  "bytes": 123294,
+  "sha256": "0424c665ec4d22f7cc67507cd0fd3846d54d0a90ba26fd12af8a303bd022e767",
+  "kind": "source_bundle_not_solution",
+  "notification_trigger_change": "WITHDRAWN"
 }

@@ -8,5 +8,6 @@
   "notification_flow_actual_modified": false,
   "tenant_e2e": "NOT_RUN",
   "latency": "NOT_MEASURED",
-  "notification_change": "UI steps supplied for existing SharePoint created trigger -> created or modified trigger; no exported flow provided"
+  "notification_change": "WITHDRAWN: preserve existing created-only notification. Diagnose why Teams new cases take the existing-record update branch.",
+  "user_requirement": "New case -> new CaseId + new Lists row + created-only notification; continued report -> existing case row update"
 }
