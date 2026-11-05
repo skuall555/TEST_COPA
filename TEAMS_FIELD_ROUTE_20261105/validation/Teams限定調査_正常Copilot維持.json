@@ -1,0 +1,12 @@
+{
+  "baseline": "User confirms that the same agent invoked in Microsoft Copilot works correctly, including its save path",
+  "failure": "User confirms Teams continues to produce uncontrolled answers with no new save-PA execution",
+  "scope": "Repair Teams-specific delivery/invocation only. Preserve the currently working Copilot business path. Do not change shared generative orchestration or authorization merely on inference. Preserve created-only notification.",
+  "prior_wrong_direction": "Shared YAML/display/purpose changes were repeatedly proposed without identifying the channel-specific divergence; do not treat their local tests as proof of a Teams fix.",
+  "available_evidence": "Published 2026-11-05 18:31; channel screenshots include a Microsoft365/Teams preview and a separate Teams-authentication/DLP warning view. Precise configuration equivalence has not been established.",
+  "missing_channel_artifact": "Actual Teams app package / manifest and its bot/custom-engine mapping, compared with the published agent identity and functioning Copilot path",
+  "tenant_connected_access": "No direct Power Platform / Teams runtime connector has been available in this session",
+  "next_action": "Obtain read-only Teams publication artifact rather than another identical user-input test or shared configuration change",
+  "root_cause": "UNCONFIRMED",
+  "application_code_modified_by_this_record": false
+}
