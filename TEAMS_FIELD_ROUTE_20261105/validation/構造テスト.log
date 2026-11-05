@@ -1,0 +1,9 @@
+test_existing_logic_and_save_contract_preserved (test_preservation.Preservation.test_existing_logic_and_save_contract_preserved) ... ok
+test_field_guard_is_before_classifier (test_preservation.Preservation.test_field_guard_is_before_classifier) ... ok
+test_ids_and_schema (test_preservation.Preservation.test_ids_and_schema) ... ok
+test_original_utterance_not_rewritten (test_preservation.Preservation.test_original_utterance_not_rewritten) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.911s
+
+OK

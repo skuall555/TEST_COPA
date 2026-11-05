@@ -1,0 +1,8 @@
+{
+  "files": 17,
+  "sha256": "b4da692076d84594d545a9e94d75060055d6f02a64b2409b72db6a3a3bf6a30f",
+  "crc": "PASS",
+  "independent_rebuild": "IDENTICAL",
+  "independent_structural_tests": "4 PASS",
+  "kind": "source_bundle_not_solution"
+}

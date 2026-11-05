@@ -1,0 +1,216 @@
+{
+  "scope": "Actual Power Fx guard evaluation; no live model, agent routing host, Teams or SharePoint execution",
+  "package": "Microsoft.PowerFx.Interpreter 1.8.1",
+  "cases": [
+    {
+      "input": "台所でガス臭い",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "動作確認用のテスト案件です。台所でガス臭い",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "浴室で臭気あり",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "マンションの共用廊下でガス臭がする",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "検知器が反応した",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "都市ガス警報器が鳴り続けている",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "隣の家のドアポストでLEL3％を検知。入れず換気できない",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "3軒でガスを検知、止められない",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "ガスが噴出している",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "ガスを止めた。臭気が低下してきた",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "lel 1% を検知",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "台所で　ガスくさい",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "ガス臭気時のマニュアルを確認したい",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "ガス漏れ対応の基準を変更したい",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "警報器が鳴り続けるときの社内基準は？",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "ガス臭とは？",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "LELの意味を教えて",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "警報器が鳴る仕組みは何？",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "ガス臭気時の手順を調べたい",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "臭気対応の条文を削除したい",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "台所でガス臭い。マニュアルを確認したい",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "ガス臭い場合の対応を調べて",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "こんにちは",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "1",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "１",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "マニュアルを確認したい",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "修理方法を教えて",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "台所でガス臭い",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 1,
+      "errors": []
+    },
+    {
+      "input": "台所でガス臭い。どう対応すればいいか確認したい",
+      "success": true,
+      "directFieldRoute": true,
+      "retry": 0,
+      "errors": []
+    },
+    {
+      "input": "ガス臭を感じるときの対応を調べたい",
+      "success": true,
+      "directFieldRoute": false,
+      "retry": 0,
+      "errors": []
+    }
+  ]
+}

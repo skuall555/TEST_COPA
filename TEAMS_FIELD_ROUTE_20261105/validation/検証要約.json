@@ -1,0 +1,14 @@
+{
+  "source": "current entry based on user upload d7236e743c8e896f53e83252b1ee6ea2b17dcfc7df9227523a81cfe7e7a001aa, with prior classified-field shortcut",
+  "observed_failure": "Teams report entered manual-check mode; Word body acquisition failed; latest save flow history did not advance according to user",
+  "correction": "Explicit field report guard now runs before answer_inferPurposeFromText; fallback original classifier/manual routes unchanged",
+  "source_sha256": "4f4752d407628131df8731a57e179d6bb8e3eb1f8bf75a59f0c16eca22842527",
+  "output_sha256": "ee2bb8245787c1da321f5678dd2bf84c06330bc9c2d6dec8f51304f42dbce905",
+  "structural_tests": 4,
+  "native_guard_cases": 30,
+  "native_scope": "Actual Power Fx guard evaluation; no live model, agent routing host, Teams or SharePoint execution",
+  "live_teams_and_save": "NOT_RUN",
+  "latency": "NOT_MEASURED",
+  "new_id_row_notification": "NOT_RUN",
+  "save_and_notification_flows_modified": false
+}

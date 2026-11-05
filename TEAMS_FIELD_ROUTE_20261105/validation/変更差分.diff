@@ -1,0 +1,44 @@
+--- 変更前_1.yaml
++++ 1_貼り替え用.yaml
+@@ -45,8 +45,7 @@
+     - kind: SetVariable
+       id: setVariable_buildVersion
+       variable: Topic.実行バージョン
+-      value: ="巡回-restart-61e0c4a-20261027"
+-
++      value: ="entry-field-first-20261105-v1"
+     - kind: ConditionGroup
+       id: conditionGroup_probeMode
+       conditions:
+@@ -209,7 +208,30 @@
+       id: setVariable_purposeDetect
+       variable: Topic.目的分野
+       value: =""
+-
++    - kind: SetVariable
++      id: setVariable_fieldFirstNormalize
++      variable: Topic.入口入力小文字
++      value: =Lower(Substitute(Topic.初回入力, "　", " "))
++    - kind: ConditionGroup
++      id: conditionGroup_fieldBeforePurposeAI
++      conditions:
++        - id: conditionGroup_fieldBeforePurposeAI_item
++          condition: =And(Topic.目的再試行回数 = 0, Or("ガス臭" in Topic.入口入力小文字, "ガスくさ" in Topic.入口入力小文字, "ガスが臭" in Topic.入口入力小文字, "ガスが漏" in Topic.入口入力小文字, "ガス漏れ" in Topic.入口入力小文字, "ガス漏えい" in Topic.入口入力小文字, "漏洩" in Topic.入口入力小文字, "漏えい" in Topic.入口入力小文字, "臭気" in Topic.入口入力小文字, "異臭" in Topic.入口入力小文字, "検知器反応" in Topic.入口入力小文字, "検知器が反応" in Topic.入口入力小文字, "検知反応" in Topic.入口入力小文字, "ガスを検知" in Topic.入口入力小文字, "ガスが検知" in Topic.入口入力小文字, "lel" in Topic.入口入力小文字, "警報器が鳴" in Topic.入口入力小文字, "警報器鳴動" in Topic.入口入力小文字, "警報が鳴" in Topic.入口入力小文字, "鳴り止まない" in Topic.入口入力小文字, "ガスが噴" in Topic.入口入力小文字, "ガスを止め" in Topic.入口入力小文字, "ガスが止ま" in Topic.入口入力小文字, "供給を止められ" in Topic.入口入力小文字), Not(Or("マニュアル" in Topic.入口入力小文字, "基準" in Topic.入口入力小文字, "規定" in Topic.入口入力小文字, "要領" in Topic.入口入力小文字, "手順" in Topic.入口入力小文字, "文書" in Topic.入口入力小文字, "規程" in Topic.入口入力小文字, "ルール" in Topic.入口入力小文字, "条項" in Topic.入口入力小文字, "条文" in Topic.入口入力小文字, "規則" in Topic.入口入力小文字)), Not(Or("とは" in Topic.入口入力小文字, "仕組み" in Topic.入口入力小文字, "原理" in Topic.入口入力小文字, "意味" in Topic.入口入力小文字, "定義" in Topic.入口入力小文字, "教科書" in Topic.入口入力小文字, "用語" in Topic.入口入力小文字, "場合" in Topic.入口入力小文字, "とき" in Topic.入口入力小文字, "時の" in Topic.入口入力小文字, "時は" in Topic.入口入力小文字)))
++          actions:
++            - kind: SetVariable
++              id: setVariable_fieldFirstPurpose
++              variable: Topic.目的分野
++              value: ="現場対応アドバイス"
++            - kind: SetVariable
++              id: setVariable_fieldFirstFolder
++              variable: Topic.対象フォルダ
++              value: ="09_緊急保安_共通"
++            - kind: SendActivity
++              id: sendActivity_fieldFirstReceived
++              activity: 現場報告を受け付けました。初動措置を判定します。
++            - kind: GotoAction
++              id: goto_fieldBeforePurposeAI
++              actionId: 64VMOA
+     - kind: AnswerQuestionWithAI
+       id: answer_inferPurposeFromText
+       autoSend: false
