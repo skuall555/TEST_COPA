@@ -1,0 +1,73 @@
+{
+  "observation": "2026-11-05 user test in Copilot Studio ended with the exact priorityFailed message after two no-knowledge-result notices",
+  "confirmed": [
+    "The observed terminal message exists at sendActivity_priorityFailed in field topic",
+    "The field save call is nested under priority validation equals 合格",
+    "The display patch is after the save call and does not change model/validation nodes"
+  ],
+  "not_confirmed": [
+    "Exact runtime priority validation code",
+    "Whether priority model output was empty or malformed",
+    "Execution duration of each lookup and generation action"
+  ],
+  "guide_lookups": [
+    {
+      "kind": "SearchAndSummarizeContent",
+      "id": "search_guideRetrieve",
+      "displayName": "00A_AI検索ガイド取得",
+      "autoSend": false,
+      "variable": "Topic.ガイド取得結果",
+      "userInput": "=\"AI検索ガイドの構造フォルダの決定ロジックとフォルダ登録表と判定の優先順位の全文\"",
+      "additionalInstructions": "=Topic.ガイド取得プロンプト",
+      "fileSearchDataSource": {
+        "searchFilesMode": {
+          "kind": "DoNotSearchFiles"
+        }
+      },
+      "knowledgeSources": {
+        "kind": "SearchSpecificKnowledgeSources",
+        "knowledgeSources": [
+          "cr88f_SUBARU_search.topic.XX_AI_083YzA6lLVwbTwOWPO6zR"
+        ]
+      },
+      "applyModelKnowledgeSetting": false
+    },
+    {
+      "kind": "ConditionGroup",
+      "id": "conditionGroup_guideRetrieveRetry",
+      "conditions": [
+        {
+          "id": "conditionItem_guideRetrieveRetry",
+          "condition": "=IsBlank(Topic.ガイド取得結果)",
+          "actions": [
+            {
+              "kind": "SearchAndSummarizeContent",
+              "id": "search_guideRetrieveRetry",
+              "displayName": "00A2_AI検索ガイド取得（再試行）",
+              "autoSend": false,
+              "variable": "Topic.ガイド取得結果",
+              "userInput": "=\"AI検索ガイド フォルダ登録表\"",
+              "additionalInstructions": "=Topic.ガイド取得プロンプト",
+              "fileSearchDataSource": {
+                "searchFilesMode": {
+                  "kind": "DoNotSearchFiles"
+                }
+              },
+              "knowledgeSources": {
+                "kind": "SearchSpecificKnowledgeSources",
+                "knowledgeSources": [
+                  "cr88f_SUBARU_search.topic.XX_AI_083YzA6lLVwbTwOWPO6zR"
+                ]
+              },
+              "applyModelKnowledgeSetting": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "diagnostic_formula": "=\"subaru-text-20261102-v2|stage=gate|validation=\" & Topic.優先度表示検証 & \"|rawChars=\" & Text(Len(Topic.優先度表示原文)) & \"|displayChars=\" & Text(Len(Topic.優先度表示組立)) & \"|retry=\" & Text(Topic.優先度様式再試行回数)",
+  "save_condition": "=Topic.優先度表示検証 = \"合格\"",
+  "recommendation": "Read existing Topic.優先度経路診断; do not weaken validation or send/save unvalidated generated advice; evaluate bypass of guide lookup only for already-classified explicit emergency field reports",
+  "production_changes_applied": false
+}
