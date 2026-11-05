@@ -1,0 +1,16 @@
+{
+  "evidence_source": "User-provided Teams response and report of no new save-flow history, after the field-first patch was supplied",
+  "observed": [
+    "No exact field receipt message in the provided response",
+    "No new PA execution according to user",
+    "Response is a free-form manual-based answer rather than the controlled field display"
+  ],
+  "not_established": [
+    "Whether the newly published field-first topic is the version reached by this Teams session",
+    "Whether Teams is linked to the same agent and environment as the edited Copilot Studio agent",
+    "Whether parent orchestration skipped or replaced topic output"
+  ],
+  "next_check": "Open the Teams channel configuration of the exact edited agent (environment 2b38b500-7e52-e9e5-b3e4-f92a23fa12bd, bot f48b9642-9fa5-f111-aaad-7ced8d2f9cab) and use its canonical Teams launch link",
+  "code_change_for_this_observation": false,
+  "notification_trigger": "PRESERVE_CREATED_ONLY"
+}

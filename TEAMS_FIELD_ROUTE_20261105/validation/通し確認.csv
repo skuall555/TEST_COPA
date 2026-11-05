@@ -1,6 +1,6 @@
 ﻿id,check,status,evidence
-E01,Teamsで台所の臭気報告が受付から3-9へ進む,NOT_RUN,
-E02,現場判定合格後に保存PAの実行履歴が増える,NOT_RUN,
+E01,Teamsで台所の臭気報告が受付から3-9へ進む,USER_REPORTED_FAIL_VERSION_UNCONFIRMED,受付文なし、制御外の回答、保存PA履歴なし。Teamsの接続先・公開版は未確認
+E02,現場判定合格後に保存PAの実行履歴が増える,USER_REPORTED_FAIL_VERSION_UNCONFIRMED,受付文なし、制御外の回答、保存PA履歴なし。Teamsの接続先・公開版は未確認
 E03,新規案件は新IDと新しいLists行ができる,NOT_RUN,
 E04,新規行の作成時だけ通知が届く,NOT_RUN,
 E05,続報は同じ行を更新し新規通知を増やさない,NOT_RUN,
