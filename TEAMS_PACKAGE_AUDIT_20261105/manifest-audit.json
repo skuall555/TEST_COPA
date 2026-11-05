@@ -1,0 +1,36 @@
+{
+  "sha256": "a7435f478203f0bb885952d6ca01f4efc63691c6ed53d38eb8be8c0b949f08aa",
+  "zip_entries": [
+    "manifest.json",
+    "color.png",
+    "outline.png"
+  ],
+  "manifest_version": "1.24",
+  "app_version": "1.0.7",
+  "app_id": "b0866e7b-babb-4376-9e7b-221471c34c6e",
+  "bot_registration_id": "b0866e7b-babb-4376-9e7b-221471c34c6e",
+  "copilot_studio_dataverse_bot_id_from_editor_url": "f48b9642-9fa5-f111-aaad-7ced8d2f9cab",
+  "different_id_roles": "The Dataverse bot record ID and the Teams/AAD bot registration ID identify different objects; their difference alone is not a defect.",
+  "environment": "2b38b500-7e52-e9e5-b3e4-f92a23fa12bd",
+  "bot_schema": "cr88f_SUBARU_search",
+  "checks": {
+    "zip_crc_ok": true,
+    "expected_environment": true,
+    "expected_bot_schema": true,
+    "application_and_bot_ids_consistent": true,
+    "copilot_and_teams_bot_ids_consistent": true,
+    "personal_scope_available": true,
+    "copilot_scope_available": true,
+    "not_notification_only": true,
+    "file_support_enabled": true
+  },
+  "schema_validation": "NOT_RUN",
+  "actual_installed_teams_package": "NOT_ACQUIRED",
+  "published_dialog_version": "NOT_INCLUDED_IN_ZIP",
+  "runtime_topic_and_pa_calls": "NOT_INCLUDED_IN_ZIP",
+  "sso_and_dlp_runtime_authorization": "NOT_DETERMINABLE_FROM_THIS_ZIP",
+  "root_cause": "UNCONFIRMED",
+  "package_modifications": "NONE",
+  "normal_copilot_configuration_modified": false,
+  "next_required_evidence": "Read-only agent Activity view: compare a working Copilot run with an existing failed Teams run; do not send another identical input until an actual configuration difference is identified."
+}

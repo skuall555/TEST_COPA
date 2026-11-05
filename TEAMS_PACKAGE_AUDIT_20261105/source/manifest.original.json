@@ -1,0 +1,57 @@
+{
+  "version": "1.0.7",
+  "id": "b0866e7b-babb-4376-9e7b-221471c34c6e",
+  "developer": {
+    "name": "Your developer name",
+    "websiteUrl": "https://go.microsoft.com/fwlink/?linkid=2352565",
+    "privacyUrl": "https://go.microsoft.com/fwlink/?linkid=2138865",
+    "termsOfUseUrl": "https://go.microsoft.com/fwlink/?linkid=2138950"
+  },
+  "name": {
+    "short": "SUBARU巡回検索",
+    "full": "SUBARU巡回検索"
+  },
+  "description": {
+    "short": "Microsoft Copilot Studio で構築されました",
+    "full": "従業員が常に最新の情報を活用して、生産性を高め、つながりを維持できるようにします。必要な機能を説明し、ナレッジ ソースを追加してコパイロットを作成すると、わずか数分であらゆる質問に答えられる状態になります。"
+  },
+  "icons": {
+    "outline": "outline.png",
+    "color": "color.png"
+  },
+  "accentColor": "#07687d",
+  "bots": [
+    {
+      "botId": "b0866e7b-babb-4376-9e7b-221471c34c6e",
+      "isNotificationOnly": false,
+      "supportsFiles": true,
+      "scopes": [
+        "personal",
+        "copilot"
+      ],
+      "registrationInfo": {
+        "source": "microsoftCopilotStudio",
+        "environment": "2b38b500-7e52-e9e5-b3e4-f92a23fa12bd",
+        "schemaName": "cr88f_SUBARU_search",
+        "clusterCategory": "prod"
+      },
+      "supportsCalling": true
+    }
+  ],
+  "validDomains": [
+    "*.botframework.com",
+    "*.*.botframework.com",
+    "copilotstudio.microsoft.com",
+    "copilotstudio.preview.microsoft.com"
+  ],
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.24/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.24",
+  "copilotAgents": {
+    "customEngineAgents": [
+      {
+        "id": "b0866e7b-babb-4376-9e7b-221471c34c6e",
+        "type": "bot"
+      }
+    ]
+  }
+}
