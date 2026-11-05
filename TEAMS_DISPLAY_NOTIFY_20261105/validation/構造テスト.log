@@ -1,0 +1,9 @@
+test_all_reply_paths_use_readable_text (test_display.Display.test_all_reply_paths_use_readable_text) ... ok
+test_flow_and_apps_renderer_and_retry_are_unchanged (test_display.Display.test_flow_and_apps_renderer_and_retry_are_unchanged) ... ok
+test_only_display_fields_changed (test_display.Display.test_only_display_fields_changed) ... ok
+test_text_and_yaml_match (test_display.Display.test_text_and_yaml_match) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.532s
+
+OK

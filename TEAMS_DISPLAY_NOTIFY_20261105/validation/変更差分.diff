@@ -1,0 +1,38 @@
+--- 変更前_3-9.yaml
++++ 3-9_貼り替え用.yaml
+@@ -1091,7 +1091,7 @@
+                     - kind: SetVariable
+                       id: setVariable_teamsDisplayRender
+                       variable: Topic.Teams現場表示
+-                      value: ="📍 現場アドバイス" & Char(10) & If(Topic.Teams比較区分 = "初回", "", Char(10) & "【① 前回報告からの変更点】" & Char(10) & Topic.Teams変更点 & Char(10)) & Char(10) & "【② 初動措置の優先度】" & Char(10) & "🔴 高" & Char(10) & If(IsBlank(Topic.判定高欄), "・該当なし", Substitute(Topic.判定高欄, "└", "・")) & Char(10) & "🟠 中" & Char(10) & If(IsBlank(Topic.判定中欄), "・該当なし", Substitute(Topic.判定中欄, "└", "・")) & Char(10) & "🟢 低" & Char(10) & If(IsBlank(Topic.判定低欄), "・該当なし", Substitute(Topic.判定低欄, "└", "・")) & Char(10) & Char(10) & "【③ 確認したいこと】" & Char(10) & Topic.判定確認文 & Char(10) & Char(10) & "【④ ネクストアクション】" & Char(10) & Substitute(Topic.判定次行動, "└", "・")
++                      value: ="📍 現場アドバイス" & If(IsBlank(Topic.Teams現在案件ID), "", "｜案件 " & Topic.Teams現在案件ID) & Char(10) & If(Topic.Teams比較区分 = "初回", "", Char(10) & "【① 前回報告からの変更点】" & Char(10) & Topic.Teams変更点 & Char(10)) & Char(10) & "【② 初動措置の優先度】" & Char(10) & "🔴 高" & Char(10) & If(IsBlank(Topic.判定高欄), "・該当なし", Substitute(Topic.判定高欄, "└", "・")) & Char(10) & "🟠 中" & Char(10) & If(IsBlank(Topic.判定中欄), "・該当なし", Substitute(Topic.判定中欄, "└", "・")) & Char(10) & "🟢 低" & Char(10) & If(IsBlank(Topic.判定低欄), "・該当なし", Substitute(Topic.判定低欄, "└", "・")) & Char(10) & Char(10) & "【③ 確認したいこと】" & Char(10) & Topic.判定確認文 & Char(10) & Char(10) & "【④ ネクストアクション】" & Char(10) & Substitute(Topic.判定次行動, "└", "・")
+                     - kind: SetVariable
+                       id: setVariable_teamsDisplayNameP23
+                       variable: Topic.Teams現場表示
+@@ -1230,7 +1230,7 @@
+                                       activity: |-
+                                         確認の往復が多くなったため、現時点の状況を一旦提示します。高優先度の項目が残っている可能性があります。
+ 
+-                                        {If(Topic.Teams表示チャネル = "msteams", Topic.Teams現場表示, Topic.優先度判定結果)}
++                                        {Topic.Teams現場表示}
+                                     - kind: EndDialog
+                                       id: endDialog_priorityRetryLimit
+                                       clearTopicQueue: true
+@@ -1266,7 +1266,7 @@
+                                     allowInterruption: true
+                                   variable: Topic.優先度追加回答
+                                   prompt: |-
+-                                    {If(Topic.Teams表示チャネル = "msteams", Topic.Teams現場表示, Topic.優先度判定結果)}
++                                    {Topic.Teams現場表示}
+ 
+                                     対応状況や新しい現場情報があれば入力してください。
+                                     例：「消火器設置済み」「道路上で爆発有」
+@@ -1368,7 +1368,7 @@
+                       activity: |-
+                         初動措置の優先度確認が完了しました。
+ 
+-                        {If(Topic.Teams表示チャネル = "msteams", Topic.Teams現場表示, Topic.優先度判定結果)}
++                        {Topic.Teams現場表示}
+               elseActions:
+                 - kind: SetVariable
+                   id: setVariable_imageReceptionOffPriorityFailed
