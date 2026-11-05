@@ -1,0 +1,56 @@
+{
+  "source_sha256": "d7236e743c8e896f53e83252b1ee6ea2b17dcfc7df9227523a81cfe7e7a001aa",
+  "source_bytes": 233108,
+  "trigger": "OnRecognizedIntent",
+  "trigger_queries": [
+    "マニュアル確認",
+    "マニュアル改訂",
+    "マニュアル改定",
+    "改訂案を作りたい",
+    "改定案を作りたい",
+    "現場対応アドバイス",
+    "適用範囲を教えて",
+    "工法について教えて",
+    "修理方法を教えて",
+    "規定を確認したい",
+    "計測",
+    "マンションの共用廊下でガス臭がする",
+    "警報器が鳴り続けていてガスを検知した",
+    "供給を止められないので対応を相談したい",
+    "ガス漏れ対応の社内基準を調べたい",
+    "手順書のこの規定はどうなっている",
+    "消防要請の基準に項目を追加したい",
+    "社内マニュアルの記載を削除したい",
+    "ガス業務について相談したい"
+  ],
+  "field_dialog": "cr88f_SUBARU_search.topic.9xY",
+  "classifier_auto_send": false,
+  "existing_flows": [
+    {
+      "id": "invokeFlowAction_manualCheckIndexAll",
+      "flowId": "6aacd644-41a8-f111-aaad-7ced8d2f9cab"
+    },
+    {
+      "id": "invokeFlowAction_caseSaveManualCheckEveryResult",
+      "flowId": "9a770168-65a8-f111-aaad-7ced8d2f9cab"
+    },
+    {
+      "id": "invokeFlowAction_manualReviseIndexAll",
+      "flowId": "6aacd644-41a8-f111-aaad-7ced8d2f9cab"
+    },
+    {
+      "id": "invokeFlowAction_caseSaveManualRevision",
+      "flowId": "9a770168-65a8-f111-aaad-7ced8d2f9cab"
+    },
+    {
+      "id": "invokeFlowAction_caseSaveManualRevisionRepair",
+      "flowId": "9a770168-65a8-f111-aaad-7ced8d2f9cab"
+    }
+  ],
+  "source_modified": false,
+  "confirmed_code_issues": [],
+  "published_teams_path": "NOT_OBSERVED",
+  "latest_failed_test_flow_history": "NOT_PROVIDED",
+  "runtime_root_cause": "UNCONFIRMED",
+  "next_evidence": "Copilot Studio test trace of the same natural-language report; compare with published Teams execution"
+}
