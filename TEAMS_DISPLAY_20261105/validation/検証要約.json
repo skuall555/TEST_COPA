@@ -1,0 +1,17 @@
+{
+  "source_sha256": "7745bf5f7348d66974e9ddeb54febd63bbcc4e2f2f5ca9e0e8a0444bec054d4b",
+  "output_sha256": "0ce130c1271a36669cf99dbe0950953d53e6b2f7a30d1fc1890dae75ef4dc4b2",
+  "unit_tests": 7,
+  "unit_success": true,
+  "native_checks": 35,
+  "native_cases": 17,
+  "native_success": true,
+  "tenant_after_change": "NOT_RUN",
+  "latency": "NOT_MEASURED",
+  "changed_components": [
+    "Copilot Studio existing 3-9 topic"
+  ],
+  "power_automate_modified": false,
+  "power_apps_modified": false,
+  "sharepoint_columns_added": false
+}

@@ -1,0 +1,196 @@
+--- 変更前_3-9.yaml
++++ 3-9_貼り替え用.yaml
+@@ -1047,13 +1047,150 @@
+                           text_1: ="現場アドバイス"
+                           text_2: =Topic.優先度判定結果
+                           text_3: ="なし"
+-
+                       output:
+                         binding:
+                           case_id: Topic.案件ID
+-
+                       flowId: 9a770168-65a8-f111-aaad-7ced8d2f9cab
+-
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayChannel
++                      variable: Topic.Teams表示チャネル
++                      value: =Lower(Coalesce(System.Activity.ChannelId, ""))
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayCase
++                      variable: Topic.Teams現在案件ID
++                      value: =Coalesce(Topic.案件ID, "")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplaySnapshot
++                      variable: Topic.Teams今回判定
++                      value: '=Concat(Filter(Split(Topic.判定表示行, Char(30)), Not(IsBlank(Value))), With({parts: Split(Value, "|")}, With({labelText: Last(parts).Value}, Switch(true, StartsWith(labelText, "└火気使用禁止の徹底："), "P01", StartsWith(labelText, "└電気スイッチ等の操作禁止："), "P02", StartsWith(labelText, "└火気厳禁表示シート："), "P03", StartsWith(labelText, "└ポケット警報器等の設置："), "P04", StartsWith(labelText, "└流入ガス・滞留ガスの検知器調査："), "P05", StartsWith(labelText, "└換気："), "P06", StartsWith(labelText, "└メーターガス栓閉止："), "P07", StartsWith(labelText, "└分岐バルブ・引込管ガス遮断装置等："), "P08", StartsWith(labelText, "└消火器設置："), "P09", StartsWith(labelText, "└周辺住戸・建物調査："), "P10", StartsWith(labelText, "└消防・警察への要請："), "P11", StartsWith(labelText, "└避難誘導："), "P12", StartsWith(labelText, "└保安柵または同等措置："), "P13", StartsWith(labelText, "└高濃度ガス識別検知器による濃度確認："), "P14", StartsWith(labelText, "└進入禁止措置："), "P15", StartsWith(labelText, "└保安範囲の拡大または再設置："), "P16", StartsWith(labelText, "└マンホール蓋開放・換気："), "P17", StartsWith(labelText, "└救護・専門対応："), "P18", StartsWith(labelText, "└空気呼吸器等の確認："), "P19", StartsWith(labelText, "└未確認範囲の追加検知器調査："), "P20", StartsWith(labelText, "└周辺調査の拡大・再調査："), "P21", StartsWith(labelText, "└追加対象の供給遮断："), "P22", StartsWith(labelText, "└圧力・供給支障の確認と調査："), "P23", "") & "|" & First(parts).Value & "|" & Last(FirstN(parts, 2)).Value)), Char(10))'
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayPrevious
++                      variable: Topic.Teams前回判定
++                      value: =If(And(Not(IsBlank(Topic.Teams現在案件ID)), Not(IsBlank(System.User.Id)), Global.Teams表示前回案件ID = Topic.Teams現在案件ID, Global.Teams表示前回会話ID = System.Conversation.Id, Global.Teams表示前回利用者ID = System.User.Id, Global.Teams表示前回チャネル = Topic.Teams表示チャネル), Coalesce(Global.Teams表示前回判定, ""), "")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayCompare
++                      variable: Topic.Teams比較区分
++                      value: =If(Or(IsBlank(Topic.Teams現在案件ID), IsBlank(System.Conversation.Id), IsBlank(System.User.Id)), "比較不可", If(And(Not(IsBlank(Topic.Teams現在案件ID)), Not(IsBlank(System.User.Id)), Global.Teams表示前回案件ID = Topic.Teams現在案件ID, Global.Teams表示前回会話ID = System.Conversation.Id, Global.Teams表示前回利用者ID = System.User.Id, Global.Teams表示前回チャネル = Topic.Teams表示チャネル), If(IsBlank(Topic.Teams前回判定), "比較不可", "比較可"), "初回"))
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayChanges
++                      variable: Topic.Teams変更点
++                      value: '=If(Topic.Teams比較区分 = "比較可", With({changes: Trim(Concat(Filter(Split(Topic.Teams今回判定, Char(10)), Not(IsBlank(Value))), With({parts: Split(Value, "|")}, With({code: First(parts).Value, priority: Last(FirstN(parts, 2)).Value, state: Last(parts).Value}, With({previous: First(Filter(Split(Topic.Teams前回判定, Char(10)), StartsWith(Value, code & "|"))).Value}, If(IsBlank(previous), "・" & Switch(code, "P01", "火気使用禁止の徹底", "P02", "電気スイッチ等の操作禁止", "P03", "火気厳禁表示シート", "P04", "ポケット警報器等の設置", "P05", "流入ガス・滞留ガスの検知器調査", "P06", "換気", "P07", "メーターガス栓閉止", "P08", "分岐バルブ・引込管ガス遮断装置等", "P09", "消火器設置", "P10", "周辺住戸・建物調査", "P11", "消防・警察への要請", "P12", "避難誘導", "P13", "保安柵または同等措置", "P14", "高濃度ガス識別検知器による濃度確認", "P15", "進入禁止措置", "P16", "保安範囲の拡大または再設置", "P17", "マンホール蓋開放・換気", "P18", "救護・専門対応", "P19", "空気呼吸器等の確認", "P20", "未確認範囲の追加検知器調査", "P21", "周辺調査の拡大・再調査", "P22", "追加対象の供給遮断", "P23", "圧力・供給支障の確認と調査", code) & "：" & "新たに判定（" & priority & "／" & state & "）" & Char(10), If(priority <> Last(FirstN(Split(previous, "|"), 2)).Value, "・" & Switch(code, "P01", "火気使用禁止の徹底", "P02", "電気スイッチ等の操作禁止", "P03", "火気厳禁表示シート", "P04", "ポケット警報器等の設置", "P05", "流入ガス・滞留ガスの検知器調査", "P06", "換気", "P07", "メーターガス栓閉止", "P08", "分岐バルブ・引込管ガス遮断装置等", "P09", "消火器設置", "P10", "周辺住戸・建物調査", "P11", "消防・警察への要請", "P12", "避難誘導", "P13", "保安柵または同等措置", "P14", "高濃度ガス識別検知器による濃度確認", "P15", "進入禁止措置", "P16", "保安範囲の拡大または再設置", "P17", "マンホール蓋開放・換気", "P18", "救護・専門対応", "P19", "空気呼吸器等の確認", "P20", "未確認範囲の追加検知器調査", "P21", "周辺調査の拡大・再調査", "P22", "追加対象の供給遮断", "P23", "圧力・供給支障の確認と調査", code) & "：" & Last(FirstN(Split(previous, "|"), 2)).Value & " → " & priority & Char(10), "") & If(state <> Last(Split(previous, "|")).Value, "・" & Switch(code, "P01", "火気使用禁止の徹底", "P02", "電気スイッチ等の操作禁止", "P03", "火気厳禁表示シート", "P04", "ポケット警報器等の設置", "P05", "流入ガス・滞留ガスの検知器調査", "P06", "換気", "P07", "メーターガス栓閉止", "P08", "分岐バルブ・引込管ガス遮断装置等", "P09", "消火器設置", "P10", "周辺住戸・建物調査", "P11", "消防・警察への要請", "P12", "避難誘導", "P13", "保安柵または同等措置", "P14", "高濃度ガス識別検知器による濃度確認", "P15", "進入禁止措置", "P16", "保安範囲の拡大または再設置", "P17", "マンホール蓋開放・換気", "P18", "救護・専門対応", "P19", "空気呼吸器等の確認", "P20", "未確認範囲の追加検知器調査", "P21", "周辺調査の拡大・再調査", "P22", "追加対象の供給遮断", "P23", "圧力・供給支障の確認と調査", code) & "：" & "実施状況 " & Last(Split(previous, "|")).Value & " → " & state & Char(10), "")))))) & Concat(Filter(Split(Topic.Teams前回判定, Char(10)), Not(IsBlank(Value))), With({code: First(Split(Value, "|")).Value}, If(IsBlank(First(Filter(Split(Topic.Teams今回判定, Char(10)), StartsWith(Value, code & "|"))).Value), "・" & Switch(code, "P01", "火気使用禁止の徹底", "P02", "電気スイッチ等の操作禁止", "P03", "火気厳禁表示シート", "P04", "ポケット警報器等の設置", "P05", "流入ガス・滞留ガスの検知器調査", "P06", "換気", "P07", "メーターガス栓閉止", "P08", "分岐バルブ・引込管ガス遮断装置等", "P09", "消火器設置", "P10", "周辺住戸・建物調査", "P11", "消防・警察への要請", "P12", "避難誘導", "P13", "保安柵または同等措置", "P14", "高濃度ガス識別検知器による濃度確認", "P15", "進入禁止措置", "P16", "保安範囲の拡大または再設置", "P17", "マンホール蓋開放・換気", "P18", "救護・専門対応", "P19", "空気呼吸器等の確認", "P20", "未確認範囲の追加検知器調査", "P21", "周辺調査の拡大・再調査", "P22", "追加対象の供給遮断", "P23", "圧力・供給支障の確認と調査", code) & "：" & "今回は未判定（解消とは判断しません）" & Char(10), ""))))}, If(IsBlank(changes), "前回から優先度・実施状況の変更はありません。", changes)), If(Topic.Teams比較区分 = "初回", "", "前回比較は現在できません。過去情報を確認できていないため、変更なしとは判断していません。"))'
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayRender
++                      variable: Topic.Teams現場表示
++                      value: ="📍 現場アドバイス" & Char(10) & If(Topic.Teams比較区分 = "初回", "", Char(10) & "【① 前回報告からの変更点】" & Char(10) & Topic.Teams変更点 & Char(10)) & Char(10) & "【② 初動措置の優先度】" & Char(10) & "🔴 高" & Char(10) & If(IsBlank(Topic.判定高欄), "・該当なし", Substitute(Topic.判定高欄, "└", "・")) & Char(10) & "🟠 中" & Char(10) & If(IsBlank(Topic.判定中欄), "・該当なし", Substitute(Topic.判定中欄, "└", "・")) & Char(10) & "🟢 低" & Char(10) & If(IsBlank(Topic.判定低欄), "・該当なし", Substitute(Topic.判定低欄, "└", "・")) & Char(10) & Char(10) & "【③ 確認したいこと】" & Char(10) & Topic.判定確認文 & Char(10) & Char(10) & "【④ ネクストアクション】" & Char(10) & Substitute(Topic.判定次行動, "└", "・")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP23
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P23", "圧力・供給支障の確認と調査")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP22
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P22", "追加対象の供給遮断")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP21
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P21", "周辺調査の拡大・再調査")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP20
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P20", "未確認範囲の追加検知器調査")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP19
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P19", "空気呼吸器等の確認")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP18
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P18", "救護・専門対応")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP17
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P17", "マンホール蓋開放・換気")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP16
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P16", "保安範囲の拡大または再設置")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP15
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P15", "進入禁止措置")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP14
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P14", "高濃度ガス識別検知器による濃度確認")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP13
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P13", "保安柵または同等措置")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP12
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P12", "避難誘導")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP11
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P11", "消防・警察への要請")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP10
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P10", "周辺住戸・建物調査")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP09
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P09", "消火器設置")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP08
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P08", "分岐バルブ・引込管ガス遮断装置等")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP07
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P07", "メーターガス栓閉止")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP06
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P06", "換気")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP05
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P05", "流入ガス・滞留ガスの検知器調査")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP04
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P04", "ポケット警報器等の設置")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP03
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P03", "火気厳禁表示シート")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP02
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P02", "電気スイッチ等の操作禁止")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayNameP01
++                      variable: Topic.Teams現場表示
++                      value: =Substitute(Topic.Teams現場表示, "P01", "火気使用禁止の徹底")
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayCacheCase
++                      variable: Global.Teams表示前回案件ID
++                      value: =Topic.Teams現在案件ID
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayCacheConversation
++                      variable: Global.Teams表示前回会話ID
++                      value: =System.Conversation.Id
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayCacheUser
++                      variable: Global.Teams表示前回利用者ID
++                      value: =System.User.Id
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayCacheChannel
++                      variable: Global.Teams表示前回チャネル
++                      value: =Topic.Teams表示チャネル
++                    - kind: SetVariable
++                      id: setVariable_teamsDisplayCacheSnapshot
++                      variable: Global.Teams表示前回判定
++                      value: =Topic.Teams今回判定
+                     - kind: SetVariable
+                       id: setVariable_priorityAfterSaveSnapshot
+                       variable: Topic.優先度経路診断
+@@ -1081,8 +1218,7 @@
+                                       activity: |-
+                                         確認の往復が多くなったため、現時点の状況を一旦提示します。高優先度の項目が残っている可能性があります。
+ 
+-                                        {Topic.優先度判定結果}
+-
++                                        {If(Topic.Teams表示チャネル = "msteams", Topic.Teams現場表示, Topic.優先度判定結果)}
+                                     - kind: EndDialog
+                                       id: endDialog_priorityRetryLimit
+                                       clearTopicQueue: true
+@@ -1117,10 +1253,9 @@
+                                   id: question_priorityUpdate
+                                   interruptionPolicy:
+                                     allowInterruption: true
+-
+                                   variable: Topic.優先度追加回答
+                                   prompt: |-
+-                                    {Topic.優先度判定結果}
++                                    {If(Topic.Teams表示チャネル = "msteams", Topic.Teams現場表示, Topic.優先度判定結果)}
+ 
+                                     対応状況や新しい現場情報があれば入力してください。
+                                     例：「消火器設置済み」「道路上で爆発有」
+@@ -1129,7 +1264,6 @@
+                                   entity:
+                                     kind: StringPrebuiltEntity
+                                     sensitivityLevel: None
+-
+                                 - kind: SetVariable
+                                   id: setVariable_resyncHistoryFromGlobal
+                                   variable: Topic.追加情報履歴
+@@ -1223,8 +1357,7 @@
+                       activity: |-
+                         初動措置の優先度確認が完了しました。
+ 
+-                        {Topic.優先度判定結果}
+-
++                        {If(Topic.Teams表示チャネル = "msteams", Topic.Teams現場表示, Topic.優先度判定結果)}
+               elseActions:
+                 - kind: SetVariable
+                   id: setVariable_imageReceptionOffPriorityFailed

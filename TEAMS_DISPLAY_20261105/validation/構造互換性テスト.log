@@ -1,0 +1,12 @@
+test_all_existing_nodes_unchanged_except_three_display_templates (test_scope.DisplayOnly.test_all_existing_nodes_unchanged_except_three_display_templates) ... ok
+test_all_success_templates_use_conditional_display (test_scope.DisplayOnly.test_all_success_templates_use_conditional_display) ... ok
+test_flows_and_models_and_rules_unchanged (test_scope.DisplayOnly.test_flows_and_models_and_rules_unchanged) ... ok
+test_ids_unique_references_valid_schema_unchanged (test_scope.DisplayOnly.test_ids_unique_references_valid_schema_unchanged) ... ok
+test_new_actions_only_string_assignments (test_scope.DisplayOnly.test_new_actions_only_string_assignments) ... ok
+test_source_is_uploaded_bytes (test_scope.DisplayOnly.test_source_is_uploaded_bytes) ... ok
+test_text_download_identical_to_yaml (test_scope.DisplayOnly.test_text_download_identical_to_yaml) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.578s
+
+OK
