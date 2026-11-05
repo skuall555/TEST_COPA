@@ -1,0 +1,10 @@
+test_manual_branches_are_not_shortcut_targets (test_structure.Stability.test_manual_branches_are_not_shortcut_targets) ... ok
+test_paste_files_are_complete_yaml (test_structure.Stability.test_paste_files_are_complete_yaml) ... ok
+test_preserve_all_old_logic_except_failure_message (test_structure.Stability.test_preserve_all_old_logic_except_failure_message) ... ok
+test_retry_jumps_after_initialization_without_reset (test_structure.Stability.test_retry_jumps_after_initialization_without_reset) ... ok
+test_same_flow_and_legacy_renderer_and_display (test_structure.Stability.test_same_flow_and_legacy_renderer_and_display) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.885s
+
+OK

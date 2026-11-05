@@ -1,0 +1,18 @@
+{
+  "user_clarification": "wait/合格/rawChars1051/displayChars990/retry0 belongs to the successful SECOND attempt, not the failed first attempt",
+  "failed_first_attempt_exact_validation": "UNKNOWN",
+  "structural_tests": 5,
+  "native_emergency_routes": 11,
+  "native_generation_validation_retry_cases": 7,
+  "native_scope": "Actual Power Fx parser and YAML retry control flow with scripted model outputs; no tenant/model/SharePoint execution",
+  "tenant_after_change": "NOT_RUN",
+  "latency": "NOT_MEASURED",
+  "source_sha256": {
+    "変更前_3-9.yaml": "0ce130c1271a36669cf99dbe0950953d53e6b2f7a30d1fc1890dae75ef4dc4b2",
+    "変更前_1.yaml": "d7236e743c8e896f53e83252b1ee6ea2b17dcfc7df9227523a81cfe7e7a001aa"
+  },
+  "output_sha256": {
+    "3-9_貼り替え用.yaml": "9c882a1ea0d151eeea7ae7b22f496fb9ddb460f22e263d920f0ff0571eecb9a5",
+    "1_貼り替え用.yaml": "4f4752d407628131df8731a57e179d6bb8e3eb1f8bf75a59f0c16eca22842527"
+  }
+}

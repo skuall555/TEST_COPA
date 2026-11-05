@@ -1,0 +1,97 @@
+--- 変更前_3-9.yaml
++++ 3-9_貼り替え用.yaml
+@@ -217,8 +217,7 @@
+             - kind: SetVariable
+               id: setVariable_priorityBeforeAISnapshot
+               variable: Topic.優先度経路診断
+-              value: ="subaru-text-20261102-v2|stage=beforeAI|inputChars=" & Text(Len(Topic.優先度判定プロンプト))
+-
++              value: ="subaru-runtime-20261105-v1|stage=beforeAI|inputChars=" & Text(Len(Topic.優先度判定プロンプト))
+             - kind: AnswerQuestionWithAI
+               id: answer_priority
+               displayName: 11B_ガイド抜粋からの優先度判定
+@@ -230,8 +229,7 @@
+             - kind: SetVariable
+               id: setVariable_priorityAfterAISnapshot
+               variable: Topic.優先度経路診断
+-              value: ="subaru-text-20261102-v2|stage=afterAI|outputChars=" & Text(Len(Topic.優先度判定結果))
+-
++              value: ="subaru-runtime-20261105-v1|stage=afterAI|outputChars=" & Text(Len(Topic.優先度判定結果))
+             - kind: SetVariable
+               id: setVariable_priorityFormatRaw
+               variable: Topic.優先度表示原文
+@@ -1026,8 +1024,24 @@
+             - kind: SetVariable
+               id: setVariable_priorityGateSnapshot
+               variable: Topic.優先度経路診断
+-              value: ="subaru-text-20261102-v2|stage=gate|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+-
++              value: ="subaru-runtime-20261105-v1|stage=gate|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
++            - kind: ConditionGroup
++              id: conditionGroup_runtimePriorityRetry
++              conditions:
++                - id: conditionGroup_runtimePriorityRetry_item
++                  condition: =And(Topic.優先度表示検証 <> "合格", Topic.優先度様式再試行回数 < 1)
++                  actions:
++                    - kind: SetVariable
++                      id: setVariable_runtimePriorityRetryCount
++                      variable: Topic.優先度様式再試行回数
++                      value: =Topic.優先度様式再試行回数 + 1
++                    - kind: SetVariable
++                      id: setVariable_runtimeClearFailedResult
++                      variable: Topic.優先度判定結果
++                      value: =""
++                    - kind: GotoAction
++                      id: goto_runtimePriorityRetry
++                      actionId: answer_priority
+             - kind: ConditionGroup
+               id: conditionGroup_prioritySucceeded
+               conditions:
+@@ -1037,8 +1051,7 @@
+                     - kind: SetVariable
+                       id: setVariable_priorityBeforeSaveSnapshot
+                       variable: Topic.優先度経路診断
+-                      value: ="subaru-text-20261102-v2|stage=beforeCaseSave|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+-
++                      value: ="subaru-runtime-20261105-v1|stage=beforeCaseSave|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+                     - kind: InvokeFlowAction
+                       id: invokeFlowAction_caseSaveFieldAdvice
+                       input:
+@@ -1194,8 +1207,7 @@
+                     - kind: SetVariable
+                       id: setVariable_priorityAfterSaveSnapshot
+                       variable: Topic.優先度経路診断
+-                      value: ="subaru-text-20261102-v2|stage=afterCaseSave|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+-
++                      value: ="subaru-runtime-20261105-v1|stage=afterCaseSave|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+                     - kind: ConditionGroup
+                       id: conditionGroup_priorityLoopNeeded
+                       conditions:
+@@ -1247,8 +1259,7 @@
+                                 - kind: SetVariable
+                                   id: setVariable_priorityWaitSnapshot
+                                   variable: Topic.優先度経路診断
+-                                  value: ="subaru-text-20261102-v2|stage=wait|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+-
++                                  value: ="subaru-runtime-20261105-v1|stage=wait|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+                                 - kind: Question
+                                   id: question_priorityUpdate
+                                   interruptionPolicy:
+@@ -1367,12 +1378,13 @@
+                 - kind: SetVariable
+                   id: setVariable_priorityFailedSnapshot
+                   variable: Topic.優先度経路診断
+-                  value: ="subaru-text-20261102-v2|stage=failed|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+-
++                  value: ="subaru-runtime-20261105-v1|stage=failed|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+                 - kind: SendActivity
+                   id: sendActivity_priorityFailed
+-                  activity: 優先度回答の生成結果が空、または指定の出力様式を確認できなかったため、未検証の業務回答の送信を停止しました。報告履歴と実施済み報告を未実施へ変更したものではありません。現場の安全対応は止めず、社内の連絡・緊急対応手順に従ってください。
+-
++                  activity: |-
++                    優先度回答の生成結果が空、または指定の出力様式を確認できなかったため、未検証の業務回答の送信を停止しました。報告履歴と実施済み報告を未実施へ変更したものではありません。現場の安全対応は止めず、社内の連絡・緊急対応手順に従ってください。
++
++                    確認用コード：{Topic.優先度経路診断}
+                 - kind: EndDialog
+                   id: endDialog_priorityFailed
+                   clearTopicQueue: true

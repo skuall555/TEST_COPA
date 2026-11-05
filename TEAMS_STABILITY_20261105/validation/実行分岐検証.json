@@ -1,0 +1,133 @@
+{
+  "scope": "Actual Power Fx parser and YAML retry control flow with scripted model outputs; no tenant/model/SharePoint execution",
+  "package": "Microsoft.PowerFx.Interpreter 1.8.1",
+  "routes": [
+    {
+      "name": "台所でガス臭い",
+      "success": true,
+      "actual": true
+    },
+    {
+      "name": "浴室で臭気あり",
+      "success": true,
+      "actual": true
+    },
+    {
+      "name": "動作確認用のテスト案件です。台所でガス臭い",
+      "success": true,
+      "actual": true
+    },
+    {
+      "name": "複数の家で検知器が反応",
+      "success": true,
+      "actual": true
+    },
+    {
+      "name": "ガス警報が継続",
+      "success": true,
+      "actual": true
+    },
+    {
+      "name": "ガスを止めた",
+      "success": true,
+      "actual": true
+    },
+    {
+      "name": "マニュアル確認:ガス臭気時の基準を確認したい",
+      "success": true,
+      "actual": false
+    },
+    {
+      "name": "マニュアル改訂:ガス漏れ対応の規定を改訂したい",
+      "success": true,
+      "actual": false
+    },
+    {
+      "name": ":台所でガス臭い",
+      "success": true,
+      "actual": false
+    },
+    {
+      "name": "現場対応アドバイス:こんにちは",
+      "success": true,
+      "actual": false
+    },
+    {
+      "name": "現場対応アドバイス:ガス設備の通常点検について相談したい",
+      "success": true,
+      "actual": false
+    }
+  ],
+  "cases": [
+    {
+      "name": "初回合格は再生成しない",
+      "success": true,
+      "modelCalls": 1,
+      "wouldInvokeSave": true,
+      "validation": "合格",
+      "retry": 0,
+      "steps": 157,
+      "errors": []
+    },
+    {
+      "name": "空出力の後に合格",
+      "success": true,
+      "modelCalls": 2,
+      "wouldInvokeSave": true,
+      "validation": "合格",
+      "retry": 1,
+      "steps": 203,
+      "errors": []
+    },
+    {
+      "name": "マーカー破損の後に合格",
+      "success": true,
+      "modelCalls": 2,
+      "wouldInvokeSave": true,
+      "validation": "合格",
+      "retry": 1,
+      "steps": 316,
+      "errors": []
+    },
+    {
+      "name": "区切り不正の後に合格",
+      "success": true,
+      "modelCalls": 2,
+      "wouldInvokeSave": true,
+      "validation": "合格",
+      "retry": 1,
+      "steps": 203,
+      "errors": []
+    },
+    {
+      "name": "2回とも空なら保存へ進まない",
+      "success": true,
+      "modelCalls": 2,
+      "wouldInvokeSave": false,
+      "validation": "不合格:priorityFormatHasContent",
+      "retry": 1,
+      "steps": 89,
+      "errors": []
+    },
+    {
+      "name": "2回とも不正なら保存へ進まない",
+      "success": true,
+      "modelCalls": 2,
+      "wouldInvokeSave": false,
+      "validation": "不合格:itemValidP07",
+      "retry": 1,
+      "steps": 315,
+      "errors": []
+    },
+    {
+      "name": "不正な後に空でも上限は2回",
+      "success": true,
+      "modelCalls": 2,
+      "wouldInvokeSave": false,
+      "validation": "不合格:priorityFormatHasContent",
+      "retry": 1,
+      "steps": 202,
+      "errors": []
+    }
+  ]
+}

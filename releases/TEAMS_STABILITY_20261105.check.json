@@ -1,0 +1,9 @@
+{
+  "files": 20,
+  "bytes": 268386,
+  "sha256": "9edb2b2f8a83e76ee772795d4f2ea71df7eed743985827053790c8506476bac6",
+  "crc": "PASS",
+  "independent_rebuild": "IDENTICAL",
+  "independent_unit_tests": "5 PASS",
+  "kind": "source_bundle_not_solution"
+}

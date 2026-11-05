@@ -1,0 +1,23 @@
+--- 変更前_1.yaml
++++ 1_貼り替え用.yaml
+@@ -229,7 +229,19 @@
+       id: setVariable_normalizeInferredPurpose
+       variable: Topic.目的分野
+       value: =If(Or(Trim(Topic.目的分野) = "現場対応アドバイス", Trim(Topic.目的分野) = "マニュアル確認", Trim(Topic.目的分野) = "マニュアル改訂"), Trim(Topic.目的分野), "")
+-
++    - kind: ConditionGroup
++      id: conditionGroup_runtimeDirectEmergency
++      conditions:
++        - id: conditionGroup_runtimeDirectEmergency_item
++          condition: =And(Topic.目的分野 = "現場対応アドバイス", Or("ガス臭" in Topic.初回入力, "ガス漏" in Topic.初回入力, "ガスが噴" in Topic.初回入力, "ガスを止め" in Topic.初回入力, "ガスが止ま" in Topic.初回入力, "ガスが出" in Topic.初回入力, "臭気" in Topic.初回入力, "臭い" in Topic.初回入力, "におい" in Topic.初回入力, "異臭" in Topic.初回入力, "漏えい" in Topic.初回入力, "漏洩" in Topic.初回入力, "検知" in Topic.初回入力, "警報" in Topic.初回入力, "LEL" in Topic.初回入力, "一酸化炭素" in Topic.初回入力, "CO中毒" in Topic.初回入力, "爆発" in Topic.初回入力, "火災" in Topic.初回入力, "供給支障" in Topic.初回入力, "供給を止め" in Topic.初回入力))
++          actions:
++            - kind: SetVariable
++              id: setVariable_runtimeEmergencyFolder
++              variable: Topic.対象フォルダ
++              value: ="09_緊急保安_共通"
++            - kind: GotoAction
++              id: goto_runtimeDirectEmergency
++              actionId: 64VMOA
+     - kind: ConditionGroup
+       id: conditionGroup_rememberPurposeReply
+       conditions:
