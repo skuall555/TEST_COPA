@@ -1,0 +1,12 @@
+{
+  "baseline_commit": "4fa63fbcfc1ccf39d063276d9999a5ffb3166132",
+  "baseline_sha256": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529",
+  "output_sha256": "cb0c5d505f8dffa99619ac4851451e88802ff6524f9c82eb9c15ab8c2ae7084b",
+  "original_node_bodies_changed": [],
+  "original_node_ids_preserved": 56,
+  "new_nodes": 39,
+  "quality_verification": "NOT_RUN: no live images/model/tenant execution",
+  "latency_measurement": "NOT_RUN: no live tenant timing",
+  "first_image_external_calls": "unchanged: vision + guideline search/generation + judge",
+  "cache_hit_external_calls": "vision + judge; no guideline search/generation"
+}

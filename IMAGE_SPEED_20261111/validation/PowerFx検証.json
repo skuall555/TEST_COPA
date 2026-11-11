@@ -1,0 +1,431 @@
+{
+  "scope": "Native Power Fx and actual YAML control flow with scripted external results; no image-quality or live-latency test",
+  "package": "Microsoft.PowerFx.Interpreter 1.8.1",
+  "checks": [
+    {
+      "id": "setVariable_imageSpeed_start",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_factsInit",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_guideInit",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_judgeInit",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_modeInit",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_cacheEnabled",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_cacheSeconds",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_conversation",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_user",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_channel",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_cacheVersion",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_received",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_unsupported",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_factsStart",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_image",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_factsDuration",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_afterImage",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_guideStart",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_guide",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_imageSpeed_reuseGuide_item",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_reuseBody",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_guideHit",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_guideMiss",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_guideSearch",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "conditionGroup_imageSpeed_storeGuide_item",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_storeBody",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_storeConversation",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_storeUser",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_storeChannel",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_storeVersion",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_storeTime",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_guideDuration",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_afterGuide",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_judgeStart",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_judge",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_judgeDuration",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_afterJudge",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_done",
+      "success": true,
+      "errors": []
+    },
+    {
+      "id": "setVariable_imageSpeed_diagnostic_noFacts",
+      "success": true,
+      "errors": []
+    }
+  ],
+  "runs": [
+    {
+      "name": "初回は3処理・原文を無変更保存",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=12|judgeMs=1|totalMs=60",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "2枚目は要領検索だけ省略",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 0,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=cache|factsMs=1|guideMs=4|judgeMs=1|totalMs=21",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "同じファイル名でも画像事実は毎回再抽出",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 0,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=cache|factsMs=1|guideMs=4|judgeMs=1|totalMs=20",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "期限切れは再検索",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=6|judgeMs=1|totalMs=22",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "時計が逆行したキャッシュは再検索",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=6|judgeMs=1|totalMs=22",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "別会話は再検索",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=6|judgeMs=1|totalMs=22",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "別利用者は再検索",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=6|judgeMs=1|totalMs=22",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "別チャネルは再検索",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=7|judgeMs=1|totalMs=24",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "要領参照版が変われば再検索",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=6|judgeMs=1|totalMs=22",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "会話IDなしでは再利用・保存しない",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": false,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=3|judgeMs=1|totalMs=19",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "利用者IDなしでは再利用・保存しない",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": false,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=3|judgeMs=1|totalMs=19",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "チャネルなしでは再利用・保存しない",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": false,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=3|judgeMs=1|totalMs=19",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "MS-ID不足の取得文は再利用用に保存しない",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": false,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=5|judgeMs=1|totalMs=22",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "撮影要領空は元の判定保留処理",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 0,
+      "cachePresent": false,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=3|judgeMs=0|totalMs=17",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "撮影要領なしは元の判定保留処理",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 0,
+      "cachePresent": false,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=3|judgeMs=0|totalMs=17",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "事実抽出空は検索も判定も行わない",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 0,
+      "visionCalls": 1,
+      "judgeCalls": 0,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=noFacts|guide=notStarted|factsMs=1|guideMs=0|judgeMs=0|totalMs=8",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "非対応画像は外部呼出しなし",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 0,
+      "visionCalls": 0,
+      "judgeCalls": 0,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=unsupported|guide=notStarted|factsMs=0|guideMs=0|judgeMs=0|totalMs=5",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "再利用を無効にすれば元の3処理",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 1,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=search|factsMs=1|guideMs=3|judgeMs=1|totalMs=19",
+      "errors": [],
+      "legacyErrors": []
+    },
+    {
+      "name": "照合が形式不正でも元と同じく措置済みを消す",
+      "success": true,
+      "originalInputsAndResultsIdentical": true,
+      "searchCalls": 0,
+      "visionCalls": 1,
+      "judgeCalls": 1,
+      "cachePresent": true,
+      "diagnostic": "image-speed-20261111-v1|stage=done|guide=cache|factsMs=1|guideMs=4|judgeMs=1|totalMs=21",
+      "errors": [],
+      "legacyErrors": []
+    }
+  ]
+}

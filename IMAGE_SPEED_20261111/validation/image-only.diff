@@ -1,0 +1,298 @@
+--- 4fa63fb/4-9
++++ image-speed/4-9
+@@ -26,7 +26,54 @@
+       id: setVariable_debugMode
+       variable: Topic.デバッグ表示
+       value: =false
+-
++    - kind: SetVariable
++      id: setVariable_imageSpeed_start
++      variable: Topic.画像処理計測開始
++      value: =Now()
++    - kind: SetVariable
++      id: setVariable_imageSpeed_factsInit
++      variable: Topic.画像事実処理ms
++      value: =0
++    - kind: SetVariable
++      id: setVariable_imageSpeed_guideInit
++      variable: Topic.撮影要領処理ms
++      value: =0
++    - kind: SetVariable
++      id: setVariable_imageSpeed_judgeInit
++      variable: Topic.照合判定処理ms
++      value: =0
++    - kind: SetVariable
++      id: setVariable_imageSpeed_modeInit
++      variable: Topic.撮影要領取得経路
++      value: ="notStarted"
++    - kind: SetVariable
++      id: setVariable_imageSpeed_cacheEnabled
++      variable: Topic.撮影要領再利用
++      value: =true
++    - kind: SetVariable
++      id: setVariable_imageSpeed_cacheSeconds
++      variable: Topic.撮影要領再利用秒数
++      value: =300
++    - kind: SetVariable
++      id: setVariable_imageSpeed_conversation
++      variable: Topic.画像要領会話ID
++      value: =Text(System.Conversation.Id)
++    - kind: SetVariable
++      id: setVariable_imageSpeed_user
++      variable: Topic.画像要領利用者ID
++      value: =Text(System.User.Id)
++    - kind: SetVariable
++      id: setVariable_imageSpeed_channel
++      variable: Topic.画像要領チャネル
++      value: =Lower(Text(System.Activity.ChannelId))
++    - kind: SetVariable
++      id: setVariable_imageSpeed_cacheVersion
++      variable: Topic.画像要領キャッシュ版
++      value: ="photo-guide-20261111-v1|cr88f_SUBARU_search.file._.pdf_Ten"
++    - kind: SetVariable
++      id: setVariable_imageSpeed_diagnostic_received
++      variable: Global.画像分析最新診断
++      value: ="image-speed-20261111-v1|stage=received" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+     - kind: SetVariable
+       id: setVariable_imageFeature01
+       variable: Topic.特徴_火気厳禁表示シート
+@@ -285,6 +332,10 @@
+         - id: conditionItem_unsupportedImageType
+           condition: =Not(Topic.画像形式対応)
+           actions:
++            - kind: SetVariable
++              id: setVariable_imageSpeed_diagnostic_unsupported
++              variable: Global.画像分析最新診断
++              value: ="image-speed-20261111-v1|stage=unsupported" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+             - kind: SendActivity
+               id: sendActivity_unsupportedImageType
+               activity: |-
+@@ -298,23 +349,35 @@
+                 スクリーンショットの貼り付けや、HEIC・WebP・GIF などは判別できないことがあります。
+                 お手数ですが、PNG または JPEG のファイルとして保存し直してから送信してください。
+                 対応状況を文章で入力していただいても構いません。
+-
+             - kind: EndDialog
+               id: endDialog_unsupportedImageType
+ 
++    - kind: SetVariable
++      id: setVariable_imageSpeed_factsStart
++      variable: Topic.画像事実計測開始
++      value: =Now()
++    - kind: SetVariable
++      id: setVariable_imageSpeed_diagnostic_image
++      variable: Global.画像分析最新診断
++      value: ="image-speed-20261111-v1|stage=image" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+     - kind: InvokeAIBuilderModelAction
+       id: invokeAIBuilderModelAction_imageFacts
+       input:
+         binding:
+           ContextText: =Topic.第1段プロンプト & Char(10) & Char(10) & "【画像と同時に入力されたテキスト】" & Char(10) & If(IsBlank(Topic.画像同時テキスト), "なし", Topic.画像同時テキスト)
+           ImageInput: =First(System.Activity.Attachments).Content
+-
+       output:
+         binding:
+           predictionOutput: Topic.画像分析出力
+-
+       aIModelId: f51d9827-d7f9-4e75-8b7e-7f8532093578
+-
++    - kind: SetVariable
++      id: setVariable_imageSpeed_factsDuration
++      variable: Topic.画像事実処理ms
++      value: =DateDiff(Topic.画像事実計測開始, Now(), TimeUnit.Milliseconds)
++    - kind: SetVariable
++      id: setVariable_imageSpeed_diagnostic_afterImage
++      variable: Global.画像分析最新診断
++      value: ="image-speed-20261111-v1|stage=afterImage" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+     - kind: ConditionGroup
+       id: conditionGroup_imagePromptConnected
+       conditions:
+@@ -358,31 +421,100 @@
+                         AI Builder のプロンプトが ContextText を使っていない可能性があります。
+                         AI Builder 側のプロンプト本文で、入力 ContextText を参照するようにしてください。
+ 
+-            - kind: SearchAndSummarizeContent
+-              id: search_photoGuidelineRetrieve
+-              displayName: 02A_撮影要領の取得
+-              autoSend: false
+-              variable: Topic.撮影要領本文
+-              userInput: ="撮影要領_初動措置に定義された撮影項目 MS-001〜MS-018 の全文。各IDの撮影対象・必須視認要素・設置場所の条件・判定基準・撮り直し条件。"
+-              additionalInstructions: |-
+-                ="撮影要領_初動措置.pdf の内容を、要約・解釈・自分の意見を加えず、できるだけ原文に近い形でそのまま提示してください。
+-                これは判定作業ではありません。判定・適合可否・撮り直し指示はここでは一切行わないでください。
+-
+-                # 必ず含めること（漏れなく、原文相当で）
+-                ・MS-001〜MS-018 の各IDについて、撮影対象・必須視認要素・設置場所の条件
+-                ・ポケット警報器の設置場所として求められる箇所の記述（ガスが滞留・流入しやすい箇所）
+-                ・撮り直しが必要になる条件
+-
+-                # 出力
+-                （上記を原文相当のまま記載。前置き・総括・引用番号は付けない）"
+-              fileSearchDataSource:
+-                searchFilesMode:
+-                  kind: SearchSpecificFiles
+-                  files:
+-                    - cr88f_SUBARU_search.file._.pdf_Ten
+-              knowledgeSources:
+-                kind: SearchSpecificKnowledgeSources
+-              applyModelKnowledgeSetting: false
++            - kind: SetVariable
++              id: setVariable_imageSpeed_guideStart
++              variable: Topic.撮影要領計測開始
++              value: =Now()
++            - kind: SetVariable
++              id: setVariable_imageSpeed_diagnostic_guide
++              variable: Global.画像分析最新診断
++              value: ="image-speed-20261111-v1|stage=guide" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
++            - kind: ConditionGroup
++              id: conditionGroup_imageSpeed_reuseGuide
++              conditions:
++                - id: conditionGroup_imageSpeed_reuseGuide_item
++                  condition: =And(Topic.撮影要領再利用, Not(IsBlank(Topic.画像要領会話ID)), Not(IsBlank(Topic.画像要領利用者ID)), Not(IsBlank(Topic.画像要領チャネル)), Global.画像要領キャッシュ会話ID = Topic.画像要領会話ID, Global.画像要領キャッシュ利用者ID = Topic.画像要領利用者ID, Global.画像要領キャッシュチャネル = Topic.画像要領チャネル, Global.画像要領キャッシュ版 = Topic.画像要領キャッシュ版, Not(IsBlank(Global.画像要領キャッシュ取得時刻)), DateDiff(Global.画像要領キャッシュ取得時刻, Now(), TimeUnit.Seconds) >= 0, DateDiff(Global.画像要領キャッシュ取得時刻, Now(), TimeUnit.Seconds) < Topic.撮影要領再利用秒数, Not(IsBlank(Global.画像要領キャッシュ本文)), CountIf(Sequence(18), Not(("MS-" & Text(Value, "000")) in Global.画像要領キャッシュ本文)) = 0)
++                  actions:
++                    - kind: SetVariable
++                      id: setVariable_imageSpeed_reuseBody
++                      variable: Topic.撮影要領本文
++                      value: =Global.画像要領キャッシュ本文
++                    - kind: SetVariable
++                      id: setVariable_imageSpeed_guideHit
++                      variable: Topic.撮影要領取得経路
++                      value: ="cache"
++              elseActions:
++                - kind: SetVariable
++                  id: setVariable_imageSpeed_guideMiss
++                  variable: Topic.撮影要領取得経路
++                  value: ="search"
++                - kind: SetVariable
++                  id: setVariable_imageSpeed_diagnostic_guideSearch
++                  variable: Global.画像分析最新診断
++                  value: ="image-speed-20261111-v1|stage=guideSearch" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
++                - kind: SearchAndSummarizeContent
++                  id: search_photoGuidelineRetrieve
++                  displayName: 02A_撮影要領の取得
++                  autoSend: false
++                  variable: Topic.撮影要領本文
++                  userInput: ="撮影要領_初動措置に定義された撮影項目 MS-001〜MS-018 の全文。各IDの撮影対象・必須視認要素・設置場所の条件・判定基準・撮り直し条件。"
++                  additionalInstructions: |-
++                    ="撮影要領_初動措置.pdf の内容を、要約・解釈・自分の意見を加えず、できるだけ原文に近い形でそのまま提示してください。
++                    これは判定作業ではありません。判定・適合可否・撮り直し指示はここでは一切行わないでください。
++
++                    # 必ず含めること（漏れなく、原文相当で）
++                    ・MS-001〜MS-018 の各IDについて、撮影対象・必須視認要素・設置場所の条件
++                    ・ポケット警報器の設置場所として求められる箇所の記述（ガスが滞留・流入しやすい箇所）
++                    ・撮り直しが必要になる条件
++
++                    # 出力
++                    （上記を原文相当のまま記載。前置き・総括・引用番号は付けない）"
++                  fileSearchDataSource:
++                    searchFilesMode:
++                      kind: SearchSpecificFiles
++                      files:
++                        - cr88f_SUBARU_search.file._.pdf_Ten
++                  knowledgeSources:
++                    kind: SearchSpecificKnowledgeSources
++                  applyModelKnowledgeSetting: false
++                - kind: ConditionGroup
++                  id: conditionGroup_imageSpeed_storeGuide
++                  conditions:
++                    - id: conditionGroup_imageSpeed_storeGuide_item
++                      condition: =And(Topic.撮影要領再利用, Not(IsBlank(Topic.画像要領会話ID)), Not(IsBlank(Topic.画像要領利用者ID)), Not(IsBlank(Topic.画像要領チャネル)), Not(IsBlank(Topic.撮影要領本文)), Trim(Topic.撮影要領本文) <> "なし", CountIf(Sequence(18), Not(("MS-" & Text(Value, "000")) in Topic.撮影要領本文)) = 0)
++                      actions:
++                        - kind: SetVariable
++                          id: setVariable_imageSpeed_storeBody
++                          variable: Global.画像要領キャッシュ本文
++                          value: =Topic.撮影要領本文
++                        - kind: SetVariable
++                          id: setVariable_imageSpeed_storeConversation
++                          variable: Global.画像要領キャッシュ会話ID
++                          value: =Topic.画像要領会話ID
++                        - kind: SetVariable
++                          id: setVariable_imageSpeed_storeUser
++                          variable: Global.画像要領キャッシュ利用者ID
++                          value: =Topic.画像要領利用者ID
++                        - kind: SetVariable
++                          id: setVariable_imageSpeed_storeChannel
++                          variable: Global.画像要領キャッシュチャネル
++                          value: =Topic.画像要領チャネル
++                        - kind: SetVariable
++                          id: setVariable_imageSpeed_storeVersion
++                          variable: Global.画像要領キャッシュ版
++                          value: =Topic.画像要領キャッシュ版
++                        - kind: SetVariable
++                          id: setVariable_imageSpeed_storeTime
++                          variable: Global.画像要領キャッシュ取得時刻
++                          value: =Now()
++            - kind: SetVariable
++              id: setVariable_imageSpeed_guideDuration
++              variable: Topic.撮影要領処理ms
++              value: =DateDiff(Topic.撮影要領計測開始, Now(), TimeUnit.Milliseconds)
++            - kind: SetVariable
++              id: setVariable_imageSpeed_diagnostic_afterGuide
++              variable: Global.画像分析最新診断
++              value: ="image-speed-20261111-v1|stage=afterGuide" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+             - kind: ConditionGroup
+               id: conditionGroup_photoGuideUnavailable
+               conditions:
+@@ -396,6 +528,14 @@
+                     - kind: GotoAction
+                       id: goto_photoGuideUnavailableSections
+                       actionId: setVariable_sectionExtra
++            - kind: SetVariable
++              id: setVariable_imageSpeed_judgeStart
++              variable: Topic.照合判定計測開始
++              value: =Now()
++            - kind: SetVariable
++              id: setVariable_imageSpeed_diagnostic_judge
++              variable: Global.画像分析最新診断
++              value: ="image-speed-20261111-v1|stage=judge" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+             - kind: AnswerQuestionWithAI
+               id: answer_photoGuidelineJudge
+               displayName: 02B_撮影要領との照合判定
+@@ -409,6 +549,14 @@
+                 それ以外（前置き・総括・引用番号・URL）は一切出力しないでください。
+                 撮影要領本文が空・なし・不足、該当MS-IDの条件が取得できない場合、そのIDは措置済みにしない。画像事実は追加情報へ残し、該当条件の不足を要確認へ記載する。機器が似ているだけでは機器同定済みとしない。ユーザーの同時テキストは画像で確認した事実と区別する。
+                 ポケット警報器と可燃性ガス検知器は機器ごとに区別する。先端の筒・プローブを向ける手持ち検査をポケット警報器設置へ取り違えない。未知の箱が置かれているだけでは警報器と確定しない。
++            - kind: SetVariable
++              id: setVariable_imageSpeed_judgeDuration
++              variable: Topic.照合判定処理ms
++              value: =DateDiff(Topic.照合判定計測開始, Now(), TimeUnit.Milliseconds)
++            - kind: SetVariable
++              id: setVariable_imageSpeed_diagnostic_afterJudge
++              variable: Global.画像分析最新診断
++              value: ="image-speed-20261111-v1|stage=afterJudge" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+             - kind: ConditionGroup
+               id: conditionGroup_debugStage2
+               conditions:
+@@ -505,6 +653,10 @@
+               variable: Global.緊急保安画像受付中
+               value: =true
+ 
++            - kind: SetVariable
++              id: setVariable_imageSpeed_diagnostic_done
++              variable: Global.画像分析最新診断
++              value: ="image-speed-20261111-v1|stage=done" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+             - kind: SendActivity
+               id: sendActivity_analysisResult
+               activity: |-
+@@ -520,17 +672,19 @@
+                 {If(Topic.要確認部 = "", "・なし", Topic.要確認部)}
+ 
+                 {If(IsBlank(Global.緊急保安初回入力), "内容は現場情報として記録しました。", "この内容を初動措置の判定へ反映します。続けて何か一言（例：「反映」）を送ってください。別の写真を続けて送っていただいても構いません。")}
+-
+             - kind: EndDialog
+               id: endDialog_afterRestartEmergency
+ 
+       elseActions:
++        - kind: SetVariable
++          id: setVariable_imageSpeed_diagnostic_noFacts
++          variable: Global.画像分析最新診断
++          value: ="image-speed-20261111-v1|stage=noFacts" & "|guide=" & Topic.撮影要領取得経路 & "|factsMs=" & Text(Topic.画像事実処理ms, "0") & "|guideMs=" & Text(Topic.撮影要領処理ms, "0") & "|judgeMs=" & Text(Topic.照合判定処理ms, "0") & "|totalMs=" & Text(DateDiff(Topic.画像処理計測開始, Now(), TimeUnit.Milliseconds), "0")
+         - kind: SendActivity
+           id: sendActivity_promptNotConnected
+           activity: |-
+             画像自体は受信できていますが、画像分析Promptがまだ接続されていません。
+             「緊急保安_現場画像事実抽出」Promptノードをこのトピック内の指定位置に追加してください。
+-
+         - kind: SetVariable
+           id: setVariable_imageReceptionBackOn
+           variable: Global.緊急保安画像受付中

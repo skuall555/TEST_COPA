@@ -1,0 +1,22 @@
+{
+  "baseline": "4fa63fbcfc1ccf39d063276d9999a5ffb3166132",
+  "scope": "image topic only; original 56 action bodies preserved",
+  "structure_tests": {
+    "passed": 6,
+    "failed": 0
+  },
+  "native_powerfx_checks": {
+    "passed": 39,
+    "failed": 0
+  },
+  "native_scenarios": {
+    "passed": 19,
+    "failed": 0
+  },
+  "test_method": "Actual Power Fx evaluation and YAML control flow with scripted external AI responses. Differential comparison of original inputs and existing output/history variables.",
+  "tenant_import": "NOT_RUN",
+  "real_image_quality": "NOT_RUN",
+  "live_latency": "NOT_RUN",
+  "live_environment_changed": false,
+  "known_limit": "First image still makes all three external calls; only a valid short-lived cached guideline skips search/generation on later images."
+}
