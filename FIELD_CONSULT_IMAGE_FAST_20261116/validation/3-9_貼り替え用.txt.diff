@@ -1,0 +1,892 @@
+--- before/3-9_貼り替え用.txt
++++ after/3-9_貼り替え用.txt
+@@ -1,5 +1,5 @@
+ kind: AdaptiveDialog
+-modelDescription: |-
++modelDescription: |
+   巡回トピックから「現場対応アドバイス」かつ「09_緊急保安_共通」の場合に引き継がれる専門トピック。
+   固定化した初動措置AI優先度判断ルールを根拠に、初動措置の優先度（高中低）を判定し、
+   高優先度の措置が全て対応済みになるまで状況確認を繰り返す。
+@@ -10,6 +10,8 @@
+   画像トピックはGlobal履歴へ追記して終了し、本トピックは質問復帰後に履歴を再同期する。
+   画像トピックからBeginDialogで本トピックを呼び直さず、2枚目以降の割り込みを維持する。
+   撮影要領に沿った写真がある措置は「対応済み」として扱う。
++    現場対応中の相談・質問はトピックを終了させず、必要時だけWord原本を検索し、ユーザー回答と優先度表示を同時に返す。
++    進捗報告だけのときはユーザー回答を「ー」とする。相談文は優先度を変える現場事実として扱わない。
+ beginDialog:
+   kind: OnRedirect
+   id: main
+@@ -18,12 +20,10 @@
+       id: setVariable_priorityRetryCount
+       variable: Topic.優先度確認再試行回数
+       value: =0
+-
+     - kind: SetVariable
+       id: setVariable_repairModeInit
+       variable: Topic.修理方法モード
+       value: =false
+-
+     - kind: ConditionGroup
+       id: conditionGroup_repairRequestedAtStart
+       conditions:
+@@ -34,26 +34,25 @@
+               id: setVariable_repairModeOnAtStart
+               variable: Topic.修理方法モード
+               value: =true
+-
+             - kind: GotoAction
+               id: goto_repairSelectAtStart
+               actionId: setVariable_repairSelectInit
+-
+     - kind: SetVariable
+       id: setVariable_syncEmergencyInitialToGlobal
+       variable: Global.緊急保安初回入力
+       value: =Topic.初回入力
+-
+     - kind: SetVariable
+       id: setVariable_syncEmergencyHistoryToGlobal
+       variable: Global.緊急保安追加情報履歴
+       value: =Topic.追加情報履歴
+-
+     - kind: SetVariable
+       id: setVariable_imageReceptionOffAtStart
+       variable: Global.緊急保安画像受付中
+       value: =false
+-
++    - kind: SetVariable
++      id: setVariable_latestUserInputAtStart
++      variable: Topic.最新利用者入力
++      value: =Topic.初回入力
+     - kind: SetVariable
+       id: setVariable_priorityGuideRetrievePrompt
+       variable: Topic.優先度ガイド取得プロンプト
+@@ -68,7 +67,6 @@
+ 
+         # 出力フォーマット
+         （上記項目の内容を原文相当のままここに記載）"
+-
+     - kind: SetVariable
+       id: setVariable_priorityGuideFixed
+       variable: Topic.優先度ガイド取得結果
+@@ -127,6 +125,36 @@
+           condition: =!IsBlank(Topic.優先度ガイド取得結果)
+           actions:
+             - kind: SetVariable
++              id: setVariable_userConsultSourceReset
++              variable: Topic.ユーザー相談根拠
++              value: ="なし"
++            - kind: SetVariable
++              id: setVariable_userConsultSignal
++              variable: Topic.ユーザー相談あり
++              value: '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
++            - kind: ConditionGroup
++              id: conditionGroup_userConsultSearch
++              conditions:
++                - id: conditionGroup_userConsultSearch_item
++                  condition: =Topic.ユーザー相談あり
++                  actions:
++                    - kind: SearchAndSummarizeContent
++                      id: search_userConsultManual
++                      displayName: 11A_現場相談の根拠取得
++                      autoSend: false
++                      variable: Topic.ユーザー相談根拠
++                      userInput: =Topic.最新利用者入力 & Char(10) & "現場の既報：" & Topic.初回入力 & Char(10) & Topic.追加情報履歴
++                      additionalInstructions: 検索できた原文を、質問への回答に直接必要な箇所だけ、文書名・見出しとともに原文に近い形で提示してください。一般知識で補完しないでください。現場事実や優先度を作らないでください。質問と直接関係する根拠がない場合は「なし」とだけ出力してください。
++                      fileSearchDataSource:
++                        searchFilesMode:
++                          kind: DoNotSearchFiles
++                      knowledgeSources:
++                        kind: SearchSpecificKnowledgeSources
++                        knowledgeSources:
++                          - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
++                          - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
++                      applyModelKnowledgeSetting: false
++            - kind: SetVariable
+               id: setVariable_priorityPrompt
+               variable: Topic.優先度判定プロンプト
+               value: |-
+@@ -137,12 +165,19 @@
+                 " & Topic.初回入力 & "
+                 【追加報告・画像結果】
+                 " & Topic.追加情報履歴 & "
++                【今回の最新入力】
++                " & Topic.最新利用者入力 & "
++                【今回の入力に質問・相談の表現があるか】
++                " & If(Topic.ユーザー相談あり, "あり", "なし") & "
++                【質問・相談に回答するため取得したマニュアル原文】
++                " & Topic.ユーザー相談根拠 & "
+                 最新の明示報告を優先する。以前のAIの優先度・状態は事実ではない。ユーザーの操作・設置・調査の実施事実を取り消さず、対象と効果・未調査範囲を分ける。
+                 履歴の写真有の実施措置は確認された範囲で対応済みとし、要確認項目は必要な次行動・確認文に反映する。画像を参照できない場合は見たふりをせず、写らないことだけで未実施にしない。初報の通常臭気だけならP11・P12低。具体的危険や既往の高はガイドの条件で判断する。
+                 # 今回の内部出力契約（従来の見出し指定より優先）
+                 ユーザー用の高・中・低の見出しをあなたが作文しない。措置ごとに一つの優先度・実施状況・根拠を返し、YAMLがその優先度だけを使って表示欄を決める。
+-                FACTS・EMERGENCY・P01〜P13・NEXT・CHECKを各1回、順番どおり出力する。P14〜P23は今回必要な項目だけ各1回、P13とNEXTの間に出力し、不要ならブロック自体を省略する。コードブロック、前置き、見出し、追加マーカーは禁止。本文には区切り文字の半角縦棒|や[[、]]、【、】を含めない。行内の情報を勝手に省略せず、入力事実以外は作らない。
++                ANSWER・FACTS・EMERGENCY・P01〜P13・NEXT・CHECKを各1回、順番どおり出力する。P14〜P23は今回必要な項目だけ各1回、P13とNEXTの間に出力し、不要ならブロック自体を省略する。コードブロック、前置き、見出し、追加マーカーは禁止。本文には区切り文字の半角縦棒|や[[、]]、【、】を含めない。行内の情報を勝手に省略せず、入力事実以外は作らない。
+                 EMERGENCYの判定語は高または通常だけ。必ず語の直後に半角の縦棒|を1つ入れ、「通常|理由」または「高|理由」の形式にする。
++                [[ANSWER]]質問・相談への回答。質問・相談が無い場合はー。回答がある場合は└から始める[[/ANSWER]]
+                 [[FACTS]]確認できた事実を└から始まる行で記載[[/FACTS]]
+                 [[EMERGENCY]]判定語|理由[[/EMERGENCY]]
+                 [[P01]]優先度|実施状況|対象事実とこの措置の成立条件[[/P01]]
+@@ -161,7 +196,7 @@
+                 [[NEXT]]必要な次の行動を└から始まる行で記載[[/NEXT]]
+                 [[CHECK]]判断に必要な情報と理由を、利用者への自然な文章で記載[[/CHECK]]
+ 
+-                上の行は値を固定しないひな形。「優先度」「実施状況」等の文字を残さず、各措置の適用条件と報告された状態に応じて値を置き換える。全項目を同じ優先度・状態に初期化しない。優先度は高／中／低、状態は対応済み／未実施／要確認の一つずつ。P14〜P23は不要ならブロックを省略する。旧形式の対象外|対象外も受理する。必要なP23等を省略しない。未知の設備や未確認の実施状況はないと決めつけない。根拠は必須。根拠に「高と判断」等と書く場合は優先度も高にする。
++                上の行は値を固定しないひな形。「優先度」「実施状況」等の文字を残さず、各措置の適用条件と報告された状態に応じて値を置き換える。全項目を同じ優先度・状態に初期化しない。優先度は高／中／低、状態は対応済み／対応済み【!】／未実施／要確認の一つずつ。P14〜P23は不要ならブロックを省略する。旧形式の対象外|対象外も受理する。必要なP23等を省略しない。未知の設備や未確認の実施状況はないと決めつけない。根拠は必須。根拠に「高と判断」等と書く場合は優先度も高にする。
+                 EMERGENCYはE-01／E-02・広範囲拡散・遮断排出不能などにより避難と消防警察の両方を高とする場合に高、それ以外を通常とする。高ならYAMLがP11・P12を高に統一する。通常は両措置が不要・低という意味ではなく、それぞれのガイド条件で判断する。
+                 措置コードと名称：
+                 P01：火気使用禁止の徹底
+@@ -188,6 +223,12 @@
+                 P22：追加対象の供給遮断（必要時のみ。不要なら対象外）
+                 P23：圧力・供給支障の確認と調査（必要時のみ。不要なら対象外）
+ 
++                # ユーザーへの回答
++                今回の最新入力が進捗報告だけならANSWERは必ず「ー」。質問・相談が含まれる場合だけ、取得したマニュアル原文または固定ガイドに直接根拠がある範囲で短く回答する。根拠が取得できない場合は、その旨をANSWERで伝え、推測で回答しない。現場対応と無関係な質問には、現場アドバイザーの対象外であることと、進捗報告は継続できることを伝える。ANSWERの内容をFACTSや優先度の根拠に流用しない。質問文を実施済み・未実施の報告とみなさない。
++
++                # 写真の警告付き対応済み
++                画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。
++
+                 # 実施済みと範囲・効果
+                 排水口や玄関隙間等の検知結果があれば、その場所のP05は対応済み。全域が未確認という理由で既に行った調査を未実施へ戻さない。残る調査はP20に対象場所を明記して別に示す。P10も実際の調査範囲だけを対応済みとし、必要な追加範囲はP21へ示す。メーター閉止済みは対象を明記してP07で保持し、別の部屋・設備への追加遮断はP22で示す。
+                 画像に写っていないことは未実施の証拠ではない。明確なユーザー報告を画像の不鮮明さで取り消さず、実施状況不明なら要確認と明示する。設置済みの写真や報告の対象範囲を勝手に他室へ広げない。
+@@ -219,7 +260,7 @@
+               autoSend: false
+               variable: Topic.優先度判定結果
+               userInput: =Topic.優先度判定プロンプト
+-              additionalInstructions: 固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。
++              additionalInstructions: 固定ガイド、報告された現場事実、取得したマニュアル原文だけで処理する。内部ブロック形式でANSWERから順に返し、外部検索や前置き、ユーザー用見出しの直接出力はしない。進捗報告だけならANSWERはー。質問・相談には根拠の範囲で回答し、根拠なしでも処理全体を停止しない。ANSWERや質問文を優先度の事実に混ぜない。画像の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。
+             - kind: SetVariable
+               id: setVariable_priorityAfterAISnapshot
+               variable: Topic.優先度経路診断
+@@ -323,7 +364,27 @@
+             - kind: SetVariable
+               id: setVariable_priorityFormatEnvelope
+               variable: Topic.優先度表示検証
+-              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(StartsWith(Trim(Topic.優先度表示原文), "[[FACTS]]"), EndsWith(Trim(Topic.優先度表示原文), "[[/CHECK]]"), Not(Char(30) in Topic.優先度表示原文)), "合格", "不合格:priorityFormatEnvelope"))
++              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(StartsWith(Trim(Topic.優先度表示原文), "[[ANSWER]]"), EndsWith(Trim(Topic.優先度表示原文), "[[/CHECK]]"), Not(Char(30) in Topic.優先度表示原文)), "合格", "不合格:priorityFormatEnvelope"))
++            - kind: SetVariable
++              id: setVariable_itemSectionANSWER
++              variable: Topic.優先度表示区分
++              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[ANSWER]]")).Value, "[[/ANSWER]]")).Value
++            - kind: SetVariable
++              id: setVariable_itemUniqueANSWER
++              variable: Topic.優先度表示検証
++              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(CountRows(Split(Topic.優先度表示原文, "[[ANSWER]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/ANSWER]]")) = 2), "合格", "不合格:itemUniqueANSWER"))
++            - kind: SetVariable
++              id: setVariable_itemRemoveANSWER
++              variable: Topic.判定残余
++              value: =Substitute(Topic.判定残余, "[[ANSWER]]" & Topic.優先度表示区分 & "[[/ANSWER]]", "")
++            - kind: SetVariable
++              id: setVariable_itemBodyANSWER
++              variable: Topic.判定ユーザー回答
++              value: '=With({bodyText: Trim(Substitute(Substitute(Topic.優先度表示区分, "【", "（"), "】", "）"))}, If(bodyText = "ー", "ー", Substitute(Substitute(If(StartsWith(bodyText, "・"), "└" & Mid(bodyText, 2), If(StartsWith(bodyText, "- "), "└" & Mid(bodyText, 3), If(StartsWith(bodyText, "└"), bodyText, "└" & bodyText))), Char(10) & "・", Char(10) & "└"), Char(10) & "- ", Char(10) & "└")))'
++            - kind: SetVariable
++              id: setVariable_itemBodyValidANSWER
++              variable: Topic.優先度表示検証
++              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(Len(Topic.判定ユーザー回答) > 0, Not("[[" in Topic.判定ユーザー回答), Or(Topic.判定ユーザー回答 = "ー", StartsWith(Topic.判定ユーザー回答, "└"))), "合格", "不合格:itemBodyValidANSWER"))
+             - kind: SetVariable
+               id: setVariable_itemSectionFACTS
+               variable: Topic.優先度表示区分
+@@ -432,7 +493,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP01
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P01]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P01]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP01"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P01]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P01]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP01"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP01
+               variable: Topic.判定表示行
+@@ -448,7 +509,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP02
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P02]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P02]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP02"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P02]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P02]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP02"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP02
+               variable: Topic.判定表示行
+@@ -464,7 +525,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP03
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P03]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P03]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP03"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P03]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P03]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP03"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP03
+               variable: Topic.判定表示行
+@@ -480,7 +541,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP04
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P04]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P04]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP04"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P04]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P04]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP04"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP04
+               variable: Topic.判定表示行
+@@ -496,7 +557,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP05
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P05]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P05]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP05"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P05]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P05]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP05"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP05
+               variable: Topic.判定表示行
+@@ -512,7 +573,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP06
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P06]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P06]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP06"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P06]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P06]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP06"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP06
+               variable: Topic.判定表示行
+@@ -528,7 +589,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP07
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P07]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P07]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP07"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P07]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P07]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP07"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP07
+               variable: Topic.判定表示行
+@@ -544,7 +605,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP08
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P08]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P08]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP08"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P08]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P08]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP08"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP08
+               variable: Topic.判定表示行
+@@ -560,7 +621,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP09
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P09]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P09]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP09"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P09]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P09]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP09"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP09
+               variable: Topic.判定表示行
+@@ -576,7 +637,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP10
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P10]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P10]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP10"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P10]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P10]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP10"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP10
+               variable: Topic.判定表示行
+@@ -592,7 +653,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP11
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P11]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P11]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP11"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P11]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P11]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP11"))'
+             - kind: SetVariable
+               id: setVariable_itemStoreStatusP11
+               variable: Topic.判定要請状態
+@@ -616,7 +677,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP12
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P12]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P12]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP12"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P12]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P12]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP12"))'
+             - kind: SetVariable
+               id: setVariable_itemStoreStatusP12
+               variable: Topic.判定避難状態
+@@ -636,7 +697,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP13
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P13]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P13]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP13"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P13]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P13]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP13"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP13
+               variable: Topic.判定表示行
+@@ -652,7 +713,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP14
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P14]]" in Topic.優先度表示原文), Not("[[/P14]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P14]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P14]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP14"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P14]]" in Topic.優先度表示原文), Not("[[/P14]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P14]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P14]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP14"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP14
+               variable: Topic.判定表示行
+@@ -668,7 +729,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP15
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P15]]" in Topic.優先度表示原文), Not("[[/P15]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P15]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P15]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP15"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P15]]" in Topic.優先度表示原文), Not("[[/P15]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P15]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P15]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP15"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP15
+               variable: Topic.判定表示行
+@@ -684,7 +745,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP16
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P16]]" in Topic.優先度表示原文), Not("[[/P16]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P16]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P16]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP16"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P16]]" in Topic.優先度表示原文), Not("[[/P16]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P16]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P16]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP16"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP16
+               variable: Topic.判定表示行
+@@ -700,7 +761,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP17
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P17]]" in Topic.優先度表示原文), Not("[[/P17]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P17]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P17]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP17"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P17]]" in Topic.優先度表示原文), Not("[[/P17]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P17]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P17]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP17"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP17
+               variable: Topic.判定表示行
+@@ -716,7 +777,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP18
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P18]]" in Topic.優先度表示原文), Not("[[/P18]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P18]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P18]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP18"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P18]]" in Topic.優先度表示原文), Not("[[/P18]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P18]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P18]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP18"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP18
+               variable: Topic.判定表示行
+@@ -732,7 +793,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP19
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P19]]" in Topic.優先度表示原文), Not("[[/P19]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P19]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P19]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP19"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P19]]" in Topic.優先度表示原文), Not("[[/P19]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P19]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P19]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP19"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP19
+               variable: Topic.判定表示行
+@@ -748,7 +809,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP20
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P20]]" in Topic.優先度表示原文), Not("[[/P20]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P20]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P20]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP20"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P20]]" in Topic.優先度表示原文), Not("[[/P20]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P20]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P20]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP20"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP20
+               variable: Topic.判定表示行
+@@ -764,7 +825,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP21
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P21]]" in Topic.優先度表示原文), Not("[[/P21]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P21]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P21]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP21"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P21]]" in Topic.優先度表示原文), Not("[[/P21]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P21]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P21]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP21"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP21
+               variable: Topic.判定表示行
+@@ -780,7 +841,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP22
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P22]]" in Topic.優先度表示原文), Not("[[/P22]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P22]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P22]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP22"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P22]]" in Topic.優先度表示原文), Not("[[/P22]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P22]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P22]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP22"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP22
+               variable: Topic.判定表示行
+@@ -796,7 +857,7 @@
+             - kind: SetVariable
+               id: setVariable_itemValidP23
+               variable: Topic.優先度表示検証
+-              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P23]]" in Topic.優先度表示原文), Not("[[/P23]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P23]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P23]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP23"))'
++              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P23]]" in Topic.優先度表示原文), Not("[[/P23]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P23]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P23]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP23"))'
+             - kind: SetVariable
+               id: setVariable_itemLineP23
+               variable: Topic.判定表示行
+@@ -833,7 +894,7 @@
+               id: setVariable_itemRender
+               variable: Topic.優先度表示組立
+               value: |-
+-                ="【確認できた事実】
++                ="【ユーザーへの回答】" & Char(10) & Topic.判定ユーザー回答 & Char(10) & Char(10) & "【確認できた事実】
+                 " & Topic.判定事実 & "
+ 
+                 【初動措置　優先度：高】
+@@ -958,6 +1019,10 @@
+                                   id: setVariable_resyncHistoryFromGlobal
+                                   variable: Topic.追加情報履歴
+                                   value: =Global.緊急保安追加情報履歴
++                                - kind: SetVariable
++                                  id: setVariable_latestUserInputAfterWait
++                                  variable: Topic.最新利用者入力
++                                  value: =Topic.優先度追加回答
+                                 - kind: ConditionGroup
+                                   id: conditionGroup_repairRequestedInPriority
+                                   conditions:
+@@ -979,51 +1044,34 @@
+                                         - kind: GotoAction
+                                           id: goto_repairSelect
+                                           actionId: setVariable_repairSelectInit
++                                - kind: SetVariable
++                                  id: setVariable_appendPriorityHistory
++                                  variable: Topic.追加情報履歴
++                                  value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
++                                - kind: SetVariable
++                                  id: setVariable_syncHistoryAfterText
++                                  variable: Global.緊急保安追加情報履歴
++                                  value: =Topic.追加情報履歴
++                                - kind: SetVariable
++                                  id: setVariable_keepImageReceptionOn
++                                  variable: Global.緊急保安画像受付中
++                                  value: =true
+                                 - kind: ConditionGroup
+-                                  id: conditionGroup_priorityPurposeSwitchToJunkai
++                                  id: conditionGroup_priorityDebugOnly
+                                   conditions:
+-                                    - id: conditionItem_priorityPurposeSwitchToJunkai
+-                                      condition: =Or("マニュアル確認" in Topic.優先度追加回答, "内容確認" in Topic.優先度追加回答, "規定確認" in Topic.優先度追加回答, "マニュアル改訂" in Topic.優先度追加回答, "マニュアル改定" in Topic.優先度追加回答, "改訂案" in Topic.優先度追加回答, "改定案" in Topic.優先度追加回答)
++                                    - id: conditionGroup_priorityDebugOnly_item
++                                      condition: =false
+                                       actions:
+-                                        - kind: SetVariable
+-                                          id: setVariable_priorityPurposeSwitchToJunkaiInput
+-                                          variable: Global.巡回切替入力
+-                                          value: =Topic.優先度追加回答
+-                                        - kind: SetVariable
+-                                          id: setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff
+-                                          variable: Global.緊急保安画像受付中
+-                                          value: =false
+-                                        - kind: EndDialog
+-                                          id: endDialog_priorityPurposeSwitchToJunkai
+-                                  elseActions:
+-                                    - kind: SetVariable
+-                                      id: setVariable_appendPriorityHistory
+-                                      variable: Topic.追加情報履歴
+-                                      value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
+-                                    - kind: SetVariable
+-                                      id: setVariable_syncHistoryAfterText
+-                                      variable: Global.緊急保安追加情報履歴
+-                                      value: =Topic.追加情報履歴
+-                                    - kind: SetVariable
+-                                      id: setVariable_keepImageReceptionOn
+-                                      variable: Global.緊急保安画像受付中
+-                                      value: =true
+-                                    - kind: ConditionGroup
+-                                      id: conditionGroup_priorityDebugOnly
+-                                      conditions:
+-                                        - id: conditionGroup_priorityDebugOnly_item
+-                                          condition: =false
+-                                          actions:
+-                                            - kind: SendActivity
+-                                              id: sendActivity_debugPriorityHistory
+-                                              activity: |-
+-                                                【DEBUG・確認後削除】
+-                                                今回回答：{Topic.優先度追加回答}
+-                                                累積履歴：
+-                                                {Topic.追加情報履歴}
+-                                    - kind: GotoAction
+-                                      id: goto_priorityAgain
+-                                      actionId: setVariable_priorityPrompt
++                                        - kind: SendActivity
++                                          id: sendActivity_debugPriorityHistory
++                                          activity: |-
++                                            【DEBUG・確認後削除】
++                                            今回回答：{Topic.優先度追加回答}
++                                            累積履歴：
++                                            {Topic.追加情報履歴}
++                                - kind: GotoAction
++                                  id: goto_priorityAgain
++                                  actionId: setVariable_userConsultSourceReset
+                     - kind: SetVariable
+                       id: setVariable_imageReceptionOffDone
+                       variable: Global.緊急保安画像受付中
+@@ -1054,22 +1102,18 @@
+           id: setVariable_imageReceptionOffGuideFailed
+           variable: Global.緊急保安画像受付中
+           value: =false
+-
+         - kind: SendActivity
+           id: sendActivity_priorityGuideRetrieveFailed
+           activity: |-
+             固定の初動措置優先度判断ルールを読み込めませんでした。
+             一般知識で補完せず終了します。
+-
+         - kind: EndDialog
+           id: endDialog_priorityGuideRetrieveFailed
+           clearTopicQueue: true
+-
+     - kind: SetVariable
+       id: setVariable_repairSelectInit
+       variable: Topic.修理再検索回数
+       value: =0
+-
+     - kind: ConditionGroup
+       id: conditionGroup_repairSelectMode
+       conditions:
+@@ -1080,12 +1124,10 @@
+               id: setVariable_repairExcluded
+               variable: Topic.修理除外工法
+               value: =""
+-
+             - kind: SetVariable
+               id: setVariable_repairScanText
+               variable: Topic.修理判定用テキスト
+               value: =Topic.初回入力 & Char(10) & Topic.追加情報履歴
+-
+             - kind: SetVariable
+               id: setVariable_repairKnownPipe
+               variable: Topic.確定管種
+@@ -1094,27 +1136,22 @@
+               id: setVariable_repairKnownSize
+               variable: Topic.確定口径
+               value: =If("500A" in Topic.修理判定用テキスト, "500A", If("450A" in Topic.修理判定用テキスト, "450A", If("400A" in Topic.修理判定用テキスト, "400A", If("350A" in Topic.修理判定用テキスト, "350A", If("300A" in Topic.修理判定用テキスト, "300A", If("250A" in Topic.修理判定用テキスト, "250A", If("200A" in Topic.修理判定用テキスト, "200A", If("150A" in Topic.修理判定用テキスト, "150A", If("125A" in Topic.修理判定用テキスト, "125A", If("100A" in Topic.修理判定用テキスト, "100A", If("80A" in Topic.修理判定用テキスト, "80A", If("75A" in Topic.修理判定用テキスト, "75A", If("65A" in Topic.修理判定用テキスト, "65A", If("50A" in Topic.修理判定用テキスト, "50A", If("40A" in Topic.修理判定用テキスト, "40A", If("32A" in Topic.修理判定用テキスト, "32A", If("25A" in Topic.修理判定用テキスト, "25A", If("20A" in Topic.修理判定用テキスト, "20A", If("15A" in Topic.修理判定用テキスト, "15A", "")))))))))))))))))))
+-
+             - kind: SetVariable
+               id: setVariable_repairKnownCategory
+               variable: Topic.確定設備区分
+               value: =If(Or("灯外内管" in Topic.修理判定用テキスト, "灯外管" in Topic.修理判定用テキスト, "灯外" in Topic.修理判定用テキスト), "灯外内管", If(Or("灯内内管" in Topic.修理判定用テキスト, "灯内管" in Topic.修理判定用テキスト, "灯内" in Topic.修理判定用テキスト), "灯内内管", If("供給管" in Topic.修理判定用テキスト, "供給管", If("中圧本管" in Topic.修理判定用テキスト, "中圧本管", If("低圧本管" in Topic.修理判定用テキスト, "低圧本管", If("本管" in Topic.修理判定用テキスト, "本管", If("支管" in Topic.修理判定用テキスト, "支管", "")))))))
+-
+             - kind: SetVariable
+               id: setVariable_repairKnownEnv
+               variable: Topic.確定施工環境
+               value: =If(Or("埋設" in Topic.修理判定用テキスト, "地中" in Topic.修理判定用テキスト), "埋設部", If(Or("隠ぺい" in Topic.修理判定用テキスト, "隠蔽" in Topic.修理判定用テキスト, "壁の中" in Topic.修理判定用テキスト, "床下" in Topic.修理判定用テキスト, "コンクリート内" in Topic.修理判定用テキスト, "パイプシャフト" in Topic.修理判定用テキスト), "隠ぺい部", If("露出" in Topic.修理判定用テキスト, "露出部", "")))
+-
+             - kind: SetVariable
+               id: setVariable_repairKnownLeak
+               variable: Topic.確定漏えい箇所
+               value: =If(Or("特定" in Topic.修理判定用テキスト, "発見" in Topic.修理判定用テキスト, "腐食漏れ" in Topic.修理判定用テキスト, "漏えい箇所" in Topic.修理判定用テキスト, "検知器反応" in Topic.修理判定用テキスト), "特定済み", "")
+-
+             - kind: SetVariable
+               id: setVariable_repairConditionSummary
+               variable: Topic.修理条件要約
+               value: =Trim(Topic.確定設備区分 & " " & Topic.確定管種 & " " & Topic.確定口径 & " " & Topic.確定施工環境)
+-
+             - kind: SetVariable
+               id: setVariable_repairKnownList
+               variable: Topic.確定条件一覧
+@@ -1124,7 +1161,6 @@
+                 & "設備区分：" & If(Len(Topic.確定設備区分) = 0, "未確定", Topic.確定設備区分) & Char(10)
+                 & "施工環境：" & If(Len(Topic.確定施工環境) = 0, "未確定", Topic.確定施工環境) & Char(10)
+                 & "漏えい箇所：" & If(Len(Topic.確定漏えい箇所) = 0, "未確定", Topic.確定漏えい箇所)
+-
+             - kind: SetVariable
+               id: setVariable_repairCandidatePrompt
+               variable: Topic.修理適用範囲取得プロンプト
+@@ -1146,7 +1182,6 @@
+ 
+                 # 出力
+                 （上記を工法ごとに、原文相当のまま記載。前置き・総括・引用番号は付けない）"
+-
+             - kind: SearchAndSummarizeContent
+               id: search_repairScope
+               displayName: 21A_修理工法の適用範囲の取得
+@@ -1157,15 +1192,12 @@
+               fileSearchDataSource:
+                 searchFilesMode:
+                   kind: DoNotSearchFiles
+-
+               knowledgeSources:
+                 kind: SearchSpecificKnowledgeSources
+                 knowledgeSources:
+                   - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+                   - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
+-
+               applyModelKnowledgeSetting: false
+-
+             - kind: AnswerQuestionWithAI
+               id: answer_repairCandidates
+               displayName: 21B_修理工法の候補整形
+@@ -1240,7 +1272,6 @@
+                       id: question_repairChoice
+                       interruptionPolicy:
+                         allowInterruption: true
+-
+                       variable: Topic.修理選択回答
+                       prompt: |-
+                         {Topic.修理候補結果}
+@@ -1251,12 +1282,10 @@
+                       entity:
+                         kind: StringPrebuiltEntity
+                         sensitivityLevel: None
+-
+                     - kind: SetVariable
+                       id: setVariable_repairChoiceNumber
+                       variable: Topic.修理選択番号
+                       value: =Trim(Substitute(Substitute(Substitute(Substitute(Topic.修理選択回答, "[", ""), "]", ""), "番", ""), "．", ""))
+-
+                     - kind: ConditionGroup
+                       id: conditionGroup_repairChoiceZero
+                       conditions:
+@@ -1267,20 +1296,16 @@
+                               id: setVariable_repairExcludedAppend
+                               variable: Topic.修理除外工法
+                               value: =Topic.修理除外工法 & Char(10) & Trim(First(Split(Last(Split(Topic.修理候補結果, "【考えられる修理方法】")).Value, "【判断に使った現場条件】")).Value)
+-
+                             - kind: SetVariable
+                               id: setVariable_repairResearchIncrement
+                               variable: Topic.修理再検索回数
+                               value: =Topic.修理再検索回数 + 1
+-
+                             - kind: SendActivity
+                               id: sendActivity_repairResearch
+                               activity: 承知しました。提示した工法を除いて、あらためて探します。
+-
+                             - kind: GotoAction
+                               id: goto_repairCandidatesAgain
+                               actionId: setVariable_repairCandidatePrompt
+-
+                     - kind: ConditionGroup
+                       id: conditionGroup_repairChoiceZeroLimit
+                       conditions:
+@@ -1294,20 +1319,16 @@
+                                 現場条件を変えて探し直しますので、分かる範囲で入力してください。
+ 
+                                 {Topic.確定条件一覧}
+-
+                             - kind: EndDialog
+                               id: endDialog_repairZeroLimit
+-
+                     - kind: SetVariable
+                       id: setVariable_repairChosenLine
+                       variable: Topic.修理選択行
+                       value: =If("[" & Topic.修理選択番号 & "]" in Topic.修理候補結果, Trim(First(Split(Last(Split(Topic.修理候補結果, "[" & Topic.修理選択番号 & "]")).Value, Char(10))).Value), "")
+-
+                     - kind: SetVariable
+                       id: setVariable_repairChosenName
+                       variable: Topic.修理選択工法
+                       value: =Trim(First(Split(Substitute(Substitute(Substitute(Topic.修理選択行, "－", "-"), "—", "-"), "‐", "-"), "-")).Value)
+-
+                     - kind: ConditionGroup
+                       id: conditionGroup_repairChosenResolved
+                       conditions:
+@@ -1336,7 +1357,6 @@
+ 
+                                 # 出力
+                                 （上記を原文相当のまま記載。前置き・総括・引用番号は付けない）"
+-
+                             - kind: SearchAndSummarizeContent
+                               id: search_repairProcedure
+                               displayName: 22A_選択工法の記述の取得
+@@ -1347,15 +1367,12 @@
+                               fileSearchDataSource:
+                                 searchFilesMode:
+                                   kind: DoNotSearchFiles
+-
+                               knowledgeSources:
+                                 kind: SearchSpecificKnowledgeSources
+                                 knowledgeSources:
+                                   - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+                                   - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
+-
+                               applyModelKnowledgeSetting: false
+-
+                             - kind: AnswerQuestionWithAI
+                               id: answer_repairProcedure
+                               displayName: 22B_作業手順の整形
+@@ -1394,7 +1411,6 @@
+                                 一般知識で補完しないでください。取得した内容に書かれていない手順を作らないでください。
+                                 指定された見出しだけを、順序どおりに出力してください。
+                                 前置き・総括・引用番号・URLは出力しないでください。
+-
+                             - kind: ConditionGroup
+                               id: conditionGroup_repairProcedureFound
+                               conditions:
+@@ -1407,27 +1423,22 @@
+                                         {Topic.修理手順結果}
+ 
+                                         安全確保を最優先に、落ち着いて対応してください。
+-
+                                     - kind: EndDialog
+                                       id: endDialog_repairProcedureDone
+-
+                               elseActions:
+                                 - kind: SendActivity
+                                   id: sendActivity_repairProcedureNotFound
+                                   activity: |-
+                                     「{Topic.修理選択工法}」の作業手順を、マニュアルから見つけられませんでした。
+                                     一般知識で補完せず終了します。工法名が分かる場合は、そのまま入力してください。
+-
+                                 - kind: EndDialog
+                                   id: endDialog_repairProcedureNotFound
+-
+                       elseActions:
+                         - kind: SendActivity
+                           id: sendActivity_repairChoiceUnresolved
+                           activity: |-
+                             送っていただいた番号（{Topic.修理選択回答}）に対応する工法を特定できませんでした。
+                             もう一度、候補の番号だけを送ってください。
+-
+                         - kind: GotoAction
+                           id: goto_repairChoiceAgain
+                           actionId: question_repairChoice
+@@ -1442,15 +1453,12 @@
+ 
+                     未確定の項目や、漏えい量・圧力・配管形状など分かるものを入力してください。
+                     条件を足して探し直します。
+-
+                 - kind: EndDialog
+                   id: endDialog_repairNoCandidate
+-
+     - kind: SetVariable
+       id: setVariable_investigationRetryCount
+       variable: Topic.問診再試行回数
+       value: =0
+-
+     - kind: SetVariable
+       id: setVariable_investigationPrompt
+       variable: Topic.調査指示プロンプト
+@@ -1473,7 +1481,6 @@
+         ・（まだ不明な場合のみ。全て確認済みなら「なし」）
+         【調査の指示】
+         ・（業務基準に基づく具体的な調査手順）"
+-
+     - kind: SearchAndSummarizeContent
+       id: search_investigation
+       displayName: 12_調査指示
+@@ -1484,14 +1491,11 @@
+       fileSearchDataSource:
+         searchFilesMode:
+           kind: DoNotSearchFiles
+-
+       knowledgeSources:
+         kind: SearchSpecificKnowledgeSources
+         knowledgeSources:
+           - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+-
+       applyModelKnowledgeSetting: false
+-
+     - kind: ConditionGroup
+       id: conditionGroup_investigationSucceeded
+       conditions:
+@@ -1514,18 +1518,15 @@
+                               id: setVariable_investigationRetryIncrement
+                               variable: Topic.問診再試行回数
+                               value: =Topic.問診再試行回数 + 1
+-
+                             - kind: Question
+                               id: question_investigationInterview
+                               interruptionPolicy:
+                                 allowInterruption: true
+-
+                               variable: Topic.問診回答
+-                              prompt: "{Topic.調査指示結果}"
++                              prompt: '{Topic.調査指示結果}'
+                               entity:
+                                 kind: StringPrebuiltEntity
+                                 sensitivityLevel: None
+-
+                             - kind: ConditionGroup
+                               id: conditionGroup_repairRequestedInInvestigation
+                               conditions:
+@@ -1536,16 +1537,13 @@
+                                       id: setVariable_appendRepairRequestFromInvestigation
+                                       variable: Topic.追加情報履歴
+                                       value: =Topic.追加情報履歴 & Char(10) & "問診回答：" & Topic.問診回答
+-
+                                     - kind: SetVariable
+                                       id: setVariable_repairModeOnFromInvestigation
+                                       variable: Topic.修理方法モード
+                                       value: =true
+-
+                                     - kind: GotoAction
+                                       id: goto_repairSelectFromInvestigation
+                                       actionId: setVariable_repairSelectInit
+-
+                             - kind: ConditionGroup
+                               id: conditionGroup_investigationPurposeSwitchToJunkai
+                               conditions:
+@@ -1556,40 +1554,32 @@
+                                       id: setVariable_investigationPurposeSwitchToJunkaiInput
+                                       variable: Global.巡回切替入力
+                                       value: =Topic.問診回答
+-
+                                     - kind: SetVariable
+                                       id: setVariable_investigationPurposeSwitchToJunkaiImageReceptionOff
+                                       variable: Global.緊急保安画像受付中
+                                       value: =false
+-
+                                     - kind: EndDialog
+                                       id: endDialog_investigationPurposeSwitchToJunkai
+-
+                               elseActions:
+                                 - kind: SetVariable
+                                   id: setVariable_appendInterviewHistory
+                                   variable: Topic.追加情報履歴
+                                   value: =Topic.追加情報履歴 & Char(10) & "問診回答：" & Topic.問診回答
+-
+                                 - kind: GotoAction
+                                   id: goto_investigationAgain
+                                   actionId: setVariable_investigationPrompt
+-
+             - kind: SendActivity
+               id: sendActivity_investigationResult
+-              activity: "{Topic.調査指示結果}"
+-
++              activity: '{Topic.調査指示結果}'
+       elseActions:
+         - kind: SendActivity
+           id: sendActivity_investigationFailed
+           activity: |-
+             調査の進め方について、業務基準から情報を取得できませんでした。
+             一般知識で補完せず終了します。
+-
+         - kind: EndDialog
+           id: endDialog_investigationFailed
+           clearTopicQueue: true
+-
+     - kind: ConditionGroup
+       id: conditionGroup_leakConfirmed
+       conditions:
+@@ -1600,7 +1590,6 @@
+               id: setVariable_repairRetryCount
+               variable: Topic.修理確認再試行回数
+               value: =0
+-
+             - kind: SetVariable
+               id: setVariable_repairPrompt
+               variable: Topic.修理指示プロンプト
+@@ -1625,7 +1614,6 @@
+                 合格 または 不合格
+                 【不足情報・不足条件】
+                 ・（あれば質問形式で。全て確認済み・合格なら「なし」）"
+-
+             - kind: SearchAndSummarizeContent
+               id: search_repair
+               displayName: 13_修理方法提示
+@@ -1636,14 +1624,11 @@
+               fileSearchDataSource:
+                 searchFilesMode:
+                   kind: DoNotSearchFiles
+-
+               knowledgeSources:
+                 kind: SearchSpecificKnowledgeSources
+                 knowledgeSources:
+                   - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+-
+               applyModelKnowledgeSetting: false
+-
+             - kind: ConditionGroup
+               id: conditionGroup_repairSucceeded
+               conditions:
+@@ -1723,31 +1708,25 @@
+                   activity: |-
+                     02_作業要領から修理方法に関する情報を取得できませんでした。
+                     一般知識で補完せず終了します。
+-
+                 - kind: EndDialog
+                   id: endDialog_repairFailed
+                   clearTopicQueue: true
+-
+       elseActions:
+         - kind: SendActivity
+           id: sendActivity_noLeakFound
+           activity: |-
+             現時点でガス漏れ・検知器反応の報告はありません。
+             調査結果に応じて、あらためて報告してください。
+-
+         - kind: EndDialog
+           id: endDialog_noLeakFound
+-
+ inputType:
+   properties:
+     初回入力:
+       displayName: 初回入力
+       description: 巡回トピックで受け取ったユーザーの最初の発話
+       type: String
+-
+     追加情報履歴:
+       displayName: 追加情報履歴
+       description: 巡回トピックまでに確認した追加情報の履歴
+       type: String
+-
+-outputType: {}+outputType: {}

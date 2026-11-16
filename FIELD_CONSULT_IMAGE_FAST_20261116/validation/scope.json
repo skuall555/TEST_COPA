@@ -1,0 +1,24 @@
+{
+  "baseline": "4fa63fbcfc1ccf39d063276d9999a5ffb3166132",
+  "source_sha256": {
+    "1-マニュアル関連入口_optimized.yaml": "f20fb593dba263823e533a877d86448ba57e049caa69dd4a2201eee2cca1b2ec",
+    "3-9-緊急保安業務エージェント_optimized.yaml": "6a8eff881aecb9f21062210b10e2eb2b808cbfd0bf4d03b73a7021eb0133ea36",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml": "eee4e19d7d40fb99a756117bcc34559cad998e3674fe822b9c806edfcef43529",
+    "SUBARU_エージェント指示_optimized.txt": "7fa9192d03dcff9ea53b5ef480e50b948fb784f4c8ea583f63550e7ad816603c"
+  },
+  "outputs": {
+    "3-9_貼り替え用.txt": "631baf8d50f3366ec92819975f348301a31f7cd12bab052015e3c643e771a941",
+    "4-9_貼り替え用.txt": "fa138ef66551255ac9fddba8317773aeae0796d9e5e8b8ad98023a6cfdc9f3f5"
+  },
+  "changed_topics": [
+    "3-9-緊急保安業務エージェント_optimized.yaml",
+    "4-9-画像分析エージェント_緊急保安_optimized.yaml"
+  ],
+  "unchanged_topics": [
+    "1-マニュアル関連入口_optimized.yaml"
+  ],
+  "unchanged_global_instructions": "SUBARU_エージェント指示_optimized.txt",
+  "apps_changed": false,
+  "power_automate_changed": false,
+  "lists_changed": false
+}

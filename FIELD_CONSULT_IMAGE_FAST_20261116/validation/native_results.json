@@ -1,0 +1,494 @@
+{
+  "package": "Microsoft.PowerFx.Interpreter 1.8.1",
+  "scope": "Standalone Power Fx SDK; no live Copilot Studio host and no AI model call",
+  "checks": [
+    {
+      "id": "field:setVariable_latestUserInputAtStart",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_userConsultSourceReset",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_userConsultSignal",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:conditionGroup_userConsultSearch_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:search_userConsultManual:input",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_priorityPrompt",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_priorityFormatEnvelope",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemSectionANSWER",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemUniqueANSWER",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemRemoveANSWER",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemBodyANSWER",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemBodyValidANSWER",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemValidP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemRender",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_latestUserInputAfterWait",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageGuideReuse",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageGuideReuseSeconds",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageGuideConversation",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageGuideUser",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageGuideChannel",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageGuideVersion",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_prompt1",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_prompt2",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageRelation",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageUserComment",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageFactsLength",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "image:conditionGroup_imageUnrelatedFastExit_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_unrelatedAnswer",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_unrelatedExtra",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_unrelatedDone",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_unrelatedCheck",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_unrelatedUnknown",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:conditionGroup_reuseImageGuide_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_reuseImageGuideBody",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:conditionGroup_storeImageGuide_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_storeImageGuideBody",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_storeImageGuideConversation",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_storeImageGuideUser",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_storeImageGuideChannel",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_storeImageGuideVersion",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_storeImageGuideTime",
+      "success": true,
+      "type": "DateTime",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_photoGuideUnavailableResult",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageUserAnswerFromJudge",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:conditionItem_sectionsMissing",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_fallbackImageUserAnswer",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_globalImageUserAnswer",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_appendImageResultToGlobalHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    }
+  ],
+  "semantics": [
+    {
+      "name": "plain progress is not consultation",
+      "success": true,
+      "result": false
+    },
+    {
+      "name": "question triggers consultation",
+      "success": true,
+      "result": true
+    },
+    {
+      "name": "unrelated image marker parses",
+      "success": true,
+      "result": "関連なし"
+    },
+    {
+      "name": "related image marker parses",
+      "success": true,
+      "result": "関連あり"
+    },
+    {
+      "name": "missing image marker is conservative",
+      "success": true,
+      "result": "不明"
+    },
+    {
+      "name": "unrelated image comment parses",
+      "success": true,
+      "result": "送っていただいた画像は鉢植えに見えます。進捗要素は見当たりません。"
+    }
+  ],
+  "formats": [
+    {
+      "name": "progress answer is dash",
+      "success": true,
+      "accepted": true,
+      "status": "合格",
+      "incomplete": "なし",
+      "renderedPrefix": "【ユーザーへの回答】\nー\n\n【確認できた事実】\n└台所で臭気あり\n\n【初動措置　優先度：高】\n└火気使用禁止の徹底：対応済み　根拠：火気使用禁止を実施済みと報告\n\n【初動措置　優先度：中】\n└電気スイッチ等の操作禁止：要確認　根拠：必要な実施状況が未報告\n└火気厳禁表示シート：要確認　根拠：必要な実施状況が未報告\n└ポケット警報器等の設置：要確認　根拠：必要",
+      "failure": null
+    },
+    {
+      "name": "consultation answer is retained",
+      "success": true,
+      "accepted": true,
+      "status": "合格",
+      "incomplete": "なし",
+      "renderedPrefix": "【ユーザーへの回答】\n└次の調査は取得したマニュアルの範囲で案内します\n\n【確認できた事実】\n└台所で臭気あり\n\n【初動措置　優先度：高】\n└火気使用禁止の徹底：対応済み　根拠：火気使用禁止を実施済みと報告\n\n【初動措置　優先度：中】\n└電気スイッチ等の操作禁止：要確認　根拠：必要な実施状況が未報告\n└火気厳禁表示シート：要確認　根拠：必要な実施状況が未報告",
+      "failure": null
+    },
+    {
+      "name": "warning status is accepted but incomplete",
+      "success": true,
+      "accepted": true,
+      "status": "合格",
+      "incomplete": "あり",
+      "renderedPrefix": "【ユーザーへの回答】\nー\n\n【確認できた事実】\n└台所で臭気あり\n\n【初動措置　優先度：高】\n└火気使用禁止の徹底：対応済み　根拠：火気使用禁止を実施済みと報告\n└ポケット警報器等の設置：対応済み【!】　根拠：ポケット警報器の設置は写真で確認できるが設置場所の周辺範囲は未確認\n\n【初動措置　優先度：中】\n└電気スイッチ等の操作禁止：要確認　根拠：必要な実施状",
+      "failure": null
+    },
+    {
+      "name": "legacy payload without ANSWER is rejected",
+      "success": true,
+      "accepted": false,
+      "status": "不合格:priorityFormatEnvelope",
+      "incomplete": "なし",
+      "renderedPrefix": "【ユーザーへの回答】\n└[[FACTS]]└台所で臭気あり[[/FACTS]]\n[[EMERGENCY]]通常|避難と要請を同時に高とする具体的危険は未報告[[/EMERGENCY]]\n[[P01]]高|対応済み|火気使用禁止を実施済みと報告[[/P01]]\n[[P02]]中|要確認|必要な実施状況が未報告[[/P02]]\n[[P03]]中|要確認|必要な実",
+      "failure": null
+    }
+  ],
+  "source_sha256": {
+    "3-9_貼り替え用.txt": "631baf8d50f3366ec92819975f348301a31f7cd12bab052015e3c643e771a941",
+    "4-9_貼り替え用.txt": "fa138ef66551255ac9fddba8317773aeae0796d9e5e8b8ad98023a6cfdc9f3f5"
+  }
+}
