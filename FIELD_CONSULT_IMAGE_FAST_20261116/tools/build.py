@@ -88,7 +88,7 @@ def raw_source(name):
     return subprocess.check_output(["git", "-C", str(REPO), "show", BASE + ":SUBARU_optimized/" + name])
 
 
-CONSULT_SIGNAL = '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
+CONSULT_SIGNAL = '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "どうしよう" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "困って" in t, "迷って" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
 
 
 def build_field(raw):
@@ -100,28 +100,24 @@ def build_field(raw):
         setv("setVariable_latestUserInputAtStart", "Topic.最新利用者入力", "=Topic.初回入力"),
     ])
 
-    manual_search = {
-        "kind": "SearchAndSummarizeContent",
-        "id": "search_userConsultManual",
-        "displayName": "11A_現場相談の根拠取得",
+    consult_answer = {
+        "kind": "AnswerQuestionWithAI",
+        "id": "answer_userConsult",
+        "displayName": "11A_マニュアル早見表からの現場相談回答",
         "autoSend": False,
-        "variable": "Topic.ユーザー相談根拠",
-        "userInput": '=Topic.最新利用者入力 & Char(10) & "現場の既報：" & Topic.初回入力 & Char(10) & Topic.追加情報履歴',
-        "additionalInstructions": "利用者の今回の質問へ、検索できたマニュアル原文に直接根拠がある範囲だけで、現場で読みやすい短い文章として回答してください。一般知識で補完せず、現場事実や優先度を作らないでください。質問と直接関係する根拠がない場合は「なし」とだけ出力してください。見出しや前置きは付けないでください。",
-        "fileSearchDataSource": {"searchFilesMode": {"kind": "DoNotSearchFiles"}},
-        "knowledgeSources": {"kind": "SearchSpecificKnowledgeSources", "knowledgeSources": [
-            "cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r",
-            "cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi",
-        ]},
-        "applyModelKnowledgeSetting": False,
+        "variable": "Topic.ユーザー相談回答候補",
+        "userInput": '="【今回の相談】" & Char(10) & Topic.最新利用者入力 & Char(10) & Char(10) & "【初報】" & Char(10) & Topic.初回入力 & Char(10) & Char(10) & "【これまでの現場報告】" & Char(10) & Topic.追加情報履歴 & Char(10) & Char(10) & "【現在表示中の判断】" & Char(10) & Topic.優先度判定結果 & Char(10) & Char(10) & "【マニュアルから固定した緊急保安早見表】" & Char(10) & Topic.優先度ガイド取得結果',
+        "additionalInstructions": "利用者の相談へ最初の一文から直接答え、現場担当者との壁打ちとして、次に何を考え、何を確認し、どの条件なら対応が変わるかを短く具体的に示してください。入力内の緊急保安早見表と報告済み事実だけを根拠にし、一般知識や未報告事実を作らないでください。早見表はマニュアルから固定した根拠です。検索結果、原文取得、ナレッジヒットの有無には言及しないでください。情報が足りない場合も回答を拒否せず、既に言えることを先に答え、判断を分ける確認を最大2点だけ質問してください。危険条件が早見表に成立する場合は追加回答待ちで結論を保留しないでください。優先度一覧や定型見出しは出力せず、相談への自然な回答だけを返してください。",
     }
     consult_nodes = [
-        setv("setVariable_userConsultAnswerReset", "Topic.判定ユーザー回答", '="ー"'),
-        setv("setVariable_userConsultSourceReset", "Topic.ユーザー相談根拠", '="なし"'),
+        setv("setVariable_imageAnswerPending", "Topic.写真回答反映中", '=And(Not(IsBlank(Global.写真ユーザー回答テキスト)), Trim(Global.写真ユーザー回答テキスト) <> "ー")'),
+        setv("setVariable_imageAnswerCarry", "Topic.画像引継ぎ回答", '=If(Topic.写真回答反映中, Trim(Global.写真ユーザー回答テキスト), "ー")'),
+        setv("setVariable_userConsultAnswerReset", "Topic.判定ユーザー回答", '=Topic.画像引継ぎ回答'),
+        setv("setVariable_userConsultCandidateReset", "Topic.ユーザー相談回答候補", '=""'),
         setv("setVariable_userConsultSignal", "Topic.ユーザー相談あり", CONSULT_SIGNAL),
         condition("conditionGroup_userConsultSearch", "=Topic.ユーザー相談あり", [
-            manual_search,
-            setv("setVariable_userConsultAnswer", "Topic.判定ユーザー回答", '=If(Or(IsBlank(Topic.ユーザー相談根拠), Trim(Topic.ユーザー相談根拠) = "なし"), "└関連するマニュアル原文を取得できなかったため、この質問には推測で回答できません。進捗状況の判定は継続します。", If(StartsWith(Trim(Topic.ユーザー相談根拠), "└"), Trim(Topic.ユーザー相談根拠), "└" & Trim(Topic.ユーザー相談根拠)))'),
+            consult_answer,
+            setv("setVariable_userConsultAnswer", "Topic.判定ユーザー回答", '=With({consultText: If(IsBlank(Topic.ユーザー相談回答候補), "現在の報告だけでは相談内容を断定できません。表示中の未完了措置を止めず、判断を分ける現場情報を追加してください。", Trim(Topic.ユーザー相談回答候補))}, If(Topic.写真回答反映中, Topic.画像引継ぎ回答 & Char(10) & If(StartsWith(consultText, "└"), consultText, "└" & consultText), If(StartsWith(consultText, "└"), consultText, "└" & consultText)))'),
         ]),
     ]
     insert_before(doc, "setVariable_priorityPrompt", consult_nodes)
@@ -134,10 +130,10 @@ def build_field(raw):
     )
     prompt = prompt.replace(
         "# 実施済みと範囲・効果",
-        "# 写真の警告付き対応済み\n画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。\n\n# 実施済みと範囲・効果"
+        "# 質問を含む追加入力の事実抽出\n追加情報に質問・相談の表現が含まれていても、文中で具体的に報告された現場状況・警報・臭気・検知・不在・入室可否・実施済み措置は事実として保持する。質問、依頼、推測、AIの回答自体は事実にしない。\n\n# 写真の警告付き対応済み\n画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。\n\n# 実施済みと範囲・効果"
     )
     ix["setVariable_priorityPrompt"]["value"] = prompt
-    ix["answer_priority"]["additionalInstructions"] = "固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。"
+    ix["answer_priority"]["additionalInstructions"] = "固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。不在・施錠・入室不能の住戸で警報器が現在鳴っている、または鳴り続ける報告はE-01を必ず照合し、通常の単独臭気初報としてP11・P12を低へ戻さない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。"
 
     # Keep consultation inside the active field dialog, without adding the question to fact history.
     manual_switch = ix["conditionGroup_priorityPurposeSwitchToJunkai"]
@@ -147,11 +143,13 @@ def build_field(raw):
     ])
     replace(doc, "conditionGroup_priorityPurposeSwitchToJunkai", [
         condition("conditionGroup_priorityConsultOrProgress", "=Topic.ユーザー相談あり", [
+            setv("setVariable_appendConsultHistory", "Topic.追加情報履歴", '=Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答'),
+            setv("setVariable_syncHistoryAfterConsult", "Global.緊急保安追加情報履歴", '=Topic.追加情報履歴'),
             setv("setVariable_keepImageReceptionOnForConsult", "Global.緊急保安画像受付中", "=true"),
-            {"kind": "GotoAction", "id": "goto_priorityConsult", "actionId": "setVariable_userConsultAnswerReset"},
+            {"kind": "GotoAction", "id": "goto_priorityConsult", "actionId": "setVariable_imageAnswerPending"},
         ], copy.deepcopy(manual_switch["elseActions"]))
     ])
-    index(doc)["goto_priorityAgain"]["actionId"] = "setVariable_userConsultSourceReset"
+    index(doc)["goto_priorityAgain"]["actionId"] = "setVariable_imageAnswerPending"
 
     # Accept the warning status while keeping it incomplete until the warning is resolved.
     for code in [f"P{i:02d}" for i in range(1, 24)]:
@@ -161,6 +159,12 @@ def build_field(raw):
 
     render = index(doc)["setVariable_itemRender"]
     render["value"] = render["value"].replace('="【確認できた事実】', '="【ユーザーへの回答】" & Char(10) & Topic.判定ユーザー回答 & Char(10) & Char(10) & "【確認できた事実】')
+    insert_after(doc, "invokeFlowAction_caseSaveFieldAdvice", [
+        condition("conditionGroup_clearImageAnswerAfterSave", "=Topic.写真回答反映中", [
+            setv("setVariable_clearImageAnswerAfterSave", "Global.写真ユーザー回答テキスト", '="ー"'),
+            setv("setVariable_clearImageAnswerPending", "Topic.写真回答反映中", "=false"),
+        ])
+    ])
     return doc
 
 

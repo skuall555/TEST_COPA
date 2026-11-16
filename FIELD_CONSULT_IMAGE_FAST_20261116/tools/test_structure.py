@@ -67,28 +67,29 @@ def main():
         expected = source(name)
         assert hashlib.sha256(actual).digest() == hashlib.sha256(expected).digest(), name
 
-    # The field topic keeps the existing save flow and adds one guarded manual lookup.
+    # The field topic keeps the existing save flow and uses the embedded manual quick-reference for consultation.
     assert node(field, "invokeFlowAction_caseSaveFieldAdvice")["flowId"] == "9a770168-65a8-f111-aaad-7ced8d2f9cab"
     assert node(field, "conditionGroup_userConsultSearch")["conditions"][0]["condition"] == "=Topic.ユーザー相談あり"
-    consult = node(field, "search_userConsultManual")
-    assert consult["fileSearchDataSource"]["searchFilesMode"]["kind"] == "DoNotSearchFiles"
-    assert consult["knowledgeSources"]["knowledgeSources"] == [
-        "cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r",
-        "cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi",
-    ]
+    assert not any(item.get("id") == "search_userConsultManual" for item in walk(field))
+    consult = node(field, "answer_userConsult")
+    assert "Topic.優先度ガイド取得結果" in consult["userInput"]
+    assert "検索結果、原文取得、ナレッジヒットの有無には言及しない" in consult["additionalInstructions"]
     assert not any(item.get("id") == "conditionGroup_priorityPurposeSwitchToJunkai" for item in walk(field))
 
     prompt = node(field, "setVariable_priorityPrompt")["value"]
     assert "[[ANSWER]]" not in prompt and "FACTS・EMERGENCY・P01〜P13・NEXT・CHECK" in prompt
     assert 'StartsWith(Trim(Topic.優先度表示原文), "[[FACTS]]")' in node(field, "setVariable_priorityFormatEnvelope")["value"]
+    assert "質問・相談の表現が含まれていても" in prompt
     assert "対応済み【!】は高優先度の完了扱いにせず" in prompt
     assert node(field, "setVariable_userConsultAnswerReset")["variable"] == "Topic.判定ユーザー回答"
     consult_branch = node(field, "conditionGroup_priorityConsultOrProgress")
-    assert not any(item.get("id") == "setVariable_appendPriorityHistory" for item in walk(consult_branch["conditions"][0]["actions"]))
+    assert any(item.get("id") == "setVariable_appendConsultHistory" for item in walk(consult_branch["conditions"][0]["actions"]))
     assert any(item.get("id") == "setVariable_appendPriorityHistory" for item in walk(consult_branch["elseActions"]))
-    assert next(item for item in walk(consult_branch["conditions"][0]["actions"]) if item.get("kind") == "GotoAction")["actionId"] == "setVariable_userConsultAnswerReset"
+    assert next(item for item in walk(consult_branch["conditions"][0]["actions"]) if item.get("kind") == "GotoAction")["actionId"] == "setVariable_imageAnswerPending"
+    assert "Global.写真ユーザー回答テキスト" in node(field, "setVariable_imageAnswerPending")["value"]
+    assert node(field, "conditionGroup_clearImageAnswerAfterSave")["conditions"][0]["condition"] == "=Topic.写真回答反映中"
     assert "【ユーザーへの回答】" in node(field, "setVariable_itemRender")["value"]
-    assert node(field, "goto_priorityAgain")["actionId"] == "setVariable_userConsultSourceReset"
+    assert node(field, "goto_priorityAgain")["actionId"] == "setVariable_imageAnswerPending"
     for code in [f"P{i:02d}" for i in range(1, 24)]:
         assert "対応済み【!】" in node(field, "setVariable_itemValid" + code)["value"]
 

@@ -9,13 +9,25 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_imageAnswerPending",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_imageAnswerCarry",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_userConsultAnswerReset",
       "success": true,
       "type": "String",
       "errors": []
     },
     {
-      "id": "field:setVariable_userConsultSourceReset",
+      "id": "field:setVariable_userConsultCandidateReset",
       "success": true,
       "type": "String",
       "errors": []
@@ -33,7 +45,7 @@
       "errors": []
     },
     {
-      "id": "field:search_userConsultManual:input",
+      "id": "field:answer_userConsult:input",
       "success": true,
       "type": "String",
       "errors": []
@@ -195,6 +207,24 @@
       "errors": []
     },
     {
+      "id": "field:conditionGroup_clearImageAnswerAfterSave_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_clearImageAnswerAfterSave",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_clearImageAnswerPending",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_latestUserInputAfterWait",
       "success": true,
       "type": "String",
@@ -210,6 +240,18 @@
       "id": "field:conditionGroup_priorityConsultOrProgress_item",
       "success": true,
       "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_appendConsultHistory",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_syncHistoryAfterConsult",
+      "success": true,
+      "type": "String",
       "errors": []
     },
     {
@@ -428,6 +470,31 @@
       "result": true
     },
     {
+      "name": "troubled status triggers consultation",
+      "success": true,
+      "result": true
+    },
+    {
+      "name": "image comment is pending for Lists output",
+      "success": true,
+      "result": true
+    },
+    {
+      "name": "dash image answer is not pending",
+      "success": true,
+      "result": false
+    },
+    {
+      "name": "pending image comment is carried into field output",
+      "success": true,
+      "result": "ドアだけが写っており進捗要素はありません。"
+    },
+    {
+      "name": "no pending image comment becomes dash",
+      "success": true,
+      "result": "ー"
+    },
+    {
       "name": "unrelated image marker parses",
       "success": true,
       "result": "関連なし"
@@ -487,7 +554,7 @@
     }
   ],
   "source_sha256": {
-    "3-9_貼り替え用.txt": "81bfdce235a58c7bcc737c0d10ed509f88fea89d8ce722a57e9e8074a9cafb16",
+    "3-9_貼り替え用.txt": "dcb03ad18a29a38ac5472d7bd39cd7c580b6483e592c98b1af1732d7e2ce0dcc",
     "4-9_貼り替え用.txt": "fa138ef66551255ac9fddba8317773aeae0796d9e5e8b8ad98023a6cfdc9f3f5"
   }
 }

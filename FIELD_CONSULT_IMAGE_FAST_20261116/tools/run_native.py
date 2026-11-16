@@ -110,7 +110,7 @@ def main():
             previous = old.get(ident, {})
             if item.get("kind") == "SetVariable" and item.get("value") != previous.get("value"):
                 variable = item.get("variable", "")
-                expected = "Boolean" if variable in {"Topic.ユーザー相談あり", "Topic.撮影要領再利用", "Topic.デバッグ表示", "Global.緊急保安画像受付中"} else "Number" if variable in {"Topic.撮影要領再利用秒数", "Topic.画像事実実質長", "Topic.優先度様式再試行回数"} else "DateTime" if variable == "Global.画像要領キャッシュ取得時刻" else "String"
+                expected = "Boolean" if variable in {"Topic.ユーザー相談あり", "Topic.撮影要領再利用", "Topic.デバッグ表示", "Topic.写真回答反映中", "Global.緊急保安画像受付中"} else "Number" if variable in {"Topic.撮影要領再利用秒数", "Topic.画像事実実質長", "Topic.優先度様式再試行回数"} else "DateTime" if variable == "Global.画像要領キャッシュ取得時刻" else "String"
                 expressions.append({"id": label + ":" + ident, "expression": item["value"][1:], "expected": expected})
             if item.get("kind") in {"AnswerQuestionWithAI", "SearchAndSummarizeContent"} and item.get("userInput") != previous.get("userInput"):
                 expressions.append({"id": label + ":" + ident + ":input", "expression": item["userInput"][1:], "expected": "String"})
@@ -128,7 +128,7 @@ def main():
             topic_types.setdefault(name, "String")
         for name in re.findall(r"Global\.([\w\u3000-\u9fff]+)", item["expression"]):
             global_types.setdefault(name, "String")
-    for name in ["ユーザー相談あり", "撮影要領再利用", "デバッグ表示"]:
+    for name in ["ユーザー相談あり", "撮影要領再利用", "デバッグ表示", "写真回答反映中"]:
         topic_types[name] = "Boolean"
     global_types["緊急保安画像受付中"] = "Boolean"
     for name in ["撮影要領再利用秒数", "画像事実実質長", "優先度様式再試行回数"]:
@@ -153,6 +153,8 @@ def main():
     ]
     image_index = index(documents["image"])
     consult_expression = index(documents["field"])["setVariable_userConsultSignal"]["value"][1:]
+    image_pending_expression = index(documents["field"])["setVariable_imageAnswerPending"]["value"][1:]
+    image_carry_expression = index(documents["field"])["setVariable_imageAnswerCarry"]["value"][1:]
     relation_expression = image_index["setVariable_imageRelation"]["value"][1:]
     comment_expression = image_index["setVariable_imageUserComment"]["value"][1:]
     image_unrelated = "■現場対応との関連判定\n・関連なし\n■ユーザー向けコメント\n・送っていただいた画像は鉢植えに見えます。進捗要素は見当たりません。\n■写っている物\n・鉢植え"
@@ -161,6 +163,11 @@ def main():
         {"name": "initial gas odor report is not consultation", "expression": consult_expression, "topic": {"最新利用者入力": "台所でガス臭い"}, "expectedBoolean": False},
         {"name": "plain progress is not consultation", "expression": consult_expression, "topic": {"最新利用者入力": "消火器設置済み"}, "expectedBoolean": False},
         {"name": "question triggers consultation", "expression": consult_expression, "topic": {"最新利用者入力": "このあと何を調査すればいい？"}, "expectedBoolean": True},
+        {"name": "troubled status triggers consultation", "expression": consult_expression, "topic": {"最新利用者入力": "不在らしいが、警報器が鳴っている。どうしよう？"}, "expectedBoolean": True},
+        {"name": "image comment is pending for Lists output", "expression": image_pending_expression, "topic": {}, "global": {"写真ユーザー回答テキスト": "ドアだけが写っており進捗要素はありません。"}, "expectedBoolean": True},
+        {"name": "dash image answer is not pending", "expression": image_pending_expression, "topic": {}, "global": {"写真ユーザー回答テキスト": "ー"}, "expectedBoolean": False},
+        {"name": "pending image comment is carried into field output", "expression": image_carry_expression, "topic": {"写真回答反映中": True}, "global": {"写真ユーザー回答テキスト": "ドアだけが写っており進捗要素はありません。"}, "expectedString": "ドアだけが写っており進捗要素はありません。"},
+        {"name": "no pending image comment becomes dash", "expression": image_carry_expression, "topic": {"写真回答反映中": False}, "global": {"写真ユーザー回答テキスト": "古いコメント"}, "expectedString": "ー"},
         {"name": "unrelated image marker parses", "expression": relation_expression, "topic": {"画像事実": image_unrelated}, "expectedString": "関連なし"},
         {"name": "related image marker parses", "expression": relation_expression, "topic": {"画像事実": image_related}, "expectedString": "関連あり"},
         {"name": "missing image marker is conservative", "expression": relation_expression, "topic": {"画像事実": "■写っている物\n・不鮮明"}, "expectedString": "不明"},

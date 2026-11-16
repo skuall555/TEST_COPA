@@ -68,52 +68,51 @@
      - kind: SetVariable
        id: setVariable_priorityGuideFixed
        variable: Topic.優先度ガイド取得結果
-@@ -126,6 +124,44 @@
+@@ -126,6 +124,43 @@
          - id: conditionItem_priorityGuideRetrieveSucceeded
            condition: =!IsBlank(Topic.優先度ガイド取得結果)
            actions:
 +            - kind: SetVariable
++              id: setVariable_imageAnswerPending
++              variable: Topic.写真回答反映中
++              value: =And(Not(IsBlank(Global.写真ユーザー回答テキスト)), Trim(Global.写真ユーザー回答テキスト) <> "ー")
++            - kind: SetVariable
++              id: setVariable_imageAnswerCarry
++              variable: Topic.画像引継ぎ回答
++              value: =If(Topic.写真回答反映中, Trim(Global.写真ユーザー回答テキスト), "ー")
++            - kind: SetVariable
 +              id: setVariable_userConsultAnswerReset
 +              variable: Topic.判定ユーザー回答
-+              value: ="ー"
++              value: =Topic.画像引継ぎ回答
 +            - kind: SetVariable
-+              id: setVariable_userConsultSourceReset
-+              variable: Topic.ユーザー相談根拠
-+              value: ="なし"
++              id: setVariable_userConsultCandidateReset
++              variable: Topic.ユーザー相談回答候補
++              value: =""
 +            - kind: SetVariable
 +              id: setVariable_userConsultSignal
 +              variable: Topic.ユーザー相談あり
-+              value: '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
++              value: '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "どうしよう" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "困って" in t, "迷って" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
 +            - kind: ConditionGroup
 +              id: conditionGroup_userConsultSearch
 +              conditions:
 +                - id: conditionGroup_userConsultSearch_item
 +                  condition: =Topic.ユーザー相談あり
 +                  actions:
-+                    - kind: SearchAndSummarizeContent
-+                      id: search_userConsultManual
-+                      displayName: 11A_現場相談の根拠取得
++                    - kind: AnswerQuestionWithAI
++                      id: answer_userConsult
++                      displayName: 11A_マニュアル早見表からの現場相談回答
 +                      autoSend: false
-+                      variable: Topic.ユーザー相談根拠
-+                      userInput: =Topic.最新利用者入力 & Char(10) & "現場の既報：" & Topic.初回入力 & Char(10) & Topic.追加情報履歴
-+                      additionalInstructions: 利用者の今回の質問へ、検索できたマニュアル原文に直接根拠がある範囲だけで、現場で読みやすい短い文章として回答してください。一般知識で補完せず、現場事実や優先度を作らないでください。質問と直接関係する根拠がない場合は「なし」とだけ出力してください。見出しや前置きは付けないでください。
-+                      fileSearchDataSource:
-+                        searchFilesMode:
-+                          kind: DoNotSearchFiles
-+                      knowledgeSources:
-+                        kind: SearchSpecificKnowledgeSources
-+                        knowledgeSources:
-+                          - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
-+                          - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
-+                      applyModelKnowledgeSetting: false
++                      variable: Topic.ユーザー相談回答候補
++                      userInput: ="【今回の相談】" & Char(10) & Topic.最新利用者入力 & Char(10) & Char(10) & "【初報】" & Char(10) & Topic.初回入力 & Char(10) & Char(10) & "【これまでの現場報告】" & Char(10) & Topic.追加情報履歴 & Char(10) & Char(10) & "【現在表示中の判断】" & Char(10) & Topic.優先度判定結果 & Char(10) & Char(10) & "【マニュアルから固定した緊急保安早見表】" & Char(10) & Topic.優先度ガイド取得結果
++                      additionalInstructions: 利用者の相談へ最初の一文から直接答え、現場担当者との壁打ちとして、次に何を考え、何を確認し、どの条件なら対応が変わるかを短く具体的に示してください。入力内の緊急保安早見表と報告済み事実だけを根拠にし、一般知識や未報告事実を作らないでください。早見表はマニュアルから固定した根拠です。検索結果、原文取得、ナレッジヒットの有無には言及しないでください。情報が足りない場合も回答を拒否せず、既に言えることを先に答え、判断を分ける確認を最大2点だけ質問してください。危険条件が早見表に成立する場合は追加回答待ちで結論を保留しないでください。優先度一覧や定型見出しは出力せず、相談への自然な回答だけを返してください。
 +                    - kind: SetVariable
 +                      id: setVariable_userConsultAnswer
 +                      variable: Topic.判定ユーザー回答
-+                      value: =If(Or(IsBlank(Topic.ユーザー相談根拠), Trim(Topic.ユーザー相談根拠) = "なし"), "└関連するマニュアル原文を取得できなかったため、この質問には推測で回答できません。進捗状況の判定は継続します。", If(StartsWith(Trim(Topic.ユーザー相談根拠), "└"), Trim(Topic.ユーザー相談根拠), "└" & Trim(Topic.ユーザー相談根拠)))
++                      value: '=With({consultText: If(IsBlank(Topic.ユーザー相談回答候補), "現在の報告だけでは相談内容を断定できません。表示中の未完了措置を止めず、判断を分ける現場情報を追加してください。", Trim(Topic.ユーザー相談回答候補))}, If(Topic.写真回答反映中, Topic.画像引継ぎ回答 & Char(10) & If(StartsWith(consultText, "└"), consultText, "└" & consultText), If(StartsWith(consultText, "└"), consultText, "└" & consultText)))'
              - kind: SetVariable
                id: setVariable_priorityPrompt
                variable: Topic.優先度判定プロンプト
-@@ -161,7 +197,7 @@
+@@ -161,7 +196,7 @@
                  [[NEXT]]必要な次の行動を└から始まる行で記載[[/NEXT]]
                  [[CHECK]]判断に必要な情報と理由を、利用者への自然な文章で記載[[/CHECK]]
  
@@ -122,26 +121,29 @@
                  EMERGENCYはE-01／E-02・広範囲拡散・遮断排出不能などにより避難と消防警察の両方を高とする場合に高、それ以外を通常とする。高ならYAMLがP11・P12を高に統一する。通常は両措置が不要・低という意味ではなく、それぞれのガイド条件で判断する。
                  措置コードと名称：
                  P01：火気使用禁止の徹底
-@@ -188,6 +224,9 @@
+@@ -188,6 +223,12 @@
                  P22：追加対象の供給遮断（必要時のみ。不要なら対象外）
                  P23：圧力・供給支障の確認と調査（必要時のみ。不要なら対象外）
  
++                # 質問を含む追加入力の事実抽出
++                追加情報に質問・相談の表現が含まれていても、文中で具体的に報告された現場状況・警報・臭気・検知・不在・入室可否・実施済み措置は事実として保持する。質問、依頼、推測、AIの回答自体は事実にしない。
++
 +                # 写真の警告付き対応済み
 +                画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。
 +
                  # 実施済みと範囲・効果
                  排水口や玄関隙間等の検知結果があれば、その場所のP05は対応済み。全域が未確認という理由で既に行った調査を未実施へ戻さない。残る調査はP20に対象場所を明記して別に示す。P10も実際の調査範囲だけを対応済みとし、必要な追加範囲はP21へ示す。メーター閉止済みは対象を明記してP07で保持し、別の部屋・設備への追加遮断はP22で示す。
                  画像に写っていないことは未実施の証拠ではない。明確なユーザー報告を画像の不鮮明さで取り消さず、実施状況不明なら要確認と明示する。設置済みの写真や報告の対象範囲を勝手に他室へ広げない。
-@@ -219,7 +258,7 @@
+@@ -219,7 +260,7 @@
                autoSend: false
                variable: Topic.優先度判定結果
                userInput: =Topic.優先度判定プロンプト
 -              additionalInstructions: 固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。
-+              additionalInstructions: 固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。
++              additionalInstructions: 固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。不在・施錠・入室不能の住戸で警報器が現在鳴っている、または鳴り続ける報告はE-01を必ず照合し、通常の単独臭気初報としてP11・P12を低へ戻さない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。
              - kind: SetVariable
                id: setVariable_priorityAfterAISnapshot
                variable: Topic.優先度経路診断
-@@ -432,7 +471,7 @@
+@@ -432,7 +473,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP01
                variable: Topic.優先度表示検証
@@ -150,7 +152,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP01
                variable: Topic.判定表示行
-@@ -448,7 +487,7 @@
+@@ -448,7 +489,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP02
                variable: Topic.優先度表示検証
@@ -159,7 +161,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP02
                variable: Topic.判定表示行
-@@ -464,7 +503,7 @@
+@@ -464,7 +505,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP03
                variable: Topic.優先度表示検証
@@ -168,7 +170,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP03
                variable: Topic.判定表示行
-@@ -480,7 +519,7 @@
+@@ -480,7 +521,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP04
                variable: Topic.優先度表示検証
@@ -177,7 +179,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP04
                variable: Topic.判定表示行
-@@ -496,7 +535,7 @@
+@@ -496,7 +537,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP05
                variable: Topic.優先度表示検証
@@ -186,7 +188,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP05
                variable: Topic.判定表示行
-@@ -512,7 +551,7 @@
+@@ -512,7 +553,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP06
                variable: Topic.優先度表示検証
@@ -195,7 +197,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP06
                variable: Topic.判定表示行
-@@ -528,7 +567,7 @@
+@@ -528,7 +569,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP07
                variable: Topic.優先度表示検証
@@ -204,7 +206,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP07
                variable: Topic.判定表示行
-@@ -544,7 +583,7 @@
+@@ -544,7 +585,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP08
                variable: Topic.優先度表示検証
@@ -213,7 +215,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP08
                variable: Topic.判定表示行
-@@ -560,7 +599,7 @@
+@@ -560,7 +601,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP09
                variable: Topic.優先度表示検証
@@ -222,7 +224,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP09
                variable: Topic.判定表示行
-@@ -576,7 +615,7 @@
+@@ -576,7 +617,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP10
                variable: Topic.優先度表示検証
@@ -231,7 +233,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP10
                variable: Topic.判定表示行
-@@ -592,7 +631,7 @@
+@@ -592,7 +633,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP11
                variable: Topic.優先度表示検証
@@ -240,7 +242,7 @@
              - kind: SetVariable
                id: setVariable_itemStoreStatusP11
                variable: Topic.判定要請状態
-@@ -616,7 +655,7 @@
+@@ -616,7 +657,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP12
                variable: Topic.優先度表示検証
@@ -249,7 +251,7 @@
              - kind: SetVariable
                id: setVariable_itemStoreStatusP12
                variable: Topic.判定避難状態
-@@ -636,7 +675,7 @@
+@@ -636,7 +677,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP13
                variable: Topic.優先度表示検証
@@ -258,7 +260,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP13
                variable: Topic.判定表示行
-@@ -652,7 +691,7 @@
+@@ -652,7 +693,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP14
                variable: Topic.優先度表示検証
@@ -267,7 +269,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP14
                variable: Topic.判定表示行
-@@ -668,7 +707,7 @@
+@@ -668,7 +709,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP15
                variable: Topic.優先度表示検証
@@ -276,7 +278,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP15
                variable: Topic.判定表示行
-@@ -684,7 +723,7 @@
+@@ -684,7 +725,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP16
                variable: Topic.優先度表示検証
@@ -285,7 +287,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP16
                variable: Topic.判定表示行
-@@ -700,7 +739,7 @@
+@@ -700,7 +741,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP17
                variable: Topic.優先度表示検証
@@ -294,7 +296,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP17
                variable: Topic.判定表示行
-@@ -716,7 +755,7 @@
+@@ -716,7 +757,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP18
                variable: Topic.優先度表示検証
@@ -303,7 +305,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP18
                variable: Topic.判定表示行
-@@ -732,7 +771,7 @@
+@@ -732,7 +773,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP19
                variable: Topic.優先度表示検証
@@ -312,7 +314,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP19
                variable: Topic.判定表示行
-@@ -748,7 +787,7 @@
+@@ -748,7 +789,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP20
                variable: Topic.優先度表示検証
@@ -321,7 +323,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP20
                variable: Topic.判定表示行
-@@ -764,7 +803,7 @@
+@@ -764,7 +805,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP21
                variable: Topic.優先度表示検証
@@ -330,7 +332,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP21
                variable: Topic.判定表示行
-@@ -780,7 +819,7 @@
+@@ -780,7 +821,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP22
                variable: Topic.優先度表示検証
@@ -339,7 +341,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP22
                variable: Topic.判定表示行
-@@ -796,7 +835,7 @@
+@@ -796,7 +837,7 @@
              - kind: SetVariable
                id: setVariable_itemValidP23
                variable: Topic.優先度表示検証
@@ -348,7 +350,7 @@
              - kind: SetVariable
                id: setVariable_itemLineP23
                variable: Topic.判定表示行
-@@ -833,7 +872,7 @@
+@@ -833,7 +874,7 @@
                id: setVariable_itemRender
                variable: Topic.優先度表示組立
                value: |-
@@ -357,7 +359,28 @@
                  " & Topic.判定事実 & "
  
                  【初動措置　優先度：高】
-@@ -958,6 +997,14 @@
+@@ -889,6 +930,20 @@
+                         binding:
+                           case_id: Topic.案件ID
+                       flowId: 9a770168-65a8-f111-aaad-7ced8d2f9cab
++                    - kind: ConditionGroup
++                      id: conditionGroup_clearImageAnswerAfterSave
++                      conditions:
++                        - id: conditionGroup_clearImageAnswerAfterSave_item
++                          condition: =Topic.写真回答反映中
++                          actions:
++                            - kind: SetVariable
++                              id: setVariable_clearImageAnswerAfterSave
++                              variable: Global.写真ユーザー回答テキスト
++                              value: ="ー"
++                            - kind: SetVariable
++                              id: setVariable_clearImageAnswerPending
++                              variable: Topic.写真回答反映中
++                              value: =false
+                     - kind: SetVariable
+                       id: setVariable_priorityAfterSaveSnapshot
+                       variable: Topic.優先度経路診断
+@@ -958,6 +1013,14 @@
                                    id: setVariable_resyncHistoryFromGlobal
                                    variable: Topic.追加情報履歴
                                    value: =Global.緊急保安追加情報履歴
@@ -368,11 +391,11 @@
 +                                - kind: SetVariable
 +                                  id: setVariable_userConsultSignalAfterWait
 +                                  variable: Topic.ユーザー相談あり
-+                                  value: '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
++                                  value: '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "どうしよう" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "困って" in t, "迷って" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
                                  - kind: ConditionGroup
                                    id: conditionGroup_repairRequestedInPriority
                                    conditions:
-@@ -980,21 +1027,18 @@
+@@ -980,21 +1043,26 @@
                                            id: goto_repairSelect
                                            actionId: setVariable_repairSelectInit
                                  - kind: ConditionGroup
@@ -388,8 +411,15 @@
 -                                          id: setVariable_priorityPurposeSwitchToJunkaiInput
 -                                          variable: Global.巡回切替入力
 -                                          value: =Topic.優先度追加回答
--                                        - kind: SetVariable
++                                          id: setVariable_appendConsultHistory
++                                          variable: Topic.追加情報履歴
++                                          value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
+                                         - kind: SetVariable
 -                                          id: setVariable_priorityPurposeSwitchToJunkaiImageReceptionOff
++                                          id: setVariable_syncHistoryAfterConsult
++                                          variable: Global.緊急保安追加情報履歴
++                                          value: =Topic.追加情報履歴
++                                        - kind: SetVariable
 +                                          id: setVariable_keepImageReceptionOnForConsult
                                            variable: Global.緊急保安画像受付中
 -                                          value: =false
@@ -398,20 +428,20 @@
 +                                          value: =true
 +                                        - kind: GotoAction
 +                                          id: goto_priorityConsult
-+                                          actionId: setVariable_userConsultAnswerReset
++                                          actionId: setVariable_imageAnswerPending
                                    elseActions:
                                      - kind: SetVariable
                                        id: setVariable_appendPriorityHistory
-@@ -1023,7 +1067,7 @@
+@@ -1023,7 +1091,7 @@
                                                  {Topic.追加情報履歴}
                                      - kind: GotoAction
                                        id: goto_priorityAgain
 -                                      actionId: setVariable_priorityPrompt
-+                                      actionId: setVariable_userConsultSourceReset
++                                      actionId: setVariable_imageAnswerPending
                      - kind: SetVariable
                        id: setVariable_imageReceptionOffDone
                        variable: Global.緊急保安画像受付中
-@@ -1054,22 +1098,18 @@
+@@ -1054,22 +1122,18 @@
            id: setVariable_imageReceptionOffGuideFailed
            variable: Global.緊急保安画像受付中
            value: =false
@@ -434,7 +464,7 @@
      - kind: ConditionGroup
        id: conditionGroup_repairSelectMode
        conditions:
-@@ -1080,12 +1120,10 @@
+@@ -1080,12 +1144,10 @@
                id: setVariable_repairExcluded
                variable: Topic.修理除外工法
                value: =""
@@ -447,7 +477,7 @@
              - kind: SetVariable
                id: setVariable_repairKnownPipe
                variable: Topic.確定管種
-@@ -1094,27 +1132,22 @@
+@@ -1094,27 +1156,22 @@
                id: setVariable_repairKnownSize
                variable: Topic.確定口径
                value: =If("500A" in Topic.修理判定用テキスト, "500A", If("450A" in Topic.修理判定用テキスト, "450A", If("400A" in Topic.修理判定用テキスト, "400A", If("350A" in Topic.修理判定用テキスト, "350A", If("300A" in Topic.修理判定用テキスト, "300A", If("250A" in Topic.修理判定用テキスト, "250A", If("200A" in Topic.修理判定用テキスト, "200A", If("150A" in Topic.修理判定用テキスト, "150A", If("125A" in Topic.修理判定用テキスト, "125A", If("100A" in Topic.修理判定用テキスト, "100A", If("80A" in Topic.修理判定用テキスト, "80A", If("75A" in Topic.修理判定用テキスト, "75A", If("65A" in Topic.修理判定用テキスト, "65A", If("50A" in Topic.修理判定用テキスト, "50A", If("40A" in Topic.修理判定用テキスト, "40A", If("32A" in Topic.修理判定用テキスト, "32A", If("25A" in Topic.修理判定用テキスト, "25A", If("20A" in Topic.修理判定用テキスト, "20A", If("15A" in Topic.修理判定用テキスト, "15A", "")))))))))))))))))))
@@ -475,7 +505,7 @@
              - kind: SetVariable
                id: setVariable_repairKnownList
                variable: Topic.確定条件一覧
-@@ -1124,7 +1157,6 @@
+@@ -1124,7 +1181,6 @@
                  & "設備区分：" & If(Len(Topic.確定設備区分) = 0, "未確定", Topic.確定設備区分) & Char(10)
                  & "施工環境：" & If(Len(Topic.確定施工環境) = 0, "未確定", Topic.確定施工環境) & Char(10)
                  & "漏えい箇所：" & If(Len(Topic.確定漏えい箇所) = 0, "未確定", Topic.確定漏えい箇所)
@@ -483,7 +513,7 @@
              - kind: SetVariable
                id: setVariable_repairCandidatePrompt
                variable: Topic.修理適用範囲取得プロンプト
-@@ -1146,7 +1178,6 @@
+@@ -1146,7 +1202,6 @@
  
                  # 出力
                  （上記を工法ごとに、原文相当のまま記載。前置き・総括・引用番号は付けない）"
@@ -491,7 +521,7 @@
              - kind: SearchAndSummarizeContent
                id: search_repairScope
                displayName: 21A_修理工法の適用範囲の取得
-@@ -1157,15 +1188,12 @@
+@@ -1157,15 +1212,12 @@
                fileSearchDataSource:
                  searchFilesMode:
                    kind: DoNotSearchFiles
@@ -507,7 +537,7 @@
              - kind: AnswerQuestionWithAI
                id: answer_repairCandidates
                displayName: 21B_修理工法の候補整形
-@@ -1240,7 +1268,6 @@
+@@ -1240,7 +1292,6 @@
                        id: question_repairChoice
                        interruptionPolicy:
                          allowInterruption: true
@@ -515,7 +545,7 @@
                        variable: Topic.修理選択回答
                        prompt: |-
                          {Topic.修理候補結果}
-@@ -1251,12 +1278,10 @@
+@@ -1251,12 +1302,10 @@
                        entity:
                          kind: StringPrebuiltEntity
                          sensitivityLevel: None
@@ -528,7 +558,7 @@
                      - kind: ConditionGroup
                        id: conditionGroup_repairChoiceZero
                        conditions:
-@@ -1267,20 +1292,16 @@
+@@ -1267,20 +1316,16 @@
                                id: setVariable_repairExcludedAppend
                                variable: Topic.修理除外工法
                                value: =Topic.修理除外工法 & Char(10) & Trim(First(Split(Last(Split(Topic.修理候補結果, "【考えられる修理方法】")).Value, "【判断に使った現場条件】")).Value)
@@ -549,7 +579,7 @@
                      - kind: ConditionGroup
                        id: conditionGroup_repairChoiceZeroLimit
                        conditions:
-@@ -1294,20 +1315,16 @@
+@@ -1294,20 +1339,16 @@
                                  現場条件を変えて探し直しますので、分かる範囲で入力してください。
  
                                  {Topic.確定条件一覧}
@@ -570,7 +600,7 @@
                      - kind: ConditionGroup
                        id: conditionGroup_repairChosenResolved
                        conditions:
-@@ -1336,7 +1353,6 @@
+@@ -1336,7 +1377,6 @@
  
                                  # 出力
                                  （上記を原文相当のまま記載。前置き・総括・引用番号は付けない）"
@@ -578,7 +608,7 @@
                              - kind: SearchAndSummarizeContent
                                id: search_repairProcedure
                                displayName: 22A_選択工法の記述の取得
-@@ -1347,15 +1363,12 @@
+@@ -1347,15 +1387,12 @@
                                fileSearchDataSource:
                                  searchFilesMode:
                                    kind: DoNotSearchFiles
@@ -594,7 +624,7 @@
                              - kind: AnswerQuestionWithAI
                                id: answer_repairProcedure
                                displayName: 22B_作業手順の整形
-@@ -1394,7 +1407,6 @@
+@@ -1394,7 +1431,6 @@
                                  一般知識で補完しないでください。取得した内容に書かれていない手順を作らないでください。
                                  指定された見出しだけを、順序どおりに出力してください。
                                  前置き・総括・引用番号・URLは出力しないでください。
@@ -602,7 +632,7 @@
                              - kind: ConditionGroup
                                id: conditionGroup_repairProcedureFound
                                conditions:
-@@ -1407,27 +1419,22 @@
+@@ -1407,27 +1443,22 @@
                                          {Topic.修理手順結果}
  
                                          安全確保を最優先に、落ち着いて対応してください。
@@ -630,7 +660,7 @@
                          - kind: GotoAction
                            id: goto_repairChoiceAgain
                            actionId: question_repairChoice
-@@ -1442,15 +1449,12 @@
+@@ -1442,15 +1473,12 @@
  
                      未確定の項目や、漏えい量・圧力・配管形状など分かるものを入力してください。
                      条件を足して探し直します。
@@ -646,7 +676,7 @@
      - kind: SetVariable
        id: setVariable_investigationPrompt
        variable: Topic.調査指示プロンプト
-@@ -1473,7 +1477,6 @@
+@@ -1473,7 +1501,6 @@
          ・（まだ不明な場合のみ。全て確認済みなら「なし」）
          【調査の指示】
          ・（業務基準に基づく具体的な調査手順）"
@@ -654,7 +684,7 @@
      - kind: SearchAndSummarizeContent
        id: search_investigation
        displayName: 12_調査指示
-@@ -1484,14 +1487,11 @@
+@@ -1484,14 +1511,11 @@
        fileSearchDataSource:
          searchFilesMode:
            kind: DoNotSearchFiles
@@ -669,7 +699,7 @@
      - kind: ConditionGroup
        id: conditionGroup_investigationSucceeded
        conditions:
-@@ -1514,18 +1514,15 @@
+@@ -1514,18 +1538,15 @@
                                id: setVariable_investigationRetryIncrement
                                variable: Topic.問診再試行回数
                                value: =Topic.問診再試行回数 + 1
@@ -689,7 +719,7 @@
                              - kind: ConditionGroup
                                id: conditionGroup_repairRequestedInInvestigation
                                conditions:
-@@ -1536,16 +1533,13 @@
+@@ -1536,16 +1557,13 @@
                                        id: setVariable_appendRepairRequestFromInvestigation
                                        variable: Topic.追加情報履歴
                                        value: =Topic.追加情報履歴 & Char(10) & "問診回答：" & Topic.問診回答
@@ -706,7 +736,7 @@
                              - kind: ConditionGroup
                                id: conditionGroup_investigationPurposeSwitchToJunkai
                                conditions:
-@@ -1556,40 +1550,32 @@
+@@ -1556,40 +1574,32 @@
                                        id: setVariable_investigationPurposeSwitchToJunkaiInput
                                        variable: Global.巡回切替入力
                                        value: =Topic.問診回答
@@ -748,7 +778,7 @@
      - kind: ConditionGroup
        id: conditionGroup_leakConfirmed
        conditions:
-@@ -1600,7 +1586,6 @@
+@@ -1600,7 +1610,6 @@
                id: setVariable_repairRetryCount
                variable: Topic.修理確認再試行回数
                value: =0
@@ -756,7 +786,7 @@
              - kind: SetVariable
                id: setVariable_repairPrompt
                variable: Topic.修理指示プロンプト
-@@ -1625,7 +1610,6 @@
+@@ -1625,7 +1634,6 @@
                  合格 または 不合格
                  【不足情報・不足条件】
                  ・（あれば質問形式で。全て確認済み・合格なら「なし」）"
@@ -764,7 +794,7 @@
              - kind: SearchAndSummarizeContent
                id: search_repair
                displayName: 13_修理方法提示
-@@ -1636,14 +1620,11 @@
+@@ -1636,14 +1644,11 @@
                fileSearchDataSource:
                  searchFilesMode:
                    kind: DoNotSearchFiles
@@ -779,7 +809,7 @@
              - kind: ConditionGroup
                id: conditionGroup_repairSucceeded
                conditions:
-@@ -1723,31 +1704,25 @@
+@@ -1723,31 +1728,25 @@
                    activity: |-
                      02_作業要領から修理方法に関する情報を取得できませんでした。
                      一般知識で補完せず終了します。

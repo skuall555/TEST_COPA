@@ -23,6 +23,14 @@ class NativeChecks
         return record;
     }
 
+    static FormulaValue JsonValue(JsonElement value) => value.ValueKind switch
+    {
+        JsonValueKind.True => FormulaValue.New(true),
+        JsonValueKind.False => FormulaValue.New(false),
+        JsonValueKind.Number => FormulaValue.New(value.GetDouble()),
+        _ => FormulaValue.New(value.GetString()!),
+    };
+
     static void Main(string[] args)
     {
         var root = JsonDocument.Parse(File.ReadAllText(args[0])).RootElement;
@@ -58,10 +66,18 @@ class NativeChecks
         foreach (var item in root.GetProperty("semanticCases").EnumerateArray())
         {
             var fields = item.GetProperty("topic").EnumerateObject()
-                .Select(pair => new NamedValue(pair.Name, FormulaValue.New(pair.Value.GetString()!)));
-            var context = FormulaValue.NewRecordFromFields(
-                new NamedValue("Topic", FormulaValue.NewRecordFromFields(fields))
-            );
+                .Select(pair => new NamedValue(pair.Name, JsonValue(pair.Value)));
+            var contextFields = new List<NamedValue>
+            {
+                new NamedValue("Topic", FormulaValue.NewRecordFromFields(fields)),
+            };
+            if (item.TryGetProperty("global", out var globalElement))
+            {
+                var globalFields = globalElement.EnumerateObject()
+                    .Select(pair => new NamedValue(pair.Name, JsonValue(pair.Value)));
+                contextFields.Add(new NamedValue("Global", FormulaValue.NewRecordFromFields(globalFields)));
+            }
+            var context = FormulaValue.NewRecordFromFields(contextFields);
             var result = engine.Eval(item.GetProperty("expression").GetString()!, context, options);
             var success = item.TryGetProperty("expectedString", out var expectedString)
                 ? result is StringValue text && text.Value == expectedString.GetString()
