@@ -49,9 +49,8 @@ def parent_list(value, ident):
     return None
 
 
-def wire(answer="ー", warning=False):
+def wire(warning=False):
     rows = [
-        f"[[ANSWER]]{answer}[[/ANSWER]]",
         "[[FACTS]]└台所で臭気あり[[/FACTS]]",
         "[[EMERGENCY]]通常|避難と要請を同時に高とする具体的危険は未報告[[/EMERGENCY]]",
     ]
@@ -111,7 +110,7 @@ def main():
             previous = old.get(ident, {})
             if item.get("kind") == "SetVariable" and item.get("value") != previous.get("value"):
                 variable = item.get("variable", "")
-                expected = "Boolean" if variable in {"Topic.ユーザー相談あり", "Topic.撮影要領再利用", "Topic.デバッグ表示"} else "Number" if variable in {"Topic.撮影要領再利用秒数", "Topic.画像事実実質長", "Topic.優先度様式再試行回数"} else "DateTime" if variable == "Global.画像要領キャッシュ取得時刻" else "String"
+                expected = "Boolean" if variable in {"Topic.ユーザー相談あり", "Topic.撮影要領再利用", "Topic.デバッグ表示", "Global.緊急保安画像受付中"} else "Number" if variable in {"Topic.撮影要領再利用秒数", "Topic.画像事実実質長", "Topic.優先度様式再試行回数"} else "DateTime" if variable == "Global.画像要領キャッシュ取得時刻" else "String"
                 expressions.append({"id": label + ":" + ident, "expression": item["value"][1:], "expected": expected})
             if item.get("kind") in {"AnswerQuestionWithAI", "SearchAndSummarizeContent"} and item.get("userInput") != previous.get("userInput"):
                 expressions.append({"id": label + ":" + ident + ":input", "expression": item["userInput"][1:], "expected": "String"})
@@ -131,6 +130,7 @@ def main():
             global_types.setdefault(name, "String")
     for name in ["ユーザー相談あり", "撮影要領再利用", "デバッグ表示"]:
         topic_types[name] = "Boolean"
+    global_types["緊急保安画像受付中"] = "Boolean"
     for name in ["撮影要領再利用秒数", "画像事実実質長", "優先度様式再試行回数"]:
         topic_types[name] = "Number"
     global_types["画像要領キャッシュ取得時刻"] = "DateTime"
@@ -146,10 +146,10 @@ def main():
         if item.get("kind") == "SetVariable"
     ]
     field_cases = [
-        {"name": "progress answer is dash", "text": wire(), "accept": True, "contains": "【ユーザーへの回答】\nー"},
-        {"name": "consultation answer is retained", "text": wire("└次の調査は取得したマニュアルの範囲で案内します"), "accept": True, "contains": "【ユーザーへの回答】\n└次の調査"},
-        {"name": "warning status is accepted but incomplete", "text": wire(warning=True), "accept": True, "contains": "ポケット警報器等の設置：対応済み【!】", "incomplete": "あり"},
-        {"name": "legacy payload without ANSWER is rejected", "text": wire().replace("[[ANSWER]]ー[[/ANSWER]]\n", ""), "accept": False},
+        {"name": "progress answer is dash", "text": wire(), "answer": "ー", "accept": True, "contains": "【ユーザーへの回答】\nー"},
+        {"name": "consultation answer is retained", "text": wire(), "answer": "└次の調査は取得したマニュアルの範囲で案内します", "accept": True, "contains": "【ユーザーへの回答】\n└次の調査"},
+        {"name": "warning status is accepted but incomplete", "text": wire(warning=True), "answer": "ー", "accept": True, "contains": "ポケット警報器等の設置：対応済み【!】", "incomplete": "あり"},
+        {"name": "malformed priority payload is rejected", "text": wire().replace("[[FACTS]]└台所で臭気あり[[/FACTS]]\n", ""), "answer": "ー", "accept": False},
     ]
     image_index = index(documents["image"])
     consult_expression = index(documents["field"])["setVariable_userConsultSignal"]["value"][1:]
@@ -158,6 +158,7 @@ def main():
     image_unrelated = "■現場対応との関連判定\n・関連なし\n■ユーザー向けコメント\n・送っていただいた画像は鉢植えに見えます。進捗要素は見当たりません。\n■写っている物\n・鉢植え"
     image_related = "■現場対応との関連判定\n・関連あり\n■ユーザー向けコメント\n・ー\n■写っている物\n・消火器"
     semantic_cases = [
+        {"name": "initial gas odor report is not consultation", "expression": consult_expression, "topic": {"最新利用者入力": "台所でガス臭い"}, "expectedBoolean": False},
         {"name": "plain progress is not consultation", "expression": consult_expression, "topic": {"最新利用者入力": "消火器設置済み"}, "expectedBoolean": False},
         {"name": "question triggers consultation", "expression": consult_expression, "topic": {"最新利用者入力": "このあと何を調査すればいい？"}, "expectedBoolean": True},
         {"name": "unrelated image marker parses", "expression": relation_expression, "topic": {"画像事実": image_unrelated}, "expectedString": "関連なし"},

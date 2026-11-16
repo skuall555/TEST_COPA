@@ -80,6 +80,7 @@ class NativeChecks
             var state = new Dictionary<string, FormulaValue>
             {
                 ["優先度判定結果"] = FormulaValue.New(item.GetProperty("text").GetString()!),
+                ["判定ユーザー回答"] = FormulaValue.New(item.GetProperty("answer").GetString()!),
             };
             string failure = null;
             foreach (var step in root.GetProperty("fieldSteps").EnumerateArray())

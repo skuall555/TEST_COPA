@@ -107,7 +107,7 @@ def build_field(raw):
         "autoSend": False,
         "variable": "Topic.ユーザー相談根拠",
         "userInput": '=Topic.最新利用者入力 & Char(10) & "現場の既報：" & Topic.初回入力 & Char(10) & Topic.追加情報履歴',
-        "additionalInstructions": "検索できた原文を、質問への回答に直接必要な箇所だけ、文書名・見出しとともに原文に近い形で提示してください。一般知識で補完しないでください。現場事実や優先度を作らないでください。質問と直接関係する根拠がない場合は「なし」とだけ出力してください。",
+        "additionalInstructions": "利用者の今回の質問へ、検索できたマニュアル原文に直接根拠がある範囲だけで、現場で読みやすい短い文章として回答してください。一般知識で補完せず、現場事実や優先度を作らないでください。質問と直接関係する根拠がない場合は「なし」とだけ出力してください。見出しや前置きは付けないでください。",
         "fileSearchDataSource": {"searchFilesMode": {"kind": "DoNotSearchFiles"}},
         "knowledgeSources": {"kind": "SearchSpecificKnowledgeSources", "knowledgeSources": [
             "cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r",
@@ -116,56 +116,42 @@ def build_field(raw):
         "applyModelKnowledgeSetting": False,
     }
     consult_nodes = [
+        setv("setVariable_userConsultAnswerReset", "Topic.判定ユーザー回答", '="ー"'),
         setv("setVariable_userConsultSourceReset", "Topic.ユーザー相談根拠", '="なし"'),
         setv("setVariable_userConsultSignal", "Topic.ユーザー相談あり", CONSULT_SIGNAL),
-        condition("conditionGroup_userConsultSearch", "=Topic.ユーザー相談あり", [manual_search]),
+        condition("conditionGroup_userConsultSearch", "=Topic.ユーザー相談あり", [
+            manual_search,
+            setv("setVariable_userConsultAnswer", "Topic.判定ユーザー回答", '=If(Or(IsBlank(Topic.ユーザー相談根拠), Trim(Topic.ユーザー相談根拠) = "なし"), "└関連するマニュアル原文を取得できなかったため、この質問には推測で回答できません。進捗状況の判定は継続します。", If(StartsWith(Trim(Topic.ユーザー相談根拠), "└"), Trim(Topic.ユーザー相談根拠), "└" & Trim(Topic.ユーザー相談根拠)))'),
+        ]),
     ]
     insert_before(doc, "setVariable_priorityPrompt", consult_nodes)
 
     ix = index(doc)
     prompt = ix["setVariable_priorityPrompt"]["value"]
     prompt = prompt.replace(
-        '【追加報告・画像結果】\n" & Topic.追加情報履歴 & "\n',
-        '【追加報告・画像結果】\n" & Topic.追加情報履歴 & "\n【今回の最新入力】\n" & Topic.最新利用者入力 & "\n【今回の入力に質問・相談の表現があるか】\n" & If(Topic.ユーザー相談あり, "あり", "なし") & "\n【質問・相談に回答するため取得したマニュアル原文】\n" & Topic.ユーザー相談根拠 & "\n'
-    )
-    prompt = prompt.replace(
-        "FACTS・EMERGENCY・P01〜P13・NEXT・CHECKを各1回、順番どおり出力する。",
-        "ANSWER・FACTS・EMERGENCY・P01〜P13・NEXT・CHECKを各1回、順番どおり出力する。"
-    )
-    prompt = prompt.replace(
-        "[[FACTS]]確認できた事実を└から始まる行で記載[[/FACTS]]",
-        "[[ANSWER]]質問・相談への回答。質問・相談が無い場合はー。回答がある場合は└から始める[[/ANSWER]]\n[[FACTS]]確認できた事実を└から始まる行で記載[[/FACTS]]"
-    )
-    prompt = prompt.replace(
         "優先度は高／中／低、状態は対応済み／未実施／要確認の一つずつ。",
         "優先度は高／中／低、状態は対応済み／対応済み【!】／未実施／要確認の一つずつ。"
     )
     prompt = prompt.replace(
         "# 実施済みと範囲・効果",
-        "# ユーザーへの回答\n今回の最新入力が進捗報告だけならANSWERは必ず「ー」。質問・相談が含まれる場合だけ、取得したマニュアル原文または固定ガイドに直接根拠がある範囲で短く回答する。根拠が取得できない場合は、その旨をANSWERで伝え、推測で回答しない。現場対応と無関係な質問には、現場アドバイザーの対象外であることと、進捗報告は継続できることを伝える。ANSWERの内容をFACTSや優先度の根拠に流用しない。質問文を実施済み・未実施の報告とみなさない。\n\n# 写真の警告付き対応済み\n画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。\n\n# 実施済みと範囲・効果"
+        "# 写真の警告付き対応済み\n画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。\n\n# 実施済みと範囲・効果"
     )
     ix["setVariable_priorityPrompt"]["value"] = prompt
-    ix["answer_priority"]["additionalInstructions"] = "固定ガイド、報告された現場事実、取得したマニュアル原文だけで処理する。内部ブロック形式でANSWERから順に返し、外部検索や前置き、ユーザー用見出しの直接出力はしない。進捗報告だけならANSWERはー。質問・相談には根拠の範囲で回答し、根拠なしでも処理全体を停止しない。ANSWERや質問文を優先度の事実に混ぜない。画像の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。"
+    ix["answer_priority"]["additionalInstructions"] = "固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。"
 
-    # Keep the active field dialog instead of ending it for manual/check wording.
+    # Keep consultation inside the active field dialog, without adding the question to fact history.
     manual_switch = ix["conditionGroup_priorityPurposeSwitchToJunkai"]
-    replace(doc, "conditionGroup_priorityPurposeSwitchToJunkai", copy.deepcopy(manual_switch["elseActions"]))
     insert_after(doc, "setVariable_resyncHistoryFromGlobal", [
         setv("setVariable_latestUserInputAfterWait", "Topic.最新利用者入力", "=Topic.優先度追加回答"),
+        setv("setVariable_userConsultSignalAfterWait", "Topic.ユーザー相談あり", CONSULT_SIGNAL),
+    ])
+    replace(doc, "conditionGroup_priorityPurposeSwitchToJunkai", [
+        condition("conditionGroup_priorityConsultOrProgress", "=Topic.ユーザー相談あり", [
+            setv("setVariable_keepImageReceptionOnForConsult", "Global.緊急保安画像受付中", "=true"),
+            {"kind": "GotoAction", "id": "goto_priorityConsult", "actionId": "setVariable_userConsultAnswerReset"},
+        ], copy.deepcopy(manual_switch["elseActions"]))
     ])
     index(doc)["goto_priorityAgain"]["actionId"] = "setVariable_userConsultSourceReset"
-
-    # Add ANSWER parsing immediately after the envelope check.
-    envelope = index(doc)["setVariable_priorityFormatEnvelope"]
-    envelope["value"] = envelope["value"].replace('StartsWith(Trim(Topic.優先度表示原文), "[[FACTS]]")', 'StartsWith(Trim(Topic.優先度表示原文), "[[ANSWER]]")')
-    answer_nodes = [
-        setv("setVariable_itemSectionANSWER", "Topic.優先度表示区分", '=First(Split(Last(Split(Topic.優先度表示原文, "[[ANSWER]]")).Value, "[[/ANSWER]]")).Value'),
-        setv("setVariable_itemUniqueANSWER", "Topic.優先度表示検証", '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(CountRows(Split(Topic.優先度表示原文, "[[ANSWER]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/ANSWER]]")) = 2), "合格", "不合格:itemUniqueANSWER"))'),
-        setv("setVariable_itemRemoveANSWER", "Topic.判定残余", '=Substitute(Topic.判定残余, "[[ANSWER]]" & Topic.優先度表示区分 & "[[/ANSWER]]", "")'),
-        setv("setVariable_itemBodyANSWER", "Topic.判定ユーザー回答", '=With({bodyText: Trim(Substitute(Substitute(Topic.優先度表示区分, "【", "（"), "】", "）"))}, If(bodyText = "ー", "ー", Substitute(Substitute(If(StartsWith(bodyText, "・"), "└" & Mid(bodyText, 2), If(StartsWith(bodyText, "- "), "└" & Mid(bodyText, 3), If(StartsWith(bodyText, "└"), bodyText, "└" & bodyText))), Char(10) & "・", Char(10) & "└"), Char(10) & "- ", Char(10) & "└")))'),
-        setv("setVariable_itemBodyValidANSWER", "Topic.優先度表示検証", '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(Len(Topic.判定ユーザー回答) > 0, Not("[[" in Topic.判定ユーザー回答), Or(Topic.判定ユーザー回答 = "ー", StartsWith(Topic.判定ユーザー回答, "└"))), "合格", "不合格:itemBodyValidANSWER"))'),
-    ]
-    insert_after(doc, "setVariable_priorityFormatEnvelope", answer_nodes)
 
     # Accept the warning status while keeping it incomplete until the warning is resolved.
     for code in [f"P{i:02d}" for i in range(1, 24)]:

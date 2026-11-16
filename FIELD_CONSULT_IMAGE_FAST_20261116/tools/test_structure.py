@@ -79,9 +79,14 @@ def main():
     assert not any(item.get("id") == "conditionGroup_priorityPurposeSwitchToJunkai" for item in walk(field))
 
     prompt = node(field, "setVariable_priorityPrompt")["value"]
-    assert "[[ANSWER]]" in prompt and "進捗報告だけならANSWERは必ず" in prompt
-    assert "ANSWERの内容をFACTSや優先度の根拠に流用しない" in prompt
+    assert "[[ANSWER]]" not in prompt and "FACTS・EMERGENCY・P01〜P13・NEXT・CHECK" in prompt
+    assert 'StartsWith(Trim(Topic.優先度表示原文), "[[FACTS]]")' in node(field, "setVariable_priorityFormatEnvelope")["value"]
     assert "対応済み【!】は高優先度の完了扱いにせず" in prompt
+    assert node(field, "setVariable_userConsultAnswerReset")["variable"] == "Topic.判定ユーザー回答"
+    consult_branch = node(field, "conditionGroup_priorityConsultOrProgress")
+    assert not any(item.get("id") == "setVariable_appendPriorityHistory" for item in walk(consult_branch["conditions"][0]["actions"]))
+    assert any(item.get("id") == "setVariable_appendPriorityHistory" for item in walk(consult_branch["elseActions"]))
+    assert next(item for item in walk(consult_branch["conditions"][0]["actions"]) if item.get("kind") == "GotoAction")["actionId"] == "setVariable_userConsultAnswerReset"
     assert "【ユーザーへの回答】" in node(field, "setVariable_itemRender")["value"]
     assert node(field, "goto_priorityAgain")["actionId"] == "setVariable_userConsultSourceReset"
     for code in [f"P{i:02d}" for i in range(1, 24)]:

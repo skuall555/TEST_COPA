@@ -125,6 +125,10 @@ beginDialog:
           condition: =!IsBlank(Topic.優先度ガイド取得結果)
           actions:
             - kind: SetVariable
+              id: setVariable_userConsultAnswerReset
+              variable: Topic.判定ユーザー回答
+              value: ="ー"
+            - kind: SetVariable
               id: setVariable_userConsultSourceReset
               variable: Topic.ユーザー相談根拠
               value: ="なし"
@@ -144,7 +148,7 @@ beginDialog:
                       autoSend: false
                       variable: Topic.ユーザー相談根拠
                       userInput: =Topic.最新利用者入力 & Char(10) & "現場の既報：" & Topic.初回入力 & Char(10) & Topic.追加情報履歴
-                      additionalInstructions: 検索できた原文を、質問への回答に直接必要な箇所だけ、文書名・見出しとともに原文に近い形で提示してください。一般知識で補完しないでください。現場事実や優先度を作らないでください。質問と直接関係する根拠がない場合は「なし」とだけ出力してください。
+                      additionalInstructions: 利用者の今回の質問へ、検索できたマニュアル原文に直接根拠がある範囲だけで、現場で読みやすい短い文章として回答してください。一般知識で補完せず、現場事実や優先度を作らないでください。質問と直接関係する根拠がない場合は「なし」とだけ出力してください。見出しや前置きは付けないでください。
                       fileSearchDataSource:
                         searchFilesMode:
                           kind: DoNotSearchFiles
@@ -154,6 +158,10 @@ beginDialog:
                           - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
                           - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
                       applyModelKnowledgeSetting: false
+                    - kind: SetVariable
+                      id: setVariable_userConsultAnswer
+                      variable: Topic.判定ユーザー回答
+                      value: =If(Or(IsBlank(Topic.ユーザー相談根拠), Trim(Topic.ユーザー相談根拠) = "なし"), "└関連するマニュアル原文を取得できなかったため、この質問には推測で回答できません。進捗状況の判定は継続します。", If(StartsWith(Trim(Topic.ユーザー相談根拠), "└"), Trim(Topic.ユーザー相談根拠), "└" & Trim(Topic.ユーザー相談根拠)))
             - kind: SetVariable
               id: setVariable_priorityPrompt
               variable: Topic.優先度判定プロンプト
@@ -165,19 +173,12 @@ beginDialog:
                 " & Topic.初回入力 & "
                 【追加報告・画像結果】
                 " & Topic.追加情報履歴 & "
-                【今回の最新入力】
-                " & Topic.最新利用者入力 & "
-                【今回の入力に質問・相談の表現があるか】
-                " & If(Topic.ユーザー相談あり, "あり", "なし") & "
-                【質問・相談に回答するため取得したマニュアル原文】
-                " & Topic.ユーザー相談根拠 & "
                 最新の明示報告を優先する。以前のAIの優先度・状態は事実ではない。ユーザーの操作・設置・調査の実施事実を取り消さず、対象と効果・未調査範囲を分ける。
                 履歴の写真有の実施措置は確認された範囲で対応済みとし、要確認項目は必要な次行動・確認文に反映する。画像を参照できない場合は見たふりをせず、写らないことだけで未実施にしない。初報の通常臭気だけならP11・P12低。具体的危険や既往の高はガイドの条件で判断する。
                 # 今回の内部出力契約（従来の見出し指定より優先）
                 ユーザー用の高・中・低の見出しをあなたが作文しない。措置ごとに一つの優先度・実施状況・根拠を返し、YAMLがその優先度だけを使って表示欄を決める。
-                ANSWER・FACTS・EMERGENCY・P01〜P13・NEXT・CHECKを各1回、順番どおり出力する。P14〜P23は今回必要な項目だけ各1回、P13とNEXTの間に出力し、不要ならブロック自体を省略する。コードブロック、前置き、見出し、追加マーカーは禁止。本文には区切り文字の半角縦棒|や[[、]]、【、】を含めない。行内の情報を勝手に省略せず、入力事実以外は作らない。
+                FACTS・EMERGENCY・P01〜P13・NEXT・CHECKを各1回、順番どおり出力する。P14〜P23は今回必要な項目だけ各1回、P13とNEXTの間に出力し、不要ならブロック自体を省略する。コードブロック、前置き、見出し、追加マーカーは禁止。本文には区切り文字の半角縦棒|や[[、]]、【、】を含めない。行内の情報を勝手に省略せず、入力事実以外は作らない。
                 EMERGENCYの判定語は高または通常だけ。必ず語の直後に半角の縦棒|を1つ入れ、「通常|理由」または「高|理由」の形式にする。
-                [[ANSWER]]質問・相談への回答。質問・相談が無い場合はー。回答がある場合は└から始める[[/ANSWER]]
                 [[FACTS]]確認できた事実を└から始まる行で記載[[/FACTS]]
                 [[EMERGENCY]]判定語|理由[[/EMERGENCY]]
                 [[P01]]優先度|実施状況|対象事実とこの措置の成立条件[[/P01]]
@@ -223,9 +224,6 @@ beginDialog:
                 P22：追加対象の供給遮断（必要時のみ。不要なら対象外）
                 P23：圧力・供給支障の確認と調査（必要時のみ。不要なら対象外）
 
-                # ユーザーへの回答
-                今回の最新入力が進捗報告だけならANSWERは必ず「ー」。質問・相談が含まれる場合だけ、取得したマニュアル原文または固定ガイドに直接根拠がある範囲で短く回答する。根拠が取得できない場合は、その旨をANSWERで伝え、推測で回答しない。現場対応と無関係な質問には、現場アドバイザーの対象外であることと、進捗報告は継続できることを伝える。ANSWERの内容をFACTSや優先度の根拠に流用しない。質問文を実施済み・未実施の報告とみなさない。
-
                 # 写真の警告付き対応済み
                 画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。
 
@@ -260,7 +258,7 @@ beginDialog:
               autoSend: false
               variable: Topic.優先度判定結果
               userInput: =Topic.優先度判定プロンプト
-              additionalInstructions: 固定ガイド、報告された現場事実、取得したマニュアル原文だけで処理する。内部ブロック形式でANSWERから順に返し、外部検索や前置き、ユーザー用見出しの直接出力はしない。進捗報告だけならANSWERはー。質問・相談には根拠の範囲で回答し、根拠なしでも処理全体を停止しない。ANSWERや質問文を優先度の事実に混ぜない。画像の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。
+              additionalInstructions: 固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。
             - kind: SetVariable
               id: setVariable_priorityAfterAISnapshot
               variable: Topic.優先度経路診断
@@ -364,27 +362,7 @@ beginDialog:
             - kind: SetVariable
               id: setVariable_priorityFormatEnvelope
               variable: Topic.優先度表示検証
-              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(StartsWith(Trim(Topic.優先度表示原文), "[[ANSWER]]"), EndsWith(Trim(Topic.優先度表示原文), "[[/CHECK]]"), Not(Char(30) in Topic.優先度表示原文)), "合格", "不合格:priorityFormatEnvelope"))
-            - kind: SetVariable
-              id: setVariable_itemSectionANSWER
-              variable: Topic.優先度表示区分
-              value: =First(Split(Last(Split(Topic.優先度表示原文, "[[ANSWER]]")).Value, "[[/ANSWER]]")).Value
-            - kind: SetVariable
-              id: setVariable_itemUniqueANSWER
-              variable: Topic.優先度表示検証
-              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(CountRows(Split(Topic.優先度表示原文, "[[ANSWER]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/ANSWER]]")) = 2), "合格", "不合格:itemUniqueANSWER"))
-            - kind: SetVariable
-              id: setVariable_itemRemoveANSWER
-              variable: Topic.判定残余
-              value: =Substitute(Topic.判定残余, "[[ANSWER]]" & Topic.優先度表示区分 & "[[/ANSWER]]", "")
-            - kind: SetVariable
-              id: setVariable_itemBodyANSWER
-              variable: Topic.判定ユーザー回答
-              value: '=With({bodyText: Trim(Substitute(Substitute(Topic.優先度表示区分, "【", "（"), "】", "）"))}, If(bodyText = "ー", "ー", Substitute(Substitute(If(StartsWith(bodyText, "・"), "└" & Mid(bodyText, 2), If(StartsWith(bodyText, "- "), "└" & Mid(bodyText, 3), If(StartsWith(bodyText, "└"), bodyText, "└" & bodyText))), Char(10) & "・", Char(10) & "└"), Char(10) & "- ", Char(10) & "└")))'
-            - kind: SetVariable
-              id: setVariable_itemBodyValidANSWER
-              variable: Topic.優先度表示検証
-              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(Len(Topic.判定ユーザー回答) > 0, Not("[[" in Topic.判定ユーザー回答), Or(Topic.判定ユーザー回答 = "ー", StartsWith(Topic.判定ユーザー回答, "└"))), "合格", "不合格:itemBodyValidANSWER"))
+              value: =If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(And(StartsWith(Trim(Topic.優先度表示原文), "[[FACTS]]"), EndsWith(Trim(Topic.優先度表示原文), "[[/CHECK]]"), Not(Char(30) in Topic.優先度表示原文)), "合格", "不合格:priorityFormatEnvelope"))
             - kind: SetVariable
               id: setVariable_itemSectionFACTS
               variable: Topic.優先度表示区分
@@ -1023,6 +1001,10 @@ beginDialog:
                                   id: setVariable_latestUserInputAfterWait
                                   variable: Topic.最新利用者入力
                                   value: =Topic.優先度追加回答
+                                - kind: SetVariable
+                                  id: setVariable_userConsultSignalAfterWait
+                                  variable: Topic.ユーザー相談あり
+                                  value: '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
                                 - kind: ConditionGroup
                                   id: conditionGroup_repairRequestedInPriority
                                   conditions:
@@ -1044,34 +1026,48 @@ beginDialog:
                                         - kind: GotoAction
                                           id: goto_repairSelect
                                           actionId: setVariable_repairSelectInit
-                                - kind: SetVariable
-                                  id: setVariable_appendPriorityHistory
-                                  variable: Topic.追加情報履歴
-                                  value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
-                                - kind: SetVariable
-                                  id: setVariable_syncHistoryAfterText
-                                  variable: Global.緊急保安追加情報履歴
-                                  value: =Topic.追加情報履歴
-                                - kind: SetVariable
-                                  id: setVariable_keepImageReceptionOn
-                                  variable: Global.緊急保安画像受付中
-                                  value: =true
                                 - kind: ConditionGroup
-                                  id: conditionGroup_priorityDebugOnly
+                                  id: conditionGroup_priorityConsultOrProgress
                                   conditions:
-                                    - id: conditionGroup_priorityDebugOnly_item
-                                      condition: =false
+                                    - id: conditionGroup_priorityConsultOrProgress_item
+                                      condition: =Topic.ユーザー相談あり
                                       actions:
-                                        - kind: SendActivity
-                                          id: sendActivity_debugPriorityHistory
-                                          activity: |-
-                                            【DEBUG・確認後削除】
-                                            今回回答：{Topic.優先度追加回答}
-                                            累積履歴：
-                                            {Topic.追加情報履歴}
-                                - kind: GotoAction
-                                  id: goto_priorityAgain
-                                  actionId: setVariable_userConsultSourceReset
+                                        - kind: SetVariable
+                                          id: setVariable_keepImageReceptionOnForConsult
+                                          variable: Global.緊急保安画像受付中
+                                          value: =true
+                                        - kind: GotoAction
+                                          id: goto_priorityConsult
+                                          actionId: setVariable_userConsultAnswerReset
+                                  elseActions:
+                                    - kind: SetVariable
+                                      id: setVariable_appendPriorityHistory
+                                      variable: Topic.追加情報履歴
+                                      value: =Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度追加回答
+                                    - kind: SetVariable
+                                      id: setVariable_syncHistoryAfterText
+                                      variable: Global.緊急保安追加情報履歴
+                                      value: =Topic.追加情報履歴
+                                    - kind: SetVariable
+                                      id: setVariable_keepImageReceptionOn
+                                      variable: Global.緊急保安画像受付中
+                                      value: =true
+                                    - kind: ConditionGroup
+                                      id: conditionGroup_priorityDebugOnly
+                                      conditions:
+                                        - id: conditionGroup_priorityDebugOnly_item
+                                          condition: =false
+                                          actions:
+                                            - kind: SendActivity
+                                              id: sendActivity_debugPriorityHistory
+                                              activity: |-
+                                                【DEBUG・確認後削除】
+                                                今回回答：{Topic.優先度追加回答}
+                                                累積履歴：
+                                                {Topic.追加情報履歴}
+                                    - kind: GotoAction
+                                      id: goto_priorityAgain
+                                      actionId: setVariable_userConsultSourceReset
                     - kind: SetVariable
                       id: setVariable_imageReceptionOffDone
                       variable: Global.緊急保安画像受付中
