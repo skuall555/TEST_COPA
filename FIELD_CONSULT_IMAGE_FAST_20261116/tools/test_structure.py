@@ -95,7 +95,8 @@ def main():
     assert node(field, "goto_priorityAgain")["actionId"] == "setVariable_imageAnswerPending"
     assert node(field, "question_priorityUpdate")["interruptionPolicy"]["allowInterruption"] is False
     image_guard = node(field, "conditionGroup_priorityImageActivity")["conditions"][0]["condition"]
-    assert "System.Activity.Attachments" in image_guard and "Global.写真判定反映待ち" in image_guard
+    assert "System.Activity.Attachments" not in image_guard and "Global.写真判定反映待ち" in image_guard
+    assert not any("System.Activity.Attachments" in str(item.get("condition", "")) for item in walk(field))
     assert node(field, "question_priorityImageReflect")["interruptionPolicy"]["allowInterruption"] is True
     assert node(field, "goto_priorityAfterImageReady")["actionId"] == "setVariable_imageAnswerPending"
     assert not any(item.get("id") == "endDialog_priorityFailed" for item in walk(field))

@@ -1163,13 +1163,13 @@ beginDialog:
                                   id: conditionGroup_priorityImageActivity
                                   conditions:
                                     - id: conditionGroup_priorityImageActivity_item
-                                      condition: =Or(Not(IsEmpty(System.Activity.Attachments)), Global.写真分析処理中, Global.写真判定反映待ち, Lower(Trim(Topic.最新利用者入力)) = "反映")
+                                      condition: =Or(Global.写真分析処理中, Global.写真判定反映待ち, Lower(Trim(Topic.最新利用者入力)) = "反映")
                                       actions:
                                         - kind: ConditionGroup
                                           id: conditionGroup_priorityImageStillRunning
                                           conditions:
                                             - id: conditionGroup_priorityImageStillRunning_item
-                                              condition: =Or(Global.写真分析処理中, And(Not(IsEmpty(System.Activity.Attachments)), Not(Global.写真判定反映待ち)))
+                                              condition: =Global.写真分析処理中
                                               actions:
                                                 - kind: Question
                                                   id: question_priorityImageReflect
@@ -1203,7 +1203,7 @@ beginDialog:
                                             - kind: SetVariable
                                               id: setVariable_appendPendingImageExtra
                                               variable: Topic.追加情報履歴
-                                              value: =If(Or(IsBlank(Trim(Topic.最新利用者入力)), Lower(Trim(Topic.最新利用者入力)) = "反映", Trim(Topic.最新利用者入力) = Trim(Global.写真同時テキスト), Not(IsEmpty(System.Activity.Attachments))), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.最新利用者入力)
+                                              value: =If(Or(IsBlank(Trim(Topic.最新利用者入力)), Lower(Trim(Topic.最新利用者入力)) = "反映", Trim(Topic.最新利用者入力) = Trim(Global.写真同時テキスト)), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.最新利用者入力)
                                             - kind: SetVariable
                                               id: setVariable_syncPendingImageExtra
                                               variable: Global.緊急保安追加情報履歴

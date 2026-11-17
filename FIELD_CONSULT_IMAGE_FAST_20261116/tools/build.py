@@ -230,8 +230,8 @@ def build_field(raw):
     manual_switch = ix["conditionGroup_priorityPurposeSwitchToJunkai"]
     insert_after(doc, "setVariable_resyncHistoryFromGlobal", [
         setv("setVariable_latestUserInputAfterWait", "Topic.最新利用者入力", "=Topic.優先度追加回答"),
-        condition("conditionGroup_priorityImageActivity", '=Or(Not(IsEmpty(System.Activity.Attachments)), Global.写真分析処理中, Global.写真判定反映待ち, Lower(Trim(Topic.最新利用者入力)) = "反映")', [
-            condition("conditionGroup_priorityImageStillRunning", "=Or(Global.写真分析処理中, And(Not(IsEmpty(System.Activity.Attachments)), Not(Global.写真判定反映待ち)))", [
+        condition("conditionGroup_priorityImageActivity", '=Or(Global.写真分析処理中, Global.写真判定反映待ち, Lower(Trim(Topic.最新利用者入力)) = "反映")', [
+            condition("conditionGroup_priorityImageStillRunning", "=Global.写真分析処理中", [
                 question("question_priorityImageReflect", "Topic.画像反映合図", "画像分析結果が表示されたら「反映」と入力してください。画像分析結果が表示されない場合は、画像をもう一度送ってください。続報がある場合は、その内容を入力しても構いません。", True),
                 setv("setVariable_resyncImageHistoryAfterReflect", "Topic.追加情報履歴", "=Global.緊急保安追加情報履歴"),
                 setv("setVariable_latestImageReflectInput", "Topic.最新利用者入力", "=Topic.画像反映合図"),
@@ -239,7 +239,7 @@ def build_field(raw):
                 setv("setVariable_syncImageReflectExtra", "Global.緊急保安追加情報履歴", "=Topic.追加情報履歴"),
                 {"kind": "GotoAction", "id": "goto_priorityAfterImageWait", "actionId": "setVariable_imageAnswerPending"},
             ], [
-                setv("setVariable_appendPendingImageExtra", "Topic.追加情報履歴", '=If(Or(IsBlank(Trim(Topic.最新利用者入力)), Lower(Trim(Topic.最新利用者入力)) = "反映", Trim(Topic.最新利用者入力) = Trim(Global.写真同時テキスト), Not(IsEmpty(System.Activity.Attachments))), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.最新利用者入力)'),
+                setv("setVariable_appendPendingImageExtra", "Topic.追加情報履歴", '=If(Or(IsBlank(Trim(Topic.最新利用者入力)), Lower(Trim(Topic.最新利用者入力)) = "反映", Trim(Topic.最新利用者入力) = Trim(Global.写真同時テキスト)), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.最新利用者入力)'),
                 setv("setVariable_syncPendingImageExtra", "Global.緊急保安追加情報履歴", "=Topic.追加情報履歴"),
                 {"kind": "GotoAction", "id": "goto_priorityAfterImageReady", "actionId": "setVariable_imageAnswerPending"},
             ]),
