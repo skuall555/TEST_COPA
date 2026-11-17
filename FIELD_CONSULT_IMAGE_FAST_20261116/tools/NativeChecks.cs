@@ -41,7 +41,14 @@ class NativeChecks
 
         var conversation = RecordType.Empty().Add("Id", FormulaType.String);
         var user = RecordType.Empty().Add("Id", FormulaType.String);
-        var activity = RecordType.Empty().Add("ChannelId", FormulaType.String);
+        var attachment = RecordType.Empty()
+            .Add("Name", FormulaType.String)
+            .Add("ContentType", FormulaType.String)
+            .Add("Content", FormulaType.String);
+        var activity = RecordType.Empty()
+            .Add("ChannelId", FormulaType.String)
+            .Add("Text", FormulaType.String)
+            .Add("Attachments", attachment.ToTable());
         var system = RecordType.Empty().Add("Conversation", conversation).Add("User", user).Add("Activity", activity);
         var scope = RecordType.Empty()
             .Add("Topic", Record(root.GetProperty("topicTypes")))
@@ -97,14 +104,21 @@ class NativeChecks
             {
                 ["優先度判定結果"] = FormulaValue.New(item.GetProperty("text").GetString()!),
                 ["判定ユーザー回答"] = FormulaValue.New(item.GetProperty("answer").GetString()!),
+                ["前回確定優先度原文"] = FormulaValue.New(""),
+                ["最新利用者入力"] = FormulaValue.New(""),
+                ["写真判定反映中"] = FormulaValue.New(false),
             };
+            var global = FormulaValue.NewRecordFromFields(
+                new NamedValue("写真措置済みテキスト", FormulaValue.New(""))
+            );
             string failure = null;
             foreach (var step in root.GetProperty("fieldSteps").EnumerateArray())
             {
                 try
                 {
                     var context = FormulaValue.NewRecordFromFields(
-                        new NamedValue("Topic", FormulaValue.NewRecordFromFields(state.Select(pair => new NamedValue(pair.Key, pair.Value))))
+                        new NamedValue("Topic", FormulaValue.NewRecordFromFields(state.Select(pair => new NamedValue(pair.Key, pair.Value)))),
+                        new NamedValue("Global", global)
                     );
                     state[step.GetProperty("variable").GetString()!] = engine.Eval(step.GetProperty("expression").GetString()!, context, options);
                     if (state[step.GetProperty("variable").GetString()!] is ErrorValue error)

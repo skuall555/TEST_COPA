@@ -81,17 +81,33 @@ def main():
     assert 'StartsWith(Trim(Topic.優先度表示原文), "[[FACTS]]")' in node(field, "setVariable_priorityFormatEnvelope")["value"]
     assert "質問・相談の表現が含まれていても" in prompt
     assert "対応済み【!】は高優先度の完了扱いにせず" in prompt
+    assert "【前回確定した内部判定】" in prompt
+    assert "別項目の進捗、別場所の情報、危険度の変化だけで対応済み【!】" in prompt
     assert node(field, "setVariable_userConsultAnswerReset")["variable"] == "Topic.判定ユーザー回答"
     consult_branch = node(field, "conditionGroup_priorityConsultOrProgress")
     assert any(item.get("id") == "setVariable_appendConsultHistory" for item in walk(consult_branch["conditions"][0]["actions"]))
     assert any(item.get("id") == "setVariable_appendPriorityHistory" for item in walk(consult_branch["elseActions"]))
     assert next(item for item in walk(consult_branch["conditions"][0]["actions"]) if item.get("kind") == "GotoAction")["actionId"] == "setVariable_imageAnswerPending"
     assert "Global.写真ユーザー回答テキスト" in node(field, "setVariable_imageAnswerPending")["value"]
-    assert node(field, "conditionGroup_clearImageAnswerAfterSave")["conditions"][0]["condition"] == "=Topic.写真回答反映中"
+    assert node(field, "setVariable_imageDecisionPending")["value"] == "=Global.写真判定反映待ち"
+    assert node(field, "conditionGroup_clearImageAnswerAfterSave")["conditions"][0]["condition"] == "=Or(Topic.写真回答反映中, Topic.写真判定反映中)"
     assert "【ユーザーへの回答】" in node(field, "setVariable_itemRender")["value"]
     assert node(field, "goto_priorityAgain")["actionId"] == "setVariable_imageAnswerPending"
+    assert node(field, "question_priorityUpdate")["interruptionPolicy"]["allowInterruption"] is False
+    image_guard = node(field, "conditionGroup_priorityImageActivity")["conditions"][0]["condition"]
+    assert "System.Activity.Attachments" in image_guard and "Global.写真判定反映待ち" in image_guard
+    assert node(field, "question_priorityImageReflect")["interruptionPolicy"]["allowInterruption"] is True
+    assert node(field, "goto_priorityAfterImageReady")["actionId"] == "setVariable_imageAnswerPending"
+    assert not any(item.get("id") == "endDialog_priorityFailed" for item in walk(field))
+    assert node(field, "conditionGroup_priorityFormatRetry")["conditions"][0]["condition"] == "=Topic.優先度様式再試行回数 < 1"
+    assert node(field, "question_priorityFormatRecovery")["interruptionPolicy"]["allowInterruption"] is False
+    assert node(field, "setVariable_commitPreviousPriorityRaw")["value"] == "=Topic.優先度表示原文"
     for code in [f"P{i:02d}" for i in range(1, 24)]:
         assert "対応済み【!】" in node(field, "setVariable_itemValid" + code)["value"]
+        guard = node(field, "setVariable_itemStateStable" + code)["value"]
+        assert "Topic.前回確定優先度原文" in guard and f"itemStateStable{code}" in guard
+    assert "MS-007" in node(field, "setVariable_itemStateStableP04")["value"]
+    assert "MS-011" in node(field, "setVariable_itemStateStableP05")["value"]
 
     # The first image pass has an explicit conservative relevance gate.
     p1 = node(image, "setVariable_prompt1")["value"]
@@ -127,8 +143,12 @@ def main():
     assert "5見出し" in judge and "対象物自体を断定できない場合は措置済みにしない" in judge
     visible = node(image, "sendActivity_analysisResult")["activity"]
     assert "【ユーザーへの回答】" in visible and "【確認したいこと】" in visible
+    assert "初動措置の判定へ自動反映" in visible
     history = node(image, "setVariable_appendImageResultToGlobalHistory")["value"]
-    assert 'Topic.画像関連判定 = "関連なし"' in history
+    assert 'Topic.画像関連判定 = "関連なし"' in history and "画像同時テキスト" in history
+    assert node(image, "setVariable_imageAnalysisRunning")["value"] == "=true"
+    assert node(image, "setVariable_imageDecisionReady")["value"] == "=true"
+    assert node(image, "setVariable_imageAnalysisComplete")["value"] == "=false"
 
     # Scope guard: no Apps, Power Automate, Lists, entry, or global-instruction paste files.
     paste_files = {path.name for path in ROOT.iterdir() if path.is_file() and path.suffix == ".txt"}

@@ -10,8 +10,11 @@ modelDescription: |
   画像トピックはGlobal履歴へ追記して終了し、本トピックは質問復帰後に履歴を再同期する。
   画像トピックからBeginDialogで本トピックを呼び直さず、2枚目以降の割り込みを維持する。
   撮影要領に沿った写真がある措置は「対応済み」として扱う。
-    現場対応中の相談・質問はトピックを終了させず、必要時だけWord原本を検索し、ユーザー回答と優先度表示を同時に返す。
-    進捗報告だけのときはユーザー回答を「ー」とする。相談文は優先度を変える現場事実として扱わない。
+    現場対応中の相談・質問はこのトピック内で処理し、親エージェントの自由回答へ切り替えない。
+    進捗報告だけのときはユーザー回答を「ー」とする。相談文に含まれる具体的な現場事実は履歴へ保持する。
+    画像付き発話は4-9の完了を待ってから一度だけ反映し、画像と同時の文章を重複登録しない。
+    前回確定した対応済み・対応済み【!】は項目別に保持し、その項目を更新する明示情報がない限り変更しない。
+    優先度AIの形式不正時はこのトピックを終了せず、固定形式で再試行・待機する。
 beginDialog:
   kind: OnRedirect
   id: main
@@ -53,6 +56,14 @@ beginDialog:
       id: setVariable_latestUserInputAtStart
       variable: Topic.最新利用者入力
       value: =Topic.初回入力
+    - kind: SetVariable
+      id: setVariable_previousPriorityRawInit
+      variable: Topic.前回確定優先度原文
+      value: =""
+    - kind: SetVariable
+      id: setVariable_previousPriorityDisplayInit
+      variable: Topic.前回確定優先度表示
+      value: =""
     - kind: SetVariable
       id: setVariable_priorityGuideRetrievePrompt
       variable: Topic.優先度ガイド取得プロンプト
@@ -129,6 +140,10 @@ beginDialog:
               variable: Topic.写真回答反映中
               value: =And(Not(IsBlank(Global.写真ユーザー回答テキスト)), Trim(Global.写真ユーザー回答テキスト) <> "ー")
             - kind: SetVariable
+              id: setVariable_imageDecisionPending
+              variable: Topic.写真判定反映中
+              value: =Global.写真判定反映待ち
+            - kind: SetVariable
               id: setVariable_imageAnswerCarry
               variable: Topic.画像引継ぎ回答
               value: =If(Topic.写真回答反映中, Trim(Global.写真ユーザー回答テキスト), "ー")
@@ -172,6 +187,10 @@ beginDialog:
                 " & Topic.初回入力 & "
                 【追加報告・画像結果】
                 " & Topic.追加情報履歴 & "
+                【今回の最新入力】
+                " & Topic.最新利用者入力 & "
+                【前回確定した内部判定】
+                " & If(IsBlank(Topic.前回確定優先度原文), "なし", Topic.前回確定優先度原文) & "
                 最新の明示報告を優先する。以前のAIの優先度・状態は事実ではない。ユーザーの操作・設置・調査の実施事実を取り消さず、対象と効果・未調査範囲を分ける。
                 履歴の写真有の実施措置は確認された範囲で対応済みとし、要確認項目は必要な次行動・確認文に反映する。画像を参照できない場合は見たふりをせず、写らないことだけで未実施にしない。初報の通常臭気だけならP11・P12低。具体的危険や既往の高はガイドの条件で判断する。
                 # 今回の内部出力契約（従来の見出し指定より優先）
@@ -226,6 +245,9 @@ beginDialog:
                 # 質問を含む追加入力の事実抽出
                 追加情報に質問・相談の表現が含まれていても、文中で具体的に報告された現場状況・警報・臭気・検知・不在・入室可否・実施済み措置は事実として保持する。質問、依頼、推測、AIの回答自体は事実にしない。
 
+                # 前回確定状態の継承
+                前回確定したP番号別の実施状況を状態台帳として扱う。対応済みまたは対応済み【!】は、今回の最新入力が同じP番号の実施・訂正・撤去・再撮影・適合確認を明示しない限り、状態も警告も一字も変更しない。別項目の進捗、別場所の情報、危険度の変化だけで対応済み【!】を対応済み・要確認・未実施へ変更しない。警告を外せるのは、警告理由そのものが新しい報告または写真で解消した場合だけ。画像のMS番号で実施済みが確認された項目を要確認・未実施へ戻さない。
+
                 # 写真の警告付き対応済み
                 画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。
 
@@ -260,7 +282,7 @@ beginDialog:
               autoSend: false
               variable: Topic.優先度判定結果
               userInput: =Topic.優先度判定プロンプト
-              additionalInstructions: 固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。不在・施錠・入室不能の住戸で警報器が現在鳴っている、または鳴り続ける報告はE-01を必ず照合し、通常の単独臭気初報としてP11・P12を低へ戻さない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。
+              additionalInstructions: 固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。不在・施錠・入室不能の住戸で警報器が現在鳴っている、または鳴り続ける報告はE-01を必ず照合し、通常の単独臭気初報としてP11・P12を低へ戻さない。前回確定した対応済み・対応済み【!】はP番号別の状態台帳であり、今回の最新入力が同じ項目の警告理由を明示的に解消・訂正しない限り同じ状態を厳密に維持する。別項目の進捗で【!】を消さない。画像履歴の【写真有】とMS番号は対応済みの根拠であり要確認へ戻さない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。
             - kind: SetVariable
               id: setVariable_priorityAfterAISnapshot
               variable: Topic.優先度経路診断
@@ -475,6 +497,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P01]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P01]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP01"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP01
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P01]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P01]]")).Value, "[[/P01]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("火気" in latestText, "着火" in latestText, "喫煙" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP01"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP01
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└火気使用禁止の徹底：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -490,6 +516,10 @@ beginDialog:
               id: setVariable_itemValidP02
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P02]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P02]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP02"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP02
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P02]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P02]]")).Value, "[[/P02]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("電気" in latestText, "スイッチ" in latestText, "換気扇" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP02"))))'
             - kind: SetVariable
               id: setVariable_itemLineP02
               variable: Topic.判定表示行
@@ -507,6 +537,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P03]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P03]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP03"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP03
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P03]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P03]]")).Value, "[[/P03]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("火気厳禁" in latestText, "表示シート" in latestText, "表示" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, Or("MS-003" in Global.写真措置済みテキスト, "MS-004" in Global.写真措置済みテキスト, "MS-005" in Global.写真措置済みテキスト))), photoRequiresDone: And(Topic.写真判定反映中, Or("MS-003" in Global.写真措置済みテキスト, "MS-004" in Global.写真措置済みテキスト, "MS-005" in Global.写真措置済みテキスト))}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP03"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP03
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└火気厳禁表示シート：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -522,6 +556,10 @@ beginDialog:
               id: setVariable_itemValidP04
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P04]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P04]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP04"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP04
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P04]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P04]]")).Value, "[[/P04]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("ポケット警報器" in latestText, "警報器" in latestText, "監視機器" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, Or("MS-007" in Global.写真措置済みテキスト, "MS-008" in Global.写真措置済みテキスト, "MS-009" in Global.写真措置済みテキスト))), photoRequiresDone: And(Topic.写真判定反映中, Or("MS-007" in Global.写真措置済みテキスト, "MS-008" in Global.写真措置済みテキスト, "MS-009" in Global.写真措置済みテキスト))}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP04"))))'
             - kind: SetVariable
               id: setVariable_itemLineP04
               variable: Topic.判定表示行
@@ -539,6 +577,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P05]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P05]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP05"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP05
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P05]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P05]]")).Value, "[[/P05]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("検知器" in latestText, "検知" in latestText, "測定" in latestText, "調査" in latestText, "反応" in latestText, "濃度" in latestText, "lel" in latestText, "排水口" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, Or("MS-011" in Global.写真措置済みテキスト, "MS-012" in Global.写真措置済みテキスト, "MS-013" in Global.写真措置済みテキスト, "MS-014" in Global.写真措置済みテキスト, "MS-015" in Global.写真措置済みテキスト))), photoRequiresDone: And(Topic.写真判定反映中, Or("MS-011" in Global.写真措置済みテキスト, "MS-012" in Global.写真措置済みテキスト, "MS-013" in Global.写真措置済みテキスト, "MS-014" in Global.写真措置済みテキスト, "MS-015" in Global.写真措置済みテキスト))}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP05"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP05
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└流入ガス・滞留ガスの検知器調査：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -554,6 +596,10 @@ beginDialog:
               id: setVariable_itemValidP06
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P06]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P06]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP06"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP06
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P06]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P06]]")).Value, "[[/P06]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("換気" in latestText, "窓" in latestText, "扉" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, "MS-006" in Global.写真措置済みテキスト)), photoRequiresDone: And(Topic.写真判定反映中, "MS-006" in Global.写真措置済みテキスト)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP06"))))'
             - kind: SetVariable
               id: setVariable_itemLineP06
               variable: Topic.判定表示行
@@ -571,6 +617,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P07]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P07]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP07"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP07
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P07]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P07]]")).Value, "[[/P07]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("メーターガス栓" in latestText, "メーター栓" in latestText, "メーター" in latestText, "閉止" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, "MS-001" in Global.写真措置済みテキスト)), photoRequiresDone: And(Topic.写真判定反映中, "MS-001" in Global.写真措置済みテキスト)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP07"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP07
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└メーターガス栓閉止：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -586,6 +636,10 @@ beginDialog:
               id: setVariable_itemValidP08
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P08]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P08]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP08"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP08
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P08]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P08]]")).Value, "[[/P08]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("分岐バルブ" in latestText, "引込管" in latestText, "遮断装置" in latestText, "上流遮断" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, "MS-002" in Global.写真措置済みテキスト)), photoRequiresDone: And(Topic.写真判定反映中, "MS-002" in Global.写真措置済みテキスト)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP08"))))'
             - kind: SetVariable
               id: setVariable_itemLineP08
               variable: Topic.判定表示行
@@ -603,6 +657,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P09]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P09]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP09"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP09
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P09]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P09]]")).Value, "[[/P09]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And("消火器" in latestText, Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, "MS-010" in Global.写真措置済みテキスト)), photoRequiresDone: And(Topic.写真判定反映中, "MS-010" in Global.写真措置済みテキスト)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP09"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP09
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└消火器設置：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -619,6 +677,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P10]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P10]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP10"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP10
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P10]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P10]]")).Value, "[[/P10]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("周辺住戸" in latestText, "周辺建物" in latestText, "周辺調査" in latestText, "隣家" in latestText, "別住戸" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP10"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP10
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└周辺住戸・建物調査：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -634,6 +696,10 @@ beginDialog:
               id: setVariable_itemValidP11
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P11]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P11]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP11"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP11
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P11]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P11]]")).Value, "[[/P11]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("消防" in latestText, "警察" in latestText, "要請" in latestText, "通報" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP11"))))'
             - kind: SetVariable
               id: setVariable_itemStoreStatusP11
               variable: Topic.判定要請状態
@@ -659,6 +725,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P12]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P12]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP12"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP12
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P12]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P12]]")).Value, "[[/P12]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("避難" in latestText, "退避" in latestText, "誘導" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP12"))))'
+            - kind: SetVariable
               id: setVariable_itemStoreStatusP12
               variable: Topic.判定避難状態
               value: =Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value))
@@ -679,6 +749,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, And(And(CountRows(Split(Topic.優先度表示原文, "[[P13]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P13]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason))), "合格", "不合格:itemValidP13"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP13
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P13]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P13]]")).Value, "[[/P13]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("保安柵" in latestText, "バリケード" in latestText, "コーン" in latestText, "立入" in latestText, "規制" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, "MS-016" in Global.写真措置済みテキスト)), photoRequiresDone: And(Topic.写真判定反映中, "MS-016" in Global.写真措置済みテキスト)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP13"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP13
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└保安柵または同等措置：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -694,6 +768,10 @@ beginDialog:
               id: setVariable_itemValidP14
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P14]]" in Topic.優先度表示原文), Not("[[/P14]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P14]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P14]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP14"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP14
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P14]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P14]]")).Value, "[[/P14]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("高濃度" in latestText, "ガス種" in latestText, "濃度確認" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP14"))))'
             - kind: SetVariable
               id: setVariable_itemLineP14
               variable: Topic.判定表示行
@@ -711,6 +789,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P15]]" in Topic.優先度表示原文), Not("[[/P15]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P15]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P15]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP15"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP15
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P15]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P15]]")).Value, "[[/P15]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("進入禁止" in latestText, "進入" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP15"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP15
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└進入禁止措置：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -726,6 +808,10 @@ beginDialog:
               id: setVariable_itemValidP16
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P16]]" in Topic.優先度表示原文), Not("[[/P16]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P16]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P16]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP16"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP16
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P16]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P16]]")).Value, "[[/P16]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("保安範囲" in latestText, "再設置" in latestText, "拡大" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP16"))))'
             - kind: SetVariable
               id: setVariable_itemLineP16
               variable: Topic.判定表示行
@@ -743,6 +829,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P17]]" in Topic.優先度表示原文), Not("[[/P17]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P17]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P17]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP17"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP17
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P17]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P17]]")).Value, "[[/P17]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("マンホール" in latestText, "蓋" in latestText, "開放" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP17"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP17
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└マンホール蓋開放・換気：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -758,6 +848,10 @@ beginDialog:
               id: setVariable_itemValidP18
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P18]]" in Topic.優先度表示原文), Not("[[/P18]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P18]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P18]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP18"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP18
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P18]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P18]]")).Value, "[[/P18]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("救護" in latestText, "負傷" in latestText, "体調" in latestText, "中毒" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP18"))))'
             - kind: SetVariable
               id: setVariable_itemLineP18
               variable: Topic.判定表示行
@@ -775,6 +869,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P19]]" in Topic.優先度表示原文), Not("[[/P19]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P19]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P19]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP19"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP19
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P19]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P19]]")).Value, "[[/P19]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("空気呼吸器" in latestText, "呼吸器" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP19"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP19
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└空気呼吸器等の確認：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -790,6 +888,10 @@ beginDialog:
               id: setVariable_itemValidP20
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P20]]" in Topic.優先度表示原文), Not("[[/P20]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P20]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P20]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP20"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP20
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P20]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P20]]")).Value, "[[/P20]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("追加検知" in latestText, "追加調査" in latestText, "未確認範囲" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP20"))))'
             - kind: SetVariable
               id: setVariable_itemLineP20
               variable: Topic.判定表示行
@@ -807,6 +909,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P21]]" in Topic.優先度表示原文), Not("[[/P21]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P21]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P21]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP21"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP21
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P21]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P21]]")).Value, "[[/P21]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("周辺調査" in latestText, "再調査" in latestText, "調査拡大" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP21"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP21
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└周辺調査の拡大・再調査：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -823,6 +929,10 @@ beginDialog:
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P22]]" in Topic.優先度表示原文), Not("[[/P22]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P22]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P22]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP22"))'
             - kind: SetVariable
+              id: setVariable_itemStateStableP22
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P22]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P22]]")).Value, "[[/P22]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("追加遮断" in latestText, "供給遮断" in latestText, "別系統" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP22"))))'
+            - kind: SetVariable
               id: setVariable_itemLineP22
               variable: Topic.判定表示行
               value: '=With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, If(Or(IsBlank(Topic.優先度表示区分), itemPriority = "対象外"), Topic.判定表示行, Topic.判定表示行 & itemPriority & "|" & itemStatus & "|" & "└追加対象の供給遮断：" & itemStatus & "　根拠：" & itemReason & Char(30)))'
@@ -838,6 +948,10 @@ beginDialog:
               id: setVariable_itemValidP23
               variable: Topic.優先度表示検証
               value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, If(With({itemPriority: Trim(First(Split(Topic.優先度表示区分, "|")).Value), itemStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), itemReason: Substitute(Substitute(Trim(Last(Split(Topic.優先度表示区分, "|")).Value), "【", "（"), "】", "）")}, Or(And(IsBlank(Topic.優先度表示区分), Not("[[P23]]" in Topic.優先度表示原文), Not("[[/P23]]" in Topic.優先度表示原文)), And(And(CountRows(Split(Topic.優先度表示原文, "[[P23]]")) = 2, CountRows(Split(Topic.優先度表示原文, "[[/P23]]")) = 2), CountRows(Split(Topic.優先度表示区分, "|")) = 3, Or(And(Or(itemPriority = "高", itemPriority = "中", itemPriority = "低"), Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")), And(itemPriority = "対象外", itemStatus = "対象外")), Len(itemReason) > 0, Not("[[" in itemReason), Not("【" in itemReason)))), "合格", "不合格:itemValidP23"))'
+            - kind: SetVariable
+              id: setVariable_itemStateStableP23
+              variable: Topic.優先度表示検証
+              value: '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, With({previousText: Topic.前回確定優先度原文, previousBody: If("[[P23]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[P23]]")).Value, "[[/P23]]")).Value, "｜", "|"), ""), currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), latestText: Lower(Trim(Topic.最新利用者入力))}, With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), itemMayChange: Or(And(Or("圧力" in latestText, "供給支障" in latestText, "ガス不出" in latestText, "弱火" in latestText), Or("再撮影" in latestText, "撮り直" in latestText, "全景" in latestText, "周辺を含" in latestText, "設置場所" in latestText, "位置確認" in latestText, "確認済" in latestText, "確認でき" in latestText, "追加調査" in latestText, "再調査" in latestText, "調査範囲" in latestText, "範囲確認" in latestText, "是正" in latestText, "移動" in latestText, "撤去" in latestText, "外した" in latestText, "誤認" in latestText, "間違" in latestText, "訂正" in latestText, "未実施" in latestText, "していない" in latestText, "できていない" in latestText, "なかった" in latestText, "設置済" in latestText, "実施済" in latestText, "対応済" in latestText, "完了" in latestText)), And(Topic.写真判定反映中, false)), photoRequiresDone: And(Topic.写真判定反映中, false)}, If(And(Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))), "合格", "不合格:itemStateStableP23"))))'
             - kind: SetVariable
               id: setVariable_itemLineP23
               variable: Topic.判定表示行
@@ -918,6 +1032,14 @@ beginDialog:
                       id: setVariable_priorityBeforeSaveSnapshot
                       variable: Topic.優先度経路診断
                       value: ="subaru-text-20261102-v2|stage=beforeCaseSave|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+                    - kind: SetVariable
+                      id: setVariable_commitPreviousPriorityRaw
+                      variable: Topic.前回確定優先度原文
+                      value: =Topic.優先度表示原文
+                    - kind: SetVariable
+                      id: setVariable_commitPreviousPriorityDisplay
+                      variable: Topic.前回確定優先度表示
+                      value: =Topic.優先度判定結果
                     - kind: InvokeFlowAction
                       id: invokeFlowAction_caseSaveFieldAdvice
                       input:
@@ -934,7 +1056,7 @@ beginDialog:
                       id: conditionGroup_clearImageAnswerAfterSave
                       conditions:
                         - id: conditionGroup_clearImageAnswerAfterSave_item
-                          condition: =Topic.写真回答反映中
+                          condition: =Or(Topic.写真回答反映中, Topic.写真判定反映中)
                           actions:
                             - kind: SetVariable
                               id: setVariable_clearImageAnswerAfterSave
@@ -944,6 +1066,26 @@ beginDialog:
                               id: setVariable_clearImageAnswerPending
                               variable: Topic.写真回答反映中
                               value: =false
+                            - kind: SetVariable
+                              id: setVariable_clearImageDecisionAfterSave
+                              variable: Global.写真判定反映待ち
+                              value: =false
+                            - kind: SetVariable
+                              id: setVariable_clearImageDecisionPending
+                              variable: Topic.写真判定反映中
+                              value: =false
+                            - kind: SetVariable
+                              id: setVariable_clearImageTurnTextAfterSave
+                              variable: Global.写真同時テキスト
+                              value: =""
+                            - kind: SetVariable
+                              id: setVariable_clearImageDoneAfterSave
+                              variable: Global.写真措置済みテキスト
+                              value: =""
+                            - kind: SetVariable
+                              id: setVariable_clearImageCheckAfterSave
+                              variable: Global.写真要確認テキスト
+                              value: =""
                     - kind: SetVariable
                       id: setVariable_priorityAfterSaveSnapshot
                       variable: Topic.優先度経路診断
@@ -997,7 +1139,7 @@ beginDialog:
                                 - kind: Question
                                   id: question_priorityUpdate
                                   interruptionPolicy:
-                                    allowInterruption: true
+                                    allowInterruption: false
                                   variable: Topic.優先度追加回答
                                   prompt: |-
                                     {Topic.優先度判定結果}
@@ -1017,6 +1159,58 @@ beginDialog:
                                   id: setVariable_latestUserInputAfterWait
                                   variable: Topic.最新利用者入力
                                   value: =Topic.優先度追加回答
+                                - kind: ConditionGroup
+                                  id: conditionGroup_priorityImageActivity
+                                  conditions:
+                                    - id: conditionGroup_priorityImageActivity_item
+                                      condition: =Or(Not(IsEmpty(System.Activity.Attachments)), Global.写真分析処理中, Global.写真判定反映待ち, Lower(Trim(Topic.最新利用者入力)) = "反映")
+                                      actions:
+                                        - kind: ConditionGroup
+                                          id: conditionGroup_priorityImageStillRunning
+                                          conditions:
+                                            - id: conditionGroup_priorityImageStillRunning_item
+                                              condition: =Or(Global.写真分析処理中, And(Not(IsEmpty(System.Activity.Attachments)), Not(Global.写真判定反映待ち)))
+                                              actions:
+                                                - kind: Question
+                                                  id: question_priorityImageReflect
+                                                  interruptionPolicy:
+                                                    allowInterruption: true
+                                                  variable: Topic.画像反映合図
+                                                  prompt: 画像分析結果が表示されたら「反映」と入力してください。画像分析結果が表示されない場合は、画像をもう一度送ってください。続報がある場合は、その内容を入力しても構いません。
+                                                  entity:
+                                                    kind: StringPrebuiltEntity
+                                                    sensitivityLevel: None
+                                                - kind: SetVariable
+                                                  id: setVariable_resyncImageHistoryAfterReflect
+                                                  variable: Topic.追加情報履歴
+                                                  value: =Global.緊急保安追加情報履歴
+                                                - kind: SetVariable
+                                                  id: setVariable_latestImageReflectInput
+                                                  variable: Topic.最新利用者入力
+                                                  value: =Topic.画像反映合図
+                                                - kind: SetVariable
+                                                  id: setVariable_appendImageReflectExtra
+                                                  variable: Topic.追加情報履歴
+                                                  value: =If(Or(IsBlank(Trim(Topic.画像反映合図)), Lower(Trim(Topic.画像反映合図)) = "反映", Trim(Topic.画像反映合図) = Trim(Global.写真同時テキスト)), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.画像反映合図)
+                                                - kind: SetVariable
+                                                  id: setVariable_syncImageReflectExtra
+                                                  variable: Global.緊急保安追加情報履歴
+                                                  value: =Topic.追加情報履歴
+                                                - kind: GotoAction
+                                                  id: goto_priorityAfterImageWait
+                                                  actionId: setVariable_imageAnswerPending
+                                          elseActions:
+                                            - kind: SetVariable
+                                              id: setVariable_appendPendingImageExtra
+                                              variable: Topic.追加情報履歴
+                                              value: =If(Or(IsBlank(Trim(Topic.最新利用者入力)), Lower(Trim(Topic.最新利用者入力)) = "反映", Trim(Topic.最新利用者入力) = Trim(Global.写真同時テキスト), Not(IsEmpty(System.Activity.Attachments))), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.最新利用者入力)
+                                            - kind: SetVariable
+                                              id: setVariable_syncPendingImageExtra
+                                              variable: Global.緊急保安追加情報履歴
+                                              value: =Topic.追加情報履歴
+                                            - kind: GotoAction
+                                              id: goto_priorityAfterImageReady
+                                              actionId: setVariable_imageAnswerPending
                                 - kind: SetVariable
                                   id: setVariable_userConsultSignalAfterWait
                                   variable: Topic.ユーザー相談あり
@@ -1103,20 +1297,60 @@ beginDialog:
 
                         {Topic.優先度判定結果}
               elseActions:
-                - kind: SetVariable
-                  id: setVariable_imageReceptionOffPriorityFailed
-                  variable: Global.緊急保安画像受付中
-                  value: =false
-                - kind: SetVariable
-                  id: setVariable_priorityFailedSnapshot
-                  variable: Topic.優先度経路診断
-                  value: ="subaru-text-20261102-v2|stage=failed|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|displayChars=" & Text(Len(Topic.優先度表示組立)) & "|retry=" & Text(Topic.優先度様式再試行回数)
-                - kind: SendActivity
-                  id: sendActivity_priorityFailed
-                  activity: 優先度回答の生成結果が空、または指定の出力様式を確認できなかったため、未検証の業務回答の送信を停止しました。報告履歴と実施済み報告を未実施へ変更したものではありません。現場の安全対応は止めず、社内の連絡・緊急対応手順に従ってください。
-                - kind: EndDialog
-                  id: endDialog_priorityFailed
-                  clearTopicQueue: true
+                - kind: ConditionGroup
+                  id: conditionGroup_priorityFormatRetry
+                  conditions:
+                    - id: conditionGroup_priorityFormatRetry_item
+                      condition: =Topic.優先度様式再試行回数 < 1
+                      actions:
+                        - kind: SetVariable
+                          id: setVariable_priorityFormatRetryIncrement
+                          variable: Topic.優先度様式再試行回数
+                          value: =Topic.優先度様式再試行回数 + 1
+                        - kind: SetVariable
+                          id: setVariable_priorityFormatRetryPrompt
+                          variable: Topic.優先度判定プロンプト
+                          value: =Topic.優先度判定プロンプト & Char(10) & Char(10) & "前回の生成は形式検証で不合格でした。原因：" & Topic.優先度表示検証 & "。内容を自由形式へ変えず、指定した内部ブロックだけを完全な順序で再出力してください。前回確定した対応済み・対応済み【!】を無関係な最新入力で変更しないでください。"
+                        - kind: GotoAction
+                          id: goto_priorityFormatRetry
+                          actionId: answer_priority
+                  elseActions:
+                    - kind: SetVariable
+                      id: setVariable_imageReceptionOnPriorityRecovery
+                      variable: Global.緊急保安画像受付中
+                      value: =true
+                    - kind: SetVariable
+                      id: setVariable_priorityFailedSnapshot
+                      variable: Topic.優先度経路診断
+                      value: ="subaru-text-20261117-v4|stage=recover|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|retry=" & Text(Topic.優先度様式再試行回数)
+                    - kind: Question
+                      id: question_priorityFormatRecovery
+                      interruptionPolicy:
+                        allowInterruption: false
+                      variable: Topic.優先度形式再開入力
+                      prompt: 回答形式を自動修復できなかったため、未検証の回答は表示・保存していません。会話は継続しています。「再試行」と入力するか、新しい現場情報を入力してください。
+                      entity:
+                        kind: StringPrebuiltEntity
+                        sensitivityLevel: None
+                    - kind: SetVariable
+                      id: setVariable_resyncHistoryAfterFormatRecovery
+                      variable: Topic.追加情報履歴
+                      value: =Global.緊急保安追加情報履歴
+                    - kind: SetVariable
+                      id: setVariable_latestInputAfterFormatRecovery
+                      variable: Topic.最新利用者入力
+                      value: =Topic.優先度形式再開入力
+                    - kind: SetVariable
+                      id: setVariable_appendAfterFormatRecovery
+                      variable: Topic.追加情報履歴
+                      value: =If(Or(Lower(Trim(Topic.優先度形式再開入力)) = "再試行", Lower(Trim(Topic.優先度形式再開入力)) = "反映"), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度形式再開入力)
+                    - kind: SetVariable
+                      id: setVariable_syncAfterFormatRecovery
+                      variable: Global.緊急保安追加情報履歴
+                      value: =Topic.追加情報履歴
+                    - kind: GotoAction
+                      id: goto_priorityAfterFormatRecovery
+                      actionId: setVariable_imageAnswerPending
       elseActions:
         - kind: SetVariable
           id: setVariable_imageReceptionOffGuideFailed

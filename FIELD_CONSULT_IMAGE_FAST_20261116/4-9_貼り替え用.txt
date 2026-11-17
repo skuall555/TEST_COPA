@@ -29,6 +29,14 @@ beginDialog:
       variable: Topic.デバッグ表示
       value: =false
     - kind: SetVariable
+      id: setVariable_imageAnalysisRunning
+      variable: Global.写真分析処理中
+      value: =true
+    - kind: SetVariable
+      id: setVariable_imageTurnTextGlobal
+      variable: Global.写真同時テキスト
+      value: =System.Activity.Text
+    - kind: SetVariable
       id: setVariable_imageGuideReuse
       variable: Topic.撮影要領再利用
       value: =true
@@ -335,6 +343,10 @@ beginDialog:
                 スクリーンショットの貼り付けや、HEIC・WebP・GIF などは判別できないことがあります。
                 お手数ですが、PNG または JPEG のファイルとして保存し直してから送信してください。
                 対応状況を文章で入力していただいても構いません。
+            - kind: SetVariable
+              id: setVariable_imageAnalysisStopUnsupported
+              variable: Global.写真分析処理中
+              value: =false
             - kind: EndDialog
               id: endDialog_unsupportedImageType
     - kind: InvokeAIBuilderModelAction
@@ -589,7 +601,7 @@ beginDialog:
               id: setVariable_appendImageResultToGlobalHistory
               variable: Global.緊急保安追加情報履歴
               value: |-
-                =If(Topic.画像関連判定 = "関連なし", Global.緊急保安追加情報履歴, Global.緊急保安追加情報履歴
+                =If(Topic.画像関連判定 = "関連なし", If(IsBlank(Trim(Topic.画像同時テキスト)), Global.緊急保安追加情報履歴, Global.緊急保安追加情報履歴 & Char(10) & "追加情報（画像同時テキスト）：" & Topic.画像同時テキスト), Global.緊急保安追加情報履歴
                 & Char(10)
                 & "追加情報（画像分析・"
                 & Topic.画像ファイル名
@@ -615,6 +627,14 @@ beginDialog:
               id: setVariable_imageReceptionOnForNextPhoto
               variable: Global.緊急保安画像受付中
               value: =true
+            - kind: SetVariable
+              id: setVariable_imageAnalysisComplete
+              variable: Global.写真分析処理中
+              value: =false
+            - kind: SetVariable
+              id: setVariable_imageDecisionReady
+              variable: Global.写真判定反映待ち
+              value: =true
             - kind: SendActivity
               id: sendActivity_analysisResult
               activity: |-
@@ -632,7 +652,7 @@ beginDialog:
                 【確認したいこと】
                 {If(Topic.要確認部 = "", "・なし", Topic.要確認部)}
 
-                {If(IsBlank(Global.緊急保安初回入力), "内容は現場情報として記録しました。", "この内容を初動措置の判定へ反映します。続けて何か一言（例：「反映」）を送ってください。別の写真を続けて送っていただいても構いません。")}
+                {If(IsBlank(Global.緊急保安初回入力), "内容は現場情報として記録しました。", "この内容を初動措置の判定へ自動反映します。自動反映が続かない場合だけ「反映」と送ってください。別の写真を続けて送っていただいても構いません。")}
             - kind: EndDialog
               id: endDialog_afterRestartEmergency
       elseActions:
@@ -645,5 +665,9 @@ beginDialog:
           id: setVariable_imageReceptionBackOn
           variable: Global.緊急保安画像受付中
           value: =true
+        - kind: SetVariable
+          id: setVariable_imageAnalysisStopPromptMissing
+          variable: Global.写真分析処理中
+          value: =false
 inputType: {}
 outputType: {}

@@ -110,7 +110,7 @@ def main():
             previous = old.get(ident, {})
             if item.get("kind") == "SetVariable" and item.get("value") != previous.get("value"):
                 variable = item.get("variable", "")
-                expected = "Boolean" if variable in {"Topic.ユーザー相談あり", "Topic.撮影要領再利用", "Topic.デバッグ表示", "Topic.写真回答反映中", "Global.緊急保安画像受付中"} else "Number" if variable in {"Topic.撮影要領再利用秒数", "Topic.画像事実実質長", "Topic.優先度様式再試行回数"} else "DateTime" if variable == "Global.画像要領キャッシュ取得時刻" else "String"
+                expected = "Boolean" if variable in {"Topic.ユーザー相談あり", "Topic.撮影要領再利用", "Topic.デバッグ表示", "Topic.写真回答反映中", "Topic.写真判定反映中", "Global.緊急保安画像受付中", "Global.写真分析処理中", "Global.写真判定反映待ち"} else "Number" if variable in {"Topic.撮影要領再利用秒数", "Topic.画像事実実質長", "Topic.優先度様式再試行回数"} else "DateTime" if variable == "Global.画像要領キャッシュ取得時刻" else "String"
                 expressions.append({"id": label + ":" + ident, "expression": item["value"][1:], "expected": expected})
             if item.get("kind") in {"AnswerQuestionWithAI", "SearchAndSummarizeContent"} and item.get("userInput") != previous.get("userInput"):
                 expressions.append({"id": label + ":" + ident + ":input", "expression": item["userInput"][1:], "expected": "String"})
@@ -128,9 +128,10 @@ def main():
             topic_types.setdefault(name, "String")
         for name in re.findall(r"Global\.([\w\u3000-\u9fff]+)", item["expression"]):
             global_types.setdefault(name, "String")
-    for name in ["ユーザー相談あり", "撮影要領再利用", "デバッグ表示", "写真回答反映中"]:
+    for name in ["ユーザー相談あり", "撮影要領再利用", "デバッグ表示", "写真回答反映中", "写真判定反映中"]:
         topic_types[name] = "Boolean"
-    global_types["緊急保安画像受付中"] = "Boolean"
+    for name in ["緊急保安画像受付中", "写真分析処理中", "写真判定反映待ち"]:
+        global_types[name] = "Boolean"
     for name in ["撮影要領再利用秒数", "画像事実実質長", "優先度様式再試行回数"]:
         topic_types[name] = "Number"
     global_types["画像要領キャッシュ取得時刻"] = "DateTime"
@@ -155,6 +156,8 @@ def main():
     consult_expression = index(documents["field"])["setVariable_userConsultSignal"]["value"][1:]
     image_pending_expression = index(documents["field"])["setVariable_imageAnswerPending"]["value"][1:]
     image_carry_expression = index(documents["field"])["setVariable_imageAnswerCarry"]["value"][1:]
+    p04_state_guard_expression = index(documents["field"])["setVariable_itemStateStableP04"]["value"][1:]
+    p05_state_guard_expression = index(documents["field"])["setVariable_itemStateStableP05"]["value"][1:]
     relation_expression = image_index["setVariable_imageRelation"]["value"][1:]
     comment_expression = image_index["setVariable_imageUserComment"]["value"][1:]
     image_unrelated = "■現場対応との関連判定\n・関連なし\n■ユーザー向けコメント\n・送っていただいた画像は鉢植えに見えます。進捗要素は見当たりません。\n■写っている物\n・鉢植え"
@@ -172,6 +175,10 @@ def main():
         {"name": "related image marker parses", "expression": relation_expression, "topic": {"画像事実": image_related}, "expectedString": "関連あり"},
         {"name": "missing image marker is conservative", "expression": relation_expression, "topic": {"画像事実": "■写っている物\n・不鮮明"}, "expectedString": "不明"},
         {"name": "unrelated image comment parses", "expression": comment_expression, "topic": {"画像事実": image_unrelated}, "expectedString": "送っていただいた画像は鉢植えに見えます。進捗要素は見当たりません。"},
+        {"name": "unrelated progress cannot remove warning", "expression": p05_state_guard_expression, "topic": {"優先度表示検証": "合格", "前回確定優先度原文": "[[P05]]高|対応済み【!】|調査範囲の確認が残る[[/P05]]", "優先度表示区分": "高|対応済み|別項目の進捗で再生成", "最新利用者入力": "消火器設置済み", "写真判定反映中": False}, "global": {"写真措置済みテキスト": ""}, "expectedString": "不合格:itemStateStableP05"},
+        {"name": "related confirmation may clear warning", "expression": p05_state_guard_expression, "topic": {"優先度表示検証": "合格", "前回確定優先度原文": "[[P05]]高|対応済み【!】|調査範囲の確認が残る[[/P05]]", "優先度表示区分": "高|対応済み|検知器の調査範囲を確認済み", "最新利用者入力": "検知器の調査範囲を確認済み", "写真判定反映中": False}, "global": {"写真措置済みテキスト": ""}, "expectedString": "合格"},
+        {"name": "photo MS007 cannot return pocket alarm to unknown", "expression": p04_state_guard_expression, "topic": {"優先度表示検証": "合格", "前回確定優先度原文": "", "優先度表示区分": "高|要確認|設置状況不明", "最新利用者入力": "反映", "写真判定反映中": True}, "global": {"写真措置済みテキスト": "【写真有】ポケット警報器の設置（室内）（MS-007）"}, "expectedString": "不合格:itemStateStableP04"},
+        {"name": "photo MS007 accepts confirmed pocket alarm", "expression": p04_state_guard_expression, "topic": {"優先度表示検証": "合格", "前回確定優先度原文": "", "優先度表示区分": "高|対応済み|MS-007の写真で設置確認", "最新利用者入力": "反映", "写真判定反映中": True}, "global": {"写真措置済みテキスト": "【写真有】ポケット警報器の設置（室内）（MS-007）"}, "expectedString": "合格"},
     ]
     data = {
         "expressions": expressions,

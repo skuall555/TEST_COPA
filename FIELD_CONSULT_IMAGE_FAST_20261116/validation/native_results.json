@@ -9,7 +9,25 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_previousPriorityRawInit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_previousPriorityDisplayInit",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_imageAnswerPending",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_imageDecisionPending",
       "success": true,
       "type": "Boolean",
       "errors": []
@@ -69,7 +87,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP01",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP02",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP02",
       "success": true,
       "type": "String",
       "errors": []
@@ -81,7 +111,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP03",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP04",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP04",
       "success": true,
       "type": "String",
       "errors": []
@@ -93,7 +135,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP05",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP06",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP06",
       "success": true,
       "type": "String",
       "errors": []
@@ -105,7 +159,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP07",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP08",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP08",
       "success": true,
       "type": "String",
       "errors": []
@@ -117,7 +183,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP09",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP10",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP10",
       "success": true,
       "type": "String",
       "errors": []
@@ -129,7 +207,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP11",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP12",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP12",
       "success": true,
       "type": "String",
       "errors": []
@@ -141,7 +231,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP13",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP14",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP14",
       "success": true,
       "type": "String",
       "errors": []
@@ -153,7 +255,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP15",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP16",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP16",
       "success": true,
       "type": "String",
       "errors": []
@@ -165,7 +279,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP17",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP18",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP18",
       "success": true,
       "type": "String",
       "errors": []
@@ -177,7 +303,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP19",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP20",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP20",
       "success": true,
       "type": "String",
       "errors": []
@@ -189,7 +327,19 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP21",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemValidP22",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_itemStateStableP22",
       "success": true,
       "type": "String",
       "errors": []
@@ -201,7 +351,25 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_itemStateStableP23",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_itemRender",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_commitPreviousPriorityRaw",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_commitPreviousPriorityDisplay",
       "success": true,
       "type": "String",
       "errors": []
@@ -225,7 +393,85 @@
       "errors": []
     },
     {
+      "id": "field:setVariable_clearImageDecisionAfterSave",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_clearImageDecisionPending",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_clearImageTurnTextAfterSave",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_clearImageDoneAfterSave",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_clearImageCheckAfterSave",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
       "id": "field:setVariable_latestUserInputAfterWait",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:conditionGroup_priorityImageActivity_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:conditionGroup_priorityImageStillRunning_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_resyncImageHistoryAfterReflect",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_latestImageReflectInput",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_appendImageReflectExtra",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_syncImageReflectExtra",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_appendPendingImageExtra",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_syncPendingImageExtra",
       "success": true,
       "type": "String",
       "errors": []
@@ -258,6 +504,72 @@
       "id": "field:setVariable_keepImageReceptionOnForConsult",
       "success": true,
       "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:conditionGroup_priorityFormatRetry_item",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_priorityFormatRetryIncrement",
+      "success": true,
+      "type": "Number",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_priorityFormatRetryPrompt",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_imageReceptionOnPriorityRecovery",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_priorityFailedSnapshot",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_resyncHistoryAfterFormatRecovery",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_latestInputAfterFormatRecovery",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_appendAfterFormatRecovery",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "field:setVariable_syncAfterFormatRecovery",
+      "success": true,
+      "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageAnalysisRunning",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageTurnTextGlobal",
+      "success": true,
+      "type": "String",
       "errors": []
     },
     {
@@ -306,6 +618,12 @@
       "id": "image:setVariable_prompt2",
       "success": true,
       "type": "String",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageAnalysisStopUnsupported",
+      "success": true,
+      "type": "Boolean",
       "errors": []
     },
     {
@@ -451,6 +769,24 @@
       "success": true,
       "type": "String",
       "errors": []
+    },
+    {
+      "id": "image:setVariable_imageAnalysisComplete",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageDecisionReady",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
+    },
+    {
+      "id": "image:setVariable_imageAnalysisStopPromptMissing",
+      "success": true,
+      "type": "Boolean",
+      "errors": []
     }
   ],
   "semantics": [
@@ -513,6 +849,26 @@
       "name": "unrelated image comment parses",
       "success": true,
       "result": "送っていただいた画像は鉢植えに見えます。進捗要素は見当たりません。"
+    },
+    {
+      "name": "unrelated progress cannot remove warning",
+      "success": true,
+      "result": "不合格:itemStateStableP05"
+    },
+    {
+      "name": "related confirmation may clear warning",
+      "success": true,
+      "result": "合格"
+    },
+    {
+      "name": "photo MS007 cannot return pocket alarm to unknown",
+      "success": true,
+      "result": "不合格:itemStateStableP04"
+    },
+    {
+      "name": "photo MS007 accepts confirmed pocket alarm",
+      "success": true,
+      "result": "合格"
     }
   ],
   "formats": [
@@ -554,7 +910,7 @@
     }
   ],
   "source_sha256": {
-    "3-9_貼り替え用.txt": "dcb03ad18a29a38ac5472d7bd39cd7c580b6483e592c98b1af1732d7e2ce0dcc",
-    "4-9_貼り替え用.txt": "fa138ef66551255ac9fddba8317773aeae0796d9e5e8b8ad98023a6cfdc9f3f5"
+    "3-9_貼り替え用.txt": "f7422432cb1cfb2e2377e4aa19f6c68bbc3a78e13f01682cddd5fed1ba9c0e32",
+    "4-9_貼り替え用.txt": "7c3a836797e4599e337943c262b246e232d25135e771d375db804cf8217bf54e"
   }
 }

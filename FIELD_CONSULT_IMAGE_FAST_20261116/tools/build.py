@@ -65,6 +65,17 @@ def condition(ident, expression, actions, otherwise=None):
     return result
 
 
+def question(ident, variable, prompt, allow_interruption=False):
+    return {
+        "kind": "Question",
+        "id": ident,
+        "interruptionPolicy": {"allowInterruption": allow_interruption},
+        "variable": variable,
+        "prompt": prompt,
+        "entity": {"kind": "StringPrebuiltEntity", "sensitivityLevel": "None"},
+    }
+
+
 def insert_before(document, ident, nodes):
     parent, position = find_parent_list(document, ident)
     parent[position:position] = nodes
@@ -90,14 +101,89 @@ def raw_source(name):
 
 CONSULT_SIGNAL = '=With({t: Lower(Trim(Topic.最新利用者入力))}, Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "どうした" in t, "どう進" in t, "どうしよう" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "困って" in t, "迷って" in t, "確認したい" in t, "確認して" in t, "確認すべき" in t, "すればいい" in t, "したらいい" in t, "していい" in t, "でいい" in t, "大丈夫" in t, "必要ですか" in t, "必要か" in t, "次の調査" in t, "次に調査" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t))'
 
+ITEM_TERMS = {
+    "P01": ["火気", "着火", "喫煙"],
+    "P02": ["電気", "スイッチ", "換気扇"],
+    "P03": ["火気厳禁", "表示シート", "表示"],
+    "P04": ["ポケット警報器", "警報器", "監視機器"],
+    "P05": ["検知器", "検知", "測定", "調査", "反応", "濃度", "lel", "排水口"],
+    "P06": ["換気", "窓", "扉"],
+    "P07": ["メーターガス栓", "メーター栓", "メーター", "閉止"],
+    "P08": ["分岐バルブ", "引込管", "遮断装置", "上流遮断"],
+    "P09": ["消火器"],
+    "P10": ["周辺住戸", "周辺建物", "周辺調査", "隣家", "別住戸"],
+    "P11": ["消防", "警察", "要請", "通報"],
+    "P12": ["避難", "退避", "誘導"],
+    "P13": ["保安柵", "バリケード", "コーン", "立入", "規制"],
+    "P14": ["高濃度", "ガス種", "濃度確認"],
+    "P15": ["進入禁止", "進入"],
+    "P16": ["保安範囲", "再設置", "拡大"],
+    "P17": ["マンホール", "蓋", "開放"],
+    "P18": ["救護", "負傷", "体調", "中毒"],
+    "P19": ["空気呼吸器", "呼吸器"],
+    "P20": ["追加検知", "追加調査", "未確認範囲"],
+    "P21": ["周辺調査", "再調査", "調査拡大"],
+    "P22": ["追加遮断", "供給遮断", "別系統"],
+    "P23": ["圧力", "供給支障", "ガス不出", "弱火"],
+}
+
+PHOTO_IDS = {
+    "P03": ["MS-003", "MS-004", "MS-005"],
+    "P04": ["MS-007", "MS-008", "MS-009"],
+    "P05": ["MS-011", "MS-012", "MS-013", "MS-014", "MS-015"],
+    "P06": ["MS-006"],
+    "P07": ["MS-001"],
+    "P08": ["MS-002"],
+    "P09": ["MS-010"],
+    "P13": ["MS-016"],
+}
+
+STATE_CHANGE_TERMS = [
+    "再撮影", "撮り直", "全景", "周辺を含", "設置場所", "位置確認", "確認済", "確認でき",
+    "追加調査", "再調査", "調査範囲", "範囲確認", "是正", "移動", "撤去", "外した",
+    "誤認", "間違", "訂正", "未実施", "していない", "できていない", "なかった", "設置済",
+    "実施済", "対応済", "完了",
+]
+
+
+def any_in(terms, expression):
+    checks = [f'"{term}" in {expression}' for term in terms]
+    if not checks:
+        return "false"
+    if len(checks) == 1:
+        return checks[0]
+    return "Or(" + ", ".join(checks) + ")"
+
+
+def item_state_guard(code):
+    item_related = any_in(ITEM_TERMS[code], "latestText")
+    change_signal = any_in(STATE_CHANGE_TERMS, "latestText")
+    photo_related = any_in(PHOTO_IDS.get(code, []), "Global.写真措置済みテキスト")
+    return (
+        '=If(Topic.優先度表示検証 <> "合格", Topic.優先度表示検証, '
+        'With({previousText: Topic.前回確定優先度原文, '
+        f'previousBody: If("[[{code}]]" in Topic.前回確定優先度原文, Substitute(First(Split(Last(Split(Topic.前回確定優先度原文, "[[{code}]]")).Value, "[[/{code}]]")).Value, "｜", "|"), ""), '
+        'currentStatus: Switch(Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(Topic.優先度表示区分, "|"), 2)).Value)), '
+        'latestText: Lower(Trim(Topic.最新利用者入力))}, '
+        'With({previousStatus: If(IsBlank(previousBody), "", Switch(Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value), "実施済み", "対応済み", "実施済", "対応済み", "対応済", "対応済み", "完了", "対応済み", "未確認", "要確認", "不明", "要確認", Trim(Last(FirstN(Split(previousBody, "|"), 2)).Value))), '
+        f'itemMayChange: Or(And({item_related}, {change_signal}), And(Topic.写真判定反映中, {photo_related})), '
+        f'photoRequiresDone: And(Topic.写真判定反映中, {photo_related})}}, '
+        'If(And('
+        'Or(IsBlank(previousBody), Not(Or(previousStatus = "対応済み", previousStatus = "対応済み【!】")), currentStatus = previousStatus, itemMayChange), '
+        'Or(Not(photoRequiresDone), Or(currentStatus = "対応済み", currentStatus = "対応済み【!】"))'
+        f'), "合格", "不合格:itemStateStable{code}"))))'
+    )
+
 
 def build_field(raw):
     doc = yaml.safe_load(raw)
     ix = index(doc)
-    doc["modelDescription"] += "\n  現場対応中の相談・質問はトピックを終了させず、必要時だけWord原本を検索し、ユーザー回答と優先度表示を同時に返す。\n  進捗報告だけのときはユーザー回答を「ー」とする。相談文は優先度を変える現場事実として扱わない。\n"
+    doc["modelDescription"] += "\n  現場対応中の相談・質問はこのトピック内で処理し、親エージェントの自由回答へ切り替えない。\n  進捗報告だけのときはユーザー回答を「ー」とする。相談文に含まれる具体的な現場事実は履歴へ保持する。\n  画像付き発話は4-9の完了を待ってから一度だけ反映し、画像と同時の文章を重複登録しない。\n  前回確定した対応済み・対応済み【!】は項目別に保持し、その項目を更新する明示情報がない限り変更しない。\n  優先度AIの形式不正時はこのトピックを終了せず、固定形式で再試行・待機する。\n"
 
     insert_after(doc, "setVariable_imageReceptionOffAtStart", [
         setv("setVariable_latestUserInputAtStart", "Topic.最新利用者入力", "=Topic.初回入力"),
+        setv("setVariable_previousPriorityRawInit", "Topic.前回確定優先度原文", '=""'),
+        setv("setVariable_previousPriorityDisplayInit", "Topic.前回確定優先度表示", '=""'),
     ])
 
     consult_answer = {
@@ -111,6 +197,7 @@ def build_field(raw):
     }
     consult_nodes = [
         setv("setVariable_imageAnswerPending", "Topic.写真回答反映中", '=And(Not(IsBlank(Global.写真ユーザー回答テキスト)), Trim(Global.写真ユーザー回答テキスト) <> "ー")'),
+        setv("setVariable_imageDecisionPending", "Topic.写真判定反映中", '=Global.写真判定反映待ち'),
         setv("setVariable_imageAnswerCarry", "Topic.画像引継ぎ回答", '=If(Topic.写真回答反映中, Trim(Global.写真ユーザー回答テキスト), "ー")'),
         setv("setVariable_userConsultAnswerReset", "Topic.判定ユーザー回答", '=Topic.画像引継ぎ回答'),
         setv("setVariable_userConsultCandidateReset", "Topic.ユーザー相談回答候補", '=""'),
@@ -125,20 +212,38 @@ def build_field(raw):
     ix = index(doc)
     prompt = ix["setVariable_priorityPrompt"]["value"]
     prompt = prompt.replace(
+        '" & Topic.追加情報履歴 & "\n最新の明示報告を優先する。',
+        '" & Topic.追加情報履歴 & "\n【今回の最新入力】\n" & Topic.最新利用者入力 & "\n【前回確定した内部判定】\n" & If(IsBlank(Topic.前回確定優先度原文), "なし", Topic.前回確定優先度原文) & "\n最新の明示報告を優先する。'
+    )
+    prompt = prompt.replace(
         "優先度は高／中／低、状態は対応済み／未実施／要確認の一つずつ。",
         "優先度は高／中／低、状態は対応済み／対応済み【!】／未実施／要確認の一つずつ。"
     )
     prompt = prompt.replace(
         "# 実施済みと範囲・効果",
-        "# 質問を含む追加入力の事実抽出\n追加情報に質問・相談の表現が含まれていても、文中で具体的に報告された現場状況・警報・臭気・検知・不在・入室可否・実施済み措置は事実として保持する。質問、依頼、推測、AIの回答自体は事実にしない。\n\n# 写真の警告付き対応済み\n画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。\n\n# 実施済みと範囲・効果"
+        "# 質問を含む追加入力の事実抽出\n追加情報に質問・相談の表現が含まれていても、文中で具体的に報告された現場状況・警報・臭気・検知・不在・入室可否・実施済み措置は事実として保持する。質問、依頼、推測、AIの回答自体は事実にしない。\n\n# 前回確定状態の継承\n前回確定したP番号別の実施状況を状態台帳として扱う。対応済みまたは対応済み【!】は、今回の最新入力が同じP番号の実施・訂正・撤去・再撮影・適合確認を明示しない限り、状態も警告も一字も変更しない。別項目の進捗、別場所の情報、危険度の変化だけで対応済み【!】を対応済み・要確認・未実施へ変更しない。警告を外せるのは、警告理由そのものが新しい報告または写真で解消した場合だけ。画像のMS番号で実施済みが確認された項目を要確認・未実施へ戻さない。\n\n# 写真の警告付き対応済み\n画像履歴に【写真有】【!】がある場合、対象物と設置行為は確認できるが、設置場所・適合条件・撮影範囲に確認が残ることを示す。該当措置の状態を対応済み【!】とし、根拠には角括弧を使わず、確認できた実施と残る確認を分けて書く。対応済み【!】は高優先度の完了扱いにせず、NEXTまたはCHECKで再撮影・位置確認等を残す。対象物自体を断定できない画像は対応済み【!】にせず要確認とする。\n\n# 実施済みと範囲・効果"
     )
     ix["setVariable_priorityPrompt"]["value"] = prompt
-    ix["answer_priority"]["additionalInstructions"] = "固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。不在・施錠・入室不能の住戸で警報器が現在鳴っている、または鳴り続ける報告はE-01を必ず照合し、通常の単独臭気初報としてP11・P12を低へ戻さない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。"
+    ix["answer_priority"]["additionalInstructions"] = "固定ガイドと現場報告のみで判定する。内部ブロック形式で返し、外部検索や前置き、7見出しの直接出力はしない。優先度と実施状況を独立に決める。室内・共用部臭気のP07と臭気／反応箇所のP09は高であり、設備や実施状況不明を理由に中へ下げない。基本措置の高を要請・避難へ横流ししない。不在・施錠・入室不能の住戸で警報器が現在鳴っている、または鳴り続ける報告はE-01を必ず照合し、通常の単独臭気初報としてP11・P12を低へ戻さない。前回確定した対応済み・対応済み【!】はP番号別の状態台帳であり、今回の最新入力が同じ項目の警告理由を明示的に解消・訂正しない限り同じ状態を厳密に維持する。別項目の進捗で【!】を消さない。画像履歴の【写真有】とMS番号は対応済みの根拠であり要確認へ戻さない。実施済みの操作は保持し、追加範囲と効果確認を分ける。NEXTは高の未完了作業と効果確認を優先し質問だけにしない。CHECKは既報を繰り返さず、判断が変わる確認を1〜3点、理由付きの短い文章にする。画像履歴の【写真有】【!】は対応済み【!】、物体自体が未確定なら要確認とする。"
 
     # Keep consultation inside the active field dialog, without adding the question to fact history.
     manual_switch = ix["conditionGroup_priorityPurposeSwitchToJunkai"]
     insert_after(doc, "setVariable_resyncHistoryFromGlobal", [
         setv("setVariable_latestUserInputAfterWait", "Topic.最新利用者入力", "=Topic.優先度追加回答"),
+        condition("conditionGroup_priorityImageActivity", '=Or(Not(IsEmpty(System.Activity.Attachments)), Global.写真分析処理中, Global.写真判定反映待ち, Lower(Trim(Topic.最新利用者入力)) = "反映")', [
+            condition("conditionGroup_priorityImageStillRunning", "=Or(Global.写真分析処理中, And(Not(IsEmpty(System.Activity.Attachments)), Not(Global.写真判定反映待ち)))", [
+                question("question_priorityImageReflect", "Topic.画像反映合図", "画像分析結果が表示されたら「反映」と入力してください。画像分析結果が表示されない場合は、画像をもう一度送ってください。続報がある場合は、その内容を入力しても構いません。", True),
+                setv("setVariable_resyncImageHistoryAfterReflect", "Topic.追加情報履歴", "=Global.緊急保安追加情報履歴"),
+                setv("setVariable_latestImageReflectInput", "Topic.最新利用者入力", "=Topic.画像反映合図"),
+                setv("setVariable_appendImageReflectExtra", "Topic.追加情報履歴", '=If(Or(IsBlank(Trim(Topic.画像反映合図)), Lower(Trim(Topic.画像反映合図)) = "反映", Trim(Topic.画像反映合図) = Trim(Global.写真同時テキスト)), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.画像反映合図)'),
+                setv("setVariable_syncImageReflectExtra", "Global.緊急保安追加情報履歴", "=Topic.追加情報履歴"),
+                {"kind": "GotoAction", "id": "goto_priorityAfterImageWait", "actionId": "setVariable_imageAnswerPending"},
+            ], [
+                setv("setVariable_appendPendingImageExtra", "Topic.追加情報履歴", '=If(Or(IsBlank(Trim(Topic.最新利用者入力)), Lower(Trim(Topic.最新利用者入力)) = "反映", Trim(Topic.最新利用者入力) = Trim(Global.写真同時テキスト), Not(IsEmpty(System.Activity.Attachments))), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.最新利用者入力)'),
+                setv("setVariable_syncPendingImageExtra", "Global.緊急保安追加情報履歴", "=Topic.追加情報履歴"),
+                {"kind": "GotoAction", "id": "goto_priorityAfterImageReady", "actionId": "setVariable_imageAnswerPending"},
+            ]),
+        ]),
         setv("setVariable_userConsultSignalAfterWait", "Topic.ユーザー相談あり", CONSULT_SIGNAL),
     ])
     replace(doc, "conditionGroup_priorityPurposeSwitchToJunkai", [
@@ -150,21 +255,54 @@ def build_field(raw):
         ], copy.deepcopy(manual_switch["elseActions"]))
     ])
     index(doc)["goto_priorityAgain"]["actionId"] = "setVariable_imageAnswerPending"
+    index(doc)["question_priorityUpdate"]["interruptionPolicy"]["allowInterruption"] = False
 
     # Accept the warning status while keeping it incomplete until the warning is resolved.
     for code in [f"P{i:02d}" for i in range(1, 24)]:
         node = index(doc).get("setVariable_itemValid" + code)
         if node:
             node["value"] = node["value"].replace('Or(itemStatus = "対応済み", itemStatus = "未実施", itemStatus = "要確認")', 'Or(itemStatus = "対応済み", itemStatus = "対応済み【!】", itemStatus = "未実施", itemStatus = "要確認")')
+            insert_after(doc, "setVariable_itemValid" + code, [
+                setv("setVariable_itemStateStable" + code, "Topic.優先度表示検証", item_state_guard(code)),
+            ])
 
     render = index(doc)["setVariable_itemRender"]
     render["value"] = render["value"].replace('="【確認できた事実】', '="【ユーザーへの回答】" & Char(10) & Topic.判定ユーザー回答 & Char(10) & Char(10) & "【確認できた事実】')
+    insert_before(doc, "invokeFlowAction_caseSaveFieldAdvice", [
+        setv("setVariable_commitPreviousPriorityRaw", "Topic.前回確定優先度原文", "=Topic.優先度表示原文"),
+        setv("setVariable_commitPreviousPriorityDisplay", "Topic.前回確定優先度表示", "=Topic.優先度判定結果"),
+    ])
     insert_after(doc, "invokeFlowAction_caseSaveFieldAdvice", [
-        condition("conditionGroup_clearImageAnswerAfterSave", "=Topic.写真回答反映中", [
+        condition("conditionGroup_clearImageAnswerAfterSave", "=Or(Topic.写真回答反映中, Topic.写真判定反映中)", [
             setv("setVariable_clearImageAnswerAfterSave", "Global.写真ユーザー回答テキスト", '="ー"'),
             setv("setVariable_clearImageAnswerPending", "Topic.写真回答反映中", "=false"),
+            setv("setVariable_clearImageDecisionAfterSave", "Global.写真判定反映待ち", "=false"),
+            setv("setVariable_clearImageDecisionPending", "Topic.写真判定反映中", "=false"),
+            setv("setVariable_clearImageTurnTextAfterSave", "Global.写真同時テキスト", '=""'),
+            setv("setVariable_clearImageDoneAfterSave", "Global.写真措置済みテキスト", '=""'),
+            setv("setVariable_clearImageCheckAfterSave", "Global.写真要確認テキスト", '=""'),
         ])
     ])
+
+    # A malformed AI payload is retried once.  A second failure keeps this dialog alive
+    # instead of dropping the user into the parent agent's unrestricted free answer.
+    succeeded = index(doc)["conditionGroup_prioritySucceeded"]
+    succeeded["elseActions"] = [
+        condition("conditionGroup_priorityFormatRetry", "=Topic.優先度様式再試行回数 < 1", [
+            setv("setVariable_priorityFormatRetryIncrement", "Topic.優先度様式再試行回数", "=Topic.優先度様式再試行回数 + 1"),
+            setv("setVariable_priorityFormatRetryPrompt", "Topic.優先度判定プロンプト", '=Topic.優先度判定プロンプト & Char(10) & Char(10) & "前回の生成は形式検証で不合格でした。原因：" & Topic.優先度表示検証 & "。内容を自由形式へ変えず、指定した内部ブロックだけを完全な順序で再出力してください。前回確定した対応済み・対応済み【!】を無関係な最新入力で変更しないでください。"'),
+            {"kind": "GotoAction", "id": "goto_priorityFormatRetry", "actionId": "answer_priority"},
+        ], [
+            setv("setVariable_imageReceptionOnPriorityRecovery", "Global.緊急保安画像受付中", "=true"),
+            setv("setVariable_priorityFailedSnapshot", "Topic.優先度経路診断", '="subaru-text-20261117-v4|stage=recover|validation=" & Topic.優先度表示検証 & "|rawChars=" & Text(Len(Topic.優先度表示原文)) & "|retry=" & Text(Topic.優先度様式再試行回数)'),
+            question("question_priorityFormatRecovery", "Topic.優先度形式再開入力", "回答形式を自動修復できなかったため、未検証の回答は表示・保存していません。会話は継続しています。「再試行」と入力するか、新しい現場情報を入力してください。", False),
+            setv("setVariable_resyncHistoryAfterFormatRecovery", "Topic.追加情報履歴", "=Global.緊急保安追加情報履歴"),
+            setv("setVariable_latestInputAfterFormatRecovery", "Topic.最新利用者入力", "=Topic.優先度形式再開入力"),
+            setv("setVariable_appendAfterFormatRecovery", "Topic.追加情報履歴", '=If(Or(Lower(Trim(Topic.優先度形式再開入力)) = "再試行", Lower(Trim(Topic.優先度形式再開入力)) = "反映"), Topic.追加情報履歴, Topic.追加情報履歴 & Char(10) & "追加情報：" & Topic.優先度形式再開入力)'),
+            setv("setVariable_syncAfterFormatRecovery", "Global.緊急保安追加情報履歴", "=Topic.追加情報履歴"),
+            {"kind": "GotoAction", "id": "goto_priorityAfterFormatRecovery", "actionId": "setVariable_imageAnswerPending"},
+        ]),
+    ]
     return doc
 
 
@@ -207,6 +345,8 @@ def build_image(raw):
 
     # Short-lived, scoped, versioned cache for the unchanged guideline text.
     init_cache = [
+        setv("setVariable_imageAnalysisRunning", "Global.写真分析処理中", "=true"),
+        setv("setVariable_imageTurnTextGlobal", "Global.写真同時テキスト", "=System.Activity.Text"),
         setv("setVariable_imageGuideReuse", "Topic.撮影要領再利用", "=true"),
         setv("setVariable_imageGuideReuseSeconds", "Topic.撮影要領再利用秒数", "=300"),
         setv("setVariable_imageGuideConversation", "Topic.画像要領会話ID", "=Text(System.Conversation.Id)"),
@@ -259,12 +399,25 @@ def build_image(raw):
     insert_before(doc, "setVariable_globalDone", [setv("setVariable_globalImageUserAnswer", "Global.写真ユーザー回答テキスト", '=If(IsBlank(Topic.画像ユーザー回答), "ー", Topic.画像ユーザー回答)')])
     history = index(doc)["setVariable_appendImageResultToGlobalHistory"]
     old = history["value"]
-    history["value"] = '=If(Topic.画像関連判定 = "関連なし", Global.緊急保安追加情報履歴, ' + old[1:] + ')'
+    history["value"] = '=If(Topic.画像関連判定 = "関連なし", If(IsBlank(Trim(Topic.画像同時テキスト)), Global.緊急保安追加情報履歴, Global.緊急保安追加情報履歴 & Char(10) & "追加情報（画像同時テキスト）：" & Topic.画像同時テキスト), ' + old[1:] + ')'
+    insert_before(doc, "sendActivity_analysisResult", [
+        setv("setVariable_imageAnalysisComplete", "Global.写真分析処理中", "=false"),
+        setv("setVariable_imageDecisionReady", "Global.写真判定反映待ち", "=true"),
+    ])
+    insert_before(doc, "endDialog_unsupportedImageType", [
+        setv("setVariable_imageAnalysisStopUnsupported", "Global.写真分析処理中", "=false"),
+    ])
+    insert_after(doc, "setVariable_imageReceptionBackOn", [
+        setv("setVariable_imageAnalysisStopPromptMissing", "Global.写真分析処理中", "=false"),
+    ])
     response = index(doc)["sendActivity_analysisResult"]
     response["activity"] = response["activity"].replace(
         "画像を分析しました（{Topic.画像ファイル名}）。\n\n",
         "画像を分析しました（{Topic.画像ファイル名}）。\n\n【ユーザーへの回答】\n{If(IsBlank(Topic.画像ユーザー回答), \"ー\", Topic.画像ユーザー回答)}\n\n"
-    ).replace("【要確認】", "【確認したいこと】")
+    ).replace("【要確認】", "【確認したいこと】").replace(
+        "この内容を初動措置の判定へ反映します。続けて何か一言（例：「反映」）を送ってください。別の写真を続けて送っていただいても構いません。",
+        "この内容を初動措置の判定へ自動反映します。自動反映が続かない場合だけ「反映」と送ってください。別の写真を続けて送っていただいても構いません。"
+    )
     return doc
 
 
@@ -295,7 +448,9 @@ def main():
     }
     (ROOT / "validation/scope.json").write_text(json.dumps(scope, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     for target, original in (("3-9_貼り替え用.txt", sources[FIELD]), ("4-9_貼り替え用.txt", sources[IMAGE])):
-        (ROOT / "validation" / (target + ".diff")).write_text("".join(difflib.unified_diff(original.decode().splitlines(True), (ROOT / target).read_text().splitlines(True), fromfile="before/" + target, tofile="after/" + target)), encoding="utf-8")
+        diff_text = "".join(difflib.unified_diff(original.decode().splitlines(True), (ROOT / target).read_text().splitlines(True), fromfile="before/" + target, tofile="after/" + target))
+        clean_diff = "\n".join(line.rstrip() for line in diff_text.splitlines()) + "\n"
+        (ROOT / "validation" / (target + ".diff")).write_text(clean_diff, encoding="utf-8")
     print("Built", ", ".join(outputs))
 
 
