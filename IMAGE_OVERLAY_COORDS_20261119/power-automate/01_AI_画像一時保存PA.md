@@ -1,17 +1,12 @@
-# PA 1：AI_画像一時保存
+# PA 1：AI_画像一時保存（既存案件行更新版）
 
-画像をAIへ渡す前に、受信した同じ画像をSharePointへ一時保存します。画像1枚につきListsへ1行作ります。既存案件保存PAは変更しません。
+画像をSharePointライブラリへ一時保存し、既存の `AI_エージェント可視化` の案件行へ最新画像情報を書き込みます。新しいリスト行は作りません。
 
-## 1. フローを作る
+## 1. フローとトリガー
 
-1. Power Automateを開きます。
-2. 「新しいフロー」→「インスタント クラウド フロー」を選びます。
-3. 名前を `AI_画像一時保存` にします。
-4. トリガーは「エージェントがフローを呼び出したとき」を選びます。
+インスタントクラウドフロー `AI_画像一時保存` を作り、トリガーを「エージェントがフローを呼び出したとき」にします。
 
-## 2. トリガー入力
-
-次の順番で追加します。順番が重要です。
+入力は次の順番です。
 
 |順番|表示名|種類|コード上の名前|
 |---:|---|---|---|
@@ -22,18 +17,17 @@
 |5|mime_type|テキスト|`text_4`|
 |6|image_file|ファイル|`file`|
 
-Copilot StudioのYAMLは、この内部名へ値を渡します。入力を削除して作り直すと番号が変わる場合があるため、その場合はYAML側も合わせてください。
+既存YAMLとの入出力を変えないため、順番も変更しません。
 
-## 3. 変数を初期化
-
-以下の変数を追加します。
+## 2. 変数
 
 |変数|種類|初期値|
 |---|---|---|
-|varImageToken|文字列|式 `guid()`|
+|varImageToken|文字列|`guid()`|
 |varRecordId|整数|`0`|
 |varImageUrl|文字列|空|
 |varFileIdentifier|文字列|空|
+|varOldFileIdentifier|文字列|空|
 |varWidth|整数|`0`|
 |varHeight|整数|`0`|
 |varImageVersion|整数|`1`|
@@ -41,9 +35,9 @@ Copilot StudioのYAMLは、この内部名へ値を渡します。入力を削�
 |varSuccess|ブール|`false`|
 |varDimensionRetry|整数|`0`|
 
-## 4. 入力チェック
+## 3. 入力チェック
 
-条件を追加し、次のいずれかならエラー応答へ進めます。
+次の条件がtrueなら、ファイルを作らず `INVALID_IMAGE_INPUT` を返します。
 
 ```text
 @or(
@@ -59,11 +53,41 @@ Copilot StudioのYAMLは、この内部名へ値を渡します。入力を削�
 )
 ```
 
-エラー時は `varErrorCode` を `INVALID_IMAGE_INPUT` にし、最後の応答へ移動します。ファイル作成は行いません。
+## 4. 既存案件行を先に検索
 
-## 5. ファイル名を作る
+「SharePoint－複数の項目の取得」を追加します。
 
-「作成」アクションを追加し、名前を `Compose_FileName` にします。
+- リスト：`AI_エージェント可視化`
+- フィルタークエリは、式タブから次を指定
+- 上から順に取得：`Modified desc`
+- 上から順に取得する件数：`1`
+
+```text
+@concat(
+  'ConversationId eq ''',
+  replace(triggerBody()?['text'],'''',''''''),
+  ''''
+)
+```
+
+取得件数が0なら、`varErrorCode=CASE_ROW_NOT_FOUND` として応答へ進みます。画像分析はCopilot Studio側で継続します。空の案件行を画像PAから作成してはいけません。
+
+1件見つかった場合、次を設定します。
+
+```text
+varRecordId:
+@int(first(body('複数の項目の取得')?['value'])?['ID'])
+
+varOldFileIdentifier:
+@coalesce(first(body('複数の項目の取得')?['value'])?['ImageFileIdentifier'], '')
+
+varImageVersion:
+@add(int(coalesce(first(body('複数の項目の取得')?['value'])?['ImageVersion'], 0)), 1)
+```
+
+## 5. ファイル名と画像保存
+
+「作成」`Compose_FileName`：
 
 ```text
 @concat(
@@ -72,31 +96,24 @@ Copilot StudioのYAMLは、この内部名へ値を渡します。入力を削�
 )
 ```
 
-利用者が送ったファイル名を保存先名に使わずGUIDにすることで、同名上書き・禁止文字・個人情報の混入を避けます。
+「SharePoint－ファイルの作成」：
 
-## 6. SharePointへ画像を作成
+- ライブラリ：`AI_TemporaryImages`
+- ファイル名：`Compose_FileName`
+- ファイルコンテンツ：`image_file contentBytes`
 
-「SharePoint－ファイルの作成」を追加します。
-
-- サイトのアドレス：`AI_TemporaryImages` を作ったサイト
-- フォルダーのパス：`AI_TemporaryImages`
-- ファイル名：`Compose_FileName` の出力
-- ファイルコンテンツ：トリガーの `image_file contentBytes`
-
-ファイルコンテンツが文字列として扱われる環境では次の式を使用します。
+動的コンテンツを直接指定して画像が壊れる場合だけ、次を使用します。正常に開く環境では二重変換しません。
 
 ```text
 @base64ToBinary(triggerBody()?['file']?['contentBytes'])
 ```
 
-動的コンテンツを直接指定してファイルが正常に開ける場合は、上の変換式を重ねないでください。二重変換すると画像が壊れます。
+作成後に設定します。
 
-作成後、次を変数へ保存します。
+- `varFileIdentifier`：ファイル作成結果の `Id` または `Identifier`
+- `varImageUrl`：ファイルのプロパティから得た「アイテムへのリンク」
 
-- `varFileIdentifier`：ファイルの作成の `Id` または `Identifier`
-- `varImageUrl`：ファイルの作成後に「ファイルのプロパティの取得」で得た `アイテムへのリンク`
-
-`アイテムへのリンク` が画像コントロールで表示できない環境では、サーバー相対パスを使い、次の形にします。
+リンクで画像表示できない場合は、サイトURLとPathを結合します。
 
 ```text
 @concat(
@@ -105,21 +122,9 @@ Copilot StudioのYAMLは、この内部名へ値を渡します。入力を削�
 )
 ```
 
-## 7. 元画像の幅・高さを取得
+## 6. 画像の幅・高さ
 
-Power Appsで縦横比を保ったまま正確に枠を置くため、ピクセル幅と高さが必要です。
-
-「SharePoint－SharePointへのHTTP要求を送信」を追加します。
-
-- サイトのアドレス：同じサイト
-- 方法：`GET`
-- URI：
-
-```text
-_api/web/GetFileById(guid'ファイルのUniqueId')/ListItemAllFields?$select=ImageWidth,ImageHeight
-```
-
-`ファイルのUniqueId` には「ファイルの作成」の `UniqueId` を動的コンテンツで入れます。画面上では次のような形になります。
+既存版と同じく「SharePointへのHTTP要求を送信」で取得します。
 
 ```text
 @concat(
@@ -129,8 +134,6 @@ _api/web/GetFileById(guid'ファイルのUniqueId')/ListItemAllFields?$select=Im
 )
 ```
 
-応答から次を設定します。
-
 ```text
 varWidth:
 @int(coalesce(body('SharePointへのHTTP要求を送信')?['ImageWidth'], body('SharePointへのHTTP要求を送信')?['d']?['ImageWidth'], 0))
@@ -139,68 +142,53 @@ varHeight:
 @int(coalesce(body('SharePointへのHTTP要求を送信')?['ImageHeight'], body('SharePointへのHTTP要求を送信')?['d']?['ImageHeight'], 0))
 ```
 
-SharePoint側の画像メタデータ生成が遅れる場合があります。HTTP要求を「Do until」に入れ、次のいずれかで終了させます。
+幅・高さが0の場合だけ1秒待って再取得し、最大3回で終了します。3回とも0なら `IMAGE_DIMENSION_UNAVAILABLE` を残し、画像は保存しますがPower Appsの枠を非表示にします。
 
-- `varWidth > 0` かつ `varHeight > 0`
-- `varDimensionRetry >= 3`
+## 7. 既存案件行を更新
 
-幅・高さが0なら1秒待って `varDimensionRetry` を1増やします。最大3回で終了します。無限ループにしないでください。
+「SharePoint－項目の更新」を追加します。
 
-3回とも取得できない場合：
+- リスト：`AI_エージェント可視化`
+- ID：`varRecordId`
+- Titleが必須表示される場合：検索結果の既存 `Title` をそのまま設定
 
-- `varErrorCode`：`IMAGE_DIMENSION_UNAVAILABLE`
-- 画像とLists行は保存する
-- Power Appsは画像だけ表示し、枠は非表示にする
-
-## 8. Listsへ一時行を作る
-
-「SharePoint－項目の作成」を追加します。
-
-- リスト：`AI_ImageOverlay`
+画像列だけを次の値で更新します。既存の優先度・回答・CaseId・Status等はマッピングし直したり空文字で上書きしたりしないでください。
 
 |列|値|
 |---|---|
-|Title|`IMG-` と `varImageToken` の先頭8文字|
-|ConversationId|トリガー `conversation_id`|
-|ChannelId|トリガー `channel_id`|
-|UserId|トリガー `user_id`|
-|CaseId|空欄（任意で既存案件を検索して入れてもよい）|
 |ImageToken|`varImageToken`|
 |ImageUrl|`varImageUrl`|
-|FileIdentifier|`varFileIdentifier`|
-|FileName|`Compose_FileName`|
-|MimeType|トリガー `mime_type`|
-|PixelWidth|`varWidth`|
-|PixelHeight|`varHeight`|
-|OverlayJson|`{"version":1,"show":false,"reason":"分析中","markers":[]}`|
-|AnalysisNote|`画像分析中`|
-|AnalysisStatus|`TEMP_SAVED`|
-|ImageVersion|`1`|
-|UserText|トリガー `user_text`|
-|ExpiresAt|式 `addHours(utcNow(),24)`|
-|ErrorCode|`varErrorCode`|
+|ImageFileIdentifier|`varFileIdentifier`|
+|ImagePixelWidth|`varWidth`|
+|ImagePixelHeight|`varHeight`|
+|ImageOverlayJson|`{"version":1,"show":false,"reason":"分析中","markers":[]}`|
+|ImageAnalysisNote|`画像分析中`|
+|ImageAnalysisStatus|`TEMP_SAVED`|
+|ImageVersion|`varImageVersion`|
+|ImageUserText|トリガー `user_text`|
+|ImageExpiresAt|`addHours(utcNow(),24)`|
+|ImageErrorCode|`varErrorCode`|
 
-項目作成後：
+更新成功後、`varSuccess=true` にします。
 
-- `varRecordId`：作成した項目の `ID`
-- `varSuccess`：`true`
+## 8. 前画像を削除
 
-一時保存期間を変更する場合は `addHours(utcNow(),24)` の24だけを変更します。
+案件行の更新が成功してから、`varOldFileIdentifier` が空でない場合だけ前画像を削除します。
 
-## 9. 途中失敗時の後始末
+削除失敗は今回の画像保存成功を取り消しません。定期削除で再処理できるよう、必要ならフロー実行履歴へ警告だけ残します。
 
-ファイル作成後にLists項目作成が失敗した場合だけ、作ったファイルを削除します。孤立ファイルを残さないためです。
+新しい画像ファイルは、案件行更新前に削除しないでください。
 
-「スコープ－失敗処理」を用意し、正常処理スコープが失敗・タイムアウトした場合に実行します。
+## 9. 失敗時の後始末
 
-1. `varFileIdentifier` が空でなければ「ファイルの削除」
-2. `varErrorCode` が空なら `TEMP_SAVE_FAILED`
-3. `varSuccess` を `false`
-4. 応答へ進む
+新画像ファイル作成後、案件行更新が失敗した場合は、新しく作った `varFileIdentifier` のファイルだけ削除します。前画像と既存案件行は変更しません。
+
+- `varErrorCode=TEMP_SAVE_FAILED`
+- `varSuccess=false`
 
 ## 10. エージェントへ応答
 
-最後に「エージェントに応答する」を置きます。次の出力名・種類を正確に作ります。
+最後に「エージェントに応答する」を1個だけ置きます。
 
 |出力名|種類|値|
 |---|---|---|
@@ -213,22 +201,12 @@ SharePoint側の画像メタデータ生成が遅れる場合があります。H
 |image_version|数値|`varImageVersion`|
 |error_code|テキスト|`varErrorCode`|
 
-「応答」アクションは成功・失敗のどちらからも必ず到達する位置に1個だけ置きます。
+## 11. 単体テスト
 
-## 11. フロー設定
-
-- タイムアウトを短くしすぎない
-- 非同期応答を使用しない
-- 所有者のSharePoint接続を使用する場合、利用者へ接続の利用権限を付与する
-- 保存後にCopilot Studioの「ツール」からこのフローを追加する
-
-## 12. 単体テスト
-
-フロー単体ではエージェントから呼び、次を確認します。
-
-1. PNG：`success=true`、URL、幅、高さ、record_idが返る
-2. JPEG：同上
-3. PDF：`success=false`、`INVALID_IMAGE_INPUT`
-4. 幅・高さが取れない画像：URLは返るが `IMAGE_DIMENSION_UNAVAILABLE`
-5. SharePoint権限を外したテスト接続：`TEMP_SAVE_FAILED`、孤立ファイルなし
-
+1. 既存案件でPNG：同じ案件行のImage列だけ更新される
+2. 既存案件でJPEG：同上
+3. 案件行がない会話：`CASE_ROW_NOT_FOUND`、新規行なし
+4. PDF：`INVALID_IMAGE_INPUT`、ファイル作成なし
+5. 画像寸法取得失敗：URLは保存、枠は非表示
+6. 2枚目：同じ案件行が更新され、1枚目のファイルが削除される
+7. 既存の優先度・現場回答・Status・CaseIdが変化していない

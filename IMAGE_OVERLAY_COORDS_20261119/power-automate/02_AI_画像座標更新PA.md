@@ -1,6 +1,6 @@
-# PA 2：AI_画像座標更新
+# PA 2：AI_画像座標更新（既存案件行更新版）
 
-Copilot Studioが生成した目印JSONを検証し、対応する一時画像行へ保存します。画像トークンが一致しない場合は更新しません。
+Copilot Studioが生成した目印JSONを検証し、`AI_エージェント可視化` の同じ案件行へ保存します。画像トークンが一致しない場合は更新しません。
 
 ## 1. フローを作る
 
@@ -49,7 +49,7 @@ Copilot Studioが生成した目印JSONを検証し、対応する一時画像�
 
 「SharePoint－項目の取得」で次を指定します。
 
-- リスト：`AI_ImageOverlay`
+- リスト：`AI_エージェント可視化`
 - ID：`int(triggerBody()?['text'])`
 
 条件：
@@ -171,12 +171,12 @@ varSafeJson = triggerBody()?['text_2']
 
 |列|値|
 |---|---|
-|OverlayJson|`varSafeJson`|
-|AnalysisNote|トリガー `analysis_note`|
-|AnalysisStatus|入力が許可値ならその値。それ以外は `ANALYZED`|
+|ImageOverlayJson|`varSafeJson`|
+|ImageAnalysisNote|トリガー `analysis_note`|
+|ImageAnalysisStatus|入力が許可値ならその値。それ以外は `ANALYZED`|
 |ImageVersion|既存の `ImageVersion + 1`|
-|ExpiresAt|`addHours(utcNow(),24)`|
-|ErrorCode|`varErrorCode`|
+|ImageExpiresAt|`addHours(utcNow(),24)`|
+|ImageErrorCode|`varErrorCode`|
 
 状態の許可値は `TEMP_SAVED`、`ANALYZED`、`NEEDS_REVIEW`、`VISUAL_OK`、`ERROR` だけです。今回のCopilot Studioコードは通常 `ANALYZED` を渡します。
 
@@ -195,7 +195,7 @@ JSON解析そのものが失敗した場合は、失敗処理スコープで次�
 
 1. `varSafeJson` を空マーカーJSONにする
 2. `varErrorCode=INVALID_OVERLAY_JSON`
-3. 対象行へ空マーカーJSONとエラーを保存
+3. 対象案件行の `ImageOverlayJson` へ空マーカーJSON、`ImageErrorCode` へエラーを保存
 4. `varSuccess=true`（安全な非表示状態の保存に成功したため）
 5. 応答
 

@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from openpyxl import load_workbook
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -98,14 +97,25 @@ def main() -> None:
     for required_text in ("btnMarker1", "btnMarker8", "varMarkerPanelVisible", "Message"):
         assert required_text in app_doc
 
-    workbook = load_workbook(ROOT / "AI_ImageOverlay_Listsインポート用_v2.xlsx", data_only=False)
-    assert workbook.sheetnames == ["インポート用", "列の種類と用途", "導入手順", "PAとの対応"]
-    import_sheet = workbook["インポート用"]
-    assert import_sheet.max_column == 19
-    assert import_sheet["A2"].value == "DELETE_AFTER_IMPORT"
-    assert "AI_ImageOverlay_Import" in import_sheet.tables
+    sharepoint_doc = (ROOT / "sharepoint" / "01_SharePoint準備.md").read_text(encoding="utf-8")
+    pa1_doc = (ROOT / "power-automate" / "01_AI_画像一時保存PA.md").read_text(encoding="utf-8")
+    pa2_doc = (ROOT / "power-automate" / "02_AI_画像座標更新PA.md").read_text(encoding="utf-8")
+    pa3_doc = (ROOT / "power-automate" / "03_AI_一時画像削除PA.md").read_text(encoding="utf-8")
+    required_columns = (
+        "ImageToken", "ImageUrl", "ImageFileIdentifier", "ImagePixelWidth",
+        "ImagePixelHeight", "ImageOverlayJson", "ImageAnalysisNote",
+        "ImageAnalysisStatus", "ImageVersion", "ImageUserText",
+        "ImageExpiresAt", "ImageErrorCode",
+    )
+    for column in required_columns:
+        assert column in sharepoint_doc, column
+    for document in (pa1_doc, pa2_doc, pa3_doc, app_doc):
+        assert "AI_ImageOverlay" not in document
+    assert "CASE_ROW_NOT_FOUND" in pa1_doc
+    assert "項目の削除" not in pa3_doc
+    assert "案件行そのものは絶対に削除しません" in pa3_doc
 
-    print("PASS: YAML structure, goto targets, overlay contract, multi-marker example, Apps guide, Lists Excel")
+    print("PASS: YAML, overlay contract, multi-marker example, existing-list PA/Apps guides")
 
 
 if __name__ == "__main__":

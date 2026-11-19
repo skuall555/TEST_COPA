@@ -1,6 +1,6 @@
-# PA 3：AI_一時画像削除
+# PA 3：AI_一時画像削除（案件行を残す版）
 
-一時画像と座標行を自動削除します。ユーザー画像を永久保存しないためのフローです。
+期限切れの一時画像ファイルを削除し、既存案件行の `Image...` 列だけを空にします。`AI_エージェント可視化` の案件行そのものは絶対に削除しません。
 
 ## 1. フロー作成
 
@@ -9,52 +9,60 @@
 3. 1時間ごとに実行します。
 4. タイムゾーンは `(UTC+09:00) 大阪、札幌、東京` を選びます。
 
-## 2. 期限切れ行を取得
+## 2. 期限切れ案件を取得
 
 「SharePoint－複数の項目の取得」を追加します。
 
-- リスト：`AI_ImageOverlay`
+- リスト：`AI_エージェント可視化`
 - フィルタークエリ：
 
 ```text
-ExpiresAt lt '@{utcNow()}'
+ImageExpiresAt lt '@{utcNow()}' and ImageUrl ne null
 ```
 
-- 上限：5000件
 - ページネーション：オン
+- しきい値：5000
 
-## 3. 各行を削除
+## 3. 各案件を処理
 
 Apply to eachで次を実行します。
 
-1. `FileIdentifier` が空でなければ「SharePoint－ファイルの削除」
-2. ファイル削除が成功、失敗、スキップ、タイムアウトのいずれでも「SharePoint－項目の削除」を実行
+1. `ImageFileIdentifier` が空でなければ「SharePoint－ファイルの削除」
+2. ファイル削除の成功・失敗・スキップ・タイムアウトのすべてから「項目の更新」へ進む
+3. 項目の更新で、対象案件の画像列だけをクリア
 
-ファイルが既に無い場合でも、Lists行は削除します。
+項目の更新：
 
-## 4. エラーを分離
+- リスト：`AI_エージェント可視化`
+- ID：現在の項目の `ID`
+- Titleが必須の場合：現在の項目の `Title` をそのまま設定
 
-1件の削除失敗で残りを止めないよう、Apply to each内で「ファイル削除」と「行削除」を別スコープにします。
+|列|クリア後の値|
+|---|---|
+|ImageToken|空|
+|ImageUrl|空|
+|ImageFileIdentifier|空|
+|ImagePixelWidth|`0`|
+|ImagePixelHeight|`0`|
+|ImageOverlayJson|`{"version":1,"show":false,"reason":"画像保存期限切れ","markers":[]}`|
+|ImageAnalysisNote|空|
+|ImageAnalysisStatus|`EXPIRED`|
+|ImageVersion|既存値+1|
+|ImageUserText|空|
+|ImageExpiresAt|空|
+|ImageErrorCode|空|
 
-- ファイル削除失敗：行削除を続行
-- 行削除失敗：次の行を続行し、フロー履歴で確認
+優先度、現場回答、CaseId、ConversationId、Statusなど既存の案件列は変更しません。
 
-Apply to eachの同時実行数は5程度にします。大量削除時にSharePointのスロットリングを起こしにくくするためです。
+## 4. 保存期間
 
-## 5. 保存期間
+画像一時保存PAと座標更新PAは標準で `addHours(utcNow(),24)` を設定します。必要なら両方を同じ時間へ変更してください。
 
-標準は、画像一時保存PAと座標更新PAで `ExpiresAt=addHours(utcNow(),24)` としています。
+## 5. テスト
 
-- 1時間に短縮：`addHours(utcNow(),1)`
-- 8時間：`addHours(utcNow(),8)`
-- 24時間：現在値
-
-利用者がPower Appsを翌日確認する可能性がある場合は24時間を推奨します。正式保存が必要になった画像は、別の正式保存先へコピーしてから一時行を削除してください。
-
-## 6. テスト
-
-1. テスト行のExpiresAtを過去時刻にする
+1. テスト案件の `ImageExpiresAt` を過去時刻にする
 2. フローを手動実行する
-3. 画像ファイルとLists行の両方が消えることを確認する
-4. ファイルだけ先に削除し、再実行してもLists行が消えることを確認する
-
+3. 一時画像ファイルが削除される
+4. 案件行は残り、画像列だけがクリアされる
+5. 優先度、回答、Status、CaseIdが変わっていない
+6. ファイルを先に削除してから再実行しても、案件行が削除されない

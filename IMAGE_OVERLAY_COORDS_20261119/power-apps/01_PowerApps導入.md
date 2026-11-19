@@ -2,20 +2,19 @@
 
 SharePointの画像URLを表示し、その上に最大8個の色枠を重ねます。枠をタップすると、その措置についてAIが確認した内容と残る対応を表示します。
 
-## 1. データソースを追加
+## 1. 既存データソースを確認
 
 1. Power Apps Studioで対象アプリを編集します。
-2. 「データ」→「データの追加」→「SharePoint」を選びます。
-3. 対象サイトへ接続します。
-4. `AI_ImageOverlay` を追加します。
+2. 「データ」で既存の `AI_エージェント可視化` が接続されていることを確認します。
+3. 列追加前から接続済みの場合は、データソースのメニューから「更新」を実行し、追加したImage列を認識させます。
 
-`AI_TemporaryImages` ライブラリをデータソースとして追加する必要はありません。画像は `ImageUrl` から表示します。
+新しい座標用リストは追加しません。`AI_TemporaryImages` ライブラリもデータソースへ追加する必要はありません。画像は既存案件行の `ImageUrl` から表示します。
 
 ## 2. 前提となる案件変数
 
 この手順では、現在表示中の案件レコードを `varSelectedCase` と呼びます。
 
-現在のアプリで別名を使っている場合は、以下の式にある `varSelectedCase` を実際の変数名へ置き換えてください。必要なのは既存案件行の `ConversationId` です。
+現在のアプリで別名を使っている場合は、以下の式にある `varSelectedCase` を実際の変数名へ置き換えてください。必要なのは現在表示中の既存案件行の `ID` です。
 
 ## 3. 画像データ読込用の非表示ボタン
 
@@ -25,24 +24,18 @@ SharePointの画像URLを表示し、その上に最大8個の色枠を重ねま
 - OnSelect：次の式
 
 ```powerfx
-Refresh(AI_ImageOverlay);
+Refresh('AI_エージェント可視化');
 
 Set(
     varImageRecord,
-    First(
-        SortByColumns(
-            Filter(
-                AI_ImageOverlay,
-                ConversationId = Text(varSelectedCase.ConversationId)
-            ),
-            "Created",
-            SortOrder.Descending
-        )
+    LookUp(
+        'AI_エージェント可視化',
+        ID = varSelectedCase.ID
     )
 );
 
-Set(varSourceW, Value(Coalesce(varImageRecord.PixelWidth, 0)));
-Set(varSourceH, Value(Coalesce(varImageRecord.PixelHeight, 0)));
+Set(varSourceW, Value(Coalesce(varImageRecord.ImagePixelWidth, 0)));
+Set(varSourceH, Value(Coalesce(varImageRecord.ImagePixelHeight, 0)));
 Set(varLoadedImageVersion, Value(Coalesce(varImageRecord.ImageVersion, 0)));
 Set(varOverlayLoadError, false);
 Set(varOverlayReason, "");
@@ -51,14 +44,14 @@ Set(varSelectedMarker, Blank());
 Clear(colImageMarkers);
 
 If(
-    !IsBlank(varImageRecord.OverlayJson),
+    !IsBlank(varImageRecord.ImageOverlayJson),
     IfError(
-        Set(varOverlayReason, Text(ParseJSON(varImageRecord.OverlayJson).reason));
+        Set(varOverlayReason, Text(ParseJSON(varImageRecord.ImageOverlayJson).reason));
         ClearCollect(
             colImageMarkers,
             FirstN(
                 ForAll(
-                    Table(ParseJSON(varImageRecord.OverlayJson).markers) As JsonRow,
+                    Table(ParseJSON(varImageRecord.ImageOverlayJson).markers) As JsonRow,
                     With(
                         {
                             J: JsonRow.Value,
@@ -411,18 +404,12 @@ Repeat    = true
 AutoStart = true
 Visible   = false
 OnTimerEnd =
-    Refresh(AI_ImageOverlay);
+    Refresh('AI_エージェント可視化');
     With(
         {
-            LatestImage: First(
-                SortByColumns(
-                    Filter(
-                        AI_ImageOverlay,
-                        ConversationId = Text(varSelectedCase.ConversationId)
-                    ),
-                    "Created",
-                    SortOrder.Descending
-                )
+            LatestImage: LookUp(
+                'AI_エージェント可視化',
+                ID = varSelectedCase.ID
             )
         },
         If(
@@ -442,8 +429,8 @@ OnTimerEnd =
 
 - 自動レイアウトコンテナ内へ目印ボタンを直接入れない
 - `imgOverlayPhoto.ImagePosition` は `Fit`
-- PixelWidthまたはPixelHeightが0なら枠を出さない
-- 画像URLが変わったら必ず最新行を再読込
+- ImagePixelWidthまたはImagePixelHeightが0なら枠を出さない
+- ImageVersionが変わったら同じ案件行を再読込
 - 枠の判定だけで優先度表示を変更しない
 - 目印メッセージはAIの説明であり、最終判断は担当者が行う
 
