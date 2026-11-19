@@ -120,15 +120,13 @@ def main() -> None:
         assert required_text in app_doc
 
     app_page_doc = (ROOT / "power-apps" / "02_新規画像ページ_コード貼り付け版.md").read_text(encoding="utf-8")
-    app_page_source = (ROOT / "power-apps" / "scrImageOverlay_貼り付け用.pa.yaml").read_text(encoding="utf-8")
+    app_page_source = (ROOT / "power-apps" / "scrImageOverlay_画面内貼り付け用.pa.yaml").read_text(encoding="utf-8")
     app_button_source = (ROOT / "power-apps" / "btnOpenImageOverlay_貼り付け用.pa.yaml").read_text(encoding="utf-8")
     app_page = yaml.safe_load(app_page_source)
     app_button = yaml.safe_load(app_button_source)
-    assert isinstance(app_page, list) and len(app_page) == 1
+    assert isinstance(app_page, list) and len(app_page) >= 20
     assert isinstance(app_button, list) and len(app_button) == 1
-    screen = app_page[0]["scrImageOverlay"]
-    children = screen["Children"]
-    child_names = {next(iter(child)) for child in children}
+    child_names = {next(iter(child)) for child in app_page}
     for required_control in (
         "btnLoadImageOverlay",
         "imgOverlayPhoto",
@@ -143,6 +141,9 @@ def main() -> None:
     assert app_page_source.count("Control: Classic/Button@2.2.0") >= 12
     assert "Back(ScreenTransition.None)" in app_page_source
     assert "ImagePosition.Stretch" in app_page_source
+    assert "Control: Screen" not in app_page_source
+    assert "Control: Classic/Label" not in app_page_source
+    assert app_page_source.count("Control: Label@") == 6
     assert "varReply" not in app_page_source
     assert "varResultTab, varReturnResultTab" in app_page_source
     assert "ImagePixelWidth" not in app_page_source

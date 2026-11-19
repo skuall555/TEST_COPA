@@ -1,0 +1,395 @@
+- btnLoadImageOverlay:
+    Control: Classic/Button@2.2.0
+    Properties:
+      Height: =1
+      OnSelect: |-
+        =Refresh('AI_エージェント可視化');
+        Set(
+            varImageRecord,
+            LookUp(
+                'AI_エージェント可視化',
+                ConversationId = varImageConversationId
+            )
+        );
+        Set(varLoadedImageVersion, Value(Coalesce(varImageRecord.ImageVersion, 0)));
+        Set(varOverlayLoadError, false);
+        Set(varOverlayReason, "");
+        Set(varOverlayShow, false);
+        Set(varMarkerPanelVisible, false);
+        Set(varSelectedMarker, Blank());
+        Clear(colImageMarkers);
+        If(
+            !IsBlank(varImageRecord.ImageOverlayJson),
+            IfError(
+                With(
+                    {ParsedOverlay: ParseJSON(varImageRecord.ImageOverlayJson)},
+                    Set(varOverlayReason, Text(ParsedOverlay.reason));
+                    Set(varOverlayShow, Boolean(ParsedOverlay.show));
+                    ClearCollect(
+                        colImageMarkers,
+                        Filter(
+                            FirstN(
+                                ForAll(
+                                    Table(ParsedOverlay.markers) As JsonRow,
+                                    With(
+                                        {
+                                            J: JsonRow.Value,
+                                            NX1: Value(JsonRow.Value.x1),
+                                            NY1: Value(JsonRow.Value.y1),
+                                            NX2: Value(JsonRow.Value.x2),
+                                            NY2: Value(JsonRow.Value.y2),
+                                            NType: Text(JsonRow.Value.type),
+                                            NColor: Text(JsonRow.Value.color)
+                                        },
+                                        {
+                                            MarkerId: Text(J.id),
+                                            MarkerType: NType,
+                                            MarkerColor: NColor,
+                                            Target: Text(J.target),
+                                            MsId: Text(J.msId),
+                                            Label: Text(J.label),
+                                            X1: NX1,
+                                            Y1: NY1,
+                                            X2: NX2,
+                                            Y2: NY2,
+                                            Confidence: Text(J.confidence),
+                                            Basis: Text(J.basis),
+                                            Message: Text(J.message),
+                                            IsValid:
+                                                NX1 >= 0 && NX1 < NX2 && NX2 <= 1000 &&
+                                                NY1 >= 0 && NY1 < NY2 && NY2 <= 1000 &&
+                                                (
+                                                    (NType = "observed" && NColor = "green") ||
+                                                    (NType = "uncertain" && NColor = "yellow") ||
+                                                    (NType = "candidate" && NColor = "blue")
+                                                )
+                                        }
+                                    )
+                                ),
+                                8
+                            ),
+                            IsValid
+                        )
+                    )
+                ),
+                Set(varOverlayLoadError, true);
+                Set(varOverlayReason, "目印データを読み込めませんでした");
+                Clear(colImageMarkers)
+            )
+        );
+        Set(
+            varImageRefreshActive,
+            !IsBlank(varImageRecord.ImageToken) &&
+            Coalesce(varImageRecord.ImageAnalysisStatus, "") <> "ANALYZED"
+        )
+      Text: =""
+      Visible: =false
+      Width: =1
+      X: =0
+      Y: =0
+- lblImageHeader:
+    Control: Label@2.5.1
+    Properties:
+      Align: =Align.Center
+      Color: =RGBA(255, 255, 255, 1)
+      Fill: =RGBA(22, 100, 154, 1)
+      FontWeight: =FontWeight.Semibold
+      Height: =56
+      Size: =18
+      Text: ="AI画像確認"
+      Width: =Parent.Width
+      X: =0
+      Y: =0
+- btnImageBack:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderThickness: =0
+      Color: =RGBA(255, 255, 255, 1)
+      Fill: =RGBA(0, 0, 0, 0)
+      FontWeight: =FontWeight.Semibold
+      Height: =48
+      OnSelect: |-
+        =Set(varMarkerPanelVisible, false);
+        Set(varSelectedMarker, Blank());
+        Set(varResultTab, varReturnResultTab);
+        Back(ScreenTransition.None)
+      Size: =15
+      Text: ="← 戻る"
+      Width: =100
+      X: =8
+      Y: =4
+- imgOverlayPhoto:
+    Control: Image@2.2.3
+    Properties:
+      BorderColor: =RGBA(180, 190, 204, 1)
+      BorderThickness: =1
+      Height: =Parent.Height - 152
+      Image: |-
+        =If(
+            IsBlank(varImageRecord.ImageUrl),
+            Blank(),
+            If(
+                StartsWith(varImageRecord.ImageUrl, "https://tokyogasgroup.sharepoint.com/AI_TemporaryImages/"),
+                Substitute(
+                    varImageRecord.ImageUrl,
+                    "https://tokyogasgroup.sharepoint.com/AI_TemporaryImages/",
+                    "https://tokyogasgroup.sharepoint.com/sites/NW_tool_library/AI_TemporaryImages/"
+                ),
+                varImageRecord.ImageUrl
+            )
+        )
+      ImagePosition: =ImagePosition.Stretch
+      Visible: =!IsBlank(varImageRecord.ImageUrl)
+      Width: =Parent.Width - 32
+      X: =16
+      Y: =64
+- btnImageMarker1:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =If(CountRows(colImageMarkers)<1,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 1).MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,110,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1)))
+      BorderThickness: =3
+      Color: =RGBA(255,255,255,1)
+      Fill: =If(CountRows(colImageMarkers)<1,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 1).MarkerType, "observed", RGBA(38,166,91,0.22), "uncertain", RGBA(255,193,7,0.26), "candidate", RGBA(24,111,194,0.22), RGBA(0,0,0,0)))
+      FontWeight: =FontWeight.Bold
+      Height: =If(CountRows(colImageMarkers)<1,0,With({M:Index(colImageMarkers,1)},Min(imgOverlayPhoto.Height-(M.Y1/1000)*imgOverlayPhoto.Height,Max(32,((M.Y2-M.Y1)/1000)*imgOverlayPhoto.Height))))
+      OnSelect: =Set(varSelectedMarker, Index(colImageMarkers, 1)); Set(varMarkerPanelVisible, true)
+      Text: ="1"
+      Tooltip: =If(CountRows(colImageMarkers)<1,"",Index(colImageMarkers,1).Label & Char(10) & Index(colImageMarkers,1).Basis)
+      Visible: =CountRows(colImageMarkers)>=1 && !IsBlank(varImageRecord.ImageUrl)
+      Width: =If(CountRows(colImageMarkers)<1,0,With({M:Index(colImageMarkers,1)},Min(imgOverlayPhoto.Width-(M.X1/1000)*imgOverlayPhoto.Width,Max(32,((M.X2-M.X1)/1000)*imgOverlayPhoto.Width))))
+      X: =If(CountRows(colImageMarkers)<1,0,With({M:Index(colImageMarkers,1)},imgOverlayPhoto.X+(M.X1/1000)*imgOverlayPhoto.Width))
+      Y: =If(CountRows(colImageMarkers)<1,0,With({M:Index(colImageMarkers,1)},imgOverlayPhoto.Y+(M.Y1/1000)*imgOverlayPhoto.Height))
+- btnImageMarker2:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =If(CountRows(colImageMarkers)<2,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 2).MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,110,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1)))
+      BorderThickness: =3
+      Color: =RGBA(255,255,255,1)
+      Fill: =If(CountRows(colImageMarkers)<2,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 2).MarkerType, "observed", RGBA(38,166,91,0.22), "uncertain", RGBA(255,193,7,0.26), "candidate", RGBA(24,111,194,0.22), RGBA(0,0,0,0)))
+      FontWeight: =FontWeight.Bold
+      Height: =If(CountRows(colImageMarkers)<2,0,With({M:Index(colImageMarkers,2)},Min(imgOverlayPhoto.Height-(M.Y1/1000)*imgOverlayPhoto.Height,Max(32,((M.Y2-M.Y1)/1000)*imgOverlayPhoto.Height))))
+      OnSelect: =Set(varSelectedMarker, Index(colImageMarkers, 2)); Set(varMarkerPanelVisible, true)
+      Text: ="2"
+      Tooltip: =If(CountRows(colImageMarkers)<2,"",Index(colImageMarkers,2).Label & Char(10) & Index(colImageMarkers,2).Basis)
+      Visible: =CountRows(colImageMarkers)>=2 && !IsBlank(varImageRecord.ImageUrl)
+      Width: =If(CountRows(colImageMarkers)<2,0,With({M:Index(colImageMarkers,2)},Min(imgOverlayPhoto.Width-(M.X1/1000)*imgOverlayPhoto.Width,Max(32,((M.X2-M.X1)/1000)*imgOverlayPhoto.Width))))
+      X: =If(CountRows(colImageMarkers)<2,0,With({M:Index(colImageMarkers,2)},imgOverlayPhoto.X+(M.X1/1000)*imgOverlayPhoto.Width))
+      Y: =If(CountRows(colImageMarkers)<2,0,With({M:Index(colImageMarkers,2)},imgOverlayPhoto.Y+(M.Y1/1000)*imgOverlayPhoto.Height))
+- btnImageMarker3:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =If(CountRows(colImageMarkers)<3,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 3).MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,110,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1)))
+      BorderThickness: =3
+      Color: =RGBA(255,255,255,1)
+      Fill: =If(CountRows(colImageMarkers)<3,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 3).MarkerType, "observed", RGBA(38,166,91,0.22), "uncertain", RGBA(255,193,7,0.26), "candidate", RGBA(24,111,194,0.22), RGBA(0,0,0,0)))
+      FontWeight: =FontWeight.Bold
+      Height: =If(CountRows(colImageMarkers)<3,0,With({M:Index(colImageMarkers,3)},Min(imgOverlayPhoto.Height-(M.Y1/1000)*imgOverlayPhoto.Height,Max(32,((M.Y2-M.Y1)/1000)*imgOverlayPhoto.Height))))
+      OnSelect: =Set(varSelectedMarker, Index(colImageMarkers, 3)); Set(varMarkerPanelVisible, true)
+      Text: ="3"
+      Tooltip: =If(CountRows(colImageMarkers)<3,"",Index(colImageMarkers,3).Label & Char(10) & Index(colImageMarkers,3).Basis)
+      Visible: =CountRows(colImageMarkers)>=3 && !IsBlank(varImageRecord.ImageUrl)
+      Width: =If(CountRows(colImageMarkers)<3,0,With({M:Index(colImageMarkers,3)},Min(imgOverlayPhoto.Width-(M.X1/1000)*imgOverlayPhoto.Width,Max(32,((M.X2-M.X1)/1000)*imgOverlayPhoto.Width))))
+      X: =If(CountRows(colImageMarkers)<3,0,With({M:Index(colImageMarkers,3)},imgOverlayPhoto.X+(M.X1/1000)*imgOverlayPhoto.Width))
+      Y: =If(CountRows(colImageMarkers)<3,0,With({M:Index(colImageMarkers,3)},imgOverlayPhoto.Y+(M.Y1/1000)*imgOverlayPhoto.Height))
+- btnImageMarker4:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =If(CountRows(colImageMarkers)<4,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 4).MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,110,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1)))
+      BorderThickness: =3
+      Color: =RGBA(255,255,255,1)
+      Fill: =If(CountRows(colImageMarkers)<4,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 4).MarkerType, "observed", RGBA(38,166,91,0.22), "uncertain", RGBA(255,193,7,0.26), "candidate", RGBA(24,111,194,0.22), RGBA(0,0,0,0)))
+      FontWeight: =FontWeight.Bold
+      Height: =If(CountRows(colImageMarkers)<4,0,With({M:Index(colImageMarkers,4)},Min(imgOverlayPhoto.Height-(M.Y1/1000)*imgOverlayPhoto.Height,Max(32,((M.Y2-M.Y1)/1000)*imgOverlayPhoto.Height))))
+      OnSelect: =Set(varSelectedMarker, Index(colImageMarkers, 4)); Set(varMarkerPanelVisible, true)
+      Text: ="4"
+      Tooltip: =If(CountRows(colImageMarkers)<4,"",Index(colImageMarkers,4).Label & Char(10) & Index(colImageMarkers,4).Basis)
+      Visible: =CountRows(colImageMarkers)>=4 && !IsBlank(varImageRecord.ImageUrl)
+      Width: =If(CountRows(colImageMarkers)<4,0,With({M:Index(colImageMarkers,4)},Min(imgOverlayPhoto.Width-(M.X1/1000)*imgOverlayPhoto.Width,Max(32,((M.X2-M.X1)/1000)*imgOverlayPhoto.Width))))
+      X: =If(CountRows(colImageMarkers)<4,0,With({M:Index(colImageMarkers,4)},imgOverlayPhoto.X+(M.X1/1000)*imgOverlayPhoto.Width))
+      Y: =If(CountRows(colImageMarkers)<4,0,With({M:Index(colImageMarkers,4)},imgOverlayPhoto.Y+(M.Y1/1000)*imgOverlayPhoto.Height))
+- btnImageMarker5:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =If(CountRows(colImageMarkers)<5,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 5).MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,110,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1)))
+      BorderThickness: =3
+      Color: =RGBA(255,255,255,1)
+      Fill: =If(CountRows(colImageMarkers)<5,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 5).MarkerType, "observed", RGBA(38,166,91,0.22), "uncertain", RGBA(255,193,7,0.26), "candidate", RGBA(24,111,194,0.22), RGBA(0,0,0,0)))
+      FontWeight: =FontWeight.Bold
+      Height: =If(CountRows(colImageMarkers)<5,0,With({M:Index(colImageMarkers,5)},Min(imgOverlayPhoto.Height-(M.Y1/1000)*imgOverlayPhoto.Height,Max(32,((M.Y2-M.Y1)/1000)*imgOverlayPhoto.Height))))
+      OnSelect: =Set(varSelectedMarker, Index(colImageMarkers, 5)); Set(varMarkerPanelVisible, true)
+      Text: ="5"
+      Tooltip: =If(CountRows(colImageMarkers)<5,"",Index(colImageMarkers,5).Label & Char(10) & Index(colImageMarkers,5).Basis)
+      Visible: =CountRows(colImageMarkers)>=5 && !IsBlank(varImageRecord.ImageUrl)
+      Width: =If(CountRows(colImageMarkers)<5,0,With({M:Index(colImageMarkers,5)},Min(imgOverlayPhoto.Width-(M.X1/1000)*imgOverlayPhoto.Width,Max(32,((M.X2-M.X1)/1000)*imgOverlayPhoto.Width))))
+      X: =If(CountRows(colImageMarkers)<5,0,With({M:Index(colImageMarkers,5)},imgOverlayPhoto.X+(M.X1/1000)*imgOverlayPhoto.Width))
+      Y: =If(CountRows(colImageMarkers)<5,0,With({M:Index(colImageMarkers,5)},imgOverlayPhoto.Y+(M.Y1/1000)*imgOverlayPhoto.Height))
+- btnImageMarker6:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =If(CountRows(colImageMarkers)<6,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 6).MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,110,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1)))
+      BorderThickness: =3
+      Color: =RGBA(255,255,255,1)
+      Fill: =If(CountRows(colImageMarkers)<6,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 6).MarkerType, "observed", RGBA(38,166,91,0.22), "uncertain", RGBA(255,193,7,0.26), "candidate", RGBA(24,111,194,0.22), RGBA(0,0,0,0)))
+      FontWeight: =FontWeight.Bold
+      Height: =If(CountRows(colImageMarkers)<6,0,With({M:Index(colImageMarkers,6)},Min(imgOverlayPhoto.Height-(M.Y1/1000)*imgOverlayPhoto.Height,Max(32,((M.Y2-M.Y1)/1000)*imgOverlayPhoto.Height))))
+      OnSelect: =Set(varSelectedMarker, Index(colImageMarkers, 6)); Set(varMarkerPanelVisible, true)
+      Text: ="6"
+      Tooltip: =If(CountRows(colImageMarkers)<6,"",Index(colImageMarkers,6).Label & Char(10) & Index(colImageMarkers,6).Basis)
+      Visible: =CountRows(colImageMarkers)>=6 && !IsBlank(varImageRecord.ImageUrl)
+      Width: =If(CountRows(colImageMarkers)<6,0,With({M:Index(colImageMarkers,6)},Min(imgOverlayPhoto.Width-(M.X1/1000)*imgOverlayPhoto.Width,Max(32,((M.X2-M.X1)/1000)*imgOverlayPhoto.Width))))
+      X: =If(CountRows(colImageMarkers)<6,0,With({M:Index(colImageMarkers,6)},imgOverlayPhoto.X+(M.X1/1000)*imgOverlayPhoto.Width))
+      Y: =If(CountRows(colImageMarkers)<6,0,With({M:Index(colImageMarkers,6)},imgOverlayPhoto.Y+(M.Y1/1000)*imgOverlayPhoto.Height))
+- btnImageMarker7:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =If(CountRows(colImageMarkers)<7,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 7).MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,110,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1)))
+      BorderThickness: =3
+      Color: =RGBA(255,255,255,1)
+      Fill: =If(CountRows(colImageMarkers)<7,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 7).MarkerType, "observed", RGBA(38,166,91,0.22), "uncertain", RGBA(255,193,7,0.26), "candidate", RGBA(24,111,194,0.22), RGBA(0,0,0,0)))
+      FontWeight: =FontWeight.Bold
+      Height: =If(CountRows(colImageMarkers)<7,0,With({M:Index(colImageMarkers,7)},Min(imgOverlayPhoto.Height-(M.Y1/1000)*imgOverlayPhoto.Height,Max(32,((M.Y2-M.Y1)/1000)*imgOverlayPhoto.Height))))
+      OnSelect: =Set(varSelectedMarker, Index(colImageMarkers, 7)); Set(varMarkerPanelVisible, true)
+      Text: ="7"
+      Tooltip: =If(CountRows(colImageMarkers)<7,"",Index(colImageMarkers,7).Label & Char(10) & Index(colImageMarkers,7).Basis)
+      Visible: =CountRows(colImageMarkers)>=7 && !IsBlank(varImageRecord.ImageUrl)
+      Width: =If(CountRows(colImageMarkers)<7,0,With({M:Index(colImageMarkers,7)},Min(imgOverlayPhoto.Width-(M.X1/1000)*imgOverlayPhoto.Width,Max(32,((M.X2-M.X1)/1000)*imgOverlayPhoto.Width))))
+      X: =If(CountRows(colImageMarkers)<7,0,With({M:Index(colImageMarkers,7)},imgOverlayPhoto.X+(M.X1/1000)*imgOverlayPhoto.Width))
+      Y: =If(CountRows(colImageMarkers)<7,0,With({M:Index(colImageMarkers,7)},imgOverlayPhoto.Y+(M.Y1/1000)*imgOverlayPhoto.Height))
+- btnImageMarker8:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =If(CountRows(colImageMarkers)<8,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 8).MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,110,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1)))
+      BorderThickness: =3
+      Color: =RGBA(255,255,255,1)
+      Fill: =If(CountRows(colImageMarkers)<8,RGBA(0,0,0,0),Switch(Index(colImageMarkers, 8).MarkerType, "observed", RGBA(38,166,91,0.22), "uncertain", RGBA(255,193,7,0.26), "candidate", RGBA(24,111,194,0.22), RGBA(0,0,0,0)))
+      FontWeight: =FontWeight.Bold
+      Height: =If(CountRows(colImageMarkers)<8,0,With({M:Index(colImageMarkers,8)},Min(imgOverlayPhoto.Height-(M.Y1/1000)*imgOverlayPhoto.Height,Max(32,((M.Y2-M.Y1)/1000)*imgOverlayPhoto.Height))))
+      OnSelect: =Set(varSelectedMarker, Index(colImageMarkers, 8)); Set(varMarkerPanelVisible, true)
+      Text: ="8"
+      Tooltip: =If(CountRows(colImageMarkers)<8,"",Index(colImageMarkers,8).Label & Char(10) & Index(colImageMarkers,8).Basis)
+      Visible: =CountRows(colImageMarkers)>=8 && !IsBlank(varImageRecord.ImageUrl)
+      Width: =If(CountRows(colImageMarkers)<8,0,With({M:Index(colImageMarkers,8)},Min(imgOverlayPhoto.Width-(M.X1/1000)*imgOverlayPhoto.Width,Max(32,((M.X2-M.X1)/1000)*imgOverlayPhoto.Width))))
+      X: =If(CountRows(colImageMarkers)<8,0,With({M:Index(colImageMarkers,8)},imgOverlayPhoto.X+(M.X1/1000)*imgOverlayPhoto.Width))
+      Y: =If(CountRows(colImageMarkers)<8,0,With({M:Index(colImageMarkers,8)},imgOverlayPhoto.Y+(M.Y1/1000)*imgOverlayPhoto.Height))
+- lblOverlayNotice:
+    Control: Label@2.5.1
+    Properties:
+      Align: =Align.Center
+      Color: =RGBA(45, 55, 72, 1)
+      Fill: =RGBA(255, 255, 255, 1)
+      Height: =72
+      PaddingLeft: =12
+      PaddingRight: =12
+      Size: =13
+      Text: |-
+        =If(
+            IsBlank(varImageRecord),
+            "現在の会話に保存された画像はありません。",
+            varOverlayLoadError,
+            "AIの目印データを読み込めなかったため、画像だけを表示しています。",
+            Coalesce(varImageRecord.ImageAnalysisStatus, "") <> "ANALYZED",
+            "画像を分析中です。完了後に目印を自動更新します。",
+            CountRows(colImageMarkers) = 0,
+            If(IsBlank(varOverlayReason), "表示対象の目印はありません。", "目印なし：" & varOverlayReason),
+            "色枠をタップすると、AIの確認根拠と残る対応を表示します。"
+        )
+      Width: =Parent.Width - 32
+      X: =16
+      Y: =Parent.Height - 80
+- tmrImageOverlayRefresh:
+    Control: Timer@2.1.0
+    Properties:
+      AutoPause: =true
+      AutoStart: =true
+      Duration: =5000
+      OnTimerEnd: =If(varImageRefreshActive, Select(btnLoadImageOverlay))
+      Repeat: =varImageRefreshActive
+      Visible: =false
+- btnMarkerModalBackdrop:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderThickness: =0
+      Fill: =RGBA(0, 0, 0, 0.42)
+      Height: =Parent.Height
+      OnSelect: =Set(varMarkerPanelVisible, false); Set(varSelectedMarker, Blank())
+      Text: =""
+      Visible: =varMarkerPanelVisible && !IsBlank(varSelectedMarker)
+      Width: =Parent.Width
+      X: =0
+      Y: =0
+- btnMarkerPanelBackground:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =RGBA(190, 198, 210, 1)
+      BorderThickness: =1
+      DisplayMode: =DisplayMode.Disabled
+      Fill: =RGBA(255, 255, 255, 1)
+      Height: =Min(Parent.Height - 64, 440)
+      Text: =""
+      Visible: =varMarkerPanelVisible && !IsBlank(varSelectedMarker)
+      Width: =Min(Parent.Width - 32, 720)
+      X: =(Parent.Width - Self.Width) / 2
+      Y: =(Parent.Height - Self.Height) / 2
+- lblMarkerTitle:
+    Control: Label@2.5.1
+    Properties:
+      Color: =RGBA(30, 40, 55, 1)
+      FontWeight: =FontWeight.Bold
+      Height: =52
+      Size: =19
+      Text: =varSelectedMarker.Label
+      Visible: =varMarkerPanelVisible && !IsBlank(varSelectedMarker)
+      Width: =btnMarkerPanelBackground.Width - 96
+      X: =btnMarkerPanelBackground.X + 24
+      Y: =btnMarkerPanelBackground.Y + 16
+- lblMarkerType:
+    Control: Label@2.5.1
+    Properties:
+      Color: =Switch(varSelectedMarker.MarkerType, "observed", RGBA(24,111,67,1), "uncertain", RGBA(180,80,0,1), "candidate", RGBA(22,100,154,1), RGBA(80,80,80,1))
+      FontWeight: =FontWeight.Semibold
+      Height: =34
+      Size: =14
+      Text: =Switch(varSelectedMarker.MarkerType, "observed", "画像で確認した対象", "uncertain", "追加確認が必要な対象", "candidate", "設置・操作の候補", "") & If(IsBlank(varSelectedMarker.MsId), "", "　" & varSelectedMarker.MsId)
+      Visible: =varMarkerPanelVisible && !IsBlank(varSelectedMarker)
+      Width: =btnMarkerPanelBackground.Width - 48
+      X: =btnMarkerPanelBackground.X + 24
+      Y: =lblMarkerTitle.Y + lblMarkerTitle.Height
+- lblMarkerMessage:
+    Control: Label@2.5.1
+    Properties:
+      Color: =RGBA(35, 45, 60, 1)
+      Height: =170
+      Size: =15
+      Text: =varSelectedMarker.Message
+      VerticalAlign: =VerticalAlign.Top
+      Visible: =varMarkerPanelVisible && !IsBlank(varSelectedMarker)
+      Width: =btnMarkerPanelBackground.Width - 48
+      X: =btnMarkerPanelBackground.X + 24
+      Y: =lblMarkerType.Y + lblMarkerType.Height + 8
+- lblMarkerBasis:
+    Control: Label@2.5.1
+    Properties:
+      Color: =RGBA(75, 85, 100, 1)
+      Fill: =RGBA(242, 245, 248, 1)
+      Height: =90
+      Size: =13
+      Text: ="AIが画像で見た根拠：" & varSelectedMarker.Basis
+      VerticalAlign: =VerticalAlign.Top
+      Visible: =varMarkerPanelVisible && !IsBlank(varSelectedMarker)
+      Width: =btnMarkerPanelBackground.Width - 48
+      X: =btnMarkerPanelBackground.X + 24
+      Y: =btnMarkerPanelBackground.Y + btnMarkerPanelBackground.Height - 122
+- btnCloseMarkerPanel:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderThickness: =0
+      Color: =RGBA(70, 80, 95, 1)
+      Fill: =RGBA(235, 238, 243, 1)
+      FontWeight: =FontWeight.Bold
+      Height: =40
+      OnSelect: =Set(varMarkerPanelVisible, false); Set(varSelectedMarker, Blank())
+      Text: ="×"
+      Visible: =varMarkerPanelVisible && !IsBlank(varSelectedMarker)
+      Width: =44
+      X: =btnMarkerPanelBackground.X + btnMarkerPanelBackground.Width - 56
+      Y: =btnMarkerPanelBackground.Y + 12

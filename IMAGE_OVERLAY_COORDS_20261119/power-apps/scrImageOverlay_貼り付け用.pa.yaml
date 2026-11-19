@@ -1,3 +1,5 @@
+# 参照用：画面内のSource Code貼り付けには使用しない。
+# 貼り付けには scrImageOverlay_画面内貼り付け用.pa.yaml を使用する。
 - scrImageOverlay:
     Control: Screen@2.3.0
     Properties:
