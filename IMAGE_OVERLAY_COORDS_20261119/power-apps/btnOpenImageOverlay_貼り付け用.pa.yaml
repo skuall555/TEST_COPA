@@ -9,7 +9,6 @@
       Height: =44
       OnSelect: |-
         =Set(varImageConversationId, varAgentConversationId);
-        Set(varReturnResultTab, varResultTab);
         Navigate(scrImageOverlay, ScreenTransition.None)
       Size: =15
       Text: ="画像とAIの目印を確認"

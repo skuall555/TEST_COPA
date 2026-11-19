@@ -145,7 +145,8 @@ def main() -> None:
     assert "Control: Classic/Label" not in app_page_source
     assert app_page_source.count("Control: Label@") == 6
     assert "varReply" not in app_page_source
-    assert "varResultTab, varReturnResultTab" in app_page_source
+    assert "varReturnResultTab" not in app_page_source
+    assert "ImageAnalysisStatus" not in app_page_source
     assert "ImagePixelWidth" not in app_page_source
     assert "ImagePixelHeight" not in app_page_source
     assert "https://tokyogasgroup.sharepoint.com/sites/NW_tool_library/AI_TemporaryImages/" in app_page_source
