@@ -92,6 +92,15 @@ def main() -> None:
     assert "contentBytes" not in dialog_source
     assert "base64" not in dialog_source.lower()
     assert "invokeFlowAction_saveTemporaryImage" not in dialog_source
+    assert "search_photoGuidelineRetrieve" not in dialog_source
+    assert "撮影要領再利用秒数" not in dialog_source
+    assert "撮影要領未取得" not in dialog_source
+    assert "setVariable_useFixedImageGuideBody" in dialog_source
+    assert "search_imageQuestionKnowledge" in dialog_source
+    assert "search_unrelatedImageQuestionKnowledge" in dialog_source
+    assert "02A2_固定撮影要領範囲外のナレッジ回答" in dialog_source
+    assert "cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r" in dialog_source
+    assert "cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi" in dialog_source
     for binding in ("text:", "text_1:", "text_2:", "text_3:", "text_4:"):
         assert binding in dialog_source, binding
     for required_text in (

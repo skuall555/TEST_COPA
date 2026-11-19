@@ -1,6 +1,6 @@
 kind: AdaptiveDialog
 modelDescription: |
-  緊急保安の追加情報待ち中に、PNG・JPG・JPEG画像が添付された場合だけ起動する。画像から事実と正規化座標を抽出し、関連画像だけ撮影要領MS-001〜MS-018と照合する。結果をユーザー回答、追加情報、写真根拠の措置済み、要確認、判定なしへ分けて履歴へ追記する。優先度は変更しない。Power Appsから送られたaio_画像は座標JSONだけを画像座標更新PAへ渡し、画像ファイルはPAへ再送信しない。保存失敗時も画像分析と回答を継続する。
+  緊急保安の追加情報待ち中に、PNG・JPG・JPEG画像が添付された場合だけ起動する。画像から事実と正規化座標を抽出し、関連画像をプロンプト内の固定撮影要領MS-001〜MS-018と照合する。撮影要領の判定では実行時にナレッジ検索を行わない。画像と同時の質問が固定撮影要領の範囲外の場合だけ、既存の緊急保安ナレッジを検索して回答材料にする。結果をユーザー回答、追加情報、写真根拠の措置済み、要確認、判定なしへ分けて履歴へ追記する。優先度は変更しない。Power Appsから送られたaio_画像は座標JSONだけを画像座標更新PAへ渡し、画像ファイルはPAへ再送信しない。保存失敗時も画像分析と回答を継続する。
 beginDialog:
   kind: OnActivity
   id: main
@@ -20,30 +20,6 @@ beginDialog:
       id: setVariable_imageTurnTextGlobal
       variable: Global.写真同時テキスト
       value: =System.Activity.Text
-    - kind: SetVariable
-      id: setVariable_imageGuideReuse
-      variable: Topic.撮影要領再利用
-      value: =true
-    - kind: SetVariable
-      id: setVariable_imageGuideReuseSeconds
-      variable: Topic.撮影要領再利用秒数
-      value: =300
-    - kind: SetVariable
-      id: setVariable_imageGuideConversation
-      variable: Topic.画像要領会話ID
-      value: =Text(System.Conversation.Id)
-    - kind: SetVariable
-      id: setVariable_imageGuideUser
-      variable: Topic.画像要領利用者ID
-      value: =Text(System.User.Id)
-    - kind: SetVariable
-      id: setVariable_imageGuideChannel
-      variable: Topic.画像要領チャネル
-      value: =Lower(Text(System.Activity.ChannelId))
-    - kind: SetVariable
-      id: setVariable_imageGuideVersion
-      variable: Topic.画像要領キャッシュ版
-      value: ="photo-guide-20261116-v1|cr88f_SUBARU_search.file._.pdf_Ten"
     - kind: SetVariable
       id: setVariable_imageFeature01
       variable: Topic.特徴_火気厳禁表示シート
@@ -502,9 +478,38 @@ beginDialog:
                   condition: =Topic.画像関連判定 = "関連なし"
                   actions:
                     - kind: SetVariable
+                      id: setVariable_unrelatedQuestionKnowledgeReset
+                      variable: Topic.画像質問ナレッジ回答
+                      value: =""
+                    - kind: ConditionGroup
+                      id: conditionGroup_unrelatedQuestionKnowledge
+                      conditions:
+                        - id: conditionItem_unrelatedQuestionKnowledge
+                          condition: '=With({t: Lower(Trim(Topic.画像同時テキスト))}, And(Not(IsBlank(t)), Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "困って" in t, "確認したい" in t, "すればいい" in t, "したらいい" in t, "でいい" in t, "大丈夫" in t, "必要か" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t)))'
+                          actions:
+                            - kind: SearchAndSummarizeContent
+                              id: search_unrelatedImageQuestionKnowledge
+                              displayName: 01A_関連外画像と同時の質問ナレッジ回答
+                              autoSend: false
+                              variable: Topic.画像質問ナレッジ回答
+                              userInput: =Topic.画像同時テキスト
+                              additionalInstructions: |-
+                                利用者の質問に、検索できた緊急保安マニュアルの内容だけを根拠に直接回答してください。
+                                画像が質問と関連しない場合はその事実を区別し、画像を根拠にしないでください。検索結果、ナレッジヒット等の内部処理には言及しないでください。
+                                根拠となる本文を取得できない場合は「なし」とだけ出力してください。一般知識で補完しないでください。
+                              fileSearchDataSource:
+                                searchFilesMode:
+                                  kind: DoNotSearchFiles
+                              knowledgeSources:
+                                kind: SearchSpecificKnowledgeSources
+                                knowledgeSources:
+                                  - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+                                  - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
+                              applyModelKnowledgeSetting: false
+                    - kind: SetVariable
                       id: setVariable_unrelatedAnswer
                       variable: Topic.画像ユーザー回答
-                      value: =If(IsBlank(Topic.画像ユーザー回答), "送っていただいた画像から、現場の進捗報告に該当する要素は確認できませんでした。対象物の見落としがあれば、コメントで教えてください。", Topic.画像ユーザー回答)
+                      value: '=With({imageText: If(IsBlank(Topic.画像ユーザー回答), "送っていただいた画像から、現場の進捗報告に該当する要素は確認できませんでした。対象物の見落としがあれば、コメントで教えてください。", Topic.画像ユーザー回答), knowledgeText: Trim(Topic.画像質問ナレッジ回答)}, imageText & If(Or(IsBlank(knowledgeText), knowledgeText = "なし"), "", Char(10) & knowledgeText))'
                     - kind: SetVariable
                       id: setVariable_unrelatedExtra
                       variable: Topic.追加情報部
@@ -528,94 +533,69 @@ beginDialog:
                     - kind: GotoAction
                       id: goto_unrelatedResult
                       actionId: setVariable_validateOverlayJson
+            - kind: SetVariable
+              id: setVariable_useFixedImageGuideBody
+              variable: Topic.撮影要領本文
+              value: =Topic.画像特徴カタログ
+            - kind: SetVariable
+              id: setVariable_imageQuestionKnowledgeReset
+              variable: Topic.画像質問ナレッジ回答
+              value: =""
+            - kind: SetVariable
+              id: setVariable_imageQuestionCoverageReset
+              variable: Topic.画像質問範囲判定
+              value: ="質問なし"
+            - kind: SetVariable
+              id: setVariable_imageQuestionSignal
+              variable: Topic.画像同時質問あり
+              value: '=With({t: Lower(Trim(Topic.画像同時テキスト))}, And(Not(IsBlank(t)), Or("?" in t, "？" in t, "教えて" in t, "どうす" in t, "何を" in t, "なにを" in t, "どこ" in t, "いつ" in t, "なぜ" in t, "理由" in t, "相談" in t, "困って" in t, "確認したい" in t, "すればいい" in t, "したらいい" in t, "でいい" in t, "大丈夫" in t, "必要か" in t, "このあと" in t, "この後" in t, "マニュアル" in t, "規定" in t, "基準" in t)))'
             - kind: ConditionGroup
-              id: conditionGroup_reuseImageGuide
+              id: conditionGroup_imageQuestionCoverage
               conditions:
-                - id: conditionGroup_reuseImageGuide_item
-                  condition: =And(Topic.撮影要領再利用, Not(IsBlank(Topic.画像要領会話ID)), Not(IsBlank(Topic.画像要領利用者ID)), Not(IsBlank(Topic.画像要領チャネル)), Global.画像要領キャッシュ会話ID = Topic.画像要領会話ID, Global.画像要領キャッシュ利用者ID = Topic.画像要領利用者ID, Global.画像要領キャッシュチャネル = Topic.画像要領チャネル, Global.画像要領キャッシュ版 = Topic.画像要領キャッシュ版, Not(IsBlank(Global.画像要領キャッシュ取得時刻)), DateDiff(Global.画像要領キャッシュ取得時刻, Now(), TimeUnit.Seconds) >= 0, DateDiff(Global.画像要領キャッシュ取得時刻, Now(), TimeUnit.Seconds) < Topic.撮影要領再利用秒数, Not(IsBlank(Global.画像要領キャッシュ本文)), CountIf(Sequence(18), Not(("MS-" & Text(Value, "000")) in Global.画像要領キャッシュ本文)) = 0)
+                - id: conditionItem_imageQuestionCoverage
+                  condition: =Topic.画像同時質問あり
                   actions:
-                    - kind: SetVariable
-                      id: setVariable_reuseImageGuideBody
-                      variable: Topic.撮影要領本文
-                      value: =Global.画像要領キャッシュ本文
-              elseActions:
-                - kind: SearchAndSummarizeContent
-                  id: search_photoGuidelineRetrieve
-                  displayName: 02A_撮影要領の取得
-                  autoSend: false
-                  variable: Topic.撮影要領本文
-                  userInput: ="撮影要領_初動措置に定義された撮影項目 MS-001〜MS-018 の全文。各IDの撮影対象・必須視認要素・設置場所の条件・判定基準・撮り直し条件。"
-                  additionalInstructions: |-
-                    ="撮影要領_初動措置.pdf の内容を、要約・解釈・自分の意見を加えず、できるだけ原文に近い形でそのまま提示してください。
-                    これは判定作業ではありません。判定・適合可否・撮り直し指示はここでは一切行わないでください。
-
-                    # 必ず含めること（漏れなく、原文相当で）
-                    ・MS-001〜MS-018 の各IDについて、撮影対象・必須視認要素・設置場所の条件
-                    ・ポケット警報器の設置場所として求められる箇所の記述（ガスが滞留・流入しやすい箇所）
-                    ・撮り直しが必要になる条件
-
-                    # 出力
-                    （上記を原文相当のまま記載。前置き・総括・引用番号は付けない）"
-                  fileSearchDataSource:
-                    searchFilesMode:
-                      kind: SearchSpecificFiles
-                      files:
-                        - cr88f_SUBARU_search.file._.pdf_Ten
-                  knowledgeSources:
-                    kind: SearchSpecificKnowledgeSources
-                  applyModelKnowledgeSetting: false
-                - kind: ConditionGroup
-                  id: conditionGroup_storeImageGuide
-                  conditions:
-                    - id: conditionGroup_storeImageGuide_item
-                      condition: =And(Topic.撮影要領再利用, Not(IsBlank(Topic.画像要領会話ID)), Not(IsBlank(Topic.画像要領利用者ID)), Not(IsBlank(Topic.画像要領チャネル)), Not(IsBlank(Topic.撮影要領本文)), Trim(Topic.撮影要領本文) <> "なし", CountIf(Sequence(18), Not(("MS-" & Text(Value, "000")) in Topic.撮影要領本文)) = 0)
-                      actions:
-                        - kind: SetVariable
-                          id: setVariable_storeImageGuideBody
-                          variable: Global.画像要領キャッシュ本文
-                          value: =Topic.撮影要領本文
-                        - kind: SetVariable
-                          id: setVariable_storeImageGuideConversation
-                          variable: Global.画像要領キャッシュ会話ID
-                          value: =Topic.画像要領会話ID
-                        - kind: SetVariable
-                          id: setVariable_storeImageGuideUser
-                          variable: Global.画像要領キャッシュ利用者ID
-                          value: =Topic.画像要領利用者ID
-                        - kind: SetVariable
-                          id: setVariable_storeImageGuideChannel
-                          variable: Global.画像要領キャッシュチャネル
-                          value: =Topic.画像要領チャネル
-                        - kind: SetVariable
-                          id: setVariable_storeImageGuideVersion
-                          variable: Global.画像要領キャッシュ版
-                          value: =Topic.画像要領キャッシュ版
-                        - kind: SetVariable
-                          id: setVariable_storeImageGuideTime
-                          variable: Global.画像要領キャッシュ取得時刻
-                          value: =Now()
-            - kind: ConditionGroup
-              id: conditionGroup_photoGuideUnavailable
-              conditions:
-                - id: conditionGroup_photoGuideUnavailable_item
-                  condition: =Or(IsBlank(Topic.撮影要領本文), Trim(Topic.撮影要領本文) = "なし")
-                  actions:
-                    - kind: SetVariable
-                      id: setVariable_photoGuideUnavailableResult
-                      variable: Topic.要領照合結果
-                      value: ="[ユーザーへの回答]" & Char(10) & "・撮影要領を取得できなかったため、画像の実施判定は保留しました。" & Char(10) & "[追加情報]" & Char(10) & Topic.画像事実 & Char(10) & "[措置済み]" & Char(10) & "・なし" & Char(10) & "[要確認]" & Char(10) & "・＜要確認＞撮影要領の本文を取得できず照合できません。担当者が該当MS-IDの条件を確認してください。" & Char(10) & "[判定なし]" & Char(10) & "・要領未取得のため判定保留" & Char(10) & "[目印JSON]" & Char(10) & "{""version"":1,""show"":false,""reason"":""撮影要領未取得"",""markers"":[]}" & Char(10) & "[/目印JSON]"
-                    - kind: GotoAction
-                      id: goto_photoGuideUnavailableSections
-                      actionId: setVariable_sectionExtra
+                    - kind: AnswerQuestionWithAI
+                      id: answer_imageQuestionCoverage
+                      displayName: 02A_画像同時質問の固定要領範囲判定
+                      autoSend: false
+                      variable: Topic.画像質問範囲判定
+                      userInput: ="【利用者の質問】" & Char(10) & Topic.画像同時テキスト & Char(10) & Char(10) & "【固定撮影要領】" & Char(10) & Topic.撮影要領本文
+                      additionalInstructions: 質問がMS-001〜MS-018の画像識別、撮影要領への適合、撮り直し、設置候補、写真に写る措置の確認だけで回答できる場合は「内蔵範囲内」の一語だけを返す。それ以外の作業手順、適用条件、原因、調査・遮断・修理方法、規程本文等が必要なら「ナレッジ検索必要」の一語だけを返す。前置きと理由は出力しない。
+                    - kind: ConditionGroup
+                      id: conditionGroup_imageQuestionKnowledgeSearch
+                      conditions:
+                        - id: conditionItem_imageQuestionKnowledgeSearch
+                          condition: ="ナレッジ検索必要" in Topic.画像質問範囲判定
+                          actions:
+                            - kind: SearchAndSummarizeContent
+                              id: search_imageQuestionKnowledge
+                              displayName: 02A2_固定撮影要領範囲外のナレッジ回答
+                              autoSend: false
+                              variable: Topic.画像質問ナレッジ回答
+                              userInput: =Topic.画像同時テキスト
+                              additionalInstructions: |-
+                                利用者の質問に、検索できた緊急保安マニュアルの内容だけを根拠に直接回答してください。
+                                検索結果、ナレッジヒット、原文取得という内部処理には言及しないでください。
+                                根拠となる本文を取得できない場合は「なし」とだけ出力してください。一般知識で補完しないでください。
+                              fileSearchDataSource:
+                                searchFilesMode:
+                                  kind: DoNotSearchFiles
+                              knowledgeSources:
+                                kind: SearchSpecificKnowledgeSources
+                                knowledgeSources:
+                                  - cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r
+                                  - cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi
+                              applyModelKnowledgeSetting: false
             - kind: AnswerQuestionWithAI
               id: answer_photoGuidelineJudge
               displayName: 02B_撮影要領との照合判定
               autoSend: false
               variable: Topic.要領照合結果
-              userInput: =Topic.第2段プロンプト & Char(10) & Char(10) & "# 【撮影要領_初動措置の内容】" & Char(10) & Topic.撮影要領本文 & Char(10) & Char(10) & "# 【画像から抽出された事実】" & Char(10) & Topic.画像事実
+              userInput: =Topic.第2段プロンプト & Char(10) & Char(10) & "# 【固定撮影要領_初動措置】" & Char(10) & Topic.撮影要領本文 & Char(10) & Char(10) & "# 【画像から抽出された事実】" & Char(10) & Topic.画像事実 & Char(10) & Char(10) & "# 【固定撮影要領範囲外の質問用ナレッジ】" & Char(10) & If(IsBlank(Topic.画像質問ナレッジ回答), "なし", Topic.画像質問ナレッジ回答)
               additionalInstructions: |-
-                この入力には、判定に必要な撮影要領の内容・画像から抽出された事実・出力形式がすべて含まれています。
-                外部ナレッジを検索せず、一般知識を追加せず、入力内の情報だけで判定してください。
+                この入力には、判定に必要な固定撮影要領・画像から抽出された事実・必要時だけ事前検索した質問用ナレッジ・出力形式が含まれています。
+                このノード自身で追加の外部検索をせず、一般知識を追加せず、入力内の情報だけで判定してください。質問用ナレッジが「なし」以外なら、その内容を根拠とした直接回答を[ユーザーへの回答]へ記載してください。「なし」なら内部の検索失敗に言及せず、確認できない内容と必要な追加情報を簡潔に記載してください。
                 入力で指定された [ユーザーへの回答] [追加情報] [措置済み] [要確認] [判定なし] [目印JSON] の6見出しを必ずこの順で出力し、
                 それ以外（前置き・総括・引用番号・URL）は一切出力しないでください。
                 撮影要領本文が空・なし・不足、該当MS-IDの条件が取得できない場合、そのIDは措置済みにしない。画像事実は追加情報へ残し、該当条件の不足を要確認へ記載する。機器が似ているだけでは機器同定済みとしない。ユーザーの同時テキストは画像で確認した事実と区別する。
@@ -635,7 +615,9 @@ beginDialog:
                       id: sendActivity_debugStage2
                       activity: |-
                         【デバッグ】第2段
-                        2A 撮影要領の取得：{Len(Topic.撮影要領本文)}文字 {If(Len(Topic.撮影要領本文) = 0, "（空。撮影要領PDFから本文が取れていません）", "")}
+                        2A 固定撮影要領：{Len(Topic.撮影要領本文)}文字
+                        範囲外質問判定：{Topic.画像質問範囲判定}
+                        質問用ナレッジ：{Len(Topic.画像質問ナレッジ回答)}文字
                         2B 照合判定：{Len(Topic.要領照合結果)}文字
                         4見出しの有無：{If("[措置済み]" in Topic.要領照合結果, "あり", "なし（判定が形式どおりに返っていません）")}
                         ----
