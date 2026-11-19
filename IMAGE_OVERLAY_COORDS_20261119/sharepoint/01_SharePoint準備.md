@@ -2,6 +2,14 @@
 
 既存の `AI_エージェント可視化` は変更しません。画像専用のリストとドキュメントライブラリを1つずつ追加します。
 
+## Excelから作る場合（簡単）
+
+[AI_ImageOverlay_Listsインポート用.xlsx](../AI_ImageOverlay_Listsインポート用.xlsx) を使用できます。Excelの「導入手順」と「列の種類と用途」シートを先に確認してください。
+
+Excelからの取込は既存リストへ列を追加する機能ではなく、新しいリストを作る機能です。すでに作った `AI_ImageOverlay` が空の場合は、Excelから一度 `AI_ImageOverlay_Import` という名前で作成し、列確認後に名前を入れ替える手順をExcelへ記載しています。
+
+`Title` はLists標準列です。1行テキストのままでよく、型変更は不要です。
+
 ## 1. 画像ファイル用ライブラリ
 
 対象サイト：現在 `AI_エージェント可視化` があるSharePointサイト
@@ -36,13 +44,13 @@
 |PixelHeight|数値・小数0桁|いいえ|座標位置計算|
 |OverlayJson|複数行テキスト・プレーン|いいえ|最大8個の目印座標とタップ時メッセージ|
 |AnalysisNote|複数行テキスト・プレーン|いいえ|画像分析結果の説明|
-|AnalysisStatus|選択肢|はい|状態|
+|AnalysisStatus|1行テキスト|いいえ|状態。Excel取込を簡単にするため選択肢列にしない|
 |ImageVersion|数値・小数0桁|はい|Power Appsの再読込判定|
 |UserText|複数行テキスト・プレーン|いいえ|画像と同時の質問|
 |ExpiresAt|日時|はい|自動削除日時|
 |ErrorCode|1行テキスト|いいえ|切り分け用|
 
-`AnalysisStatus` の選択肢：
+`AnalysisStatus` にPAが保存する値：
 
 - `TEMP_SAVED`
 - `ANALYZED`
@@ -50,7 +58,7 @@
 - `VISUAL_OK`
 - `ERROR`
 
-既定値は `TEMP_SAVED` にします。
+選択肢列にしなくても動作します。PAが上記の文字列を書き込みます。
 
 ## 3. 画像ごとに一時行を作る理由
 
