@@ -87,9 +87,12 @@ def main() -> None:
     assert dialog_document["kind"] == "AdaptiveDialog"
     assert "InvokeFlowAction" not in dialog_source
     assert "flowId:" not in dialog_source
-    assert dialog_source.count("cr88f_SUBARU_search.action.AI__v3_-Qk") == 1
+    assert "cr88f_SUBARU_search.action.AI__v3_-Qk" not in dialog_source
     assert dialog_source.count("cr88f_SUBARU_search.action.AI__v3\n") == 1
-    for binding in ("conversation_id:", "image_file:", "record_id:", "overlay_json:"):
+    assert "contentBytes" not in dialog_source
+    assert "base64" not in dialog_source.lower()
+    assert "invokeFlowAction_saveTemporaryImage" not in dialog_source
+    for binding in ("text:", "text_1:", "text_2:", "text_3:", "text_4:"):
         assert binding in dialog_source, binding
     for required_text in (
         "■座標化した対象物",
@@ -101,9 +104,9 @@ def main() -> None:
         "TOKEN",
     ):
         if required_text == "TOKEN":
-            assert "画像一時保存トークン" in source
+            assert "画像一時保存トークン" in dialog_source
         else:
-            assert required_text in source, required_text
+            assert required_text in dialog_source, required_text
 
     example = json.loads(EXAMPLE_PATH.read_text(encoding="utf-8"))
     assert example["version"] == 1
@@ -120,6 +123,7 @@ def main() -> None:
     pa1_doc = (ROOT / "power-automate" / "01_AI_画像一時保存PA.md").read_text(encoding="utf-8")
     pa2_doc = (ROOT / "power-automate" / "02_AI_画像座標更新PA.md").read_text(encoding="utf-8")
     pa3_doc = (ROOT / "power-automate" / "03_AI_一時画像削除PA.md").read_text(encoding="utf-8")
+    integration_doc = (ROOT / "power-automate" / "00_Base64なし_既存画像転送PAへ統合.md").read_text(encoding="utf-8")
     required_columns = (
         "ImageToken", "ImageUrl", "ImageFileIdentifier", "ImagePixelWidth",
         "ImagePixelHeight", "ImageOverlayJson", "ImageAnalysisNote",
@@ -128,9 +132,12 @@ def main() -> None:
     )
     for column in required_columns:
         assert column in sharepoint_doc, column
-    for document in (pa1_doc, pa2_doc, pa3_doc, app_doc):
+    for document in (pa1_doc, pa2_doc, pa3_doc, integration_doc, app_doc):
         assert "AI_ImageOverlay" not in document
     assert "CASE_ROW_NOT_FOUND" in pa1_doc
+    assert "base64()" in integration_doc
+    assert "追加しません" in integration_doc
+    assert "ConversationId" in pa2_doc and "ImageToken" in pa2_doc
     assert "項目の削除" not in pa3_doc
     assert "案件行そのものは絶対に削除しません" in pa3_doc
 

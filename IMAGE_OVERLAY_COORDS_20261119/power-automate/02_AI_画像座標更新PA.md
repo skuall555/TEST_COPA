@@ -1,6 +1,8 @@
-# PA 2：AI_画像座標更新（既存案件行更新版）
+# PA 2：AI_画像座標更新（既存画像転送PA連携版）
 
-Copilot Studioが生成した目印JSONを検証し、`AI_エージェント可視化` の同じ案件行へ保存します。画像トークンが一致しない場合は更新しません。
+Copilot Studioが生成した目印JSONを検証し、`AI_エージェント可視化` の同じ案件行へ保存します。
+Power Appsから画像をCopilot Studioへ渡す既存PAが先に `ConversationId` と `ImageToken` を保存し、
+本PAはその2値で行を検索します。画像バイナリは本PAへ送りません。
 
 ## 1. フローを作る
 
@@ -14,11 +16,14 @@ Copilot Studioが生成した目印JSONを検証し、`AI_エージェント可�
 
 |順番|表示名|種類|コード上の名前|
 |---:|---|---|---|
-|1|record_id|テキスト|`text`|
+|1|record_id（表示名は変えない）|テキスト|`text`|
 |2|image_token|テキスト|`text_1`|
 |3|overlay_json|テキスト|`text_2`|
 |4|analysis_note|テキスト|`text_3`|
 |5|analysis_status|テキスト|`text_4`|
+
+> 注意：登録済みツールのスキーマを変えないため、1番目の表示名 `record_id` はそのまま残します。
+> 実際に渡す値は `System.Conversation.Id` です。名前変更や入力の追加はしません。
 
 ## 3. 変数
 
@@ -36,32 +41,39 @@ Copilot Studioが生成した目印JSONを検証し、`AI_エージェント可�
 @or(
   empty(triggerBody()?['text']),
   empty(triggerBody()?['text_1']),
-  empty(triggerBody()?['text_2']),
-  not(isInt(triggerBody()?['text']))
+  empty(triggerBody()?['text_2'])
 )
 ```
 
 エラーコード：`INVALID_UPDATE_INPUT`
 
-環境で `isInt` が使えない場合は、record_idをトリガーで「数値」にし、Copilot Studio側の入力も数値へ合わせてください。
+## 5. ConversationIdと画像トークンで対象行を取得
 
-## 5. 対象行とトークンを確認
-
-「SharePoint－項目の取得」で次を指定します。
+「SharePoint－複数の項目の取得」を使います。
 
 - リスト：`AI_エージェント可視化`
-- ID：`int(triggerBody()?['text'])`
-
-条件：
+- フィルタークエリ：式タブから次を入力
+- 上から順に取得：`Modified desc`
+- 上から順に取得する件数：`1`
 
 ```text
-@equals(
-  body('項目の取得')?['ImageToken'],
-  triggerBody()?['text_1']
+@concat(
+  'ConversationId eq ''',
+  replace(triggerBody()?['text'],'''',''''''),
+  ''' and ImageToken eq ''',
+  replace(triggerBody()?['text_1'],'''',''''''),
+  ''''
 )
 ```
 
-一致しなければ `TOKEN_MISMATCH` を返し、更新しません。これにより、別画像の分析結果を誤保存しません。
+取得件数が0なら `IMAGE_ROW_NOT_FOUND` を返し、更新しません。
+行IDは以下で取得します。
+
+```text
+@int(first(body('複数の項目の取得')?['value'])?['ID'])
+```
+
+ConversationIdとImageTokenの両方が一致した最新行だけを更新するため、別画像の分析結果を誤保存しません。
 
 ## 6. JSONを解析
 
@@ -167,7 +179,7 @@ varSafeJson = triggerBody()?['text_2']
 
 ## 9. Listsを更新
 
-「SharePoint－項目の更新」で、取得した行を更新します。
+「SharePoint－項目の更新」で、取得した行を更新します。IDは上記の `first(...)?['ID']` を使います。
 
 |列|値|
 |---|---|
@@ -207,6 +219,6 @@ JSON解析そのものが失敗した場合は、失敗処理スコープで次�
 4. x2がx1以下：空JSONへ置換
 5. observedなのにblue：空JSONへ置換
 6. message欠落：空JSONへ置換
-7. 別トークン：Listsを更新せず `TOKEN_MISMATCH`
+7. 別ConversationIdまたは別トークン：Listsを更新せず `IMAGE_ROW_NOT_FOUND`
 8. 壊れたJSON：現場処理を止めず空JSONを保存
 

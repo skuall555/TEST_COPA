@@ -17,7 +17,10 @@ modelDescription: |
   startBehavior を指定しないことで、分析後は割り込み元（質問待ち）へ戻る。
     第1段で現場対応との関連を判定し、明確に無関係なら撮影要領検索と第2段を省略する。
     関連あり・不明は従来の照合を続行する。撮影要領は同じ会話・利用者・チャネルで5分だけ再利用する。
-  画像は分析前に画像専用PAで一時保存する。第1段は、画像内で実際に確認した物・操作対象・
+  画像の一時保存は、Power Appsから画像をCopilot Studioへ渡す既存PAが行う。
+  本トピックから画像ファイルをPAへ再送信しない。既存PAが `aio_<GUID>.<拡張子>` の名前で
+  SharePoint保存とCopilot Studio送信を行い、本トピックは添付名から同じ画像トークンを得る。
+  第1段は、画像内で実際に確認した物・操作対象・
   設置候補の基準点を0〜1000の正規化座標でも返す。第2段は撮影要領と利用者の質問に照らして、
   Power Appsへ表示する目印を最大8個まで選ぶ。1枚に複数の措置が写っている場合は、
   ポケット警報器、検知器調査、換気等を別々の目印として保持する。座標は優先度や対応済み判定の根拠を変更せず、
@@ -366,15 +369,15 @@ beginDialog:
     - kind: SetVariable
       id: setVariable_tempSaveDefault
       variable: Topic.画像一時保存成功
-      value: =false
+      value: =StartsWith(Lower(Topic.画像ファイル名), "aio_")
     - kind: SetVariable
       id: setVariable_tempSaveRecordIdDefault
       variable: Topic.画像一時保存レコードID
-      value: ="0"
+      value: =Text(System.Conversation.Id)
     - kind: SetVariable
       id: setVariable_tempSaveTokenDefault
       variable: Topic.画像一時保存トークン
-      value: ="NONE"
+      value: =If(Topic.画像一時保存成功, First(Split(Topic.画像ファイル名, ".")).Value, "")
     - kind: SetVariable
       id: setVariable_tempSaveUrlDefault
       variable: Topic.画像一時保存URL
@@ -437,44 +440,11 @@ beginDialog:
               value: =false
             - kind: EndDialog
               id: endDialog_unsupportedImageType
-    - kind: BeginDialog
-      id: invokeFlowAction_saveTemporaryImage
-      input:
-        binding:
-          conversation_id: =Text(System.Conversation.Id)
-          channel_id: =Lower(Text(System.Activity.ChannelId))
-          user_id: =Text(System.User.Id)
-          user_text: =Topic.画像同時テキスト
-          mime_type: =Topic.画像MIME
-          image_file: '={name: Topic.画像ファイル名, contentBytes: First(System.Activity.Attachments).Content}'
-      output:
-        binding:
-          success: Topic.画像一時保存成功
-          record_id: Topic.画像一時保存レコードID
-          image_token: Topic.画像一時保存トークン
-          image_url: Topic.画像一時保存URL
-          image_width: Topic.画像幅
-          image_height: Topic.画像高さ
-          image_version: Topic.画像版
-          error_code: Topic.画像一時保存エラー
-      dialog: cr88f_SUBARU_search.action.AI__v3_-Qk
-    - kind: ConditionGroup
-      id: conditionGroup_tempImageSaveFailed
-      conditions:
-        - id: conditionItem_tempImageSaveFailed
-          condition: =Not(Topic.画像一時保存成功)
-          actions:
-            - kind: SendActivity
-              id: sendActivity_tempImageSaveFailed
-              activity: |-
-                画像分析は続けますが、Power Appsの目印表示用画像を一時保存できませんでした。
-                エラーコード：{If(IsBlank(Topic.画像一時保存エラー), "TEMP_SAVE_FAILED", Topic.画像一時保存エラー)}
-                今回の画像ではPower Apps上の目印は表示されません。
     - kind: InvokeAIBuilderModelAction
       id: invokeAIBuilderModelAction_imageFacts
       input:
         binding:
-          ContextText: =Topic.第1段プロンプト & Char(10) & Char(10) & "【一時保存時に取得した画像寸法】" & Char(10) & If(And(Topic.画像一時保存成功, Topic.画像幅 > 0, Topic.画像高さ > 0), Text(Topic.画像幅) & " x " & Text(Topic.画像高さ), "取得できず") & Char(10) & Char(10) & "【画像と同時に入力されたテキスト】" & Char(10) & If(IsBlank(Topic.画像同時テキスト), "なし", Topic.画像同時テキスト)
+          ContextText: =Topic.第1段プロンプト & Char(10) & Char(10) & "【画像と同時に入力されたテキスト】" & Char(10) & If(IsBlank(Topic.画像同時テキスト), "なし", Topic.画像同時テキスト)
           ImageInput: =First(System.Activity.Attachments).Content
       output:
         binding:
@@ -745,11 +715,11 @@ beginDialog:
                       id: invokeFlowAction_updateImageOverlay
                       input:
                         binding:
-                          record_id: =Text(Topic.画像一時保存レコードID)
-                          image_token: =Topic.画像一時保存トークン
-                          overlay_json: =Topic.目印JSON
-                          analysis_note: ="【ユーザーへの回答】" & Char(10) & If(IsBlank(Topic.画像ユーザー回答), "ー", Topic.画像ユーザー回答) & Char(10) & "【画像から分かる現場状況】" & Char(10) & If(Topic.追加情報部 = "", "・特記なし", Topic.追加情報部) & Char(10) & "【確認したいこと】" & Char(10) & If(Topic.要確認部 = "", "・なし", Topic.要確認部)
-                          analysis_status: ="ANALYZED"
+                          text: =Text(System.Conversation.Id)
+                          text_1: =Topic.画像一時保存トークン
+                          text_2: =Topic.目印JSON
+                          text_3: ="【ユーザーへの回答】" & Char(10) & If(IsBlank(Topic.画像ユーザー回答), "ー", Topic.画像ユーザー回答) & Char(10) & "【画像から分かる現場状況】" & Char(10) & If(Topic.追加情報部 = "", "・特記なし", Topic.追加情報部) & Char(10) & "【確認したいこと】" & Char(10) & If(Topic.要確認部 = "", "・なし", Topic.要確認部)
+                          text_4: ="ANALYZED"
                       output:
                         binding:
                           success: Topic.目印保存成功
