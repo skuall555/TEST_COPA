@@ -9,6 +9,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 YAML_PATH = ROOT / "copilot" / "4-9_画像座標対応_フローID置換前.yaml"
+FINAL_YAML_PATH = ROOT / "copilot" / "4-9_画像座標対応_フローID設定済み.yaml"
 EXAMPLE_PATH = ROOT / "overlay.example.multiple.json"
 
 
@@ -72,6 +73,13 @@ def main() -> None:
 
     assert source.count("__FLOW_IMAGE_TEMP_SAVE_ID__") == 1
     assert source.count("__FLOW_IMAGE_OVERLAY_UPDATE_ID__") == 1
+
+    final_source = FINAL_YAML_PATH.read_text(encoding="utf-8")
+    final_document = yaml.safe_load(final_source)
+    assert final_document["kind"] == "AdaptiveDialog"
+    assert "__FLOW_" not in final_source
+    assert final_source.count("6e918d2e-1a53-e8bd-cf74-cb5820039c7e") == 1
+    assert final_source.count("ea6c4f9f-1a5f-211b-1ead-24587202d7cf") == 1
     for required_text in (
         "■座標化した対象物",
         "■画像表示方向",
@@ -115,7 +123,7 @@ def main() -> None:
     assert "項目の削除" not in pa3_doc
     assert "案件行そのものは絶対に削除しません" in pa3_doc
 
-    print("PASS: YAML, overlay contract, multi-marker example, existing-list PA/Apps guides")
+    print("PASS: YAML, configured flow IDs, overlay contract, multi-marker example, existing-list PA/Apps guides")
 
 
 if __name__ == "__main__":
