@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SUBARU image overlay contract",
+  "type": "object",
+  "required": ["version", "show", "reason", "markers"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "show": { "type": "boolean" },
+    "reason": { "type": "string", "maxLength": 500 },
+    "markers": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "color",
+          "target",
+          "msId",
+          "label",
+          "x1",
+          "y1",
+          "x2",
+          "y2",
+          "confidence",
+          "basis",
+          "message"
+        ],
+        "properties": {
+          "id": { "type": "string", "maxLength": 20 },
+          "type": { "type": "string", "enum": ["observed", "uncertain", "candidate"] },
+          "color": { "type": "string", "enum": ["green", "yellow", "blue"] },
+          "target": { "type": "string", "maxLength": 100 },
+          "msId": { "type": "string", "maxLength": 20 },
+          "label": { "type": "string", "maxLength": 120 },
+          "x1": { "type": "integer", "minimum": 0, "maximum": 999 },
+          "y1": { "type": "integer", "minimum": 0, "maximum": 999 },
+          "x2": { "type": "integer", "minimum": 1, "maximum": 1000 },
+          "y2": { "type": "integer", "minimum": 1, "maximum": 1000 },
+          "confidence": { "type": "string", "enum": ["high", "medium"] },
+          "basis": { "type": "string", "maxLength": 500 },
+          "message": { "type": "string", "maxLength": 1000 }
+        }
+      }
+    }
+  }
+}
