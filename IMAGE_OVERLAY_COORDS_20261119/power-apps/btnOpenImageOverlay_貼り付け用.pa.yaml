@@ -1,0 +1,19 @@
+- btnOpenImageOverlay:
+    Control: Classic/Button@2.2.0
+    Properties:
+      BorderColor: =RGBA(22, 100, 154, 1)
+      BorderThickness: =1
+      Color: =RGBA(22, 100, 154, 1)
+      Fill: =RGBA(234, 243, 253, 1)
+      FontWeight: =FontWeight.Semibold
+      Height: =44
+      OnSelect: |-
+        =Set(varImageConversationId, varAgentConversationId);
+        Set(varReturnResultTab, varResultTab);
+        Navigate(scrImageOverlay, ScreenTransition.None)
+      Size: =15
+      Text: ="画像とAIの目印を確認"
+      Visible: =!IsBlank(varAgentConversationId)
+      Width: =240
+      X: =Parent.Width - Self.Width - 20
+      Y: =16

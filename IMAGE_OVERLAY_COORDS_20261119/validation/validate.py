@@ -119,6 +119,39 @@ def main() -> None:
     for required_text in ("btnMarker1", "btnMarker8", "varMarkerPanelVisible", "Message"):
         assert required_text in app_doc
 
+    app_page_doc = (ROOT / "power-apps" / "02_新規画像ページ_コード貼り付け版.md").read_text(encoding="utf-8")
+    app_page_source = (ROOT / "power-apps" / "scrImageOverlay_貼り付け用.pa.yaml").read_text(encoding="utf-8")
+    app_button_source = (ROOT / "power-apps" / "btnOpenImageOverlay_貼り付け用.pa.yaml").read_text(encoding="utf-8")
+    app_page = yaml.safe_load(app_page_source)
+    app_button = yaml.safe_load(app_button_source)
+    assert isinstance(app_page, list) and len(app_page) == 1
+    assert isinstance(app_button, list) and len(app_button) == 1
+    screen = app_page[0]["scrImageOverlay"]
+    children = screen["Children"]
+    child_names = {next(iter(child)) for child in children}
+    for required_control in (
+        "btnLoadImageOverlay",
+        "imgOverlayPhoto",
+        "btnImageMarker1",
+        "btnImageMarker8",
+        "btnMarkerModalBackdrop",
+        "lblMarkerMessage",
+        "btnImageBack",
+        "tmrImageOverlayRefresh",
+    ):
+        assert required_control in child_names, required_control
+    assert app_page_source.count("Control: Classic/Button@2.2.0") >= 12
+    assert "Back(ScreenTransition.None)" in app_page_source
+    assert "ImagePosition.Stretch" in app_page_source
+    assert "varReply" not in app_page_source
+    assert "varResultTab, varReturnResultTab" in app_page_source
+    assert "ImagePixelWidth" not in app_page_source
+    assert "ImagePixelHeight" not in app_page_source
+    assert "https://tokyogasgroup.sharepoint.com/sites/NW_tool_library/AI_TemporaryImages/" in app_page_source
+    assert "varImageConversationId" in app_page_doc
+    assert "varAgentConversationId" in app_button_source
+    assert "Navigate(scrImageOverlay, ScreenTransition.None)" in app_button_source
+
     sharepoint_doc = (ROOT / "sharepoint" / "01_SharePoint準備.md").read_text(encoding="utf-8")
     pa1_doc = (ROOT / "power-automate" / "01_AI_画像一時保存PA.md").read_text(encoding="utf-8")
     pa2_doc = (ROOT / "power-automate" / "02_AI_画像座標更新PA.md").read_text(encoding="utf-8")
@@ -132,7 +165,7 @@ def main() -> None:
     )
     for column in required_columns:
         assert column in sharepoint_doc, column
-    for document in (pa1_doc, pa2_doc, pa3_doc, integration_doc, app_doc):
+    for document in (pa1_doc, pa2_doc, pa3_doc, integration_doc, app_doc, app_page_doc, app_page_source, app_button_source):
         assert "AI_ImageOverlay" not in document
     assert "CASE_ROW_NOT_FOUND" in pa1_doc
     assert "base64()" in integration_doc
@@ -141,7 +174,7 @@ def main() -> None:
     assert "項目の削除" not in pa3_doc
     assert "案件行そのものは絶対に削除しません" in pa3_doc
 
-    print("PASS: YAML, configured tool dialogs, overlay contract, multi-marker example, existing-list PA/Apps guides")
+    print("PASS: YAML, tool dialogs, overlay contract, multi-marker example, and isolated Power Apps image screen")
 
 
 if __name__ == "__main__":
