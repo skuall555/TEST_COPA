@@ -98,7 +98,7 @@ def main() -> None:
     for required_text in ("btnMarker1", "btnMarker8", "varMarkerPanelVisible", "Message"):
         assert required_text in app_doc
 
-    workbook = load_workbook(ROOT / "AI_ImageOverlay_Listsインポート用.xlsx", data_only=False)
+    workbook = load_workbook(ROOT / "AI_ImageOverlay_Listsインポート用_v2.xlsx", data_only=False)
     assert workbook.sheetnames == ["インポート用", "列の種類と用途", "導入手順", "PAとの対応"]
     import_sheet = workbook["インポート用"]
     assert import_sheet.max_column == 19

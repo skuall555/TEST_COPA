@@ -4,7 +4,7 @@
 
 ## Excelから作る場合（簡単）
 
-[AI_ImageOverlay_Listsインポート用.xlsx](../AI_ImageOverlay_Listsインポート用.xlsx) を使用できます。Excelの「導入手順」と「列の種類と用途」シートを先に確認してください。
+[AI_ImageOverlay_Listsインポート用_v2.xlsx](../AI_ImageOverlay_Listsインポート用_v2.xlsx) を使用できます。Excelの「導入手順」と「列の種類と用途」シートを先に確認してください。旧版は使用しないでください。
 
 Excelからの取込は既存リストへ列を追加する機能ではなく、新しいリストを作る機能です。すでに作った `AI_ImageOverlay` が空の場合は、Excelから一度 `AI_ImageOverlay_Import` という名前で作成し、列確認後に名前を入れ替える手順をExcelへ記載しています。
 
