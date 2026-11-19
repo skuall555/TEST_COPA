@@ -368,6 +368,34 @@ beginDialog:
       variable: Topic.画像一時保存成功
       value: =false
     - kind: SetVariable
+      id: setVariable_tempSaveRecordIdDefault
+      variable: Topic.画像一時保存レコードID
+      value: ="0"
+    - kind: SetVariable
+      id: setVariable_tempSaveTokenDefault
+      variable: Topic.画像一時保存トークン
+      value: ="NONE"
+    - kind: SetVariable
+      id: setVariable_tempSaveUrlDefault
+      variable: Topic.画像一時保存URL
+      value: ="NONE"
+    - kind: SetVariable
+      id: setVariable_tempSaveWidthDefault
+      variable: Topic.画像幅
+      value: =0
+    - kind: SetVariable
+      id: setVariable_tempSaveHeightDefault
+      variable: Topic.画像高さ
+      value: =0
+    - kind: SetVariable
+      id: setVariable_tempSaveVersionDefault
+      variable: Topic.画像版
+      value: =0
+    - kind: SetVariable
+      id: setVariable_tempSaveErrorDefault
+      variable: Topic.画像一時保存エラー
+      value: ="-"
+    - kind: SetVariable
       id: setVariable_overlayJsonDefault
       variable: Topic.目印JSON
       value: ="{""version"":1,""show"":false,""reason"":""未判定"",""markers"":[]}"
@@ -703,6 +731,10 @@ beginDialog:
               id: setVariable_overlaySaveDefault
               variable: Topic.目印保存成功
               value: =false
+            - kind: SetVariable
+              id: setVariable_overlaySaveErrorDefault
+              variable: Topic.目印保存エラー
+              value: ="-"
             - kind: ConditionGroup
               id: conditionGroup_updateOverlayRecord
               conditions:
