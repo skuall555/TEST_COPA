@@ -76,12 +76,12 @@ https://make.powerautomate.com/environments/環境ID/flows/ここがフローID/
 
 ## 4. YAMLのIDを置換
 
-今回作成した実環境用ファイルでは、[4-9_画像座標対応_フローID設定済み.yaml](4-9_画像座標対応_フローID設定済み.yaml) に次の2本を設定済みです。このファイルを使用する場合、手動置換は不要です。
+現在のCopilot Studioが登録済みツールを `BeginDialog` で呼び出すため、実環境では [4-9_画像座標対応_ツールdialog設定済み.yaml](4-9_画像座標対応_ツールdialog設定済み.yaml) を使用します。Power Automate URLのフローIDを直接指定する旧方式は使用しません。
 
-- 一時保存：`6e918d2e-1a53-e8bd-cf74-cb5820039c7e`
-- 座標更新：`ea6c4f9f-1a5f-211b-1ead-24587202d7cf`
+- 一時保存ツール：`cr88f_SUBARU_search.action.AI__v3_-Qk`
+- 座標更新ツール：`cr88f_SUBARU_search.action.AI__v3`
 
-以下の置換説明は、将来フローを作り直した場合だけ使用します。
+以下のフローID置換説明は旧方式の参照用です。今回の貼り付けには使用しません。
 
 [4-9_画像座標対応_フローID置換前.yaml](4-9_画像座標対応_フローID置換前.yaml) をテキストエディターで開きます。
 
