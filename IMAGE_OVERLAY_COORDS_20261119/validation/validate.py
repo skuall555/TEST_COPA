@@ -150,7 +150,8 @@ def main() -> None:
     assert "ImagePixelWidth" not in app_page_source
     assert "ImagePixelHeight" not in app_page_source
     assert "https://tokyogasgroup.sharepoint.com/sites/NW_tool_library/AI_TemporaryImages/" in app_page_source
-    assert "varImageConversationId" in app_page_doc
+    assert "varImageConversationId" not in app_page_doc
+    assert "varAgentConversationId" in app_page_doc
     assert "varAgentConversationId" in app_button_source
     assert "Navigate(scrImageOverlay, ScreenTransition.None)" in app_button_source
 

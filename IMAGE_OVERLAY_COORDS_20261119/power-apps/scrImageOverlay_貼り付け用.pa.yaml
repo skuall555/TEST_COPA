@@ -19,7 +19,7 @@
                   varImageRecord,
                   LookUp(
                       'AI_エージェント可視化',
-                      ConversationId = varImageConversationId
+                      ConversationId = varAgentConversationId
                   )
               );
               Set(varLoadedImageVersion, Value(Coalesce(varImageRecord.ImageVersion, 0)));

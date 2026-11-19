@@ -8,8 +8,7 @@
       FontWeight: =FontWeight.Semibold
       Height: =44
       OnSelect: |-
-        =Set(varImageConversationId, varAgentConversationId);
-        Navigate(scrImageOverlay, ScreenTransition.None)
+        =Navigate(scrImageOverlay, ScreenTransition.None)
       Size: =15
       Text: ="画像とAIの目印を確認"
       Visible: =!IsBlank(varAgentConversationId)
