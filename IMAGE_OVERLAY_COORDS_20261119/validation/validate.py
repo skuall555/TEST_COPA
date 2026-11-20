@@ -101,6 +101,15 @@ def main() -> None:
     assert "02A2_固定撮影要領範囲外のナレッジ回答" in dialog_source
     assert "cr88f_SUBARU_search.topic.09___h1YzFolnLAJjhZiLsRJ3r" in dialog_source
     assert "cr88f_SUBARU_search.topic.00___XQrXfSFWOaET4lVzBCFXi" in dialog_source
+    for meter_rule in (
+        "メーター本体の直下に接続された縦配管の途中",
+        "メーター本体上部の配管接続部",
+        "ツマミの握り部の長軸が水平",
+        "ツマミの握り部の長軸が垂直",
+        "MS-001は閉止方向の確認自体が実施判定条件",
+        "MS-001のmarkers座標は操作ツマミの外周だけ",
+    ):
+        assert meter_rule in dialog_source, meter_rule
     for binding in ("text:", "text_1:", "text_2:", "text_3:", "text_4:"):
         assert binding in dialog_source, binding
     for required_text in (
